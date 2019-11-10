@@ -4,6 +4,12 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>float wants to set your profile picture</string>
+    <key>NSCameraUsageDescription</key>
+    <string>float wants to set your profile picture</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>float wants to record the sound of the videos</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
