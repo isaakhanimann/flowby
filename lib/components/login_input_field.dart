@@ -10,7 +10,9 @@ class LoginInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       elevation: 6.0,
-      borderRadius: BorderRadius.all(Radius.circular(32.0)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(32.0)),
+      ),
       child: TextField(
         textAlign: TextAlign.center,
         keyboardType: isEmail ? TextInputType.emailAddress : null,
