@@ -18,18 +18,7 @@ const kMessageContainerDecoration = BoxDecoration(
   ),
 );
 
-const kInputDecoration = InputDecoration(
-  hintText: 'Enter a value',
-  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-  border: OutlineInputBorder(
-    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-  ),
-  enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.blueAccent, width: 1.0),
-    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-  ),
-  focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
-    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-  ),
-);
+const kBeigeColor = Color(0xFFFCF9EC);
+const kLightGreenColor = Color(0xFFB0F4E6);
+const kMiddleGreenColor = Color(0xFF67EACA);
+const kDarkGreenColor = Color(0xFF12D3CF);

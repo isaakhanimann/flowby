@@ -1,9 +1,11 @@
 import 'package:float/screens/chat_screen.dart';
+import 'package:float/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import '../components/rounded_button.dart';
 import 'package:float/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:float/components/login_input_field.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -29,46 +31,29 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Flexible(
-                child: Hero(
-                  tag: 'logo',
-                  child: Container(
-                    height: 200.0,
-                    child: Image.asset('images/logo.png'),
-                  ),
-                ),
-              ),
               SizedBox(
                 height: 48.0,
               ),
-              TextField(
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (value) {
-                  //Do something with the user input.
+              LoginInputField(
+                isEmail: true,
+                setText: (value) {
                   email = value;
                 },
-                decoration:
-                    kInputDecoration.copyWith(hintText: 'Enter your email'),
               ),
               SizedBox(
                 height: 8.0,
               ),
-              TextField(
-                textAlign: TextAlign.center,
-                obscureText: true,
-                onChanged: (value) {
-                  //Do something with the user input.
+              LoginInputField(
+                isEmail: false,
+                setText: (value) {
                   password = value;
                 },
-                decoration:
-                    kInputDecoration.copyWith(hintText: 'Enter your password'),
               ),
               SizedBox(
                 height: 24.0,
               ),
               RoundedButton(
-                color: Colors.blueAccent,
+                color: kDarkGreenColor,
                 onPressed: () async {
                   setState(() {
                     showSpinner = true;
@@ -87,6 +72,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   }
                 },
                 text: 'Register',
+              ),
+              SizedBox(
+                height: 40.0,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, LoginScreen.id);
+                },
+                child: Text(
+                  'Login',
+                  style: TextStyle(
+                    fontSize: 25,
+                    color: kDarkGreenColor,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
               ),
             ],
           ),
