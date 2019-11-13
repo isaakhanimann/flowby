@@ -6,6 +6,13 @@ const kSendButtonTextStyle = TextStyle(
   fontSize: 18.0,
 );
 
+const kTitleTextStyle = TextStyle(
+  fontSize: 45.0,
+  fontWeight: FontWeight.w900,
+  color: kDarkGreenColor,
+  letterSpacing: 3.0,
+);
+
 const kMessageTextFieldDecoration = InputDecoration(
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
   hintText: 'Type your message here...',

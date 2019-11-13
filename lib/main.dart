@@ -11,7 +11,7 @@ class Float extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: RegistrationScreen.id,
+      initialRoute: CreateProfileScreen.id,
       routes: {
         LoginScreen.id: (context) => LoginScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),

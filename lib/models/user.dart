@@ -1,18 +1,10 @@
 import 'dart:io';
 
 class User {
-  File profilePic;
-  String username;
   String email;
-  String password;
+  File profilePic;
   List<String> supplyHashtags;
   List<String> demandHashtags;
 
-  User(
-      {this.profilePic,
-      this.username,
-      this.email,
-      this.password,
-      this.supplyHashtags,
-      this.demandHashtags});
+  User({this.email, this.profilePic, this.supplyHashtags, this.demandHashtags});
 }
