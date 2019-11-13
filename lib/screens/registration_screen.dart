@@ -6,7 +6,7 @@ import 'package:float/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/components/login_input_field.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -19,33 +19,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     with SingleTickerProviderStateMixin {
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
-  String email;
-  String password;
-
-  AnimationController controller;
-  Animation animation;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: Duration(seconds: 1),
-      vsync: this,
-      upperBound: 1,
-    );
-    animation = ColorTween(begin: Colors.blueGrey, end: Colors.white)
-        .animate(controller);
-
-    controller.forward();
-    controller.addListener(() {
-      setState(() {});
-    });
-  }
+  String email = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: animation.value,
+      backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
@@ -54,24 +34,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Hero(
-                    tag: 'logo',
-                    child: Container(
-                      child: Image.asset('images/logo.png'),
-                      height: 60.0,
-                    ),
-                  ),
-                  TypewriterAnimatedTextKit(
-                    text: ['Sign Up'],
-                    textStyle: TextStyle(
-                        fontSize: 45.0,
-                        fontWeight: FontWeight.w900,
-                        color: kDarkGreenColor,
-                        letterSpacing: 3.0),
-                  ),
-                ],
+              Text(
+                'Sign Up',
+                style: TextStyle(
+                    fontSize: 45.0,
+                    fontWeight: FontWeight.w900,
+                    color: kDarkGreenColor,
+                    letterSpacing: 3.0),
               ),
               SizedBox(
                 height: 48.0,
@@ -96,6 +65,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
               ),
               RoundedButton(
                 color: kDarkGreenColor,
+                text: 'Register',
                 onPressed: () async {
                   setState(() {
                     showSpinner = true;
@@ -110,10 +80,80 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                       showSpinner = false;
                     });
                   } catch (e) {
-                    print(e);
+                    switch (e.code) {
+                      case 'ERROR_WEAK_PASSWORD':
+                        {
+                          Alert(
+                            context: context,
+                            title: "Weak Password",
+                            desc: e.message,
+                            buttons: [
+                              DialogButton(
+                                child: Text(
+                                  "Ok",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                                onPressed: () => Navigator.pop(context),
+                                width: 120,
+                                color: kDarkGreenColor,
+                              )
+                            ],
+                          ).show();
+                          break;
+                        }
+                      case 'ERROR_INVALID_EMAIL':
+                        {
+                          Alert(
+                            context: context,
+                            title: "Invalid Email",
+                            desc: e.message,
+                            buttons: [
+                              DialogButton(
+                                child: Text(
+                                  "Ok",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                                onPressed: () => Navigator.pop(context),
+                                width: 120,
+                                color: kDarkGreenColor,
+                              )
+                            ],
+                          ).show();
+                          break;
+                        }
+                      case 'ERROR_EMAIL_ALREADY_IN_USE':
+                        {
+                          Alert(
+                            context: context,
+                            title: "Email Already in Use",
+                            desc: e.message,
+                            buttons: [
+                              DialogButton(
+                                child: Text(
+                                  "Ok",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                                onPressed: () => Navigator.pop(context),
+                                width: 120,
+                                color: kDarkGreenColor,
+                              )
+                            ],
+                          ).show();
+                          break;
+                        }
+                      default:
+                        {
+                          print(e);
+                        }
+                    }
+                    setState(() {
+                      showSpinner = false;
+                    });
                   }
                 },
-                text: 'Register',
               ),
               SizedBox(
                 height: 40.0,

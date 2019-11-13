@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/components/login_input_field.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -26,6 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
+        progressIndicator: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
+        ),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
@@ -62,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 24.0,
               ),
               RoundedButton(
-                  color: Color(0xFF12D3CF),
+                  color: kDarkGreenColor,
                   onPressed: () async {
                     setState(() {
                       showSpinner = true;
@@ -77,7 +81,141 @@ class _LoginScreenState extends State<LoginScreen> {
                         showSpinner = false;
                       });
                     } catch (e) {
-                      print(e);
+                      switch (e.code) {
+                        case 'ERROR_INVALID_EMAIL':
+                          {
+                            Alert(
+                              context: context,
+                              title: "Invalid Email",
+                              desc: e.message,
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "Ok",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                  width: 120,
+                                  color: kDarkGreenColor,
+                                )
+                              ],
+                            ).show();
+                            break;
+                          }
+                        case 'ERROR_WRONG_PASSWORD':
+                          {
+                            Alert(
+                              context: context,
+                              title: "Wrong Password",
+                              desc: e.message,
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "Ok",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                  width: 120,
+                                  color: kDarkGreenColor,
+                                )
+                              ],
+                            ).show();
+                            break;
+                          }
+                        case 'ERROR_USER_NOT_FOUND':
+                          {
+                            Alert(
+                              context: context,
+                              title: "User not found",
+                              desc: e.message,
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "Ok",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                  width: 120,
+                                  color: kDarkGreenColor,
+                                )
+                              ],
+                            ).show();
+                            break;
+                          }
+                        case 'ERROR_USER_DISABLED':
+                          {
+                            Alert(
+                              context: context,
+                              title: "User Disabled",
+                              desc: e.message,
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "Ok",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                  width: 120,
+                                  color: kDarkGreenColor,
+                                )
+                              ],
+                            ).show();
+                            break;
+                          }
+                        case 'ERROR_TOO_MANY_REQUESTS':
+                          {
+                            Alert(
+                              context: context,
+                              title: "Too Many Requests",
+                              desc: e.message,
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "Ok",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                  width: 120,
+                                  color: kDarkGreenColor,
+                                )
+                              ],
+                            ).show();
+                            break;
+                          }
+                        case 'ERROR_OPERATION_NOT_ALLOWED':
+                          {
+                            Alert(
+                              context: context,
+                              title: "Operation Not Allowed",
+                              desc: e.message,
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "Ok",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                  width: 120,
+                                  color: kDarkGreenColor,
+                                )
+                              ],
+                            ).show();
+                            break;
+                          }
+                        default:
+                          {
+                            print(e);
+                          }
+                      }
+                      setState(() {
+                        showSpinner = false;
+                      });
                     }
                   },
                   text: 'Log In'),
