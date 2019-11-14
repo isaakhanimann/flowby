@@ -7,6 +7,7 @@ import 'package:float/screens/chat_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/components/login_input_field.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:float/screens/create_profile_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -75,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       final user = await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
                       if (user != null) {
-                        Navigator.pushNamed(context, ChatScreen.id);
+                        Navigator.pushNamed(context, CreateProfileScreen.id);
                       }
                       setState(() {
                         showSpinner = false;

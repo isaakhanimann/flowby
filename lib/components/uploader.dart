@@ -20,51 +20,26 @@ class _UploaderState extends State<Uploader> {
 
   StorageUploadTask _uploadTask;
 
-  void _startUpload() {
+  void _uploadFile() async {
     String filePath = 'images/${DateTime.now()}.png';
+    _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
+    await _uploadTask.onComplete;
+    print('File Uploaded');
 
-    setState(() {
-      _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
+    _storage.ref().child(filePath).getDownloadURL().then((fileURL) {
+      print(fileURL);
     });
   }
-
-  bool notNull(Object o) => o != null;
 
   @override
   Widget build(BuildContext context) {
     if (_uploadTask != null) {
-      return StreamBuilder<StorageTaskEvent>(
-        stream: _uploadTask.events,
-        builder: (context, snapshot) {
-          var event = snapshot?.data?.snapshot;
-
-          double progressPercent =
-              event != null ? event.bytesTransferred / event.totalByteCount : 0;
-          return Column(
-            children: <Widget>[
-              _uploadTask.isComplete ? Text('Is Complete') : null,
-              _uploadTask.isPaused
-                  ? FlatButton(
-                      child: Icon(Icons.play_arrow),
-                      onPressed: _uploadTask.resume)
-                  : null,
-              _uploadTask.isInProgress
-                  ? FlatButton(
-                      child: Icon(Icons.pause), onPressed: _uploadTask.resume)
-                  : null,
-              LinearProgressIndicator(
-                value: progressPercent,
-              ),
-              Text('${(progressPercent * 100).toStringAsFixed(2)} % '),
-            ].where(notNull).toList(),
-          );
-        },
-      );
+      //can display something if the upload has not started
     }
     return RoundedButton(
       text: 'Save',
       color: kDarkGreenColor,
-      onPressed: _startUpload,
+      onPressed: _uploadFile,
     );
   }
 }
