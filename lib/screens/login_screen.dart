@@ -3,7 +3,6 @@ import 'package:float/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import '../components/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/screens/chat_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/components/login_input_field.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';

@@ -1,10 +1,8 @@
-import 'dart:io';
 
 class User {
   String email;
-  File profilePic;
-  List<String> supplyHashtags;
-  List<String> demandHashtags;
+  String supplyHashtags;
+  String demandHashtags;
 
-  User({this.email, this.profilePic, this.supplyHashtags, this.demandHashtags});
+  User({this.email, this.supplyHashtags, this.demandHashtags});
 }

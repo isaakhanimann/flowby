@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:float/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:float/components/uploader.dart';
 
-final _fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
 
 class CreateProfileScreen extends StatefulWidget {
@@ -176,7 +174,12 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             SizedBox(
               height: 5,
             ),
-            Uploader(file: _profilePic),
+            Uploader(
+              image: _profilePic,
+              email: loggedInUser.email,
+              supplyHashtags: _hashtagSkills,
+              demandHashtags: _hashtagWishes,
+            ),
           ],
         ),
       ),
