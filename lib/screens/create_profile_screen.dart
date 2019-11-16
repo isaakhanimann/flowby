@@ -3,14 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:float/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:float/components/rounded_button.dart';
-import 'package:float/components/hashtag_bubble.dart';
-
-FirebaseUser loggedInUser;
-final _fireStore = Firestore.instance;
+import 'package:float/widgets/rounded_button.dart';
+import 'package:float/widgets/hashtag_bubble.dart';
+import 'package:float/services/firebase_connection.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   static const String id = 'create_profile_screen';
@@ -21,26 +17,16 @@ class CreateProfileScreen extends StatefulWidget {
 
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
   final userController = TextEditingController();
-  final _auth = FirebaseAuth.instance;
-  final StorageReference _storageReference =
-      FirebaseStorage().ref().child('images/isaak');
+
+  FirebaseConnection connection = FirebaseConnection();
+
   String _hashtagSkills = '';
   String _tempHashtagSkills = '';
   String _hashtagWishes = '';
   String _tempHashtagWishes = '';
   File _profilePic;
   String _profilePicUrl;
-
-  void getCurrentUser() async {
-    try {
-      final user = await _auth.currentUser();
-      if (user != null) {
-        loggedInUser = user;
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
+  FirebaseUser loggedInUser;
 
   void changeProfilePic() async {
     showCupertinoModalPopup(
@@ -79,54 +65,36 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     });
   }
 
-  void _uploadImage() async {
-    final StorageUploadTask uploadTask = _storageReference.putFile(_profilePic);
-    await uploadTask.onComplete;
-    print('File Uploaded');
+  void _setLoggedInUser() async {
+    loggedInUser = await connection.getCurrentUser();
   }
 
-  void _uploadUserInfos() async {
-    _fireStore.collection('users').document('isaak').setData({
-      'email': loggedInUser.email,
-      'supplyHashtags': _tempHashtagSkills,
-      'demandHashtags': _tempHashtagWishes,
+  void _setUserFromFirebaseData() async {
+    var userMap = await connection.getUserInfos(userID: 'isaak');
+    //also fill the temps in case the user presses save and the messageboxes are filled
+    setState(() {
+      _hashtagSkills = userMap['supplyHashtags'];
+      _tempHashtagSkills = _hashtagSkills;
+      _hashtagWishes = userMap['demandHashtags'];
+      _tempHashtagWishes = _hashtagWishes;
     });
   }
 
-  void _getUserInfos() async {
-    try {
-      var userDocument =
-          await _fireStore.collection('users').document('isaak').get();
-      if (userDocument != null) {
-        setState(() {
-          _hashtagSkills = userDocument.data['supplyHashtags'];
-          _tempHashtagSkills = _hashtagSkills;
-          _hashtagWishes = userDocument.data['demandHashtags'];
-          _tempHashtagWishes = _hashtagWishes;
-        });
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void _getImage() async {
-    try {
-      final String downloadUrl = await _storageReference.getDownloadURL();
-      setState(() {
-        _profilePicUrl = downloadUrl;
-      });
-    } catch (e) {
-      print(e);
-    }
+  void _setImageFromFirebaseData() async {
+    String imgUrl = await connection.getImageUrl(fileName: 'isaak');
+    //also fill the temps in case the user presses save and the messageboxes are filled
+    setState(() {
+      _profilePicUrl = imgUrl;
+      _profilePic = null;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
-    _getUserInfos();
-    _getImage();
+    _setLoggedInUser();
+    _setImageFromFirebaseData();
+    _setUserFromFirebaseData();
   }
 
   @override
@@ -139,7 +107,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               icon: Icon(Icons.close),
               onPressed: () {
                 //Implement logout functionality
-                _auth.signOut();
+                connection.signOut();
                 Navigator.pop(context);
               }),
         ],
@@ -212,6 +180,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     onPress: () {
                       setState(() {
                         _hashtagSkills = '';
+                        _tempHashtagSkills = '';
                       });
                     },
                   ),
@@ -243,6 +212,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     onPress: () {
                       setState(() {
                         _hashtagWishes = '';
+                        _tempHashtagWishes = '';
                       });
                     },
                   ),
@@ -253,9 +223,15 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               text: 'Save',
               color: kDarkGreenColor,
               onPressed: () {
-                _uploadImage();
-                _uploadUserInfos();
-                _getUserInfos();
+                if (_profilePic != null) {
+                  connection.uploadImage(fileName: 'isaak', image: _profilePic);
+                }
+                connection.uploadUserInfos(
+                    userID: 'isaak',
+                    email: loggedInUser.email,
+                    hashtagSkills: _tempHashtagSkills,
+                    hashtagWishes: _tempHashtagWishes);
+                _setUserFromFirebaseData();
               },
             ),
           ],
