@@ -88,8 +88,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   void _uploadUserInfos() async {
     _fireStore.collection('users').document('isaak').setData({
       'email': loggedInUser.email,
-      'supplyHashtags': _hashtagSkills,
-      'demandHashtags': _hashtagWishes,
+      'supplyHashtags': _tempHashtagSkills,
+      'demandHashtags': _tempHashtagWishes,
     });
   }
 
@@ -255,10 +255,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               onPressed: () {
                 _uploadImage();
                 _uploadUserInfos();
-                setState(() {
-                  _hashtagSkills = _tempHashtagSkills;
-                  _hashtagWishes = _tempHashtagWishes;
-                });
+                _getUserInfos();
               },
             ),
           ],
