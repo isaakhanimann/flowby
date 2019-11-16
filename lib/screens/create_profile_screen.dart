@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:float/components/rounded_button.dart';
+import 'package:float/components/hashtag_bubble.dart';
 
 FirebaseUser loggedInUser;
 final _fireStore = Firestore.instance;
@@ -24,8 +25,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   final StorageReference _storageReference =
       FirebaseStorage().ref().child('images/isaak');
   String _hashtagSkills = '';
+  String _tempHashtagSkills = '';
   String _hashtagWishes = '';
-  String randomStuff = 'boboboboobo';
+  String _tempHashtagWishes = '';
   File _profilePic;
   String _profilePicUrl;
 
@@ -98,12 +100,13 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
       if (userDocument != null) {
         setState(() {
           _hashtagSkills = userDocument.data['supplyHashtags'];
+          _tempHashtagSkills = _hashtagSkills;
           _hashtagWishes = userDocument.data['demandHashtags'];
+          _tempHashtagWishes = _hashtagWishes;
         });
-        print('This was exeeeeeeeeeeeeeeeecuted successfully');
       }
     } catch (e) {
-      print('Eeeeeeeeeeeeeeeerrrroooooooooor occcuuuuuuuuuurred');
+      print(e);
     }
   }
 
@@ -128,8 +131,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(randomStuff);
-    print(_hashtagSkills);
     return Scaffold(
       appBar: AppBar(
         leading: null,
@@ -196,16 +197,24 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             SizedBox(
               height: 5,
             ),
-            TextFormField(
-              textAlign: TextAlign.center,
-              style: TextStyle(color: kDarkGreenColor),
-              initialValue: _hashtagSkills,
-              onChanged: (newValue) {
-                setState(() {
-                  _hashtagSkills = newValue;
-                });
-              },
-            ),
+            _hashtagSkills == ''
+                ? TextFormField(
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: kDarkGreenColor),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _tempHashtagSkills = newValue;
+                      });
+                    },
+                  )
+                : HashtagBubble(
+                    text: _hashtagSkills,
+                    onPress: () {
+                      setState(() {
+                        _hashtagSkills = '';
+                      });
+                    },
+                  ),
             SizedBox(
               height: 5,
             ),
@@ -219,16 +228,24 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             SizedBox(
               height: 5,
             ),
-            TextFormField(
-              textAlign: TextAlign.center,
-              style: TextStyle(color: kDarkGreenColor),
-              initialValue: _hashtagWishes,
-              onChanged: (newValue) {
-                setState(() {
-                  _hashtagWishes = newValue;
-                });
-              },
-            ),
+            _hashtagWishes == ''
+                ? TextFormField(
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: kDarkGreenColor),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _tempHashtagWishes = newValue;
+                      });
+                    },
+                  )
+                : HashtagBubble(
+                    text: _hashtagWishes,
+                    onPress: () {
+                      setState(() {
+                        _hashtagWishes = '';
+                      });
+                    },
+                  ),
             SizedBox(
               height: 5,
             ),
@@ -238,15 +255,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               onPressed: () {
                 _uploadImage();
                 _uploadUserInfos();
-              },
-            ),
-            TextFormField(
-              textAlign: TextAlign.center,
-              style: TextStyle(color: kDarkGreenColor),
-              initialValue: randomStuff,
-              onChanged: (newValue) {
                 setState(() {
-                  _hashtagWishes = newValue;
+                  _hashtagSkills = _tempHashtagSkills;
+                  _hashtagWishes = _tempHashtagWishes;
                 });
               },
             ),
