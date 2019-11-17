@@ -19,7 +19,8 @@ class FirebaseConnection {
     _auth.signOut();
   }
 
-  void uploadImage({@required String fileName, @required File image}) async {
+  Future<void> uploadImage(
+      {@required String fileName, @required File image}) async {
     try {
       final StorageUploadTask uploadTask =
           _storageReference.child('images/$fileName').putFile(image);
@@ -36,19 +37,24 @@ class FirebaseConnection {
       return downloadUrl;
     } catch (e) {
       print('Isaak could get image url');
+      return null;
     }
   }
 
-  void uploadUserInfos(
+  Future<void> uploadUserInfos(
       {@required String userID,
       @required String email,
       @required String hashtagSkills,
-      @required String hashtagWishes}) async {
+      @required String hashtagWishes,
+      @required int skillRate,
+      @required int wishRate}) async {
     try {
       _fireStore.collection('users').document(userID).setData({
         'email': email,
         'supplyHashtags': hashtagSkills,
         'demandHashtags': hashtagWishes,
+        'skillRate': skillRate,
+        'wishRate': wishRate
       });
     } catch (e) {
       print('Isaak could not upload user info');
@@ -59,12 +65,10 @@ class FirebaseConnection {
     try {
       var userDocument =
           await _fireStore.collection('users').document(userID).get();
-      if (userDocument != null) {
-        return userDocument.data;
-      }
-      return null;
+      return userDocument?.data;
     } catch (e) {
       print('Isaak could not get user info');
+      return null;
     }
   }
 }

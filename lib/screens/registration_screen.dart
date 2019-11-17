@@ -1,4 +1,4 @@
-import 'package:float/screens/chat_screen.dart';
+import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import '../widgets/rounded_button.dart';
@@ -67,7 +67,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     final newUser = await _auth.createUserWithEmailAndPassword(
                         email: email, password: password);
                     if (newUser != null) {
-                      Navigator.pushNamed(context, ChatScreen.id);
+                      Navigator.pushNamed(context, CreateProfileScreen.id);
                     }
                     setState(() {
                       showSpinner = false;

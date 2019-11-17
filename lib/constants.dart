@@ -13,6 +13,12 @@ const kTitleTextStyle = TextStyle(
   letterSpacing: 3.0,
 );
 
+const kTitleSmallTextStyle = TextStyle(
+  fontSize: 20.0,
+  fontWeight: FontWeight.w500,
+  color: kDarkGreenColor,
+);
+
 const kMessageTextFieldDecoration = InputDecoration(
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
   hintText: 'Type your message here...',
