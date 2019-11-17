@@ -30,7 +30,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   int _wishRate;
   int _initialSkillRate;
   int _initialWishRate;
-  bool showSpinner = false;
+  bool showSpinner = true;
 
   void changeProfilePic() async {
     showCupertinoModalPopup(
@@ -74,17 +74,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     return loggedInUser.email;
   }
 
-  void _getAndSetProfilePic({String fileName}) async {
-    String imgUrl = await connection.getImageUrl(fileName: fileName);
-    //also fill the temps in case the user presses save and the messageboxes are filled
-    if (imgUrl != null) {
-      setState(() {
-        _profilePicUrl = imgUrl;
-        _profilePic = null;
-      });
-    }
-  }
-
   void _getAndSetUserData({String userID}) async {
     var userMap = await connection.getUserInfos(userID: userID);
     //also fill the temps in case the user presses save and the messageboxes are filled
@@ -104,13 +93,30 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   void _getAndSetData() async {
     String email = await _getAndSetLoggedInUser();
-    _getAndSetProfilePic(fileName: email);
-    _getAndSetUserData(userID: email);
+    String imgUrl = await connection.getImageUrl(fileName: email);
+    var userMap = await connection.getUserInfos(userID: email);
+    //also fill the temps in case the user presses save and the messageboxes are filled
+    if (userMap != null) {
+      setState(() {
+        _hashtagSkills = userMap['supplyHashtags'];
+        _tempHashtagSkills = _hashtagSkills;
+        _hashtagWishes = userMap['demandHashtags'];
+        _tempHashtagWishes = _hashtagWishes;
+        _initialSkillRate = userMap['skillRate'];
+        _initialWishRate = userMap['wishRate'];
+        _skillRate = _initialSkillRate;
+        _wishRate = _initialWishRate;
+        _profilePicUrl = imgUrl;
+        _profilePic = null;
+        showSpinner = false;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    //this is an asynchronous method
     _getAndSetData();
   }
 
@@ -266,23 +272,23 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               RoundedButton(
                 text: 'Save',
                 color: kDarkGreenColor,
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     showSpinner = true;
                   });
                   try {
                     if (_profilePic != null) {
-                      connection.uploadImage(
+                      await connection.uploadImage(
                           fileName: loggedInUser.email, image: _profilePic);
                     }
-                    connection.uploadUserInfos(
+                    await connection.uploadUserInfos(
                         userID: loggedInUser.email,
                         email: loggedInUser.email,
                         hashtagSkills: _tempHashtagSkills,
                         hashtagWishes: _tempHashtagWishes,
                         skillRate: _skillRate,
                         wishRate: _wishRate);
-                    _getAndSetUserData();
+                    await _getAndSetUserData();
                   } catch (e) {
                     print('Could not upload and get on Save');
                   }
@@ -314,10 +320,8 @@ class RatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
-    print(initialValue);
-    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
-
+    //todo: the initialItem for the second CupertinoPicker does not work
+//    print('initialValue = $initialValue');
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
