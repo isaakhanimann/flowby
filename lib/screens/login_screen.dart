@@ -1,4 +1,5 @@
 import 'package:float/constants.dart';
+import 'package:float/screens/home_screen.dart';
 import 'package:float/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import '../widgets//rounded_button.dart';
@@ -6,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/widgets/login_input_field.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:float/screens/create_profile_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       final user = await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
                       if (user != null) {
-                        Navigator.pushNamed(context, CreateProfileScreen.id);
+                        Navigator.pushNamed(context, HomeScreen.id);
                       }
                       setState(() {
                         showSpinner = false;

@@ -3,6 +3,7 @@ import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/registration_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/chat_screen.dart';
+import 'package:float/screens/home_screen.dart';
 
 void main() => runApp(Float());
 
@@ -11,11 +12,12 @@ class Float extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: LoginScreen.id,
+      initialRoute: RegistrationScreen.id,
       routes: {
         LoginScreen.id: (context) => LoginScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
         CreateProfileScreen.id: (context) => CreateProfileScreen(),
+        HomeScreen.id: (context) => HomeScreen(),
         ChatScreen.id: (context) => ChatScreen(),
       },
     );

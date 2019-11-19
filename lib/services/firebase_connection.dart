@@ -36,7 +36,7 @@ class FirebaseConnection {
           await _storageReference.child('images/$fileName').getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      print('Isaak could get image url');
+      print('Isaak could not get image url');
       return null;
     }
   }
@@ -63,11 +63,32 @@ class FirebaseConnection {
 
   Future<Map<String, dynamic>> getUserInfos({@required String userID}) async {
     try {
+      print('userID = $userID');
       var userDocument =
           await _fireStore.collection('users').document(userID).get();
-      return userDocument?.data;
+      if (userDocument.data == null) {
+        print('Isaak could not get user info1');
+      }
+      return userDocument.data;
     } catch (e) {
-      print('Isaak could not get user info');
+      print('Isaak could not get user info2');
+      return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getAllUsers() async {
+    try {
+      QuerySnapshot snapshot =
+          await _fireStore.collection('users').getDocuments();
+      List<Map<String, dynamic>> listOfUsers = [];
+      for (var document in snapshot.documents) {
+        if (document != null) {
+          listOfUsers.add(document.data);
+        }
+      }
+      return listOfUsers;
+    } catch (e) {
+      print('Isaak could not get all the users');
       return null;
     }
   }

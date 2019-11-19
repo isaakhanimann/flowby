@@ -8,6 +8,7 @@ import 'package:float/widgets/rounded_button.dart';
 import 'package:float/widgets/hashtag_bubble.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:float/screens/login_screen.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   static const String id = 'create_profile_screen';
@@ -74,21 +75,19 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     return loggedInUser.email;
   }
 
-  void _getAndSetUserData({String userID}) async {
-    var userMap = await connection.getUserInfos(userID: userID);
+  void _getAndSetUserData() async {
+    var userMap = await connection.getUserInfos(userID: loggedInUser.email);
     //also fill the temps in case the user presses save and the messageboxes are filled
-    if (userMap != null) {
-      setState(() {
-        _hashtagSkills = userMap['supplyHashtags'];
-        _tempHashtagSkills = _hashtagSkills;
-        _hashtagWishes = userMap['demandHashtags'];
-        _tempHashtagWishes = _hashtagWishes;
-        _initialSkillRate = userMap['skillRate'];
-        _initialWishRate = userMap['wishRate'];
-        _skillRate = _initialSkillRate;
-        _wishRate = _initialWishRate;
-      });
-    }
+    setState(() {
+      _hashtagSkills = userMap != null ? userMap['supplyHashtags'] : null;
+      _tempHashtagSkills = _hashtagSkills;
+      _hashtagWishes = userMap != null ? userMap['demandHashtags'] : null;
+      _tempHashtagWishes = _hashtagWishes;
+      _initialSkillRate = userMap != null ? userMap['skillRate'] : null;
+      _initialWishRate = userMap != null ? userMap['wishRate'] : null;
+      _skillRate = _initialSkillRate;
+      _wishRate = _initialWishRate;
+    });
   }
 
   void _getAndSetData() async {
@@ -96,21 +95,19 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     String imgUrl = await connection.getImageUrl(fileName: email);
     var userMap = await connection.getUserInfos(userID: email);
     //also fill the temps in case the user presses save and the messageboxes are filled
-    if (userMap != null) {
-      setState(() {
-        _hashtagSkills = userMap['supplyHashtags'];
-        _tempHashtagSkills = _hashtagSkills;
-        _hashtagWishes = userMap['demandHashtags'];
-        _tempHashtagWishes = _hashtagWishes;
-        _initialSkillRate = userMap['skillRate'];
-        _initialWishRate = userMap['wishRate'];
-        _skillRate = _initialSkillRate;
-        _wishRate = _initialWishRate;
-        _profilePicUrl = imgUrl;
-        _profilePic = null;
-        showSpinner = false;
-      });
-    }
+    setState(() {
+      _hashtagSkills = userMap != null ? userMap['supplyHashtags'] : null;
+      _tempHashtagSkills = _hashtagSkills;
+      _hashtagWishes = userMap != null ? userMap['demandHashtags'] : null;
+      _tempHashtagWishes = _hashtagWishes;
+      _initialSkillRate = userMap != null ? userMap['skillRate'] : null;
+      _initialWishRate = userMap != null ? userMap['wishRate'] : null;
+      _skillRate = _initialSkillRate;
+      _wishRate = _initialWishRate;
+      _profilePicUrl = imgUrl;
+      _profilePic = null;
+      showSpinner = false;
+    });
   }
 
   @override
@@ -131,7 +128,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               onPressed: () {
                 //Implement logout functionality
                 connection.signOut();
-                Navigator.pop(context);
+                Navigator.pushNamed(context, LoginScreen.id);
               }),
         ],
         title: Text('Create Profile'),
@@ -281,6 +278,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       await connection.uploadImage(
                           fileName: loggedInUser.email, image: _profilePic);
                     }
+                    print('got here');
                     await connection.uploadUserInfos(
                         userID: loggedInUser.email,
                         email: loggedInUser.email,
@@ -288,7 +286,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         hashtagWishes: _tempHashtagWishes,
                         skillRate: _skillRate,
                         wishRate: _wishRate);
+                    print('was able to upload');
                     await _getAndSetUserData();
+                    print('was able to getAndSetUserData');
                   } catch (e) {
                     print('Could not upload and get on Save');
                   }
@@ -320,7 +320,7 @@ class RatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //todo: the initialItem for the second CupertinoPicker does not work
+    //todo: the initialItem for the second CupertinoPicker does not work, maybe add a key
 //    print('initialValue = $initialValue');
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
