@@ -9,6 +9,7 @@ import 'package:float/widgets/hashtag_bubble.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/screens/create_profile_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -20,21 +21,36 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   FirebaseConnection connection = FirebaseConnection();
   bool _isWishes = false;
-
   FirebaseUser loggedInUser;
+  List<Map<String, dynamic>> users;
+  bool isDataLoaded = false;
 
   Future<void> _getAndSetLoggedInUser() async {
     loggedInUser = await connection.getCurrentUser();
+  }
+
+  Future<void> _getAllUsers() async {
+    users = await connection.getAllUsers();
+    setState(() {
+      isDataLoaded = true;
+    });
   }
 
   @override
   void initState() {
     super.initState();
     _getAndSetLoggedInUser();
+    _getAllUsers();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!isDataLoaded) {
+      return SpinKitPumpingHeart(
+        color: kDarkGreenColor,
+        size: 100,
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

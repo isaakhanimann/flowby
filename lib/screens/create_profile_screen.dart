@@ -9,6 +9,7 @@ import 'package:float/widgets/hashtag_bubble.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/screens/login_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   static const String id = 'create_profile_screen';
@@ -119,6 +120,12 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (showSpinner) {
+      return SpinKitPumpingHeart(
+        color: kDarkGreenColor,
+        size: 100,
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         leading: null,
@@ -136,169 +143,158 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
       ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: 10,
-              ),
-              Flexible(
-                child: GestureDetector(
-                  onTap: changeProfilePic,
-                  child: Center(
-                    child: _profilePic == null
-                        ? _profilePicUrl == null
-                            ? CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    'images/default-profile-pic.jpg'),
-                                radius: 60,
-                              )
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(_profilePicUrl),
-                                radius: 60,
-                              )
-                        : CircleAvatar(
-                            backgroundImage: FileImage(_profilePic),
-                            radius: 60,
-                          ),
-                  ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Flexible(
+              child: GestureDetector(
+                onTap: changeProfilePic,
+                child: Center(
+                  child: _profilePic == null
+                      ? _profilePicUrl == null
+                          ? CircleAvatar(
+                              backgroundImage:
+                                  AssetImage('images/default-profile-pic.jpg'),
+                              radius: 60,
+                            )
+                          : CircleAvatar(
+                              backgroundImage: NetworkImage(_profilePicUrl),
+                              radius: 60,
+                            )
+                      : CircleAvatar(
+                          backgroundImage: FileImage(_profilePic),
+                          radius: 60,
+                        ),
                 ),
               ),
-              SizedBox(
-                height: 5,
-              ),
-              GestureDetector(
-                onTap: changeProfilePic,
-                child: Text('Edit'),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                'Add skills',
-                style: kTitleTextStyle,
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                'Add your skills in hashtags so people can find you',
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              _hashtagSkills == null
-                  ? TextFormField(
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: kDarkGreenColor),
-                      onChanged: (newValue) {
-                        setState(() {
-                          _tempHashtagSkills = newValue;
-                        });
-                      },
-                    )
-                  : HashtagBubble(
-                      text: _hashtagSkills,
-                      onPress: () {
-                        setState(() {
-                          _hashtagSkills = null;
-                          _tempHashtagSkills = null;
-                        });
-                      },
-                    ),
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                'Add your hourly rate',
-                style: kTitleSmallTextStyle,
-              ),
-              RatePicker(
-                initialValue: _initialSkillRate ?? 20,
-                onSelected: (selectedIndex) {
-                  _skillRate = selectedIndex;
-                },
-              ),
-              Text(
-                'Add wishes',
-                style: kTitleTextStyle,
-              ),
-              Text(
-                'Add hashtags to let people know what they can help you with',
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              _hashtagWishes == null
-                  ? TextFormField(
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: kDarkGreenColor),
-                      onChanged: (newValue) {
-                        setState(() {
-                          _tempHashtagWishes = newValue;
-                        });
-                      },
-                    )
-                  : HashtagBubble(
-                      text: _hashtagWishes,
-                      onPress: () {
-                        setState(() {
-                          _hashtagWishes = null;
-                          _tempHashtagWishes = null;
-                        });
-                      },
-                    ),
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                'Add maximum you would be willing to pay',
-                style: kTitleSmallTextStyle,
-              ),
-              RatePicker(
-                initialValue: _initialWishRate ?? 20,
-                onSelected: (selectedIndex) {
-                  _wishRate = selectedIndex;
-                },
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              RoundedButton(
-                text: 'Save',
-                color: kDarkGreenColor,
-                onPressed: () async {
-                  setState(() {
-                    showSpinner = true;
-                  });
-                  try {
-                    if (_profilePic != null) {
-                      await connection.uploadImage(
-                          fileName: loggedInUser.email, image: _profilePic);
-                    }
-                    print('got here');
-                    await connection.uploadUserInfos(
-                        userID: loggedInUser.email,
-                        email: loggedInUser.email,
-                        hashtagSkills: _tempHashtagSkills,
-                        hashtagWishes: _tempHashtagWishes,
-                        skillRate: _skillRate,
-                        wishRate: _wishRate);
-                    print('was able to upload');
-                    await _getAndSetUserData();
-                    print('was able to getAndSetUserData');
-                  } catch (e) {
-                    print('Could not upload and get on Save');
+            ),
+            GestureDetector(
+              onTap: changeProfilePic,
+              child: Text('Edit'),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              'Add skills',
+              style: kTitleTextStyle,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              'Add your skills in hashtags so people can find you',
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            _hashtagSkills == null
+                ? TextFormField(
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: kDarkGreenColor),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _tempHashtagSkills = newValue;
+                      });
+                    },
+                  )
+                : HashtagBubble(
+                    text: _hashtagSkills,
+                    onPress: () {
+                      setState(() {
+                        _hashtagSkills = null;
+                        _tempHashtagSkills = null;
+                      });
+                    },
+                  ),
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              'Add your hourly rate',
+              style: kTitleSmallTextStyle,
+            ),
+            RatePicker(
+              initialValue: _initialSkillRate ?? 20,
+              onSelected: (selectedIndex) {
+                _skillRate = selectedIndex;
+              },
+            ),
+            Text(
+              'Add wishes',
+              style: kTitleTextStyle,
+            ),
+            Text(
+              'Add hashtags to let people know what they can help you with',
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            _hashtagWishes == null
+                ? TextFormField(
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: kDarkGreenColor),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _tempHashtagWishes = newValue;
+                      });
+                    },
+                  )
+                : HashtagBubble(
+                    text: _hashtagWishes,
+                    onPress: () {
+                      setState(() {
+                        _hashtagWishes = null;
+                        _tempHashtagWishes = null;
+                      });
+                    },
+                  ),
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              'Add maximum you would be willing to pay',
+              style: kTitleSmallTextStyle,
+            ),
+            RatePicker(
+              initialValue: _initialWishRate ?? 20,
+              onSelected: (selectedIndex) {
+                _wishRate = selectedIndex;
+              },
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            RoundedButton(
+              text: 'Save',
+              color: kDarkGreenColor,
+              onPressed: () async {
+                setState(() {
+                  showSpinner = true;
+                });
+                try {
+                  if (_profilePic != null) {
+                    await connection.uploadImage(
+                        fileName: loggedInUser.email, image: _profilePic);
                   }
-                  setState(() {
-                    showSpinner = false;
-                  });
-                },
-              ),
-            ],
-          ),
+                  await connection.uploadUserInfos(
+                      userID: loggedInUser.email,
+                      email: loggedInUser.email,
+                      hashtagSkills: _tempHashtagSkills,
+                      hashtagWishes: _tempHashtagWishes,
+                      skillRate: _skillRate,
+                      wishRate: _wishRate);
+                  await _getAndSetUserData();
+                } catch (e) {
+                  print('Could not upload and get on Save');
+                }
+                setState(() {
+                  showSpinner = false;
+                });
+              },
+            ),
+          ],
         ),
       ),
     );
