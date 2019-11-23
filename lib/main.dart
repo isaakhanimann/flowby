@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/registration_screen.dart';
-import 'package:float/screens/create_profile_screen.dart';
-import 'package:float/screens/chat_screen.dart';
-import 'package:float/screens/home_screen.dart';
+import 'route_generator.dart';
 
 void main() => runApp(Float());
 
@@ -13,13 +10,7 @@ class Float extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: RegistrationScreen.id,
-      routes: {
-        LoginScreen.id: (context) => LoginScreen(),
-        RegistrationScreen.id: (context) => RegistrationScreen(),
-        CreateProfileScreen.id: (context) => CreateProfileScreen(),
-        HomeScreen.id: (context) => HomeScreen(),
-        ChatScreen.id: (context) => ChatScreen(),
-      },
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }

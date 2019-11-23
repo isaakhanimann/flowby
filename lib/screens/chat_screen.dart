@@ -8,6 +8,8 @@ FirebaseUser loggedInUser;
 
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
+  final String otherUserEmail;
+  ChatScreen({this.otherUserEmail});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -19,6 +21,9 @@ class _ChatScreenState extends State<ChatScreen> {
   String messageText;
 
   void getCurrentUser() async {
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    print('otherUserEmail = ${widget.otherUserEmail}');
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     try {
       final user = await _auth.currentUser();
       if (user != null) {
@@ -54,9 +59,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final String userEmail = ModalRoute.of(context).settings.arguments;
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    print('userEmail = $userEmail');
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     return Scaffold(
       appBar: AppBar(
         leading: null,
