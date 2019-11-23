@@ -19,11 +19,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String messageText;
+  String chatPath;
+  Stream<QuerySnapshot> messageStream;
 
-  void getCurrentUser() async {
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    print('otherUserEmail = ${widget.otherUserEmail}');
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+  Future<void> getCurrentUser() async {
     try {
       final user = await _auth.currentUser();
       if (user != null) {
@@ -34,31 +33,64 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-//  void getChatPath({String user1, String user2}) async {
-//    QuerySnapshot snapshot = await _fireStore
-//        .collection('chats')
-//        .where('user1', isEqualTo: loggedInUser.email)
-//        .where('user2', isEqualTo: userEmail)
-//        .getDocuments();
-//
-//
-//    String chatPath = snapshot.documents[0].reference.path;
-//  }
-//
-//  void getChat()async{
-//    await getCurrentUser();
-//    getChatPath(user1:loggedInUser.email, user2:userEmail);
-//  }
+  Future<String> getChatPath() async {
+    try {
+      String chatPath;
+      QuerySnapshot snapshot1 = await _fireStore
+          .collection('chats')
+          .where('user1', isEqualTo: loggedInUser.email)
+          .where('user2', isEqualTo: widget.otherUserEmail)
+          .getDocuments();
+      QuerySnapshot snapshot2 = await _fireStore
+          .collection('chats')
+          .where('user1', isEqualTo: widget.otherUserEmail)
+          .where('user2', isEqualTo: loggedInUser.email)
+          .getDocuments();
+      print('If this gets printed up to here everything is fine');
+      print('snapshot1 = ${snapshot1.documents}');
+      print('snapshot2 = ${snapshot2.documents}');
+      if (snapshot1.documents.isNotEmpty) {
+        //loggedInUser is user1
+        chatPath = snapshot1.documents[0].reference.path;
+      } else if (snapshot2.documents.isNotEmpty) {
+        //loggedInUser is user2
+        chatPath = snapshot2.documents[0].reference.path;
+      } else {
+        //there is no chat yet
+      }
+      return chatPath;
+    } catch (e) {
+      print('Isaak could not get snapshot of chats');
+    }
+    return null;
+  }
+
+  void getChat() async {
+    await getCurrentUser();
+    String chatPath = await getChatPath();
+    if (chatPath == null) {
+      //create chat
+    }
+    print('chatPath = $chatPath');
+    var messageStream = _fireStore
+        .document(chatPath)
+        .collection('messages')
+        .orderBy('timestamp')
+        .snapshots();
+    setState(() {
+      this.chatPath = chatPath;
+      this.messageStream = messageStream;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
+    getChat();
   }
 
   @override
   Widget build(BuildContext context) {
-    final String userEmail = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         leading: null,
@@ -79,7 +111,9 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            MessagesStream(),
+            MessagesStream(
+              messagesStream: messageStream,
+            ),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -99,20 +133,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     onPressed: () async {
                       //Implement send functionality.
                       messageTextController.clear();
-
-                      QuerySnapshot snapshot = await _fireStore
-                          .collection('chats')
-                          .where('user1', isEqualTo: loggedInUser.email)
-                          .where('user2', isEqualTo: userEmail)
-                          .getDocuments();
-
-                      String chatPath = snapshot.documents[0].reference.path;
-
-                      _fireStore
-                          .collection('chats')
-                          .document(chatPath)
-                          .collection('messages')
-                          .add(
+                      _fireStore.document(chatPath).collection('messages').add(
                         {
                           'text': messageText,
                           'sender': loggedInUser.email,
@@ -136,11 +157,13 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class MessagesStream extends StatelessWidget {
+  final messagesStream;
+  MessagesStream({this.messagesStream});
   @override
   Widget build(BuildContext context) {
+    print('messagesStream = $messagesStream');
     return StreamBuilder<QuerySnapshot>(
-      stream:
-          _fireStore.collection('messages').orderBy('timestamp').snapshots(),
+      stream: messagesStream,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
