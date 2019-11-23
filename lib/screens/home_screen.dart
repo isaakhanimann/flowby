@@ -6,6 +6,9 @@ import 'package:float/services/firebase_connection.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:float/screens/chat_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+FirebaseConnection connection = FirebaseConnection();
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -15,96 +18,66 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  FirebaseConnection connection = FirebaseConnection();
-//  bool _isWishes = false;
-  FirebaseUser loggedInUser;
-  List<Map<String, dynamic>> users = [];
-  Map<String, String> imageUrls = Map();
-  bool isDataLoaded = false;
-
-  Future<void> _getAndSetLoggedInUser() async {
-    loggedInUser = await connection.getCurrentUser();
-  }
-
-  Future<void> _getAllUsers() async {
-    users = await connection.getAllUsers();
-  }
-
-  Future<String> _getAllImageUrls(List<String> fileNames) async {
-    String imageUrl;
-    for (String fileName in fileNames) {
-      imageUrl = await connection.getImageUrl(fileName: fileName);
-      imageUrls[fileName] = imageUrl;
-    }
-  }
-
-  Future<void> _getAllData() async {
-    await _getAndSetLoggedInUser();
-    await _getAllUsers();
-    List<String> fileNames =
-        users.map((userMap) => userMap['email'].toString()).toList();
-    await _getAllImageUrls(fileNames);
-    setState(() {
-      isDataLoaded = true;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getAllData();
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (!isDataLoaded) {
-      return Container(
-        color: Colors.white,
-        child: SpinKitPumpingHeart(
-          color: kDarkGreenColor,
-          size: 100,
-        ),
-      );
-    }
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.settings),
-          onPressed: () {
-            Navigator.pushNamed(context, CreateProfileScreen.id);
-          },
-        ),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () async {
-                //showSearch would return the result passed back from close
-                await showSearch(
-                    context: context,
-                    delegate: DataSearch(users: users, imageUrls: imageUrls));
-              }),
-        ],
-        title: Text('Home'),
-        backgroundColor: kDarkGreenColor,
-      ),
-      body: ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context, index) => Column(
-          children: <Widget>[
-            Divider(
-              height: 10,
-            ),
-            ProfileItem(
-              imageUrl: imageUrls[users[index]['email']],
-              user: users[index],
-              onPress: () {
-                Navigator.pushNamed(context, ChatScreen.id,
-                    arguments: users[index]['email']);
-              },
-            )
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.pushNamed(context, CreateProfileScreen.id);
+            },
+          ),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () async {
+                  //showSearch would return the result passed back from close
+                  await showSearch(context: context, delegate: DataSearch());
+                }),
           ],
+          title: Text('Home'),
+          backgroundColor: kDarkGreenColor,
         ),
-      ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: connection.getUsersStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final users = snapshot.data.documents;
+              List<Widget> userWidgets = [];
+              for (var user in users) {
+                final userWidget = Column(
+                  children: <Widget>[
+                    Divider(
+                      height: 10,
+                    ),
+                    ProfileItem(
+                      imageUrl:
+                          connection.getImageUrl(fileName: user.data['email']),
+                      user: user.data,
+                      onPress: () {
+                        Navigator.pushNamed(context, ChatScreen.id,
+                            arguments: user.data['email']);
+                      },
+                    )
+                  ],
+                );
+                userWidgets.add(userWidget);
+              }
+              return ListView(
+                children: userWidgets,
+              );
+            }
+            return Container(
+              color: Colors.white,
+              child: SpinKitPumpingHeart(
+                color: kDarkGreenColor,
+                size: 100,
+              ),
+            );
+          },
+        )
+
 //      Column(
 //        children: <Widget>[
 //          Row(
@@ -130,34 +103,11 @@ class _HomeScreenState extends State<HomeScreen> {
 //          ),
 //        ],
 //      ),
-    );
+        );
   }
 }
 
 class DataSearch extends SearchDelegate<String> {
-  final List<Map<String, dynamic>> users;
-  final Map<String, String> imageUrls;
-  DataSearch({this.users, this.imageUrls});
-
-//  ListTile _buildItem(Map<String, dynamic> userMap) {
-//    return ListTile(
-//      leading: CircleAvatar(
-//        backgroundImage: NetworkImage(imageUrls[userMap['email']]),
-//        radius: 60,
-//      ),
-//      title: Column(
-//        children: <Widget>[
-//          Text(userMap['email']),
-//          Text(userMap['supplyHashtags']),
-//        ],
-//      ),
-//      trailing: IconButton(
-//        icon: Icon(Icons.keyboard_arrow_right),
-//        onPressed: () {},
-//      ),
-//    );
-//  }
-
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -185,58 +135,159 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
+    return StreamBuilder(
+      stream: connection.getUsersStream(),
+      builder: (context, snapshot) {
+        print('snapshot.hasData = ${snapshot.hasData}');
+        if (!snapshot.hasData) {
+          return Center(
+            child: Text('Nodata'),
+          );
+        }
+
+        final userList = snapshot.data.documents;
+        final results = userList
+            .where((u) => u.data['supplyHashtags']
+                .toString()
+                .toLowerCase()
+                .contains(query))
+            .toList();
+
+        return ListView(
+          children: results
+              .map<Widget>(
+                (u) => Column(
+                  children: <Widget>[
+                    Divider(
+                      height: 10,
+                    ),
+                    ProfileItem(
+                      imageUrl:
+                          connection.getImageUrl(fileName: u.data['email']),
+                      user: u.data,
+                      onPress: () {
+                        Navigator.pushNamed(context, ChatScreen.id,
+                            arguments: u.data['email']);
+                      },
+                    )
+                  ],
+                ),
+              )
+              .toList(),
+        );
+      },
+    );
     //query contains the hashtag that we need for filtering out the right users
     //filter out the users that have the right hashtags
-    final querymatchingUsers = users
-        .where((u) => u['supplyHashtags'].toLowerCase().contains(query))
-        .toList();
-    // show result based on selection
-    return ListView.builder(
-      itemCount: querymatchingUsers.length,
-      itemBuilder: (context, index) => Column(
-        children: <Widget>[
-          Divider(
-            height: 10,
-          ),
-          ProfileItem(
-            imageUrl: imageUrls[querymatchingUsers[index]['email']],
-            user: querymatchingUsers[index],
-            onPress: () {
-              Navigator.pushNamed(context, ChatScreen.id,
-                  arguments: querymatchingUsers[index]['email']);
-            },
-          )
-        ],
-      ),
-    );
+//    final querymatchingUsers = usersStream.da
+//        .where((u) => u['supplyHashtags'].toLowerCase().contains(query))
+//        .toList();
+//    // show result based on selection
+//    return ListView.builder(
+//      itemCount: querymatchingUsers.length,
+//      itemBuilder: (context, index) => Column(
+//        children: <Widget>[
+//          Divider(
+//            height: 10,
+//          ),
+//          ProfileItem(
+//            imageUrl: imageUrls[querymatchingUsers[index]['email']],
+//            user: querymatchingUsers[index],
+//            onPress: () {
+//              Navigator.pushNamed(context, ChatScreen.id,
+//                  arguments: querymatchingUsers[index]['email']);
+//            },
+//          )
+//        ],
+//      ),
+//    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final listHashtags = users.map((u) => u['supplyHashtags']).toList();
-    final suggestionList = query.isEmpty
-        ? listHashtags
-        : listHashtags.where((a) => a.toLowerCase().contains(query)).toList();
-    return ListView.builder(
-      itemBuilder: (context, index) => ListTile(
-        onTap: () {
-          query = suggestionList[index];
-          showResults(context);
-        },
-        leading: Icon(Icons.location_city),
-        title: RichText(
-          text: TextSpan(
-              text: suggestionList[index].substring(0, query.length),
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              children: [
-                TextSpan(
-                    text: suggestionList[index].substring(query.length),
-                    style: TextStyle(color: Colors.grey))
-              ]),
-        ),
+    return StreamBuilder(
+      stream: connection.getUsersStream(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: Text('Nodata'),
+          );
+        }
+
+        final userList = snapshot.data.documents;
+        final results = userList
+            .where((u) => u.data['supplyHashtags']
+                .toString()
+                .toLowerCase()
+                .contains(query))
+            .toList();
+
+        return ListView(
+          children: results
+              .map<Widget>((u) => SuggestionItem(
+                    user: u,
+                    setQuery: (newQuery) {
+                      query = newQuery;
+                    },
+                    showResults: showResults,
+                  ))
+              .toList(),
+        );
+      },
+    );
+
+//    final listHashtags = users.map((u) => u['supplyHashtags']).toList();
+//    final suggestionList = query.isEmpty
+//        ? listHashtags
+//        : listHashtags.where((a) => a.toLowerCase().contains(query)).toList();
+//    return ListView.builder(
+//      itemBuilder: (context, index) => ListTile(
+//        onTap: () {
+//          query = suggestionList[index];
+//          showResults(context);
+//        },
+//        leading: Icon(Icons.location_city),
+//        title: RichText(
+//          text: TextSpan(
+//              text: suggestionList[index].substring(0, query.length),
+//              style:
+//                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+//              children: [
+//                TextSpan(
+//                    text: suggestionList[index].substring(query.length),
+//                    style: TextStyle(color: Colors.grey))
+//              ]),
+//        ),
+//      ),
+//      itemCount: suggestionList.length,
+//    );
+  }
+}
+
+class SuggestionItem extends StatelessWidget {
+  final user;
+  final Function setQuery;
+  final Function showResults;
+  SuggestionItem(
+      {@required this.user,
+      @required this.setQuery,
+      @required this.showResults});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () {
+        print('This is called');
+        setQuery(user['supplyHashtags']);
+        print("setquery was called");
+        showResults(context);
+        print('showResults was called');
+      },
+      leading: Icon(Icons.insert_emoticon),
+      title: Text(
+        user['supplyHashtags'],
+        style: TextStyle(fontSize: 18),
       ),
-      itemCount: suggestionList.length,
     );
   }
 }
@@ -249,7 +300,7 @@ class ProfileItem extends StatelessWidget {
     @required this.onPress,
   }) : super(key: key);
 
-  final String imageUrl;
+  final Future<String> imageUrl;
   final Map<String, dynamic> user;
   final Function onPress;
 
@@ -257,9 +308,19 @@ class ProfileItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onPress,
-      leading: CircleAvatar(
-        backgroundColor: Colors.grey,
-        backgroundImage: NetworkImage(imageUrl),
+      leading: FutureBuilder(
+        future: imageUrl,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return CircleAvatar(
+              backgroundColor: Colors.grey,
+              backgroundImage: NetworkImage(snapshot.data),
+            );
+          }
+          return CircleAvatar(
+            backgroundColor: Colors.grey,
+          );
+        },
       ),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

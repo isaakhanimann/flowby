@@ -92,4 +92,14 @@ class FirebaseConnection {
       return null;
     }
   }
+
+  Stream<QuerySnapshot> getUsersStream() {
+    try {
+      var userSnapshots = _fireStore.collection('users').snapshots();
+      return userSnapshots;
+    } catch (e) {
+      print('Isaak could not get stream of users');
+      return null;
+    }
+  }
 }
