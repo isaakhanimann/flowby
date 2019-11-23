@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:float/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 final _fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
@@ -112,8 +113,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 Navigator.pop(context);
               }),
         ],
-        title: Text('⚡️Chat'),
-        backgroundColor: Colors.lightBlueAccent,
+        title: Text(widget.otherUserEmail),
+        backgroundColor: kDarkGreenColor,
       ),
       body: SafeArea(
         child: Column(
@@ -175,9 +176,10 @@ class MessagesStream extends StatelessWidget {
       stream: messagesStream,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.lightBlueAccent,
+          return Expanded(
+            child: SpinKitPumpingHeart(
+              color: kDarkGreenColor,
+              size: 100,
             ),
           );
         }
@@ -236,7 +238,7 @@ class MessageBubble extends StatelessWidget {
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30)),
             elevation: 5.0,
-            color: isMe ? Colors.lightBlueAccent : Colors.white,
+            color: isMe ? kDarkGreenColor : Colors.white,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),

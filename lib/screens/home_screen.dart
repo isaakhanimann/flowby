@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   FirebaseConnection connection = FirebaseConnection();
-  bool _isWishes = false;
+//  bool _isWishes = false;
   FirebaseUser loggedInUser;
   List<Map<String, dynamic>> users = [];
   Map<String, String> imageUrls = Map();
@@ -58,9 +58,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (!isDataLoaded) {
-      return SpinKitPumpingHeart(
-        color: kDarkGreenColor,
-        size: 100,
+      return Container(
+        color: Colors.white,
+        child: SpinKitPumpingHeart(
+          color: kDarkGreenColor,
+          size: 100,
+        ),
       );
     }
     return Scaffold(
@@ -75,7 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
               icon: Icon(Icons.search),
               onPressed: () async {
-                final String result = await showSearch(
+                //showSearch would return the result passed back from close
+                await showSearch(
                     context: context,
                     delegate: DataSearch(users: users, imageUrls: imageUrls));
               }),

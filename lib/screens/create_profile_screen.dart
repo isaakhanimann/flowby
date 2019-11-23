@@ -121,9 +121,12 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   @override
   Widget build(BuildContext context) {
     if (showSpinner) {
-      return SpinKitPumpingHeart(
-        color: kDarkGreenColor,
-        size: 100,
+      return Container(
+        color: Colors.white,
+        child: SpinKitPumpingHeart(
+          color: kDarkGreenColor,
+          size: 100,
+        ),
       );
     }
     return Scaffold(
@@ -179,7 +182,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
           ),
           Text(
             'Add skills',
-            style: kTitleTextStyle,
+            style: kMiddleTitleTextStyle,
           ),
           SizedBox(
             height: 5,
@@ -214,7 +217,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
           ),
           Text(
             'Add your hourly rate',
-            style: kTitleSmallTextStyle,
+            style: kSmallTitleTextStyle,
           ),
           RatePicker(
             initialValue: _initialSkillRate ?? 20,
@@ -224,7 +227,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
           ),
           Text(
             'Add wishes',
-            style: kTitleTextStyle,
+            style: kMiddleTitleTextStyle,
           ),
           Text(
             'Add hashtags to let people know what they can help you with',
@@ -256,7 +259,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
           ),
           Text(
             'Add maximum you would be willing to pay',
-            style: kTitleSmallTextStyle,
+            style: kSmallTitleTextStyle,
           ),
           RatePicker(
             initialValue: _initialWishRate ?? 20,

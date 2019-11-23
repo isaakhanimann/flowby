@@ -34,7 +34,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text('Sign Up', style: kTitleTextStyle),
+              Text('Sign Up', style: kBigTitleTextStyle),
               SizedBox(
                 height: 48.0,
               ),
