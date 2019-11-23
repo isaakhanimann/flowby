@@ -65,11 +65,20 @@ class _ChatScreenState extends State<ChatScreen> {
     return null;
   }
 
+  void createChat() {
+    _fireStore.collection('chats').add({
+      'user1': loggedInUser.email,
+      'user2': widget.otherUserEmail,
+    });
+    getChat();
+  }
+
   void getChat() async {
     await getCurrentUser();
     String chatPath = await getChatPath();
     if (chatPath == null) {
       //create chat
+      createChat();
     }
     print('chatPath = $chatPath');
     var messageStream = _fireStore
