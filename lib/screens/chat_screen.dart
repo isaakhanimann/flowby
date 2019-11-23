@@ -29,6 +29,22 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+//  void getChatPath({String user1, String user2}) async {
+//    QuerySnapshot snapshot = await _fireStore
+//        .collection('chats')
+//        .where('user1', isEqualTo: loggedInUser.email)
+//        .where('user2', isEqualTo: userEmail)
+//        .getDocuments();
+//
+//
+//    String chatPath = snapshot.documents[0].reference.path;
+//  }
+//
+//  void getChat()async{
+//    await getCurrentUser();
+//    getChatPath(user1:loggedInUser.email, user2:userEmail);
+//  }
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +53,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String userEmail = ModalRoute.of(context).settings.arguments;
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    print('userEmail = $userEmail');
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     return Scaffold(
       appBar: AppBar(
         leading: null,
@@ -74,10 +94,23 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {
+                    onPressed: () async {
                       //Implement send functionality.
                       messageTextController.clear();
-                      _fireStore.collection('messages').add(
+
+                      QuerySnapshot snapshot = await _fireStore
+                          .collection('chats')
+                          .where('user1', isEqualTo: loggedInUser.email)
+                          .where('user2', isEqualTo: userEmail)
+                          .getDocuments();
+
+                      String chatPath = snapshot.documents[0].reference.path;
+
+                      _fireStore
+                          .collection('chats')
+                          .document(chatPath)
+                          .collection('messages')
+                          .add(
                         {
                           'text': messageText,
                           'sender': loggedInUser.email,

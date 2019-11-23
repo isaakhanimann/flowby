@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:float/screens/chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -73,8 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(
+              onPressed: () async {
+                final String result = await showSearch(
                     context: context,
                     delegate: DataSearch(users: users, imageUrls: imageUrls));
               }),
@@ -82,38 +83,49 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Home'),
         backgroundColor: kDarkGreenColor,
       ),
-      body: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text(
-                'Skills',
-                style: kTitleSmallTextStyle,
-              ),
-              CupertinoSwitch(
-                value: _isWishes,
-                onChanged: (bool value) {
-                  setState(() {
-                    _isWishes = value;
-                  });
-                },
-              ),
-              Text(
-                'Wishes',
-                style: kTitleSmallTextStyle,
-              ),
-            ],
-          ),
-//          StreamBuilder<List<String>>(
-//            stream: widget.users,
-//            initialData: [],
-//            builder: (context, snapshot) => ListView(
-//              children: snapshot.data.map(_buildItem).toList(),
-//            ),
-//          ),
-        ],
+      body: ListView.builder(
+        itemCount: users.length,
+        itemBuilder: (context, index) => Column(
+          children: <Widget>[
+            Divider(
+              height: 10,
+            ),
+            ProfileItem(
+              imageUrl: imageUrls[users[index]['email']],
+              user: users[index],
+              onPress: () {
+                Navigator.pushNamed(context, ChatScreen.id,
+                    arguments: users[index]['email']);
+              },
+            )
+          ],
+        ),
       ),
+//      Column(
+//        children: <Widget>[
+//          Row(
+//            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//            children: <Widget>[
+//              Text(
+//                'Skills',
+//                style: kTitleSmallTextStyle,
+//              ),
+//              CupertinoSwitch(
+//                value: _isWishes,
+//                onChanged: (bool value) {
+//                  setState(() {
+//                    _isWishes = value;
+//                  });
+//                },
+//              ),
+//              Text(
+//                'Wishes',
+//                style: kTitleSmallTextStyle,
+//              ),
+//            ],
+//          ),
+//        ],
+//      ),
     );
   }
 }
@@ -142,22 +154,6 @@ class DataSearch extends SearchDelegate<String> {
 //    );
 //  }
 
-  final cities = [
-    'Zurich',
-    'Basel',
-    'Bern',
-    'Lugano',
-    'Winterthur',
-    'Chiasso',
-    'Locarno',
-    'Luzern',
-    'Genf',
-    'Chur',
-    'St. Gallen',
-    'Davos'
-  ];
-  final recentCities = ['Genf', 'Chur', 'St. Gallen', 'Davos'];
-
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -185,15 +181,27 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
+    //query contains the hashtag that we need for filtering out the right users
+    //filter out the users that have the right hashtags
+    final querymatchingUsers = users
+        .where((u) => u['supplyHashtags'].toLowerCase().contains(query))
+        .toList();
     // show result based on selection
     return ListView.builder(
-      itemCount: users.length,
+      itemCount: querymatchingUsers.length,
       itemBuilder: (context, index) => Column(
         children: <Widget>[
           Divider(
             height: 10,
           ),
-          ProfileItem(imageUrls: imageUrls, users: users, index: index)
+          ProfileItem(
+            imageUrl: imageUrls[querymatchingUsers[index]['email']],
+            user: querymatchingUsers[index],
+            onPress: () {
+              Navigator.pushNamed(context, ChatScreen.id,
+                  arguments: querymatchingUsers[index]['email']);
+            },
+          )
         ],
       ),
     );
@@ -201,12 +209,14 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final listHashtags = users.map((u) => u['supplyHashtags']).toList();
     final suggestionList = query.isEmpty
-        ? recentCities
-        : cities.where((item) => item.startsWith(query)).toList();
+        ? listHashtags
+        : listHashtags.where((a) => a.toLowerCase().contains(query)).toList();
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
         onTap: () {
+          query = suggestionList[index];
           showResults(context);
         },
         leading: Icon(Icons.location_city),
@@ -230,31 +240,32 @@ class DataSearch extends SearchDelegate<String> {
 class ProfileItem extends StatelessWidget {
   const ProfileItem({
     Key key,
-    @required this.imageUrls,
-    @required this.users,
-    @required this.index,
+    @required this.imageUrl,
+    @required this.user,
+    @required this.onPress,
   }) : super(key: key);
 
-  final Map<String, String> imageUrls;
-  final List<Map<String, dynamic>> users;
-  final int index;
+  final String imageUrl;
+  final Map<String, dynamic> user;
+  final Function onPress;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onPress,
       leading: CircleAvatar(
         backgroundColor: Colors.grey,
-        backgroundImage: NetworkImage(imageUrls[users[index]['email']]),
+        backgroundImage: NetworkImage(imageUrl),
       ),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            users[index]['email'],
+            user['email'],
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(
-            users[index]['supplyHashtags'],
+            user['supplyHashtags'],
             style: TextStyle(color: Colors.grey, fontSize: 14),
           )
         ],
@@ -262,7 +273,7 @@ class ProfileItem extends StatelessWidget {
       subtitle: Container(
         padding: EdgeInsets.only(top: 5),
         child: Text(
-          users[index]['skillRate'].toString() + ' CHF/h',
+          user['skillRate'].toString() + ' CHF/h',
           style: TextStyle(color: Colors.grey, fontSize: 15),
         ),
       ),
