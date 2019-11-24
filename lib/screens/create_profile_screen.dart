@@ -79,16 +79,16 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   }
 
   void _reloadUserFromDatabase() async {
-    var userMap = await connection.getUserInfos(userID: loggedInUser.email);
+    User user = await connection.getUser(userID: loggedInUser.email);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
-      _username = userMap != null ? userMap['username'] : null;
-      _hashtagSkills = userMap != null ? userMap['supplyHashtags'] : null;
+      _username = user?.username;
+      _hashtagSkills = user?.skillHashtags;
       _tempHashtagSkills = _hashtagSkills;
-      _hashtagWishes = userMap != null ? userMap['demandHashtags'] : null;
+      _hashtagWishes = user?.wishHashtags;
       _tempHashtagWishes = _hashtagWishes;
-      _initialSkillRate = userMap != null ? userMap['skillRate'] : null;
-      _initialWishRate = userMap != null ? userMap['wishRate'] : null;
+      _initialSkillRate = user?.skillRate;
+      _initialWishRate = user?.wishRate;
       _skillRate = _initialSkillRate;
       _wishRate = _initialWishRate;
     });
@@ -97,16 +97,16 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   void _getAndSetData() async {
     String email = await _getAndSetLoggedInUser();
     String imgUrl = await connection.getImageUrl(fileName: email);
-    var userMap = await connection.getUserInfos(userID: email);
+    User user = await connection.getUser(userID: email);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
-      _username = userMap != null ? userMap['username'] : null;
-      _hashtagSkills = userMap != null ? userMap['supplyHashtags'] : null;
+      _username = user?.username;
+      _hashtagSkills = user?.skillHashtags;
       _tempHashtagSkills = _hashtagSkills;
-      _hashtagWishes = userMap != null ? userMap['demandHashtags'] : null;
+      _hashtagWishes = user?.wishHashtags;
       _tempHashtagWishes = _hashtagWishes;
-      _initialSkillRate = userMap != null ? userMap['skillRate'] : null;
-      _initialWishRate = userMap != null ? userMap['wishRate'] : null;
+      _initialSkillRate = user?.skillRate;
+      _initialWishRate = user?.wishRate;
       _skillRate = _initialSkillRate;
       _wishRate = _initialWishRate;
       _profilePicUrl = imgUrl;
@@ -311,14 +311,14 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     await connection.uploadImage(
                         fileName: loggedInUser.email, image: _profilePic);
                   }
-                  await connection.uploadUserInfos(
-                      userID: loggedInUser.email,
+                  User user = User(
                       username: _tempUsername,
                       email: loggedInUser.email,
-                      hashtagSkills: _tempHashtagSkills,
-                      hashtagWishes: _tempHashtagWishes,
+                      skillHashtags: _tempHashtagSkills,
+                      wishHashtags: _tempHashtagWishes,
                       skillRate: _skillRate,
                       wishRate: _wishRate);
+                  await connection.uploadUser(user: user);
                   await _reloadUserFromDatabase();
                 } catch (e) {
                   print('Could not upload and get on Save');

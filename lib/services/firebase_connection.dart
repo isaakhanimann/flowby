@@ -41,29 +41,22 @@ class FirebaseConnection {
     }
   }
 
-  Future<void> uploadUserInfos(
-      {@required String userID,
-      @required String username,
-      @required String email,
-      @required String hashtagSkills,
-      @required String hashtagWishes,
-      @required int skillRate,
-      @required int wishRate}) async {
+  Future<void> uploadUser({@required User user}) async {
     try {
-      _fireStore.collection('users').document(userID).setData({
-        'username': username,
-        'email': email,
-        'supplyHashtags': hashtagSkills,
-        'demandHashtags': hashtagWishes,
-        'skillRate': skillRate,
-        'wishRate': wishRate
+      _fireStore.collection('users').document(user.email).setData({
+        'username': user.username,
+        'email': user.email,
+        'supplyHashtags': user.skillHashtags,
+        'demandHashtags': user.wishHashtags,
+        'skillRate': user.skillRate,
+        'wishRate': user.wishRate
       });
     } catch (e) {
       print('Isaak could not upload user info');
     }
   }
 
-  Future<Map<String, dynamic>> getUserInfos({@required String userID}) async {
+  Future<User> getUser({@required String userID}) async {
     try {
       print('userID = $userID');
       var userDocument =
@@ -71,21 +64,22 @@ class FirebaseConnection {
       if (userDocument.data == null) {
         print('Isaak could not get user info1');
       }
-      return userDocument.data;
+
+      return User.fromMap(map: userDocument.data);
     } catch (e) {
       print('Isaak could not get user info2');
       return null;
     }
   }
 
-  Future<List<Map<String, dynamic>>> getAllUsers() async {
+  Future<List<User>> getAllUsers() async {
     try {
       QuerySnapshot snapshot =
           await _fireStore.collection('users').getDocuments();
-      List<Map<String, dynamic>> listOfUsers = [];
+      List<User> listOfUsers = [];
       for (var document in snapshot.documents) {
         if (document != null) {
-          listOfUsers.add(document.data);
+          listOfUsers.add(User.fromMap(map: document.data));
         }
       }
       return listOfUsers;
@@ -103,5 +97,31 @@ class FirebaseConnection {
       print('Isaak could not get stream of users');
       return null;
     }
+  }
+}
+
+class User {
+  String username;
+  String email;
+  String skillHashtags;
+  String wishHashtags;
+  int skillRate;
+  int wishRate;
+
+  User(
+      {this.username,
+      this.email,
+      this.skillHashtags,
+      this.wishHashtags,
+      this.skillRate,
+      this.wishRate});
+
+  User.fromMap({Map<String, dynamic> map}) {
+    this.username = map['username'];
+    this.email = map['email'];
+    this.skillHashtags = map['supplyHashtags'];
+    this.wishHashtags = map['wishHashtags'];
+    this.skillRate = map['skillRate'];
+    this.wishRate = map['wishRate'];
   }
 }
