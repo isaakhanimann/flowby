@@ -65,7 +65,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   void _setImage(ImageSource source) async {
     var selectedImage =
-        await ImagePicker.pickImage(source: source, imageQuality: 50);
+        await ImagePicker.pickImage(source: source, imageQuality: 25);
     setState(() {
       _profilePic = selectedImage;
     });

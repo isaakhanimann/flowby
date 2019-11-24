@@ -167,6 +167,37 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class MessagesStream extends StatelessWidget {
+  String getMonthString(int month) {
+    switch (month) {
+      case 1:
+        return 'Jan';
+      case 2:
+        return 'Feb';
+      case 3:
+        return 'Mar';
+      case 4:
+        return 'Apr';
+      case 5:
+        return 'May';
+      case 6:
+        return 'Jun';
+      case 7:
+        return 'Jul';
+      case 8:
+        return 'Aug';
+      case 9:
+        return 'Sep';
+      case 10:
+        return 'Okt';
+      case 11:
+        return 'Nov';
+      case 12:
+        return 'Dez';
+      default:
+        return 'Error';
+    }
+  }
+
   final messagesStream;
   MessagesStream({this.messagesStream});
   @override
@@ -188,12 +219,15 @@ class MessagesStream extends StatelessWidget {
         for (var message in messages) {
           final messageText = message.data['text'];
           final messageSender = message.data['sender'];
+          final messageTimestamp = message.data['timestamp'].toDate();
+          final String timestamp =
+              '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.';
 
           final currentUser = loggedInUser.email;
 
           final messageBubble = MessageBubble(
             text: messageText,
-            sender: messageSender,
+            timestamp: timestamp,
             isMe: currentUser == messageSender,
           );
           messageBubbles.add(messageBubble);
@@ -211,8 +245,8 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageBubble extends StatelessWidget {
-  MessageBubble({this.sender, this.text, this.isMe});
-  final String sender;
+  MessageBubble({this.timestamp, this.text, this.isMe});
+  final String timestamp;
   final String text;
   final bool isMe;
   @override
@@ -224,7 +258,7 @@ class MessageBubble extends StatelessWidget {
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            sender,
+            timestamp,
             style: TextStyle(fontSize: 12.0, color: Colors.black54),
           ),
           Material(
