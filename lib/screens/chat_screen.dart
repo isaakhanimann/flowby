@@ -5,8 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:float/services/firebase_connection.dart';
 
-final _fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
+
+FirebaseConnection connection = FirebaseConnection();
 
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
@@ -35,59 +36,18 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future<String> getChatPath() async {
-    try {
-      String chatPath;
-      QuerySnapshot snapshot1 = await _fireStore
-          .collection('chats')
-          .where('user1', isEqualTo: loggedInUser.email)
-          .where('user2', isEqualTo: widget.otherUser.email)
-          .getDocuments();
-      QuerySnapshot snapshot2 = await _fireStore
-          .collection('chats')
-          .where('user1', isEqualTo: widget.otherUser.email)
-          .where('user2', isEqualTo: loggedInUser.email)
-          .getDocuments();
-      print('If this gets printed up to here everything is fine');
-      print('snapshot1 = ${snapshot1.documents}');
-      print('snapshot2 = ${snapshot2.documents}');
-      if (snapshot1.documents.isNotEmpty) {
-        //loggedInUser is user1
-        chatPath = snapshot1.documents[0].reference.path;
-      } else if (snapshot2.documents.isNotEmpty) {
-        //loggedInUser is user2
-        chatPath = snapshot2.documents[0].reference.path;
-      } else {
-        //there is no chat yet
-      }
-      return chatPath;
-    } catch (e) {
-      print('Isaak could not get snapshot of chats');
-    }
-    return null;
-  }
-
-  void createChat() {
-    _fireStore.collection('chats').add({
-      'user1': loggedInUser.email,
-      'user2': widget.otherUser.email,
-    });
-    getChat();
-  }
-
   void getChat() async {
     await getCurrentUser();
-    String chatPath = await getChatPath();
+    String chatPath = await connection.getChatPath(
+        user: loggedInUser.email, otherUser: widget.otherUser.email);
     if (chatPath == null) {
       //create chat
-      createChat();
+      connection.createChat(
+          user: loggedInUser.email, otherUser: widget.otherUser.email);
+      getChat();
     }
     print('chatPath = $chatPath');
-    var messageStream = _fireStore
-        .document(chatPath)
-        .collection('messages')
-        .orderBy('timestamp')
-        .snapshots();
+    var messageStream = connection.getMessageStream(chatPath: chatPath);
     setState(() {
       this.chatPath = chatPath;
       this.messageStream = messageStream;
@@ -144,13 +104,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     onPressed: () async {
                       //Implement send functionality.
                       messageTextController.clear();
-                      _fireStore.document(chatPath).collection('messages').add(
-                        {
-                          'text': messageText,
-                          'sender': loggedInUser.email,
-                          'timestamp': FieldValue.serverTimestamp(),
-                        },
-                      );
+                      Message message = Message(
+                          sender: loggedInUser.email,
+                          text: messageText,
+                          timestamp: FieldValue.serverTimestamp());
+                      connection.uploadMessage(
+                          chatPath: chatPath, message: message);
                     },
                     child: Text(
                       'Send',
@@ -215,12 +174,17 @@ class MessagesStream extends StatelessWidget {
             ),
           );
         }
-        final messages = snapshot.data.documents.reversed;
+
+        final List<Message> messages = [];
+        for (var messagedoc in snapshot.data.documents.reversed) {
+          messages.add(Message.fromMap(map: messagedoc.data));
+        }
+
         List<MessageBubble> messageBubbles = [];
         for (var message in messages) {
-          final messageText = message.data['text'];
-          final messageSender = message.data['sender'];
-          final messageTimestamp = message.data['timestamp'].toDate();
+          final messageText = message.text;
+          final messageSender = message.sender;
+          final messageTimestamp = message.timestamp;
           final String timestamp =
               '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.';
 

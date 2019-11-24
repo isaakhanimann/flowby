@@ -98,6 +98,80 @@ class FirebaseConnection {
       return null;
     }
   }
+
+  Future<String> getChatPath(
+      {@required String user, @required String otherUser}) async {
+    try {
+      String chatPath;
+      QuerySnapshot snapshot1 = await _fireStore
+          .collection('chats')
+          .where('user1', isEqualTo: user)
+          .where('user2', isEqualTo: otherUser)
+          .getDocuments();
+      QuerySnapshot snapshot2 = await _fireStore
+          .collection('chats')
+          .where('user1', isEqualTo: otherUser)
+          .where('user2', isEqualTo: user)
+          .getDocuments();
+      if (snapshot1.documents.isNotEmpty) {
+        //loggedInUser is user1
+        chatPath = snapshot1.documents[0].reference.path;
+      } else if (snapshot2.documents.isNotEmpty) {
+        //loggedInUser is user2
+        chatPath = snapshot2.documents[0].reference.path;
+      } else {
+        //there is no chat yet
+      }
+      return chatPath;
+    } catch (e) {
+      print('Isaak could not get chatpath');
+    }
+    return null;
+  }
+
+  void createChat({@required String user, @required String otherUser}) {
+    _fireStore.collection('chats').add({
+      'user1': user,
+      'user2': otherUser,
+    });
+  }
+
+  Stream<QuerySnapshot> getMessageStream({@required String chatPath}) {
+    var messageStream = _fireStore
+        .document(chatPath)
+        .collection('messages')
+        .orderBy('timestamp')
+        .snapshots();
+    return messageStream;
+  }
+
+  void uploadMessage({@required String chatPath, @required Message message}) {
+    _fireStore.document(chatPath).collection('messages').add(
+      {
+        'text': message.text,
+        'sender': message.sender,
+        'timestamp': message.timestamp,
+      },
+    );
+  }
+}
+
+class Message {
+  String sender;
+  String text;
+  var timestamp;
+
+  Message({
+    this.sender,
+    this.text,
+    this.timestamp,
+  });
+
+  Message.fromMap({Map<String, dynamic> map}) {
+    this.sender = map['sender'];
+    this.text = map['text'];
+    this.timestamp = map['timestamp'].toDate();
+  }
 }
 
 class User {

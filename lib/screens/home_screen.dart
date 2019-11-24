@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:float/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
