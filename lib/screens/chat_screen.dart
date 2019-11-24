@@ -3,13 +3,14 @@ import 'package:float/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:float/services/firebase_connection.dart';
 
 final _fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
 
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
-  final DocumentSnapshot otherUser;
+  final User otherUser;
   ChatScreen({this.otherUser});
 
   @override
@@ -40,11 +41,11 @@ class _ChatScreenState extends State<ChatScreen> {
       QuerySnapshot snapshot1 = await _fireStore
           .collection('chats')
           .where('user1', isEqualTo: loggedInUser.email)
-          .where('user2', isEqualTo: widget.otherUser.data['email'])
+          .where('user2', isEqualTo: widget.otherUser.email)
           .getDocuments();
       QuerySnapshot snapshot2 = await _fireStore
           .collection('chats')
-          .where('user1', isEqualTo: widget.otherUser.data['email'])
+          .where('user1', isEqualTo: widget.otherUser.email)
           .where('user2', isEqualTo: loggedInUser.email)
           .getDocuments();
       print('If this gets printed up to here everything is fine');
@@ -69,7 +70,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void createChat() {
     _fireStore.collection('chats').add({
       'user1': loggedInUser.email,
-      'user2': widget.otherUser.data['email'],
+      'user2': widget.otherUser.email,
     });
     getChat();
   }
@@ -113,7 +114,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Navigator.pop(context);
               }),
         ],
-        title: Text(widget.otherUser.data['username'] ?? 'Default'),
+        title: Text(widget.otherUser.username ?? 'Default'),
         backgroundColor: kDarkGreenColor,
       ),
       body: SafeArea(

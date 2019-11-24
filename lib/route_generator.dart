@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:float/main.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/home_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/registration_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:float/services/firebase_connection.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -14,7 +13,7 @@ class RouteGenerator {
     final args = settings.arguments;
     switch (settings.name) {
       case ChatScreen.id:
-        if (args is DocumentSnapshot) {
+        if (args is User) {
           return MaterialPageRoute(
               builder: (_) => ChatScreen(
                     otherUser: args,

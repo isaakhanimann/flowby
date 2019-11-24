@@ -43,22 +43,19 @@ class _HomeScreenState extends State<HomeScreen> {
           stream: connection.getUsersStream(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final users = snapshot.data.documents;
+              final List<User> allUsers = [];
+              for (var userdoc in snapshot.data.documents) {
+                allUsers.add(User.fromMap(map: userdoc.data));
+              }
               List<Widget> userWidgets = [];
-              for (var user in users) {
+              for (User user in allUsers) {
                 final userWidget = Column(
                   children: <Widget>[
                     Divider(
                       height: 10,
                     ),
                     ProfileItem(
-                      imageUrl:
-                          connection.getImageUrl(fileName: user.data['email']),
-                      user: user.data,
-                      onPress: () {
-                        Navigator.pushNamed(context, ChatScreen.id,
-                            arguments: user);
-                      },
+                      user: user,
                     )
                   ],
                 );
@@ -145,30 +142,26 @@ class DataSearch extends SearchDelegate<String> {
           );
         }
 
-        final userList = snapshot.data.documents;
-        final results = userList
-            .where((u) => u.data['supplyHashtags']
-                .toString()
-                .toLowerCase()
-                .contains(query))
+        final List<User> allUsers = [];
+        for (var userdoc in snapshot.data.documents) {
+          allUsers.add(User.fromMap(map: userdoc.data));
+        }
+
+        final List<User> suggestedUsers = allUsers
+            .where(
+                (u) => u.skillHashtags.toString().toLowerCase().contains(query))
             .toList();
 
         return ListView(
-          children: results
+          children: suggestedUsers
               .map<Widget>(
-                (u) => Column(
+                (user) => Column(
                   children: <Widget>[
                     Divider(
                       height: 10,
                     ),
                     ProfileItem(
-                      imageUrl:
-                          connection.getImageUrl(fileName: u.data['email']),
-                      user: u.data,
-                      onPress: () {
-                        Navigator.pushNamed(context, ChatScreen.id,
-                            arguments: u.data['email']);
-                      },
+                      user: user,
                     )
                   ],
                 ),
@@ -214,16 +207,18 @@ class DataSearch extends SearchDelegate<String> {
           );
         }
 
-        final userList = snapshot.data.documents;
-        final results = userList
-            .where((u) => u.data['supplyHashtags']
-                .toString()
-                .toLowerCase()
-                .contains(query))
+        final List<User> allUsers = [];
+        for (var userdoc in snapshot.data.documents) {
+          allUsers.add(User.fromMap(map: userdoc.data));
+        }
+
+        final List<User> suggestedUsers = allUsers
+            .where(
+                (u) => u.skillHashtags.toString().toLowerCase().contains(query))
             .toList();
 
         return ListView(
-          children: results
+          children: suggestedUsers
               .map<Widget>((u) => SuggestionItem(
                     user: u,
                     setQuery: (newQuery) {
@@ -265,7 +260,7 @@ class DataSearch extends SearchDelegate<String> {
 }
 
 class SuggestionItem extends StatelessWidget {
-  final user;
+  final User user;
   final Function setQuery;
   final Function showResults;
   SuggestionItem(
@@ -277,15 +272,12 @@ class SuggestionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        print('This is called');
-        setQuery(user['supplyHashtags']);
-        print("setquery was called");
+        setQuery(user.skillHashtags);
         showResults(context);
-        print('showResults was called');
       },
       leading: Icon(Icons.insert_emoticon),
       title: Text(
-        user['supplyHashtags'],
+        user.skillHashtags,
         style: TextStyle(fontSize: 18),
       ),
     );
@@ -295,21 +287,19 @@ class SuggestionItem extends StatelessWidget {
 class ProfileItem extends StatelessWidget {
   const ProfileItem({
     Key key,
-    @required this.imageUrl,
     @required this.user,
-    @required this.onPress,
   }) : super(key: key);
 
-  final Future<String> imageUrl;
-  final Map<String, dynamic> user;
-  final Function onPress;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: onPress,
+      onTap: () {
+        Navigator.pushNamed(context, ChatScreen.id, arguments: user);
+      },
       leading: FutureBuilder(
-        future: imageUrl,
+        future: connection.getImageUrl(fileName: user.email),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return CircleAvatar(
@@ -326,11 +316,11 @@ class ProfileItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            user['username'] ?? 'Default',
+            user.username ?? 'Default',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(
-            user['supplyHashtags'],
+            user.skillHashtags,
             style: TextStyle(color: Colors.grey, fontSize: 14),
           )
         ],
@@ -338,7 +328,7 @@ class ProfileItem extends StatelessWidget {
       subtitle: Container(
         padding: EdgeInsets.only(top: 5),
         child: Text(
-          user['skillRate'].toString() + ' CHF/h',
+          user.skillRate.toString() + ' CHF/h',
           style: TextStyle(color: Colors.grey, fontSize: 15),
         ),
       ),
