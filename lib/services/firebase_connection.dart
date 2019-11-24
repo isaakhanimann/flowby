@@ -43,6 +43,7 @@ class FirebaseConnection {
 
   Future<void> uploadUserInfos(
       {@required String userID,
+      @required String username,
       @required String email,
       @required String hashtagSkills,
       @required String hashtagWishes,
@@ -50,6 +51,7 @@ class FirebaseConnection {
       @required int wishRate}) async {
     try {
       _fireStore.collection('users').document(userID).setData({
+        'username': username,
         'email': email,
         'supplyHashtags': hashtagSkills,
         'demandHashtags': hashtagWishes,

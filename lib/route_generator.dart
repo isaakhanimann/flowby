@@ -5,6 +5,8 @@ import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/home_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/registration_screen.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -12,10 +14,10 @@ class RouteGenerator {
     final args = settings.arguments;
     switch (settings.name) {
       case ChatScreen.id:
-        if (args is String) {
+        if (args is DocumentSnapshot) {
           return MaterialPageRoute(
               builder: (_) => ChatScreen(
-                    otherUserEmail: args,
+                    otherUser: args,
                   ));
         }
         return _errorRoute();

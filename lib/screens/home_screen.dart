@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       user: user.data,
                       onPress: () {
                         Navigator.pushNamed(context, ChatScreen.id,
-                            arguments: user.data['email']);
+                            arguments: user);
                       },
                     )
                   ],
@@ -326,7 +326,7 @@ class ProfileItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            user['email'],
+            user['username'] ?? 'Default',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(

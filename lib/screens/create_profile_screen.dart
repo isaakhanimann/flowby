@@ -20,6 +20,8 @@ class CreateProfileScreen extends StatefulWidget {
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
   FirebaseConnection connection = FirebaseConnection();
 
+  String _username;
+  String _tempUsername;
   String _hashtagSkills;
   String _tempHashtagSkills;
   String _hashtagWishes;
@@ -76,10 +78,11 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     return loggedInUser.email;
   }
 
-  void _getAndSetUserData() async {
+  void _reloadUserFromDatabase() async {
     var userMap = await connection.getUserInfos(userID: loggedInUser.email);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
+      _username = userMap != null ? userMap['username'] : null;
       _hashtagSkills = userMap != null ? userMap['supplyHashtags'] : null;
       _tempHashtagSkills = _hashtagSkills;
       _hashtagWishes = userMap != null ? userMap['demandHashtags'] : null;
@@ -97,6 +100,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     var userMap = await connection.getUserInfos(userID: email);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
+      _username = userMap != null ? userMap['username'] : null;
       _hashtagSkills = userMap != null ? userMap['supplyHashtags'] : null;
       _tempHashtagSkills = _hashtagSkills;
       _hashtagWishes = userMap != null ? userMap['demandHashtags'] : null;
@@ -144,161 +148,188 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
         title: Text('Create Profile'),
         backgroundColor: kDarkGreenColor,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Flexible(
-            child: GestureDetector(
-              onTap: changeProfilePic,
-              child: Center(
-                child: _profilePic == null
-                    ? _profilePicUrl == null
-                        ? CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            backgroundImage:
-                                AssetImage('images/default-profile-pic.jpg'),
-                            radius: 60,
-                          )
-                        : CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            backgroundImage: NetworkImage(_profilePicUrl),
-                            radius: 60,
-                          )
-                    : CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        backgroundImage: FileImage(_profilePic),
-                        radius: 60,
-                      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Flexible(
+              child: GestureDetector(
+                onTap: changeProfilePic,
+                child: Center(
+                  heightFactor: 1.2,
+                  child: _profilePic == null
+                      ? _profilePicUrl == null
+                          ? CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              backgroundImage:
+                                  AssetImage('images/default-profile-pic.jpg'),
+                              radius: 60,
+                            )
+                          : CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              backgroundImage: NetworkImage(_profilePicUrl),
+                              radius: 60,
+                            )
+                      : CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          backgroundImage: FileImage(_profilePic),
+                          radius: 60,
+                        ),
+                ),
               ),
             ),
-          ),
-          GestureDetector(
-            onTap: changeProfilePic,
-            child: Text('Edit'),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            'Add skills',
-            style: kMiddleTitleTextStyle,
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            'Add your skills in hashtags so people can find you',
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          _hashtagSkills == null
-              ? TextFormField(
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: kDarkGreenColor),
-                  onChanged: (newValue) {
-                    setState(() {
-                      _tempHashtagSkills = newValue;
-                    });
-                  },
-                )
-              : HashtagBubble(
-                  text: _hashtagSkills,
-                  onPress: () {
-                    setState(() {
-                      _hashtagSkills = null;
-                      _tempHashtagSkills = null;
-                    });
-                  },
-                ),
-          SizedBox(
-            height: 15,
-          ),
-          Text(
-            'Add your hourly rate',
-            style: kSmallTitleTextStyle,
-          ),
-          RatePicker(
-            initialValue: _initialSkillRate ?? 20,
-            onSelected: (selectedIndex) {
-              _skillRate = selectedIndex;
-            },
-          ),
-          Text(
-            'Add wishes',
-            style: kMiddleTitleTextStyle,
-          ),
-          Text(
-            'Add hashtags to let people know what they can help you with',
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          _hashtagWishes == null
-              ? TextFormField(
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: kDarkGreenColor),
-                  onChanged: (newValue) {
-                    setState(() {
-                      _tempHashtagWishes = newValue;
-                    });
-                  },
-                )
-              : HashtagBubble(
-                  text: _hashtagWishes,
-                  onPress: () {
-                    setState(() {
-                      _hashtagWishes = null;
-                      _tempHashtagWishes = null;
-                    });
-                  },
-                ),
-          SizedBox(
-            height: 15,
-          ),
-          Text(
-            'Add maximum you would be willing to pay',
-            style: kSmallTitleTextStyle,
-          ),
-          RatePicker(
-            initialValue: _initialWishRate ?? 20,
-            onSelected: (selectedIndex) {
-              _wishRate = selectedIndex;
-            },
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          RoundedButton(
-            text: 'Save',
-            color: kDarkGreenColor,
-            onPressed: () async {
-              setState(() {
-                showSpinner = true;
-              });
-              try {
-                if (_profilePic != null) {
-                  await connection.uploadImage(
-                      fileName: loggedInUser.email, image: _profilePic);
+            GestureDetector(
+              onTap: changeProfilePic,
+              child: Text('Edit'),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            _username == null
+                ? TextFormField(
+                    textAlign: TextAlign.center,
+                    style: kMiddleTitleTextStyle,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _tempUsername = newValue;
+                      });
+                    },
+                  )
+                : GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _username = null;
+                        _tempUsername = null;
+                      });
+                    },
+                    child: Text(
+                      _username,
+                      style: kBigTitleTextStyle,
+                    ),
+                  ),
+            Text(
+              'Add skills',
+              style: kMiddleTitleTextStyle,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              'Add your skills in hashtags so people can find you',
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            _hashtagSkills == null
+                ? TextFormField(
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: kDarkGreenColor),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _tempHashtagSkills = newValue;
+                      });
+                    },
+                  )
+                : HashtagBubble(
+                    text: _hashtagSkills,
+                    onPress: () {
+                      setState(() {
+                        _hashtagSkills = null;
+                        _tempHashtagSkills = null;
+                      });
+                    },
+                  ),
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              'Add your hourly rate',
+              style: kSmallTitleTextStyle,
+            ),
+            RatePicker(
+              initialValue: _initialSkillRate ?? 20,
+              onSelected: (selectedIndex) {
+                _skillRate = selectedIndex;
+              },
+            ),
+            Text(
+              'Add wishes',
+              style: kMiddleTitleTextStyle,
+            ),
+            Text(
+              'Add hashtags to let people know what they can help you with',
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            _hashtagWishes == null
+                ? TextFormField(
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: kDarkGreenColor),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _tempHashtagWishes = newValue;
+                      });
+                    },
+                  )
+                : HashtagBubble(
+                    text: _hashtagWishes,
+                    onPress: () {
+                      setState(() {
+                        _hashtagWishes = null;
+                        _tempHashtagWishes = null;
+                      });
+                    },
+                  ),
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              'Add maximum you would be willing to pay',
+              style: kSmallTitleTextStyle,
+            ),
+            RatePicker(
+              initialValue: _initialWishRate ?? 20,
+              onSelected: (selectedIndex) {
+                _wishRate = selectedIndex;
+              },
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            RoundedButton(
+              text: 'Save',
+              color: kDarkGreenColor,
+              onPressed: () async {
+                setState(() {
+                  showSpinner = true;
+                });
+                try {
+                  if (_profilePic != null) {
+                    await connection.uploadImage(
+                        fileName: loggedInUser.email, image: _profilePic);
+                  }
+                  await connection.uploadUserInfos(
+                      userID: loggedInUser.email,
+                      username: _tempUsername,
+                      email: loggedInUser.email,
+                      hashtagSkills: _tempHashtagSkills,
+                      hashtagWishes: _tempHashtagWishes,
+                      skillRate: _skillRate,
+                      wishRate: _wishRate);
+                  await _reloadUserFromDatabase();
+                } catch (e) {
+                  print('Could not upload and get on Save');
                 }
-                await connection.uploadUserInfos(
-                    userID: loggedInUser.email,
-                    email: loggedInUser.email,
-                    hashtagSkills: _tempHashtagSkills,
-                    hashtagWishes: _tempHashtagWishes,
-                    skillRate: _skillRate,
-                    wishRate: _wishRate);
-                await _getAndSetUserData();
-              } catch (e) {
-                print('Could not upload and get on Save');
-              }
-              setState(() {
-                showSpinner = false;
-              });
-            },
-          ),
-        ],
+                setState(() {
+                  showSpinner = false;
+                });
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
