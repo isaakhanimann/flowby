@@ -65,6 +65,10 @@ class FirebaseConnection {
         print('Isaak could not get user info1');
       }
 
+      print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+      print('map = ${userDocument.data}');
+      print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+
       return User.fromMap(map: userDocument.data);
     } catch (e) {
       print('Isaak could not get user info2');
@@ -170,7 +174,7 @@ class Message {
   Message.fromMap({Map<String, dynamic> map}) {
     this.sender = map['sender'];
     this.text = map['text'];
-    this.timestamp = map['timestamp'].toDate();
+    this.timestamp = map['timestamp']?.toDate() ?? DateTime.now();
   }
 }
 
@@ -194,7 +198,7 @@ class User {
     this.username = map['username'];
     this.email = map['email'];
     this.skillHashtags = map['supplyHashtags'];
-    this.wishHashtags = map['wishHashtags'];
+    this.wishHashtags = map['demandHashtags'];
     this.skillRate = map['skillRate'];
     this.wishRate = map['wishRate'];
   }

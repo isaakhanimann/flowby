@@ -6,7 +6,7 @@ import 'package:float/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/widgets/login_input_field.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:float/widgets/alert.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -76,65 +76,26 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     switch (e.code) {
                       case 'ERROR_WEAK_PASSWORD':
                         {
-                          Alert(
-                            context: context,
-                            title: "Weak Password",
-                            desc: e.message,
-                            buttons: [
-                              DialogButton(
-                                child: Text(
-                                  "Ok",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                                onPressed: () => Navigator.pop(context),
-                                width: 120,
-                                color: kDarkGreenColor,
-                              )
-                            ],
-                          ).show();
+                          showAlert(
+                              context: context,
+                              title: "Weak Password",
+                              description: e.message);
                           break;
                         }
                       case 'ERROR_INVALID_EMAIL':
                         {
-                          Alert(
-                            context: context,
-                            title: "Invalid Email",
-                            desc: e.message,
-                            buttons: [
-                              DialogButton(
-                                child: Text(
-                                  "Ok",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                                onPressed: () => Navigator.pop(context),
-                                width: 120,
-                                color: kDarkGreenColor,
-                              )
-                            ],
-                          ).show();
+                          showAlert(
+                              context: context,
+                              title: "Invalid Email",
+                              description: e.message);
                           break;
                         }
                       case 'ERROR_EMAIL_ALREADY_IN_USE':
                         {
-                          Alert(
-                            context: context,
-                            title: "Email Already in Use",
-                            desc: e.message,
-                            buttons: [
-                              DialogButton(
-                                child: Text(
-                                  "Ok",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                                onPressed: () => Navigator.pop(context),
-                                width: 120,
-                                color: kDarkGreenColor,
-                              )
-                            ],
-                          ).show();
+                          showAlert(
+                              context: context,
+                              title: "Email Already in Use",
+                              description: e.message);
                           break;
                         }
                       default:

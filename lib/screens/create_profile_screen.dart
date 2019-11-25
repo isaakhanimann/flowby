@@ -81,8 +81,17 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   void _reloadUserFromDatabase() async {
     User user = await connection.getUser(userID: loggedInUser.email);
     //also fill the temps in case the user presses save and the messageboxes are filled
+    print('############################################');
+    print('username = ${user.username}');
+    print('skillHashtags = ${user.skillHashtags}');
+    print('wishHashtags = ${user.wishHashtags}');
+    print('skillRate = ${user.skillRate}');
+    print('wishRate = ${user.wishRate}');
+    print('############################################');
+
     setState(() {
       _username = user?.username;
+      _tempUsername = _username;
       _hashtagSkills = user?.skillHashtags;
       _tempHashtagSkills = _hashtagSkills;
       _hashtagWishes = user?.wishHashtags;
@@ -101,6 +110,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
       _username = user?.username;
+      _tempUsername = _username;
       _hashtagSkills = user?.skillHashtags;
       _tempHashtagSkills = _hashtagSkills;
       _hashtagWishes = user?.wishHashtags;
@@ -124,6 +134,22 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('*************************************************');
+    print('_username = $_username');
+    print('_tempUsername = $_tempUsername');
+    print('_hashtagSkills = $_hashtagSkills');
+    print('_tempHashtagSkills = $_tempHashtagSkills');
+    print('_hashtagWishes = $_hashtagWishes');
+    print('_tempHashtagWishes = $_tempHashtagWishes');
+//    print('_profilePic = $_profilePic');
+//    print('_profilePicUrl = $_profilePicUrl');
+//    print('loggedInUser = $loggedInUser');
+    print('_skillRate = $_skillRate');
+    print('_wishRate = $_wishRate');
+    print('_initialSkillRate = $_initialSkillRate');
+    print('_initialWishRate = $_initialWishRate');
+    print('*************************************************');
+
     if (showSpinner) {
       return Container(
         color: Colors.white,
@@ -201,7 +227,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     onTap: () {
                       setState(() {
                         _username = null;
-                        _tempUsername = null;
                       });
                     },
                     child: Text(

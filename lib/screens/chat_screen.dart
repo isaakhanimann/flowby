@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:float/services/firebase_connection.dart';
+import 'package:float/screens/login_screen.dart';
 
 FirebaseUser loggedInUser;
 
@@ -71,7 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
               onPressed: () {
                 //Implement logout functionality
                 _auth.signOut();
-                Navigator.pop(context);
+                Navigator.pushNamed(context, LoginScreen.id);
               }),
         ],
         title: Text(widget.otherUser.username ?? 'Default'),
@@ -100,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       decoration: kMessageTextFieldDecoration,
                     ),
                   ),
-                  FlatButton(
+                  IconButton(
                     onPressed: () async {
                       //Implement send functionality.
                       messageTextController.clear();
@@ -111,9 +112,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       connection.uploadMessage(
                           chatPath: chatPath, message: message);
                     },
-                    child: Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
+                    icon: Icon(
+                      Icons.send,
+                      color: kDarkGreenColor,
+                      size: 30,
                     ),
                   ),
                 ],
