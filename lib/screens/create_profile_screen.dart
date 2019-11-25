@@ -20,19 +20,19 @@ class CreateProfileScreen extends StatefulWidget {
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
   FirebaseConnection connection = FirebaseConnection();
 
-  String _username;
-  String _tempUsername;
-  String _hashtagSkills;
-  String _tempHashtagSkills;
-  String _hashtagWishes;
-  String _tempHashtagWishes;
+  String _databaseUsername;
+  String _localUsername;
+  String _databaseHashtagSkills;
+  String _localHashtagSkills;
+  String _databaseHashtagWishes;
+  String _localHashtagWishes;
   File _profilePic;
   String _profilePicUrl;
   FirebaseUser loggedInUser;
-  int _skillRate;
-  int _wishRate;
-  int _initialSkillRate;
-  int _initialWishRate;
+  int _databaseSkillRate;
+  int _databaseWishRate;
+  int _localSkillRate;
+  int _localWishRate;
   bool showSpinner = true;
 
   void changeProfilePic() async {
@@ -73,52 +73,40 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     });
   }
 
-  Future<String> _getAndSetLoggedInUser() async {
-    loggedInUser = await connection.getCurrentUser();
-    return loggedInUser.email;
-  }
-
   void _reloadUserFromDatabase() async {
     User user = await connection.getUser(userID: loggedInUser.email);
     //also fill the temps in case the user presses save and the messageboxes are filled
-    print('############################################');
-    print('username = ${user.username}');
-    print('skillHashtags = ${user.skillHashtags}');
-    print('wishHashtags = ${user.wishHashtags}');
-    print('skillRate = ${user.skillRate}');
-    print('wishRate = ${user.wishRate}');
-    print('############################################');
-
     setState(() {
-      _username = user?.username;
-      _tempUsername = _username;
-      _hashtagSkills = user?.skillHashtags;
-      _tempHashtagSkills = _hashtagSkills;
-      _hashtagWishes = user?.wishHashtags;
-      _tempHashtagWishes = _hashtagWishes;
-      _initialSkillRate = user?.skillRate;
-      _initialWishRate = user?.wishRate;
-      _skillRate = _initialSkillRate;
-      _wishRate = _initialWishRate;
+      _databaseUsername = user?.username;
+      _localUsername = _databaseUsername;
+      _databaseHashtagSkills = user?.skillHashtags;
+      _localHashtagSkills = _databaseHashtagSkills;
+      _databaseHashtagWishes = user?.wishHashtags;
+      _localHashtagWishes = _databaseHashtagWishes;
+      _localSkillRate = user?.skillRate;
+      _localWishRate = user?.wishRate;
+      _databaseSkillRate = _localSkillRate;
+      _databaseWishRate = _localWishRate;
     });
   }
 
   void _getAndSetData() async {
-    String email = await _getAndSetLoggedInUser();
+    loggedInUser = await connection.getCurrentUser();
+    String email = loggedInUser.email;
     String imgUrl = await connection.getImageUrl(fileName: email);
     User user = await connection.getUser(userID: email);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
-      _username = user?.username;
-      _tempUsername = _username;
-      _hashtagSkills = user?.skillHashtags;
-      _tempHashtagSkills = _hashtagSkills;
-      _hashtagWishes = user?.wishHashtags;
-      _tempHashtagWishes = _hashtagWishes;
-      _initialSkillRate = user?.skillRate;
-      _initialWishRate = user?.wishRate;
-      _skillRate = _initialSkillRate;
-      _wishRate = _initialWishRate;
+      _databaseUsername = user?.username;
+      _localUsername = _databaseUsername;
+      _databaseHashtagSkills = user?.skillHashtags;
+      _localHashtagSkills = _databaseHashtagSkills;
+      _databaseHashtagWishes = user?.wishHashtags;
+      _localHashtagWishes = _databaseHashtagWishes;
+      _localSkillRate = user?.skillRate;
+      _localWishRate = user?.wishRate;
+      _databaseSkillRate = _localSkillRate;
+      _databaseWishRate = _localWishRate;
       _profilePicUrl = imgUrl;
       _profilePic = null;
       showSpinner = false;
@@ -134,22 +122,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('*************************************************');
-    print('_username = $_username');
-    print('_tempUsername = $_tempUsername');
-    print('_hashtagSkills = $_hashtagSkills');
-    print('_tempHashtagSkills = $_tempHashtagSkills');
-    print('_hashtagWishes = $_hashtagWishes');
-    print('_tempHashtagWishes = $_tempHashtagWishes');
-//    print('_profilePic = $_profilePic');
-//    print('_profilePicUrl = $_profilePicUrl');
-//    print('loggedInUser = $loggedInUser');
-    print('_skillRate = $_skillRate');
-    print('_wishRate = $_wishRate');
-    print('_initialSkillRate = $_initialSkillRate');
-    print('_initialWishRate = $_initialWishRate');
-    print('*************************************************');
-
     if (showSpinner) {
       return Container(
         color: Colors.white,
@@ -213,24 +185,24 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             SizedBox(
               height: 5,
             ),
-            _username == null
+            _databaseUsername == null
                 ? TextFormField(
                     textAlign: TextAlign.center,
                     style: kMiddleTitleTextStyle,
                     onChanged: (newValue) {
                       setState(() {
-                        _tempUsername = newValue;
+                        _localUsername = newValue;
                       });
                     },
                   )
                 : GestureDetector(
                     onTap: () {
                       setState(() {
-                        _username = null;
+                        _databaseUsername = null;
                       });
                     },
                     child: Text(
-                      _username,
+                      _databaseUsername,
                       style: kBigTitleTextStyle,
                     ),
                   ),
@@ -247,22 +219,22 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             SizedBox(
               height: 5,
             ),
-            _hashtagSkills == null
+            _databaseHashtagSkills == null
                 ? TextFormField(
                     textAlign: TextAlign.center,
                     style: TextStyle(color: kDarkGreenColor),
                     onChanged: (newValue) {
                       setState(() {
-                        _tempHashtagSkills = newValue;
+                        _localHashtagSkills = newValue;
                       });
                     },
                   )
                 : HashtagBubble(
-                    text: _hashtagSkills,
+                    text: _databaseHashtagSkills,
                     onPress: () {
                       setState(() {
-                        _hashtagSkills = null;
-                        _tempHashtagSkills = null;
+                        _databaseHashtagSkills = null;
+                        _localHashtagSkills = null;
                       });
                     },
                   ),
@@ -274,9 +246,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               style: kSmallTitleTextStyle,
             ),
             RatePicker(
-              initialValue: _initialSkillRate ?? 20,
+              initialValue: _localSkillRate ?? 20,
               onSelected: (selectedIndex) {
-                _skillRate = selectedIndex;
+                _databaseSkillRate = selectedIndex;
               },
             ),
             Text(
@@ -289,22 +261,22 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             SizedBox(
               height: 5,
             ),
-            _hashtagWishes == null
+            _databaseHashtagWishes == null
                 ? TextFormField(
                     textAlign: TextAlign.center,
                     style: TextStyle(color: kDarkGreenColor),
                     onChanged: (newValue) {
                       setState(() {
-                        _tempHashtagWishes = newValue;
+                        _localHashtagWishes = newValue;
                       });
                     },
                   )
                 : HashtagBubble(
-                    text: _hashtagWishes,
+                    text: _databaseHashtagWishes,
                     onPress: () {
                       setState(() {
-                        _hashtagWishes = null;
-                        _tempHashtagWishes = null;
+                        _databaseHashtagWishes = null;
+                        _localHashtagWishes = null;
                       });
                     },
                   ),
@@ -316,9 +288,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               style: kSmallTitleTextStyle,
             ),
             RatePicker(
-              initialValue: _initialWishRate ?? 20,
+              initialValue: _localWishRate ?? 20,
               onSelected: (selectedIndex) {
-                _wishRate = selectedIndex;
+                _databaseWishRate = selectedIndex;
               },
             ),
             SizedBox(
@@ -337,12 +309,12 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         fileName: loggedInUser.email, image: _profilePic);
                   }
                   User user = User(
-                      username: _tempUsername,
+                      username: _localUsername,
                       email: loggedInUser.email,
-                      skillHashtags: _tempHashtagSkills,
-                      wishHashtags: _tempHashtagWishes,
-                      skillRate: _skillRate,
-                      wishRate: _wishRate);
+                      skillHashtags: _localHashtagSkills,
+                      wishHashtags: _localHashtagWishes,
+                      skillRate: _databaseSkillRate,
+                      wishRate: _databaseWishRate);
                   await connection.uploadUser(user: user);
                   await _reloadUserFromDatabase();
                 } catch (e) {

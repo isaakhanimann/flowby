@@ -21,14 +21,13 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final messageTextController = TextEditingController();
-  final _auth = FirebaseAuth.instance;
   String messageText;
   String chatPath;
   Stream<QuerySnapshot> messageStream;
 
   Future<void> getCurrentUser() async {
     try {
-      final user = await _auth.currentUser();
+      final user = await connection.getCurrentUser();
       if (user != null) {
         loggedInUser = user;
       }
@@ -47,7 +46,6 @@ class _ChatScreenState extends State<ChatScreen> {
           user: loggedInUser.email, otherUser: widget.otherUser.email);
       getChat();
     }
-    print('chatPath = $chatPath');
     var messageStream = connection.getMessageStream(chatPath: chatPath);
     setState(() {
       this.chatPath = chatPath;
@@ -71,7 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
               icon: Icon(Icons.close),
               onPressed: () {
                 //Implement logout functionality
-                _auth.signOut();
+                connection.signOut();
                 Navigator.pushNamed(context, LoginScreen.id);
               }),
         ],
@@ -164,7 +162,6 @@ class MessagesStream extends StatelessWidget {
   MessagesStream({this.messagesStream});
   @override
   Widget build(BuildContext context) {
-    print('messagesStream = $messagesStream');
     return StreamBuilder<QuerySnapshot>(
       stream: messagesStream,
       builder: (context, snapshot) {

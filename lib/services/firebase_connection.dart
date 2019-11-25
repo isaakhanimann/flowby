@@ -15,8 +15,19 @@ class FirebaseConnection {
     return user;
   }
 
-  void signOut() {
+  Future<void> signOut() async {
     _auth.signOut();
+  }
+
+  Future<AuthResult> signIn(
+      {@required String email, @required String password}) async {
+    return _auth.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  Future<AuthResult> createUser(
+      {@required String email, @required String password}) async {
+    return _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
   }
 
   Future<void> uploadImage(

@@ -3,7 +3,6 @@ import 'package:float/screens/home_screen.dart';
 import 'package:float/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:float/widgets/rounded_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/widgets/login_input_field.dart';
 import 'package:float/widgets/alert.dart';
@@ -16,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   String email;
   String password;
@@ -72,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       showSpinner = true;
                     });
                     try {
-                      final user = await _auth.signInWithEmailAndPassword(
+                      final user = await connection.signIn(
                           email: email, password: password);
                       if (user != null) {
                         Navigator.pushNamed(context, HomeScreen.id);

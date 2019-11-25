@@ -1,9 +1,9 @@
+import 'package:float/screens/chat_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import '../widgets/rounded_button.dart';
 import 'package:float/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/widgets/login_input_field.dart';
 import 'package:float/widgets/alert.dart';
@@ -17,7 +17,6 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen>
     with SingleTickerProviderStateMixin {
-  final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   String email = '';
   String password = '';
@@ -64,7 +63,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     showSpinner = true;
                   });
                   try {
-                    final newUser = await _auth.createUserWithEmailAndPassword(
+                    final newUser = await connection.signIn(
                         email: email, password: password);
                     if (newUser != null) {
                       Navigator.pushNamed(context, CreateProfileScreen.id);
