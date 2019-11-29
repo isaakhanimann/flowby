@@ -146,155 +146,167 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
         title: Text('Create Profile'),
         backgroundColor: kDarkGreenColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Flexible(
-              child: GestureDetector(
-                onTap: changeProfilePic,
-                child: Center(
-                  heightFactor: 1.2,
-                  child: _profilePic == null
-                      ? _profilePicUrl == null
-                          ? CircleAvatar(
-                              backgroundColor: Colors.grey,
-                              backgroundImage:
-                                  AssetImage('images/default-profile-pic.jpg'),
-                              radius: 60,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: ListView(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: changeProfilePic,
+                      child: Center(
+                        heightFactor: 1.2,
+                        child: _profilePic == null
+                            ? _profilePicUrl == null
+                                ? CircleAvatar(
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage: AssetImage(
+                                        'images/default-profile-pic.jpg'),
+                                    radius: 60,
+                                  )
+                                : CircleAvatar(
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage:
+                                        NetworkImage(_profilePicUrl),
+                                    radius: 60,
+                                  )
+                            : CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                backgroundImage: FileImage(_profilePic),
+                                radius: 60,
+                              ),
+                      ),
+                    ),
+                    Center(
+                      child: GestureDetector(
+                        onTap: changeProfilePic,
+                        child: Text('Edit'),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Center(
+                      child: _databaseUsername == null
+                          ? TextFormField(
+                              textAlign: TextAlign.center,
+                              style: kMiddleTitleTextStyle,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _localUsername = newValue;
+                                });
+                              },
                             )
-                          : CircleAvatar(
-                              backgroundColor: Colors.grey,
-                              backgroundImage: NetworkImage(_profilePicUrl),
-                              radius: 60,
-                            )
-                      : CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          backgroundImage: FileImage(_profilePic),
-                          radius: 60,
-                        ),
+                          : GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _databaseUsername = null;
+                                });
+                              },
+                              child: Text(
+                                _databaseUsername,
+                                style: kBigTitleTextStyle,
+                              ),
+                            ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      'Add skills',
+                      style: kMiddleTitleTextStyle,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Add your skills in hashtags so people can find you',
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    _databaseHashtagSkills == null
+                        ? TextFormField(
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: kDarkGreenColor),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _localHashtagSkills = newValue;
+                              });
+                            },
+                          )
+                        : HashtagBubble(
+                            text: _databaseHashtagSkills,
+                            onPress: () {
+                              setState(() {
+                                _databaseHashtagSkills = null;
+                                _localHashtagSkills = null;
+                              });
+                            },
+                          ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      'Add your hourly rate',
+                      style: kSmallTitleTextStyle,
+                    ),
+                    RatePicker(
+                      initialValue: _localSkillRate ?? 20,
+                      onSelected: (selectedIndex) {
+                        _databaseSkillRate = selectedIndex;
+                      },
+                    ),
+                    Text(
+                      'Add wishes',
+                      style: kMiddleTitleTextStyle,
+                    ),
+                    Text(
+                      'Add hashtags to let people know what they can help you with',
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    _databaseHashtagWishes == null
+                        ? TextFormField(
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: kDarkGreenColor),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _localHashtagWishes = newValue;
+                              });
+                            },
+                          )
+                        : HashtagBubble(
+                            text: _databaseHashtagWishes,
+                            onPress: () {
+                              setState(() {
+                                _databaseHashtagWishes = null;
+                                _localHashtagWishes = null;
+                              });
+                            },
+                          ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      'Add maximum you would be willing to pay',
+                      style: kSmallTitleTextStyle,
+                    ),
+                    RatePicker(
+                      initialValue: _localWishRate ?? 20,
+                      onSelected: (selectedIndex) {
+                        _databaseWishRate = selectedIndex;
+                      },
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                  ],
                 ),
               ),
-            ),
-            GestureDetector(
-              onTap: changeProfilePic,
-              child: Text('Edit'),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            _databaseUsername == null
-                ? TextFormField(
-                    textAlign: TextAlign.center,
-                    style: kMiddleTitleTextStyle,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _localUsername = newValue;
-                      });
-                    },
-                  )
-                : GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _databaseUsername = null;
-                      });
-                    },
-                    child: Text(
-                      _databaseUsername,
-                      style: kBigTitleTextStyle,
-                    ),
-                  ),
-            Text(
-              'Add skills',
-              style: kMiddleTitleTextStyle,
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Text(
-              'Add your skills in hashtags so people can find you',
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            _databaseHashtagSkills == null
-                ? TextFormField(
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: kDarkGreenColor),
-                    onChanged: (newValue) {
-                      setState(() {
-                        _localHashtagSkills = newValue;
-                      });
-                    },
-                  )
-                : HashtagBubble(
-                    text: _databaseHashtagSkills,
-                    onPress: () {
-                      setState(() {
-                        _databaseHashtagSkills = null;
-                        _localHashtagSkills = null;
-                      });
-                    },
-                  ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              'Add your hourly rate',
-              style: kSmallTitleTextStyle,
-            ),
-            RatePicker(
-              initialValue: _localSkillRate ?? 20,
-              onSelected: (selectedIndex) {
-                _databaseSkillRate = selectedIndex;
-              },
-            ),
-            Text(
-              'Add wishes',
-              style: kMiddleTitleTextStyle,
-            ),
-            Text(
-              'Add hashtags to let people know what they can help you with',
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            _databaseHashtagWishes == null
-                ? TextFormField(
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: kDarkGreenColor),
-                    onChanged: (newValue) {
-                      setState(() {
-                        _localHashtagWishes = newValue;
-                      });
-                    },
-                  )
-                : HashtagBubble(
-                    text: _databaseHashtagWishes,
-                    onPress: () {
-                      setState(() {
-                        _databaseHashtagWishes = null;
-                        _localHashtagWishes = null;
-                      });
-                    },
-                  ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              'Add maximum you would be willing to pay',
-              style: kSmallTitleTextStyle,
-            ),
-            RatePicker(
-              initialValue: _localWishRate ?? 20,
-              onSelected: (selectedIndex) {
-                _databaseWishRate = selectedIndex;
-              },
-            ),
-            SizedBox(
-              height: 5,
             ),
             RoundedButton(
               text: 'Save',

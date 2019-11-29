@@ -76,10 +76,6 @@ class FirebaseConnection {
         print('Isaak could not get user info1');
       }
 
-      print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-      print('map = ${userDocument.data}');
-      print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-
       return User.fromMap(map: userDocument.data);
     } catch (e) {
       print('Isaak could not get user info2');
