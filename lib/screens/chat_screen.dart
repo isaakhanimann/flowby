@@ -99,8 +99,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       decoration: kMessageTextFieldDecoration,
                     ),
                   ),
-                  IconButton(
-                    onPressed: () async {
+                  SendButton(
+                    onPress: () async {
                       //Implement send functionality.
                       messageTextController.clear();
                       Message message = Message(
@@ -110,11 +110,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       connection.uploadMessage(
                           chatPath: chatPath, message: message);
                     },
-                    icon: Icon(
-                      Icons.send,
-                      color: kDarkGreenColor,
-                      size: 30,
-                    ),
                   ),
                 ],
               ),
@@ -250,6 +245,29 @@ class MessageBubble extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SendButton extends StatelessWidget {
+  final Function onPress;
+  SendButton({@required this.onPress});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+      child: Material(
+        color: kDarkGreenColor,
+        borderRadius: BorderRadius.circular(30.0),
+        child: IconButton(
+          onPressed: onPress,
+          icon: Icon(
+            Icons.send,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
       ),
     );
   }
