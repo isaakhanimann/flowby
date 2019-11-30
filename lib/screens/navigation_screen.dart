@@ -3,7 +3,7 @@ import 'package:float/screens/home_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/constants.dart';
 import 'package:float/services/firebase_connection.dart';
-import 'package:float/screens/chat_screen.dart';
+import 'package:float/widgets/profile_item.dart';
 
 FirebaseConnection connection = FirebaseConnection();
 
@@ -167,32 +167,6 @@ class DataSearch extends SearchDelegate<String> {
         );
       },
     );
-
-//    final listHashtags = users.map((u) => u['supplyHashtags']).toList();
-//    final suggestionList = query.isEmpty
-//        ? listHashtags
-//        : listHashtags.where((a) => a.toLowerCase().contains(query)).toList();
-//    return ListView.builder(
-//      itemBuilder: (context, index) => ListTile(
-//        onTap: () {
-//          query = suggestionList[index];
-//          showResults(context);
-//        },
-//        leading: Icon(Icons.location_city),
-//        title: RichText(
-//          text: TextSpan(
-//              text: suggestionList[index].substring(0, query.length),
-//              style:
-//                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-//              children: [
-//                TextSpan(
-//                    text: suggestionList[index].substring(query.length),
-//                    style: TextStyle(color: Colors.grey))
-//              ]),
-//        ),
-//      ),
-//      itemCount: suggestionList.length,
-//    );
   }
 }
 
@@ -216,62 +190,6 @@ class SuggestionItem extends StatelessWidget {
       title: Text(
         user.skillHashtags,
         style: TextStyle(fontSize: 18),
-      ),
-    );
-  }
-}
-
-class ProfileItem extends StatelessWidget {
-  const ProfileItem({
-    Key key,
-    @required this.user,
-  }) : super(key: key);
-
-  final User user;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        Navigator.pushNamed(context, ChatScreen.id, arguments: user);
-      },
-      leading: FutureBuilder(
-        future: connection.getImageUrl(fileName: user.email),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return CircleAvatar(
-              backgroundColor: Colors.grey,
-              backgroundImage: NetworkImage(snapshot.data),
-            );
-          }
-          return CircleAvatar(
-            backgroundColor: Colors.grey,
-          );
-        },
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            user.username ?? 'Default',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Text(
-            user.skillHashtags,
-            style: TextStyle(color: Colors.grey, fontSize: 14),
-          )
-        ],
-      ),
-      subtitle: Container(
-        padding: EdgeInsets.only(top: 5),
-        child: Text(
-          user.skillRate.toString() + ' CHF/h',
-          style: TextStyle(color: Colors.grey, fontSize: 15),
-        ),
-      ),
-      trailing: IconButton(
-        icon: Icon(Icons.keyboard_arrow_right),
-        onPressed: () {},
       ),
     );
   }
