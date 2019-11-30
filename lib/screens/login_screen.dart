@@ -1,5 +1,4 @@
 import 'package:float/constants.dart';
-import 'package:float/screens/home_screen.dart';
 import 'package:float/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:float/widgets/rounded_button.dart';
@@ -7,6 +6,9 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/widgets/login_input_field.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/screens/navigation_screen.dart';
+import 'package:float/services/firebase_connection.dart';
+
+FirebaseConnection connection = FirebaseConnection();
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';

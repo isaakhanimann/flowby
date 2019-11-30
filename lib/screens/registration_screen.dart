@@ -1,4 +1,3 @@
-import 'package:float/screens/chat_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,9 @@ import 'package:float/constants.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/widgets/login_input_field.dart';
 import 'package:float/widgets/alert.dart';
+import 'package:float/services/firebase_connection.dart';
+
+FirebaseConnection connection = FirebaseConnection();
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';

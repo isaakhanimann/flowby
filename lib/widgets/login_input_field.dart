@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:float/constants.dart';
 
 class LoginInputField extends StatelessWidget {
   LoginInputField({this.setText, this.isEmail});
@@ -11,12 +12,8 @@ class LoginInputField extends StatelessWidget {
       keyboardType: isEmail ? TextInputType.emailAddress : null,
       obscureText: !isEmail,
       onChanged: setText,
-      decoration: kInputDecoration.copyWith(
+      decoration: kLoginInputFieldDecoration.copyWith(
           hintText: isEmail ? 'Enter your email' : 'Enter your password'),
     );
   }
 }
-
-const kInputDecoration = InputDecoration(
-  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
-);

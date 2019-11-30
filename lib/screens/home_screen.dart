@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:float/constants.dart';
 import 'package:float/services/firebase_connection.dart';
-import 'package:float/screens/create_profile_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,60 +18,48 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.settings),
-          onPressed: () {
-            Navigator.pushNamed(context, CreateProfileScreen.id);
+    return Column(
+      children: <Widget>[
+//        SearchSection(),
+        StreamBuilder<QuerySnapshot>(
+          stream: connection.getUsersStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final List<User> allUsers = [];
+              for (var userdoc in snapshot.data.documents) {
+                allUsers.add(User.fromMap(map: userdoc.data));
+              }
+              List<Widget> userWidgets = [];
+              for (User user in allUsers) {
+                final userWidget = Column(
+                  children: <Widget>[
+                    Divider(
+                      height: 10,
+                    ),
+                    ProfileItem(
+                      user: user,
+                    )
+                  ],
+                );
+                userWidgets.add(userWidget);
+              }
+              return Expanded(
+                child: ListView(
+                  children: userWidgets,
+                ),
+              );
+            }
+            return Container(
+              color: Colors.white,
+              child: SpinKitPumpingHeart(
+                color: kDarkGreenColor,
+                size: 100,
+              ),
+            );
           },
         ),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () async {
-                //showSearch would return the result passed back from close
-                await showSearch(context: context, delegate: DataSearch());
-              }),
-        ],
-        title: Text('Home'),
-        backgroundColor: kDarkGreenColor,
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: connection.getUsersStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final List<User> allUsers = [];
-            for (var userdoc in snapshot.data.documents) {
-              allUsers.add(User.fromMap(map: userdoc.data));
-            }
-            List<Widget> userWidgets = [];
-            for (User user in allUsers) {
-              final userWidget = Column(
-                children: <Widget>[
-                  Divider(
-                    height: 10,
-                  ),
-                  ProfileItem(
-                    user: user,
-                  )
-                ],
-              );
-              userWidgets.add(userWidget);
-            }
-            return ListView(
-              children: userWidgets,
-            );
-          }
-          return Container(
-            color: Colors.white,
-            child: SpinKitPumpingHeart(
-              color: kDarkGreenColor,
-              size: 100,
-            ),
-          );
-        },
-      ),
+      ],
+    );
 
 //      Column(
 //        children: <Widget>[
@@ -99,9 +86,28 @@ class _HomeScreenState extends State<HomeScreen> {
 //          ),
 //        ],
 //      ),
-    );
   }
 }
+
+//class SearchSection extends StatefulWidget {
+//  @override
+//  _SearchSectionState createState() => _SearchSectionState();
+//}
+//
+//class _SearchSectionState extends State<SearchSection> {
+//  String searchText;
+//  @override
+//  Widget build(BuildContext context) {
+//    return TextField(
+//      onChanged: (newText) {
+//        setState(() {
+//          searchText = newText;
+//        });
+//      },
+//      decoration: kLoginInputFieldDecoration.copyWith(hintText: 'Search'),
+//    );
+//  }
+//}
 
 class DataSearch extends SearchDelegate<String> {
   @override
@@ -169,30 +175,6 @@ class DataSearch extends SearchDelegate<String> {
         );
       },
     );
-    //query contains the hashtag that we need for filtering out the right users
-    //filter out the users that have the right hashtags
-//    final querymatchingUsers = usersStream.da
-//        .where((u) => u['supplyHashtags'].toLowerCase().contains(query))
-//        .toList();
-//    // show result based on selection
-//    return ListView.builder(
-//      itemCount: querymatchingUsers.length,
-//      itemBuilder: (context, index) => Column(
-//        children: <Widget>[
-//          Divider(
-//            height: 10,
-//          ),
-//          ProfileItem(
-//            imageUrl: imageUrls[querymatchingUsers[index]['email']],
-//            user: querymatchingUsers[index],
-//            onPress: () {
-//              Navigator.pushNamed(context, ChatScreen.id,
-//                  arguments: querymatchingUsers[index]['email']);
-//            },
-//          )
-//        ],
-//      ),
-//    );
   }
 
   @override

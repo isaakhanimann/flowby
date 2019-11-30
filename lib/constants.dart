@@ -38,6 +38,10 @@ const kMessageContainerDecoration = BoxDecoration(
   ),
 );
 
+const kLoginInputFieldDecoration = InputDecoration(
+  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
+);
+
 const kBeigeColor = Color(0xFFFCF9EC);
 const kLightGreenColor = Color(0xFFB0F4E6);
 const kMiddleGreenColor = Color(0xFF67EACA);
