@@ -20,59 +20,59 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              Navigator.pushNamed(context, CreateProfileScreen.id);
-            },
-          ),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () async {
-                  //showSearch would return the result passed back from close
-                  await showSearch(context: context, delegate: DataSearch());
-                }),
-          ],
-          title: Text('Home'),
-          backgroundColor: kDarkGreenColor,
-        ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: connection.getUsersStream(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final List<User> allUsers = [];
-              for (var userdoc in snapshot.data.documents) {
-                allUsers.add(User.fromMap(map: userdoc.data));
-              }
-              List<Widget> userWidgets = [];
-              for (User user in allUsers) {
-                final userWidget = Column(
-                  children: <Widget>[
-                    Divider(
-                      height: 10,
-                    ),
-                    ProfileItem(
-                      user: user,
-                    )
-                  ],
-                );
-                userWidgets.add(userWidget);
-              }
-              return ListView(
-                children: userWidgets,
-              );
-            }
-            return Container(
-              color: Colors.white,
-              child: SpinKitPumpingHeart(
-                color: kDarkGreenColor,
-                size: 100,
-              ),
-            );
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.settings),
+          onPressed: () {
+            Navigator.pushNamed(context, CreateProfileScreen.id);
           },
-        )
+        ),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () async {
+                //showSearch would return the result passed back from close
+                await showSearch(context: context, delegate: DataSearch());
+              }),
+        ],
+        title: Text('Home'),
+        backgroundColor: kDarkGreenColor,
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: connection.getUsersStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final List<User> allUsers = [];
+            for (var userdoc in snapshot.data.documents) {
+              allUsers.add(User.fromMap(map: userdoc.data));
+            }
+            List<Widget> userWidgets = [];
+            for (User user in allUsers) {
+              final userWidget = Column(
+                children: <Widget>[
+                  Divider(
+                    height: 10,
+                  ),
+                  ProfileItem(
+                    user: user,
+                  )
+                ],
+              );
+              userWidgets.add(userWidget);
+            }
+            return ListView(
+              children: userWidgets,
+            );
+          }
+          return Container(
+            color: Colors.white,
+            child: SpinKitPumpingHeart(
+              color: kDarkGreenColor,
+              size: 100,
+            ),
+          );
+        },
+      ),
 
 //      Column(
 //        children: <Widget>[
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
 //          ),
 //        ],
 //      ),
-        );
+    );
   }
 }
 

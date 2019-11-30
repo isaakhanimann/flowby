@@ -6,6 +6,7 @@ import 'package:float/widgets/rounded_button.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/widgets/login_input_field.dart';
 import 'package:float/widgets/alert.dart';
+import 'package:float/screens/navigation_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -73,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       final user = await connection.signIn(
                           email: email, password: password);
                       if (user != null) {
-                        Navigator.pushNamed(context, HomeScreen.id);
+                        Navigator.pushNamed(context, NavigationScreens.id);
                       }
                       setState(() {
                         showSpinner = false;

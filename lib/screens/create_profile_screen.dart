@@ -123,8 +123,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   @override
   Widget build(BuildContext context) {
     if (showSpinner) {
-      return Container(
-        color: Colors.white,
+      return Center(
         child: SpinKitPumpingHeart(
           color: kDarkGreenColor,
           size: 100,
@@ -132,20 +131,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
       );
     }
     return Scaffold(
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                //Implement logout functionality
-                connection.signOut();
-                Navigator.pushNamed(context, LoginScreen.id);
-              }),
-        ],
-        title: Text('Create Profile'),
-        backgroundColor: kDarkGreenColor,
-      ),
       body: SafeArea(
         child: Column(
           children: <Widget>[
@@ -337,6 +322,16 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                 });
               },
             ),
+            SizedBox(
+              height: 15,
+            ),
+            GestureDetector(
+              onTap: () {
+                connection.signOut();
+                Navigator.pushNamed(context, LoginScreen.id);
+              },
+              child: Text('Sign Out'),
+            )
           ],
         ),
       ),

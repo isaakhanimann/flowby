@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:float/screens/chat_screen.dart';
-import 'package:float/screens/create_profile_screen.dart';
-import 'package:float/screens/home_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/registration_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:float/services/firebase_connection.dart';
+import 'package:float/screens/navigation_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -20,11 +19,8 @@ class RouteGenerator {
                   ));
         }
         return _errorRoute();
-      case CreateProfileScreen.id:
-        //the underline stands for context
-        return MaterialPageRoute(builder: (_) => CreateProfileScreen());
-      case HomeScreen.id:
-        return MaterialPageRoute(builder: (_) => HomeScreen());
+      case NavigationScreens.id:
+        return MaterialPageRoute(builder: (_) => NavigationScreens());
       case LoginScreen.id:
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case RegistrationScreen.id:
