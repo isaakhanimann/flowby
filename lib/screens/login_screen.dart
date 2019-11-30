@@ -23,6 +23,12 @@ class _LoginScreenState extends State<LoginScreen> {
   String password;
 
   @override
+  void initState() {
+    super.initState();
+    connection.autoLogin(context: context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,

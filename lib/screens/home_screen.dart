@@ -20,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-//        SearchSection(),
         StreamBuilder<QuerySnapshot>(
           stream: connection.getUsersStream(),
           builder: (context, snapshot) {

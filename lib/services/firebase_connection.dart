@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:float/screens/navigation_screen.dart';
 
 final _fireStore = Firestore.instance;
 final _auth = FirebaseAuth.instance;
@@ -22,6 +23,13 @@ class FirebaseConnection {
   Future<AuthResult> signIn(
       {@required String email, @required String password}) async {
     return _auth.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  Future<void> autoLogin({@required BuildContext context}) async {
+    final user = await _auth.currentUser();
+    if (user != null) {
+      Navigator.pushNamed(context, NavigationScreens.id);
+    }
   }
 
   Future<AuthResult> createUser(
