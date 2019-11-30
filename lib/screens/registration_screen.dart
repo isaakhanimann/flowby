@@ -63,7 +63,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     showSpinner = true;
                   });
                   try {
-                    final newUser = await connection.signIn(
+                    final newUser = await connection.createUser(
                         email: email, password: password);
                     if (newUser != null) {
                       Navigator.pushNamed(context, CreateProfileScreen.id);
