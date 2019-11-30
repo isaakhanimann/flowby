@@ -20,8 +20,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final messageTextController = TextEditingController();
-  String messageText;
   String chatPath;
   Stream<QuerySnapshot> messageStream;
 
@@ -84,36 +82,7 @@ class _ChatScreenState extends State<ChatScreen> {
             MessagesStream(
               messagesStream: messageStream,
             ),
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: messageTextController,
-                      onChanged: (value) {
-                        //Do something with the user input.
-                        messageText = value;
-                      },
-                      decoration: kMessageTextFieldDecoration,
-                    ),
-                  ),
-                  SendButton(
-                    onPress: () async {
-                      //Implement send functionality.
-                      messageTextController.clear();
-                      Message message = Message(
-                          sender: loggedInUser.email,
-                          text: messageText,
-                          timestamp: FieldValue.serverTimestamp());
-                      connection.uploadMessage(
-                          chatPath: chatPath, message: message);
-                    },
-                  ),
-                ],
-              ),
-            ),
+            MessageSendingSection(chatPath: chatPath),
           ],
         ),
       ),
@@ -199,6 +168,52 @@ class MessagesStream extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class MessageSendingSection extends StatefulWidget {
+  final String chatPath;
+  MessageSendingSection({@required this.chatPath});
+  @override
+  _MessageSendingSectionState createState() => _MessageSendingSectionState();
+}
+
+class _MessageSendingSectionState extends State<MessageSendingSection> {
+  final messageTextController = TextEditingController();
+  String messageText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: kMessageContainerDecoration,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: TextField(
+              controller: messageTextController,
+              onChanged: (value) {
+                //Do something with the user input.
+                messageText = value;
+              },
+              decoration: kMessageTextFieldDecoration,
+            ),
+          ),
+          SendButton(
+            onPress: () async {
+              //Implement send functionality.
+              messageTextController.clear();
+              Message message = Message(
+                  sender: loggedInUser.email,
+                  text: messageText,
+                  timestamp: FieldValue.serverTimestamp());
+              connection.uploadMessage(
+                  chatPath: widget.chatPath, message: message);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

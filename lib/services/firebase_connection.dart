@@ -141,29 +141,42 @@ class FirebaseConnection {
   }
 
   void createChat({@required String user, @required String otherUser}) {
-    _fireStore.collection('chats').add({
-      'user1': user,
-      'user2': otherUser,
-    });
+    try {
+      _fireStore.collection('chats').add({
+        'user1': user,
+        'user2': otherUser,
+      });
+    } catch (e) {
+      print('Isaak could not createChat');
+    }
   }
 
   Stream<QuerySnapshot> getMessageStream({@required String chatPath}) {
-    var messageStream = _fireStore
-        .document(chatPath)
-        .collection('messages')
-        .orderBy('timestamp')
-        .snapshots();
-    return messageStream;
+    try {
+      var messageStream = _fireStore
+          .document(chatPath)
+          .collection('messages')
+          .orderBy('timestamp')
+          .snapshots();
+      return messageStream;
+    } catch (e) {
+      print('Isaak could not get the message stream');
+    }
+    return Stream.empty();
   }
 
   void uploadMessage({@required String chatPath, @required Message message}) {
-    _fireStore.document(chatPath).collection('messages').add(
-      {
-        'text': message.text,
-        'sender': message.sender,
-        'timestamp': message.timestamp,
-      },
-    );
+    try {
+      _fireStore.document(chatPath).collection('messages').add(
+        {
+          'text': message.text,
+          'sender': message.sender,
+          'timestamp': message.timestamp,
+        },
+      );
+    } catch (e) {
+      print('Isaak could not upload message');
+    }
   }
 }
 
