@@ -2,14 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>flowby needs access to location when in the background.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>flowby needs access to location when open and in the background.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>float wants to set your profile picture</string>
+    <string>flowby wants to set your profile picture</string>
     <key>NSCameraUsageDescription</key>
-    <string>float wants to set your profile picture</string>
+    <string>flowby wants to set your profile picture</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>float wants to record the sound of the videos</string>
+    <string>flowby wants to record the sound of the videos</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,7 +21,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>float</string>
+	<string>flowby</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
