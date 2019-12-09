@@ -16,17 +16,32 @@ class NavigationScreens extends StatefulWidget {
 
 class _NavigationScreensState extends State<NavigationScreens> {
   int _selectedPage = 0;
-  final _pageOptions = [HomeScreen(), HomeScreen(), HomeScreen(), CreateProfileScreen()];
+  final _pageOptions = [HomeScreen(), CreateProfileScreen()];
+
+  Widget _getPage({int pageNumber}) {
+    switch (pageNumber) {
+      case 0:
+        return _pageOptions[0];
+      case 1:
+        return _pageOptions[0];
+      case 2:
+        return _pageOptions[0];
+      default:
+        return _pageOptions[1];
+    }
+  }
+
   bool showSearchBar = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: _pageOptions[_selectedPage]),
+      body: SafeArea(child: _getPage(pageNumber: _selectedPage)),
       bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
+        showSelectedLabels: true,
         showUnselectedLabels: false,
         selectedItemColor: kDarkGreenColor,
+        unselectedItemColor: Colors.black,
         currentIndex: _selectedPage,
         onTap: (int index) async {
           print('index = $index');
