@@ -13,6 +13,7 @@ FirebaseConnection connection = FirebaseConnection();
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
   final User otherUser;
+
   ChatScreen({this.otherUser});
 
   @override
@@ -123,7 +124,9 @@ class MessagesStream extends StatelessWidget {
   }
 
   final messagesStream;
+
   MessagesStream({this.messagesStream});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -174,7 +177,9 @@ class MessagesStream extends StatelessWidget {
 
 class MessageSendingSection extends StatefulWidget {
   final String chatPath;
+
   MessageSendingSection({@required this.chatPath});
+
   @override
   _MessageSendingSectionState createState() => _MessageSendingSectionState();
 }
@@ -202,14 +207,18 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
           ),
           SendButton(
             onPress: () async {
-              //Implement send functionality.
-              messageTextController.clear();
-              Message message = Message(
-                  sender: loggedInUser.email,
-                  text: messageText,
-                  timestamp: FieldValue.serverTimestamp());
-              connection.uploadMessage(
-                  chatPath: widget.chatPath, message: message);
+              // prevent to send the previously typed message with an empty text field
+              if (messageText != '') {
+                //Implement send functionality.
+                messageTextController.clear();
+                Message message = Message(
+                    sender: loggedInUser.email,
+                    text: messageText,
+                    timestamp: FieldValue.serverTimestamp());
+                connection.uploadMessage(
+                    chatPath: widget.chatPath, message: message);
+                messageText = ''; // Reset locally the sent message
+              }
             },
           ),
         ],
@@ -220,9 +229,11 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
 
 class MessageBubble extends StatelessWidget {
   MessageBubble({this.timestamp, this.text, this.isMe});
+
   final String timestamp;
   final String text;
   final bool isMe;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -267,7 +278,9 @@ class MessageBubble extends StatelessWidget {
 
 class SendButton extends StatelessWidget {
   final Function onPress;
+
   SendButton({@required this.onPress});
+
   @override
   Widget build(BuildContext context) {
     return Padding(

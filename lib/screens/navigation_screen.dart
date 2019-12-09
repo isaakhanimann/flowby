@@ -16,8 +16,9 @@ class NavigationScreens extends StatefulWidget {
 
 class _NavigationScreensState extends State<NavigationScreens> {
   int _selectedPage = 0;
-  final _pageOptions = [HomeScreen(), HomeScreen(), CreateProfileScreen()];
+  final _pageOptions = [HomeScreen(), HomeScreen(), HomeScreen(), CreateProfileScreen()];
   bool showSearchBar = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,6 +48,11 @@ class _NavigationScreensState extends State<NavigationScreens> {
                 _selectedPage = 2;
               });
               break;
+            case 3:
+              setState(() {
+                _selectedPage = 3;
+              });
+              break;
             default:
               setState(() {
                 _selectedPage = 0;
@@ -54,11 +60,22 @@ class _NavigationScreensState extends State<NavigationScreens> {
           }
         },
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
           BottomNavigationBarItem(
-              icon: Icon(Icons.search), title: Text('Home')),
+            icon: Icon(Icons.home),
+            title: Text('Home'),
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person), title: Text('Profile')),
+            icon: Icon(Icons.search),
+            title: Text('Search'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            title: Text('Messages'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            title: Text('Profile'),
+          ),
         ],
       ),
     );
@@ -174,6 +191,7 @@ class SuggestionItem extends StatelessWidget {
   final User user;
   final Function setQuery;
   final Function showResults;
+
   SuggestionItem(
       {@required this.user,
       @required this.setQuery,

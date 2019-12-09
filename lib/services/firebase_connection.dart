@@ -65,8 +65,8 @@ class FirebaseConnection {
       _fireStore.collection('users').document(user.email).setData({
         'username': user.username,
         'email': user.email,
-        'supplyHashtags': user.skillHashtags,
-        'demandHashtags': user.wishHashtags,
+        'skillHashtags': user.skillHashtags,
+        'wishHashtags': user.wishHashtags,
         'skillRate': user.skillRate,
         'wishRate': user.wishRate
       });
@@ -225,8 +225,8 @@ class User {
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'];
     this.email = map['email'];
-    this.skillHashtags = map['supplyHashtags'];
-    this.wishHashtags = map['demandHashtags'];
+    this.skillHashtags = map['skillHashtags'];
+    this.wishHashtags = map['wishHashtags'];
     this.skillRate = map['skillRate'];
     this.wishRate = map['wishRate'];
   }
