@@ -5,40 +5,42 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:float/screens/navigation_screen.dart';
+import 'package:float/models/user.dart';
+import 'package:float/models/message.dart';
 
 final _fireStore = Firestore.instance;
 final _auth = FirebaseAuth.instance;
 final StorageReference _storageReference = FirebaseStorage().ref();
 
 class FirebaseConnection {
-  Future<FirebaseUser> getCurrentUser() async {
+  static Future<FirebaseUser> getCurrentUser() async {
     final user = await _auth.currentUser();
     return user;
   }
 
-  Future<void> signOut() async {
+  static Future<void> signOut() async {
     _auth.signOut();
   }
 
-  Future<AuthResult> signIn(
+  static Future<AuthResult> signIn(
       {@required String email, @required String password}) async {
     return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
-  Future<void> autoLogin({@required BuildContext context}) async {
+  static Future<void> autoLogin({@required BuildContext context}) async {
     final user = await _auth.currentUser();
     if (user != null) {
       Navigator.pushNamed(context, NavigationScreens.id);
     }
   }
 
-  Future<AuthResult> createUser(
+  static Future<AuthResult> createUser(
       {@required String email, @required String password}) async {
     return _auth.createUserWithEmailAndPassword(
         email: email, password: password);
   }
 
-  Future<void> uploadImage(
+  static Future<void> uploadImage(
       {@required String fileName, @required File image}) async {
     try {
       final StorageUploadTask uploadTask =
@@ -49,7 +51,7 @@ class FirebaseConnection {
     }
   }
 
-  Future<String> getImageUrl({@required String fileName}) async {
+  static Future<String> getImageUrl({@required String fileName}) async {
     try {
       final String downloadUrl =
           await _storageReference.child('images/$fileName').getDownloadURL();
@@ -60,7 +62,7 @@ class FirebaseConnection {
     }
   }
 
-  Future<void> uploadUser({@required User user}) async {
+  static Future<void> uploadUser({@required User user}) async {
     try {
       _fireStore.collection('users').document(user.email).setData({
         'username': user.username,
@@ -75,7 +77,7 @@ class FirebaseConnection {
     }
   }
 
-  Future<User> getUser({@required String userID}) async {
+  static Future<User> getUser({@required String userID}) async {
     try {
       print('userID = $userID');
       var userDocument =
@@ -91,7 +93,7 @@ class FirebaseConnection {
     }
   }
 
-  Future<List<User>> getAllUsers() async {
+  static Future<List<User>> getAllUsers() async {
     try {
       QuerySnapshot snapshot =
           await _fireStore.collection('users').getDocuments();
@@ -108,7 +110,7 @@ class FirebaseConnection {
     }
   }
 
-  Stream<QuerySnapshot> getUsersStream() {
+  static Stream<QuerySnapshot> getUsersStream() {
     try {
       var userSnapshots = _fireStore.collection('users').snapshots();
       return userSnapshots;
@@ -118,7 +120,7 @@ class FirebaseConnection {
     }
   }
 
-  Future<String> getChatPath(
+  static Future<String> getChatPath(
       {@required String user, @required String otherUser}) async {
     try {
       String chatPath;
@@ -148,7 +150,7 @@ class FirebaseConnection {
     return null;
   }
 
-  void createChat({@required String user, @required String otherUser}) {
+  static void createChat({@required String user, @required String otherUser}) {
     try {
       _fireStore.collection('chats').add({
         'user1': user,
@@ -159,7 +161,7 @@ class FirebaseConnection {
     }
   }
 
-  Stream<QuerySnapshot> getMessageStream({@required String chatPath}) {
+  static Stream<QuerySnapshot> getMessageStream({@required String chatPath}) {
     try {
       var messageStream = _fireStore
           .document(chatPath)
@@ -173,7 +175,8 @@ class FirebaseConnection {
     return Stream.empty();
   }
 
-  void uploadMessage({@required String chatPath, @required Message message}) {
+  static void uploadMessage(
+      {@required String chatPath, @required Message message}) {
     try {
       _fireStore.document(chatPath).collection('messages').add(
         {
@@ -185,49 +188,5 @@ class FirebaseConnection {
     } catch (e) {
       print('Isaak could not upload message');
     }
-  }
-}
-
-class Message {
-  String sender;
-  String text;
-  var timestamp;
-
-  Message({
-    this.sender,
-    this.text,
-    this.timestamp,
-  });
-
-  Message.fromMap({Map<String, dynamic> map}) {
-    this.sender = map['sender'];
-    this.text = map['text'];
-    this.timestamp = map['timestamp']?.toDate() ?? DateTime.now();
-  }
-}
-
-class User {
-  String username;
-  String email;
-  String skillHashtags;
-  String wishHashtags;
-  int skillRate;
-  int wishRate;
-
-  User(
-      {this.username,
-      this.email,
-      this.skillHashtags,
-      this.wishHashtags,
-      this.skillRate,
-      this.wishRate});
-
-  User.fromMap({Map<String, dynamic> map}) {
-    this.username = map['username'];
-    this.email = map['email'];
-    this.skillHashtags = map['skillHashtags'];
-    this.wishHashtags = map['wishHashtags'];
-    this.skillRate = map['skillRate'];
-    this.wishRate = map['wishRate'];
   }
 }

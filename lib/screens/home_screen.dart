@@ -5,8 +5,7 @@ import 'package:float/services/firebase_connection.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:float/widgets/profile_item.dart';
-
-FirebaseConnection connection = FirebaseConnection();
+import 'package:float/models/user.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -21,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: <Widget>[
         StreamBuilder<QuerySnapshot>(
-          stream: connection.getUsersStream(),
+          stream: FirebaseConnection.getUsersStream(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final List<User> allUsers = [];

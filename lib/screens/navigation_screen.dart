@@ -4,8 +4,7 @@ import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/constants.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/profile_item.dart';
-
-FirebaseConnection connection = FirebaseConnection();
+import 'package:float/models/user.dart';
 
 class NavigationScreens extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -44,7 +43,6 @@ class _NavigationScreensState extends State<NavigationScreens> {
         unselectedItemColor: Colors.black,
         currentIndex: _selectedPage,
         onTap: (int index) async {
-          print('index = $index');
           switch (index) {
             case 0:
               setState(() {
@@ -126,9 +124,8 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     return StreamBuilder(
-      stream: connection.getUsersStream(),
+      stream: FirebaseConnection.getUsersStream(),
       builder: (context, snapshot) {
-        print('snapshot.hasData = ${snapshot.hasData}');
         if (!snapshot.hasData) {
           return Center(
             child: Text('Nodata'),
@@ -168,7 +165,7 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder(
-      stream: connection.getUsersStream(),
+      stream: FirebaseConnection.getUsersStream(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(

@@ -8,8 +8,6 @@ import 'package:float/widgets/alert.dart';
 import 'package:float/screens/navigation_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 
-FirebaseConnection connection = FirebaseConnection();
-
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
 
@@ -25,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    connection.autoLogin(context: context);
+    FirebaseConnection.autoLogin(context: context);
   }
 
   @override
@@ -79,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       showSpinner = true;
                     });
                     try {
-                      final user = await connection.signIn(
+                      final user = await FirebaseConnection.signIn(
                           email: email, password: password);
                       if (user != null) {
                         Navigator.pushNamed(context, NavigationScreens.id);

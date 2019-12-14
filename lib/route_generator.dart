@@ -3,8 +3,8 @@ import 'package:float/screens/chat_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/registration_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:float/services/firebase_connection.dart';
 import 'package:float/screens/navigation_screen.dart';
+import 'package:float/models/user.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {

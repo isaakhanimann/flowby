@@ -5,10 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/screens/login_screen.dart';
+import 'package:float/models/user.dart';
+import 'package:float/models/message.dart';
 
 FirebaseUser loggedInUser;
-
-FirebaseConnection connection = FirebaseConnection();
 
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
@@ -26,7 +26,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> getCurrentUser() async {
     try {
-      final user = await connection.getCurrentUser();
+      final user = await FirebaseConnection.getCurrentUser();
       if (user != null) {
         loggedInUser = user;
       }
@@ -37,15 +37,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void getChat() async {
     await getCurrentUser();
-    String chatPath = await connection.getChatPath(
+    String chatPath = await FirebaseConnection.getChatPath(
         user: loggedInUser.email, otherUser: widget.otherUser.email);
     if (chatPath == null) {
       //create chat
-      connection.createChat(
+      FirebaseConnection.createChat(
           user: loggedInUser.email, otherUser: widget.otherUser.email);
       getChat();
     }
-    var messageStream = connection.getMessageStream(chatPath: chatPath);
+    var messageStream = FirebaseConnection.getMessageStream(chatPath: chatPath);
     setState(() {
       this.chatPath = chatPath;
       this.messageStream = messageStream;
@@ -68,7 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
               icon: Icon(Icons.close),
               onPressed: () {
                 //Implement logout functionality
-                connection.signOut();
+                FirebaseConnection.signOut();
                 Navigator.pushNamed(context, LoginScreen.id);
               }),
         ],
@@ -215,7 +215,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
                     sender: loggedInUser.email,
                     text: messageText,
                     timestamp: FieldValue.serverTimestamp());
-                connection.uploadMessage(
+                FirebaseConnection.uploadMessage(
                     chatPath: widget.chatPath, message: message);
                 messageText = ''; // Reset locally the sent message
               }

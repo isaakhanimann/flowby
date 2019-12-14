@@ -9,6 +9,7 @@ import 'package:float/widgets/hashtag_bubble.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:float/models/user.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   static const String id = 'create_profile_screen';
@@ -18,8 +19,6 @@ class CreateProfileScreen extends StatefulWidget {
 }
 
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
-  FirebaseConnection connection = FirebaseConnection();
-
   String _databaseUsername;
   String _localUsername;
   String _databaseHashtagSkills;
@@ -74,7 +73,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   }
 
   void _reloadUserFromDatabase() async {
-    User user = await connection.getUser(userID: loggedInUser.email);
+    User user = await FirebaseConnection.getUser(userID: loggedInUser.email);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
       _databaseUsername = user?.username;
@@ -91,10 +90,10 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   }
 
   void _getAndSetData() async {
-    loggedInUser = await connection.getCurrentUser();
+    loggedInUser = await FirebaseConnection.getCurrentUser();
     String email = loggedInUser.email;
-    String imgUrl = await connection.getImageUrl(fileName: email);
-    User user = await connection.getUser(userID: email);
+    String imgUrl = await FirebaseConnection.getImageUrl(fileName: email);
+    User user = await FirebaseConnection.getUser(userID: email);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
       _databaseUsername = user?.username;
@@ -302,7 +301,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                 });
                 try {
                   if (_profilePic != null) {
-                    await connection.uploadImage(
+                    await FirebaseConnection.uploadImage(
                         fileName: loggedInUser.email, image: _profilePic);
                   }
                   User user = User(
@@ -312,7 +311,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       wishHashtags: _localHashtagWishes,
                       skillRate: _databaseSkillRate,
                       wishRate: _databaseWishRate);
-                  await connection.uploadUser(user: user);
+                  await FirebaseConnection.uploadUser(user: user);
                   await _reloadUserFromDatabase();
                 } catch (e) {
                   print('Could not upload and get on Save');
@@ -327,7 +326,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             ),
             GestureDetector(
               onTap: () {
-                connection.signOut();
+                FirebaseConnection.signOut();
                 Navigator.pushNamed(context, LoginScreen.id);
               },
               child: Text('Sign Out'),

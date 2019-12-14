@@ -8,8 +8,6 @@ import 'package:float/widgets/login_input_field.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/services/firebase_connection.dart';
 
-FirebaseConnection connection = FirebaseConnection();
-
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
 
@@ -65,7 +63,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     showSpinner = true;
                   });
                   try {
-                    final newUser = await connection.createUser(
+                    final newUser = await FirebaseConnection.createUser(
                         email: email, password: password);
                     if (newUser != null) {
                       Navigator.pushNamed(context, CreateProfileScreen.id);

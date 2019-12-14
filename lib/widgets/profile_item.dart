@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/screens/chat_screen.dart';
+import 'package:float/models/user.dart';
 
 class ProfileItem extends StatelessWidget {
   const ProfileItem({
@@ -17,7 +18,7 @@ class ProfileItem extends StatelessWidget {
         Navigator.pushNamed(context, ChatScreen.id, arguments: user);
       },
       leading: FutureBuilder(
-        future: connection.getImageUrl(fileName: user.email),
+        future: FirebaseConnection.getImageUrl(fileName: user.email),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return CircleAvatar(
