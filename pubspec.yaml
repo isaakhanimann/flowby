@@ -21,6 +21,7 @@ dependencies:
   rflutter_alert: ^1.0.3
   flutter_spinkit: ^4.0.0
   geolocator: ^5.1.5
+  provider: ^3.2.0
 
 dev_dependencies:
   flutter_test:

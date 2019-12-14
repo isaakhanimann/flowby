@@ -1,12 +1,13 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:float/screens/navigation_screen.dart';
-import 'package:float/models/user.dart';
 import 'package:float/models/message.dart';
+import 'package:float/models/user.dart';
+import 'package:float/screens/navigation_screen.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 final _fireStore = Firestore.instance;
 final _auth = FirebaseAuth.instance;
@@ -32,6 +33,10 @@ class FirebaseConnection {
     if (user != null) {
       Navigator.pushNamed(context, NavigationScreens.id);
     }
+  }
+
+  static Stream<FirebaseUser> getAuthenticationStream() {
+    return _auth.onAuthStateChanged;
   }
 
   static Future<AuthResult> createUser(

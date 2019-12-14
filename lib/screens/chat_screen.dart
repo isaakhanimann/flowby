@@ -1,14 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:float/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:float/services/firebase_connection.dart';
-import 'package:float/screens/login_screen.dart';
-import 'package:float/models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:float/constants.dart';
 import 'package:float/models/message.dart';
-
-FirebaseUser loggedInUser;
+import 'package:float/models/user.dart';
+import 'package:float/screens/login_screen.dart';
+import 'package:float/services/firebase_connection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
@@ -21,72 +20,57 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  String chatPath;
-  Stream<QuerySnapshot> messageStream;
-
-  Future<void> getCurrentUser() async {
-    try {
-      final user = await FirebaseConnection.getCurrentUser();
-      if (user != null) {
-        loggedInUser = user;
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void getChat() async {
-    await getCurrentUser();
-    String chatPath = await FirebaseConnection.getChatPath(
-        user: loggedInUser.email, otherUser: widget.otherUser.email);
-    if (chatPath == null) {
-      //create chat
-      FirebaseConnection.createChat(
-          user: loggedInUser.email, otherUser: widget.otherUser.email);
-      getChat();
-    }
-    var messageStream = FirebaseConnection.getMessageStream(chatPath: chatPath);
-    setState(() {
-      this.chatPath = chatPath;
-      this.messageStream = messageStream;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getChat();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                //Implement logout functionality
-                FirebaseConnection.signOut();
-                Navigator.pushNamed(context, LoginScreen.id);
-              }),
-        ],
-        title: Text(widget.otherUser.username ?? 'Default'),
-        backgroundColor: kDarkGreenColor,
-      ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            MessagesStream(
-              messagesStream: messageStream,
+    var loggedInUser = Provider.of<FirebaseUser>(context);
+
+    return FutureBuilder(
+      future: FirebaseConnection.getChatPath(
+          user: loggedInUser.email, otherUser: widget.otherUser.email),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container(color: Colors.white);
+        } else {
+          String chatPath = snapshot.data;
+          if (chatPath == null) {
+            //create chat
+            FirebaseConnection.createChat(
+                user: loggedInUser.email, otherUser: widget.otherUser.email);
+          }
+
+          var messageStream =
+              FirebaseConnection.getMessageStream(chatPath: chatPath);
+
+          return Scaffold(
+            appBar: AppBar(
+              leading: null,
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      //Implement logout functionality
+                      FirebaseConnection.signOut();
+                      Navigator.pushNamed(context, LoginScreen.id);
+                    }),
+              ],
+              title: Text(widget.otherUser.username ?? 'Default'),
+              backgroundColor: kDarkGreenColor,
             ),
-            MessageSendingSection(chatPath: chatPath),
-          ],
-        ),
-      ),
+            body: SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  MessagesStream(
+                    messagesStream: messageStream,
+                  ),
+                  MessageSendingSection(chatPath: chatPath),
+                ],
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }
@@ -129,6 +113,8 @@ class MessagesStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var loggedInUser = Provider.of<FirebaseUser>(context);
+
     return StreamBuilder<QuerySnapshot>(
       stream: messagesStream,
       builder: (context, snapshot) {
@@ -190,6 +176,8 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
 
   @override
   Widget build(BuildContext context) {
+    var loggedInUser = Provider.of<FirebaseUser>(context);
+
     return Container(
       decoration: kMessageContainerDecoration,
       child: Row(

@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:float/screens/registration_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/screens/login_screen.dart';
+import 'package:float/services/firebase_connection.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'route_generator.dart';
 
 void main() => runApp(Float());
@@ -8,10 +11,16 @@ void main() => runApp(Float());
 class Float extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: LoginScreen.id,
-      onGenerateRoute: RouteGenerator.generateRoute,
+    return MultiProvider(
+      providers: [
+        StreamProvider<FirebaseUser>.value(
+            value: FirebaseConnection.getAuthenticationStream())
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        initialRoute: LoginScreen.id,
+        onGenerateRoute: RouteGenerator.generateRoute,
+      ),
     );
   }
 }
