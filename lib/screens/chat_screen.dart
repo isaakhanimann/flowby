@@ -30,46 +30,45 @@ class _ChatScreenState extends State<ChatScreen> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Container(color: Colors.white);
-        } else {
-          String chatPath = snapshot.data;
-          if (chatPath == null) {
-            //create chat
-            FirebaseConnection.createChat(
-                user: loggedInUser.email, otherUser: widget.otherUser.email);
-          }
-
-          var messageStream =
-              FirebaseConnection.getMessageStream(chatPath: chatPath);
-
-          return Scaffold(
-            appBar: AppBar(
-              leading: null,
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      //Implement logout functionality
-                      FirebaseConnection.signOut();
-                      Navigator.pushNamed(context, LoginScreen.id);
-                    }),
-              ],
-              title: Text(widget.otherUser.username ?? 'Default'),
-              backgroundColor: kDarkGreenColor,
-            ),
-            body: SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  MessagesStream(
-                    messagesStream: messageStream,
-                  ),
-                  MessageSendingSection(chatPath: chatPath),
-                ],
-              ),
-            ),
-          );
         }
+        String chatPath = snapshot.data;
+        if (chatPath == null) {
+          //create chat
+          FirebaseConnection.createChat(
+              user: loggedInUser.email, otherUser: widget.otherUser.email);
+        }
+
+        var messageStream =
+            FirebaseConnection.getMessageStream(chatPath: chatPath);
+
+        return Scaffold(
+          appBar: AppBar(
+            leading: null,
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    //Implement logout functionality
+                    FirebaseConnection.signOut();
+                    Navigator.pushNamed(context, LoginScreen.id);
+                  }),
+            ],
+            title: Text(widget.otherUser.username ?? 'Default'),
+            backgroundColor: kDarkGreenColor,
+          ),
+          body: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                MessagesStream(
+                  messagesStream: messageStream,
+                ),
+                MessageSendingSection(chatPath: chatPath),
+              ],
+            ),
+          ),
+        );
       },
     );
   }

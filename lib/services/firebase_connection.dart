@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,6 +9,7 @@ import 'package:float/models/user.dart';
 import 'package:float/screens/navigation_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 final _fireStore = Firestore.instance;
 final _auth = FirebaseAuth.instance;
@@ -112,9 +113,10 @@ class FirebaseConnection {
     }
   }
 
-  static StreamZip getSpecifiedUsersStream({@required List<String> uids}) {
+  static Stream<List<User>> getSpecifiedUsersStream(
+      {@required List<String> uids}) {
     try {
-      StreamZip usersStream = Stream.empty();
+      Stream<List<User>> usersStream = Stream.empty();
       for (var uid in uids) {
         Stream<List<User>> streamToAdd = _fireStore
             .collection('users')
@@ -123,7 +125,7 @@ class FirebaseConnection {
             .map((snap) => snap.documents
                 .map((doc) => User.fromMap(map: doc.data))
                 .toList());
-        usersStream = StreamZip([usersStream, streamToAdd]);
+        usersStream = MergeStream([usersStream, streamToAdd]);
       }
 
       return usersStream;
@@ -133,7 +135,7 @@ class FirebaseConnection {
     }
   }
 
-  Future<List<String>> getUidOfChatUsers(
+  static Future<List<String>> getUidOfChatUsers(
       {@required String loggedInUser}) async {
     List<String> uids = [];
     QuerySnapshot snap1 = await _fireStore
