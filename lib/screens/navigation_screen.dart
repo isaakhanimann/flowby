@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:float/screens/home_screen.dart';
-import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/constants.dart';
+import 'package:float/models/user.dart';
+import 'package:float/screens/create_profile_screen.dart';
+import 'package:float/screens/home_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/profile_item.dart';
-import 'package:float/models/user.dart';
+import 'package:flutter/material.dart';
 
 class NavigationScreens extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -123,7 +123,7 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<List<User>>(
       stream: FirebaseConnection.getUsersStream(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -132,10 +132,7 @@ class DataSearch extends SearchDelegate<String> {
           );
         }
 
-        final List<User> allUsers = [];
-        for (var userdoc in snapshot.data.documents) {
-          allUsers.add(User.fromMap(map: userdoc.data));
-        }
+        final List<User> allUsers = snapshot.data;
 
         final List<User> suggestedUsers = allUsers
             .where(
@@ -164,7 +161,7 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<List<User>>(
       stream: FirebaseConnection.getUsersStream(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -173,10 +170,7 @@ class DataSearch extends SearchDelegate<String> {
           );
         }
 
-        final List<User> allUsers = [];
-        for (var userdoc in snapshot.data.documents) {
-          allUsers.add(User.fromMap(map: userdoc.data));
-        }
+        final List<User> allUsers = snapshot.data;
 
         final List<User> suggestedUsers = allUsers
             .where(
