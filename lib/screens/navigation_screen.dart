@@ -1,5 +1,6 @@
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
+import 'package:float/screens/chat_overview_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/home_screen.dart';
 import 'package:float/services/firebase_connection.dart';
@@ -15,7 +16,11 @@ class NavigationScreens extends StatefulWidget {
 
 class _NavigationScreensState extends State<NavigationScreens> {
   int _selectedPage = 0;
-  final _pageOptions = [HomeScreen(), CreateProfileScreen()];
+  final _pageOptions = [
+    HomeScreen(),
+    ChatOverviewScreen(),
+    CreateProfileScreen()
+  ];
 
   Widget _getPage({int pageNumber}) {
     switch (pageNumber) {
@@ -24,9 +29,9 @@ class _NavigationScreensState extends State<NavigationScreens> {
       case 1:
         return _pageOptions[0];
       case 2:
-        return _pageOptions[0];
-      default:
         return _pageOptions[1];
+      default:
+        return _pageOptions[2];
     }
   }
 
@@ -43,6 +48,8 @@ class _NavigationScreensState extends State<NavigationScreens> {
         unselectedItemColor: Colors.black,
         currentIndex: _selectedPage,
         onTap: (int index) async {
+          print('index = $index');
+
           switch (index) {
             case 0:
               setState(() {
