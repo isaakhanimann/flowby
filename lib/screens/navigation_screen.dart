@@ -48,8 +48,6 @@ class _NavigationScreensState extends State<NavigationScreens> {
         unselectedItemColor: Colors.black,
         currentIndex: _selectedPage,
         onTap: (int index) async {
-          print('index = $index');
-
           switch (index) {
             case 0:
               setState(() {

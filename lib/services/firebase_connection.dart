@@ -148,10 +148,12 @@ class FirebaseConnection {
         .getDocuments();
 
     for (var doc in snap1.documents) {
-      uids.add(doc.data['user1']);
+      print('snap1 user 2 = ${doc.data['user2']}');
+      uids.add(doc.data['user2']);
     }
     for (var doc in snap2.documents) {
-      uids.add(doc.data['user2']);
+      print('snap1 user 1 = ${doc.data['user1']}');
+      uids.add(doc.data['user1']);
     }
 
     return uids;
