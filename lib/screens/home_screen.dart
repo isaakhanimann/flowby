@@ -1,11 +1,10 @@
+import 'package:float/constants.dart';
+import 'package:float/models/user.dart';
+import 'package:float/services/firebase_connection.dart';
+import 'package:float/widgets/profile_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:float/constants.dart';
-import 'package:float/services/firebase_connection.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:float/widgets/profile_item.dart';
-import 'package:float/models/user.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -19,16 +18,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        StreamBuilder<QuerySnapshot>(
+        StreamBuilder<List<User>>(
           stream: FirebaseConnection.getUsersStream(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final List<User> allUsers = [];
-              for (var userdoc in snapshot.data.documents) {
-                allUsers.add(User.fromMap(map: userdoc.data));
-              }
+              final List<User> users = snapshot.data;
               List<Widget> userWidgets = [];
-              for (User user in allUsers) {
+              for (User user in users) {
                 final userWidget = Column(
                   children: <Widget>[
                     Divider(

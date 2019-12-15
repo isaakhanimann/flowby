@@ -115,9 +115,12 @@ class FirebaseConnection {
 //    }
 //  }
 
-  static Stream<QuerySnapshot> getUsersStream() {
+  static Stream<List<User>> getUsersStream() {
     try {
-      var userSnapshots = _fireStore.collection('users').snapshots();
+      var userSnapshots = _fireStore.collection('users').snapshots().map(
+          (snap) => snap.documents
+              .map((doc) => User.fromMap(map: doc.data))
+              .toList());
       return userSnapshots;
     } catch (e) {
       print('Isaak could not get stream of users');
@@ -173,7 +176,7 @@ class FirebaseConnection {
           .collection('messages')
           .orderBy('timestamp')
           .snapshots()
-          .map((snapshot) => snapshot.documents.reversed
+          .map((snap) => snap.documents.reversed
               .map((doc) => Message.fromMap(map: doc.data))
               .toList());
       return messageStream;
