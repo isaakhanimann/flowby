@@ -98,22 +98,22 @@ class FirebaseConnection {
     }
   }
 
-  static Future<List<User>> getAllUsers() async {
-    try {
-      QuerySnapshot snapshot =
-          await _fireStore.collection('users').getDocuments();
-      List<User> listOfUsers = [];
-      for (var document in snapshot.documents) {
-        if (document != null) {
-          listOfUsers.add(User.fromMap(map: document.data));
-        }
-      }
-      return listOfUsers;
-    } catch (e) {
-      print('Isaak could not get all the users');
-      return null;
-    }
-  }
+//  static Future<List<User>> getAllUsers() async {
+//    try {
+//      QuerySnapshot snapshot =
+//          await _fireStore.collection('users').getDocuments();
+//      List<User> listOfUsers = [];
+//      for (var document in snapshot.documents) {
+//        if (document != null) {
+//          listOfUsers.add(User.fromMap(map: document.data));
+//        }
+//      }
+//      return listOfUsers;
+//    } catch (e) {
+//      print('Isaak could not get all the users');
+//      return null;
+//    }
+//  }
 
   static Stream<QuerySnapshot> getUsersStream() {
     try {
@@ -166,13 +166,16 @@ class FirebaseConnection {
     }
   }
 
-  static Stream<QuerySnapshot> getMessageStream({@required String chatPath}) {
+  static Stream<List<Message>> getMessageStream({@required String chatPath}) {
     try {
       var messageStream = _fireStore
           .document(chatPath)
           .collection('messages')
           .orderBy('timestamp')
-          .snapshots();
+          .snapshots()
+          .map((snapshot) => snapshot.documents.reversed
+              .map((doc) => Message.fromMap(map: doc.data))
+              .toList());
       return messageStream;
     } catch (e) {
       print('Isaak could not get the message stream');

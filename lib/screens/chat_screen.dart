@@ -115,7 +115,7 @@ class MessagesStream extends StatelessWidget {
   Widget build(BuildContext context) {
     var loggedInUser = Provider.of<FirebaseUser>(context);
 
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<List<Message>>(
       stream: messagesStream,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -127,10 +127,7 @@ class MessagesStream extends StatelessWidget {
           );
         }
 
-        final List<Message> messages = [];
-        for (var messagedoc in snapshot.data.documents.reversed) {
-          messages.add(Message.fromMap(map: messagedoc.data));
-        }
+        final List<Message> messages = snapshot.data;
 
         List<MessageBubble> messageBubbles = [];
         for (var message in messages) {
