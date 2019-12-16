@@ -5,6 +5,7 @@ import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/home_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/profile_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NavigationScreens extends StatefulWidget {
@@ -41,11 +42,8 @@ class _NavigationScreensState extends State<NavigationScreens> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(child: _getPage(pageNumber: _selectedPage)),
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: true,
-        showUnselectedLabels: false,
-        selectedItemColor: kDarkGreenColor,
-        unselectedItemColor: Colors.black,
+      bottomNavigationBar: CupertinoTabBar(
+        activeColor: kDarkGreenColor,
         currentIndex: _selectedPage,
         onTap: (int index) async {
           switch (index) {
@@ -79,19 +77,27 @@ class _NavigationScreensState extends State<NavigationScreens> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(
+              CupertinoIcons.home,
+            ),
             title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: Icon(
+              CupertinoIcons.search,
+            ),
             title: Text('Search'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message),
+            icon: Icon(
+              CupertinoIcons.conversation_bubble,
+            ),
             title: Text('Messages'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(
+              CupertinoIcons.person,
+            ),
             title: Text('Profile'),
           ),
         ],
