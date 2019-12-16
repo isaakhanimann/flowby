@@ -116,17 +116,19 @@ class FirebaseConnection {
   static Stream<List<User>> getSpecifiedUsersStream(
       {@required List<String> uids}) {
     try {
-      Stream<List<User>> usersStream = Stream.empty();
+      List<Stream<User>> listOfStreams = [];
       for (var uid in uids) {
-        Stream<List<User>> streamToAdd = _fireStore
+        Stream<User> streamToAdd = _fireStore
             .collection('users')
             .where('email', isEqualTo: uid)
             .snapshots()
             .map((snap) => snap.documents
                 .map((doc) => User.fromMap(map: doc.data))
-                .toList());
-        usersStream = MergeStream([usersStream, streamToAdd]);
+                .toList()[0]);
+        listOfStreams.add(streamToAdd);
       }
+
+      Stream<List<User>> usersStream = ZipStream.list(listOfStreams);
 
       return usersStream;
     } catch (e) {
@@ -148,11 +150,9 @@ class FirebaseConnection {
         .getDocuments();
 
     for (var doc in snap1.documents) {
-      print('snap1 user 2 = ${doc.data['user2']}');
       uids.add(doc.data['user2']);
     }
     for (var doc in snap2.documents) {
-      print('snap1 user 1 = ${doc.data['user1']}');
       uids.add(doc.data['user1']);
     }
 

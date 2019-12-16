@@ -15,33 +15,34 @@ class StreamListUsers extends StatelessWidget {
     return StreamBuilder<List<User>>(
       stream: userStream,
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final List<User> users = snapshot.data;
-          List<Widget> userWidgets = [];
-          for (User user in users) {
-            final userWidget = Column(
-              children: <Widget>[
-                Divider(
-                  height: 10,
-                ),
-                ProfileItem(
-                  user: user,
-                )
-              ],
-            );
-            userWidgets.add(userWidget);
-          }
+        if (!snapshot.hasData) {
           return Expanded(
-            child: ListView(
-              children: userWidgets,
+            child: Center(
+              child: SpinKitPumpingHeart(
+                color: kDarkGreenColor,
+                size: 100,
+              ),
             ),
           );
         }
-        return Container(
-          color: Colors.white,
-          child: SpinKitPumpingHeart(
-            color: kDarkGreenColor,
-            size: 100,
+        final List<User> users = snapshot.data;
+        List<Widget> userWidgets = [];
+        for (User user in users) {
+          final userWidget = Column(
+            children: <Widget>[
+              Divider(
+                height: 10,
+              ),
+              ProfileItem(
+                user: user,
+              )
+            ],
+          );
+          userWidgets.add(userWidget);
+        }
+        return Expanded(
+          child: ListView(
+            children: userWidgets,
           ),
         );
       },

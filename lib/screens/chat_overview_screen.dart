@@ -11,7 +11,6 @@ class ChatOverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var loggedInUser = Provider.of<FirebaseUser>(context);
-    print('loggedInUser = $loggedInUser');
     return FutureBuilder(
         future: FirebaseConnection.getUidOfChatUsers(
             loggedInUser: loggedInUser.email),
@@ -20,8 +19,6 @@ class ChatOverviewScreen extends StatelessWidget {
             return Container(color: Colors.white);
           }
           List<String> uids = snapshot.data;
-
-          print('uids = $uids');
 
           return Column(
             children: <Widget>[
