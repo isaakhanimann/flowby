@@ -4,10 +4,10 @@ import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/material.dart';
 
 class ProfileItem extends StatelessWidget {
-  final searchSkill;
+  final isSkillSearch;
   final User user;
 
-  ProfileItem({@required this.user, this.searchSkill = true});
+  ProfileItem({@required this.user, this.isSkillSearch = true});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class ProfileItem extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(
-            searchSkill ? user.skillHashtags : user.wishHashtags,
+            isSkillSearch ? user.skillHashtags : user.wishHashtags,
             style: TextStyle(color: Colors.grey, fontSize: 14),
           )
         ],
@@ -45,7 +45,8 @@ class ProfileItem extends StatelessWidget {
       subtitle: Container(
         padding: EdgeInsets.only(top: 5),
         child: Text(
-          (searchSkill ? user.skillRate : user.wishRate).toString() + ' CHF/h',
+          (isSkillSearch ? user.skillRate : user.wishRate).toString() +
+              ' CHF/h',
           style: TextStyle(color: Colors.grey, fontSize: 15),
         ),
       ),

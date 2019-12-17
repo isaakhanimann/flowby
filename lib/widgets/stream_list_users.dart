@@ -39,7 +39,7 @@ class StreamListUsers extends StatelessWidget {
                       ),
                       ProfileItem(
                         user: user,
-                        searchSkill: searchSkill,
+                        isSkillSearch: searchSkill,
                       )
                     ],
                   ),

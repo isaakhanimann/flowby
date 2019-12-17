@@ -17,11 +17,17 @@ class NavigationScreens extends StatefulWidget {
 
 class _NavigationScreensState extends State<NavigationScreens> {
   int _selectedPage = 0;
-  final _pageOptions = [
-    HomeScreen(),
-    ChatOverviewScreen(),
-    CreateProfileScreen()
-  ];
+  bool showSearchBar = false;
+  List<Widget> _pageOptions;
+  List<bool> selections = [true, false];
+
+  void changeSearch(int index) {
+    setState(() {
+      selections[index] = !selections[index];
+      int otherIndex = (index + 1) % 2;
+      selections[otherIndex] = !selections[otherIndex];
+    });
+  }
 
   Widget _getPage({int pageNumber}) {
     switch (pageNumber) {
@@ -36,10 +42,13 @@ class _NavigationScreensState extends State<NavigationScreens> {
     }
   }
 
-  bool showSearchBar = false;
-
   @override
   Widget build(BuildContext context) {
+    _pageOptions = [
+      HomeScreen(selections: selections, changeSearch: changeSearch),
+      ChatOverviewScreen(),
+      CreateProfileScreen()
+    ];
     return Scaffold(
       body: SafeArea(child: _getPage(pageNumber: _selectedPage)),
       bottomNavigationBar: CupertinoTabBar(
@@ -54,7 +63,9 @@ class _NavigationScreensState extends State<NavigationScreens> {
               break;
             case 1:
               //search was pressed
-              await showSearch(context: context, delegate: DataSearch());
+              await showSearch(
+                  context: context,
+                  delegate: DataSearch(isSkillSearch: selections[0]));
               setState(() {
                 _selectedPage = 1;
               });
@@ -107,6 +118,9 @@ class _NavigationScreensState extends State<NavigationScreens> {
 }
 
 class DataSearch extends SearchDelegate<String> {
+  bool isSkillSearch;
+  DataSearch({@required this.isSkillSearch});
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -144,11 +158,19 @@ class DataSearch extends SearchDelegate<String> {
         }
 
         final List<User> allUsers = snapshot.data;
+        List<User> suggestedUsers;
 
-        final List<User> suggestedUsers = allUsers
-            .where(
-                (u) => u.skillHashtags.toString().toLowerCase().contains(query))
-            .toList();
+        if (isSkillSearch) {
+          suggestedUsers = allUsers
+              .where((u) =>
+                  u.skillHashtags.toString().toLowerCase().contains(query))
+              .toList();
+        } else {
+          suggestedUsers = allUsers
+              .where((u) =>
+                  u.wishHashtags.toString().toLowerCase().contains(query))
+              .toList();
+        }
 
         return ListView(
           children: suggestedUsers
@@ -160,6 +182,7 @@ class DataSearch extends SearchDelegate<String> {
                     ),
                     ProfileItem(
                       user: user,
+                      isSkillSearch: isSkillSearch,
                     )
                   ],
                 ),
@@ -183,10 +206,19 @@ class DataSearch extends SearchDelegate<String> {
 
         final List<User> allUsers = snapshot.data;
 
-        final List<User> suggestedUsers = allUsers
-            .where(
-                (u) => u.skillHashtags.toString().toLowerCase().contains(query))
-            .toList();
+        List<User> suggestedUsers;
+
+        if (isSkillSearch) {
+          suggestedUsers = allUsers
+              .where((u) =>
+                  u.skillHashtags.toString().toLowerCase().contains(query))
+              .toList();
+        } else {
+          suggestedUsers = allUsers
+              .where((u) =>
+                  u.wishHashtags.toString().toLowerCase().contains(query))
+              .toList();
+        }
 
         return ListView(
           children: suggestedUsers
@@ -196,6 +228,7 @@ class DataSearch extends SearchDelegate<String> {
                       query = newQuery;
                     },
                     showResults: showResults,
+                    isSkillSearch: isSkillSearch,
                   ))
               .toList(),
         );
@@ -208,22 +241,24 @@ class SuggestionItem extends StatelessWidget {
   final User user;
   final Function setQuery;
   final Function showResults;
+  final bool isSkillSearch;
 
   SuggestionItem(
       {@required this.user,
       @required this.setQuery,
-      @required this.showResults});
+      @required this.showResults,
+      @required this.isSkillSearch});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        setQuery(user.skillHashtags);
+        setQuery(isSkillSearch ? user.skillHashtags : user.wishHashtags);
         showResults(context);
       },
       leading: Icon(Icons.insert_emoticon),
       title: Text(
-        user.skillHashtags,
+        isSkillSearch ? user.skillHashtags : user.wishHashtags,
         style: TextStyle(fontSize: 18),
       ),
     );

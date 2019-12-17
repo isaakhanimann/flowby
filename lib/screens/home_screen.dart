@@ -4,28 +4,19 @@ import 'package:float/widgets/stream_list_users.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   static const String id = 'home_screen';
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  List<bool> _selections = [true, false];
+  final List<bool> selections;
+  final Function changeSearch;
+  HomeScreen({@required this.selections, @required this.changeSearch});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         ToggleButtons(
-          isSelected: _selections,
-          onPressed: (index) {
-            setState(() {
-              _selections[index] = !_selections[index];
-              int otherIndex = (index + 1) % 2;
-              _selections[otherIndex] = !_selections[otherIndex];
-            });
-          },
+          isSelected: selections,
+          onPressed: changeSearch,
           selectedColor: kDarkGreenColor,
           fillColor: Colors.transparent,
           selectedBorderColor: kDarkGreenColor,
@@ -44,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         StreamListUsers(
           userStream: FirebaseConnection.getUsersStream(),
-          searchSkill: _selections[0],
+          searchSkill: selections[0],
         ),
       ],
     );
