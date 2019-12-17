@@ -7,8 +7,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class StreamListUsers extends StatelessWidget {
   final Stream<List<User>> userStream;
+  final bool searchSkill;
 
-  StreamListUsers({@required this.userStream});
+  StreamListUsers({@required this.userStream, this.searchSkill = true});
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +36,7 @@ class StreamListUsers extends StatelessWidget {
               ),
               ProfileItem(
                 user: user,
+                searchSkill: searchSkill,
               )
             ],
           );
