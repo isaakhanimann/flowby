@@ -27,24 +27,24 @@ class StreamListUsers extends StatelessWidget {
           );
         }
         final List<User> users = snapshot.data;
-        List<Widget> userWidgets = [];
-        for (User user in users) {
-          final userWidget = Column(
-            children: <Widget>[
-              Divider(
-                height: 10,
-              ),
-              ProfileItem(
-                user: user,
-                searchSkill: searchSkill,
-              )
-            ],
-          );
-          userWidgets.add(userWidget);
-        }
+
         return Expanded(
           child: ListView(
-            children: userWidgets,
+            children: users
+                .map<Widget>(
+                  (user) => Column(
+                    children: <Widget>[
+                      Divider(
+                        height: 10,
+                      ),
+                      ProfileItem(
+                        user: user,
+                        searchSkill: searchSkill,
+                      )
+                    ],
+                  ),
+                )
+                .toList(),
           ),
         );
       },
