@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/chat_overview_screen.dart';
@@ -7,6 +8,7 @@ import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/profile_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NavigationScreens extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -148,8 +150,9 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
+    var loggedInUser = Provider.of<FirebaseUser>(context);
     return StreamBuilder<List<User>>(
-      stream: FirebaseConnection.getUsersStream(),
+      stream: FirebaseConnection.getUsersStream(loggedInUser: loggedInUser),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
@@ -195,8 +198,10 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    var loggedInUser = Provider.of<FirebaseUser>(context);
+
     return StreamBuilder<List<User>>(
-      stream: FirebaseConnection.getUsersStream(),
+      stream: FirebaseConnection.getUsersStream(loggedInUser: loggedInUser),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(

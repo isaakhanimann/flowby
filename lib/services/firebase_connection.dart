@@ -100,11 +100,13 @@ class FirebaseConnection {
     }
   }
 
-  static Stream<List<User>> getUsersStream() {
+  static Stream<List<User>> getUsersStream(
+      {@required FirebaseUser loggedInUser}) {
     try {
       var userSnapshots = _fireStore.collection('users').snapshots().map(
           (snap) => snap.documents
               .map((doc) => User.fromMap(map: doc.data))
+              .where((user) => user.email != loggedInUser.email)
               .toList());
       return userSnapshots;
     } catch (e) {
