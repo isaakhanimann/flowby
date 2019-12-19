@@ -5,6 +5,7 @@ import 'package:float/screens/chat_overview_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/home_screen.dart';
 import 'package:float/services/firebase_connection.dart';
+import 'package:float/services/location.dart';
 import 'package:float/widgets/profile_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,15 @@ class _NavigationScreensState extends State<NavigationScreens> {
         return _pageOptions[1];
       default:
         return _pageOptions[2];
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    var loggedInUser = Provider.of<FirebaseUser>(context);
+    if (loggedInUser != null) {
+      Location.getLastKnownPositionAndUploadIt(userEmail: loggedInUser.email);
     }
   }
 

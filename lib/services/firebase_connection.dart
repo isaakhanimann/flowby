@@ -9,6 +9,7 @@ import 'package:float/models/user.dart';
 import 'package:float/screens/navigation_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 
 final _fireStore = Firestore.instance;
@@ -231,6 +232,18 @@ class FirebaseConnection {
       );
     } catch (e) {
       print('Isaak could not upload message');
+    }
+  }
+
+  static void uploadUsersLocation(
+      {@required String userEmail, @required Position position}) {
+    try {
+      _fireStore.collection('users').document(userEmail).updateData({
+        'location': GeoPoint(position.latitude, position.longitude),
+        'locationTimestamp': position.timestamp
+      });
+    } catch (e) {
+      print('Isaak could not upload position info');
     }
   }
 }
