@@ -1,3 +1,4 @@
+import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:float/services/firebase_connection.dart';
@@ -11,53 +12,64 @@ class ProfileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        Navigator.pushNamed(context, ChatScreen.id, arguments: user);
-      },
-      leading: FutureBuilder(
-        future: FirebaseConnection.getImageUrl(fileName: user.email),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+    return Card(
+      elevation: 0,
+      color: kLightGrey2,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15))),
+      child: ListTile(
+        onTap: () {
+          Navigator.pushNamed(context, ChatScreen.id, arguments: user);
+        },
+        leading: FutureBuilder(
+          future: FirebaseConnection.getImageUrl(fileName: user.email),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return CircleAvatar(
+                radius: 30,
+                backgroundColor: Colors.grey,
+                backgroundImage: NetworkImage(snapshot.data),
+              );
+            }
             return CircleAvatar(
               backgroundColor: Colors.grey,
-              backgroundImage: NetworkImage(snapshot.data),
             );
-          }
-          return CircleAvatar(
-            backgroundColor: Colors.grey,
-          );
-        },
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            user.username ?? 'Default',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Text(
-            isSkillSearch ? user.skillHashtags : user.wishHashtags,
-            style: TextStyle(color: Colors.grey, fontSize: 14),
-          )
-        ],
-      ),
-      subtitle: Row(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(top: 5),
-            child: Text(
-              (isSkillSearch ? user.skillRate : user.wishRate).toString() +
-                  ' CHF/h',
-              style: TextStyle(color: Colors.grey, fontSize: 15),
+          },
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              user.username ?? 'Default',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-          ),
-          Text(user.location?.longitude.toString()),
-        ],
-      ),
-      trailing: IconButton(
-        icon: Icon(Icons.keyboard_arrow_right),
-        onPressed: () {},
+            Text(user.location?.longitude?.floor().toString()),
+          ],
+        ),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Flexible(
+              child: Text(
+                isSkillSearch ? user.skillHashtags : user.wishHashtags,
+                style: TextStyle(color: Colors.grey, fontSize: 14),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Text(
+                (isSkillSearch ? user.skillRate : user.wishRate).toString() +
+                    ' CHF/h',
+                style: TextStyle(color: Colors.grey, fontSize: 15),
+              ),
+            ),
+          ],
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.keyboard_arrow_right),
+          onPressed: () {},
+        ),
       ),
     );
   }

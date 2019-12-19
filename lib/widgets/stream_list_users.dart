@@ -34,9 +34,6 @@ class StreamListUsers extends StatelessWidget {
                 .map<Widget>(
                   (user) => Column(
                     children: <Widget>[
-                      Divider(
-                        height: 10,
-                      ),
                       ProfileItem(
                         user: user,
                         isSkillSearch: searchSkill,

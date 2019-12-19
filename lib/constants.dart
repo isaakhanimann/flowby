@@ -46,3 +46,11 @@ const kBeigeColor = Color(0xFFFCF9EC);
 const kLightGreenColor = Color(0xFFB0F4E6);
 const kMiddleGreenColor = Color(0xFF67EACA);
 const kDarkGreenColor = Color(0xFF12D3CF);
+
+const kBrightGreen = Color(0xff08ffc8);
+const kAlmostWhite = Color(0xFFfff7f7);
+const kLightGrey = Color(0xFFdadada);
+const kDarkBlue = Color(0xFF204969);
+
+const kVeryLightGrey = Color(0xFFf6f6f6);
+const kLightGrey2 = Color(0xFFf4f4f4);
