@@ -239,8 +239,8 @@ class FirebaseConnection {
       {@required String userEmail, @required Position position}) {
     try {
       _fireStore.collection('users').document(userEmail).updateData({
-        'location': GeoPoint(position.latitude, position.longitude),
-        'locationTimestamp': position.timestamp
+        'location': GeoPoint(position.latitude, position.longitude)
+//        , 'locationTimestamp': position.timestamp
       });
     } catch (e) {
       print('Isaak could not upload position info');

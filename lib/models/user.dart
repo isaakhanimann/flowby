@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
   String username;
   String email;
@@ -5,6 +7,7 @@ class User {
   String wishHashtags;
   int skillRate;
   int wishRate;
+  GeoPoint location;
 
   User(
       {this.username,
@@ -12,7 +15,8 @@ class User {
       this.skillHashtags,
       this.wishHashtags,
       this.skillRate,
-      this.wishRate});
+      this.wishRate,
+      this.location});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'];
@@ -21,5 +25,6 @@ class User {
     this.wishHashtags = map['wishHashtags'];
     this.skillRate = map['skillRate'];
     this.wishRate = map['wishRate'];
+    this.location = map['location'];
   }
 }

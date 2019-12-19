@@ -42,13 +42,18 @@ class ProfileItem extends StatelessWidget {
           )
         ],
       ),
-      subtitle: Container(
-        padding: EdgeInsets.only(top: 5),
-        child: Text(
-          (isSkillSearch ? user.skillRate : user.wishRate).toString() +
-              ' CHF/h',
-          style: TextStyle(color: Colors.grey, fontSize: 15),
-        ),
+      subtitle: Row(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(top: 5),
+            child: Text(
+              (isSkillSearch ? user.skillRate : user.wishRate).toString() +
+                  ' CHF/h',
+              style: TextStyle(color: Colors.grey, fontSize: 15),
+            ),
+          ),
+          Text(user.location?.longitude.toString()),
+        ],
       ),
       trailing: IconButton(
         icon: Icon(Icons.keyboard_arrow_right),
