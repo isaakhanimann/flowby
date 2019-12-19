@@ -10,14 +10,12 @@ const kBigTitleTextStyle = TextStyle(
   fontSize: 45.0,
   fontWeight: FontWeight.w900,
   color: kDarkGreenColor,
-  letterSpacing: 3.0,
 );
 
 const kMiddleTitleTextStyle = TextStyle(
   fontSize: 35.0,
   fontWeight: FontWeight.w900,
   color: kDarkGreenColor,
-  letterSpacing: 3.0,
 );
 
 const kSmallTitleTextStyle = TextStyle(

@@ -44,7 +44,7 @@ class ProfileItem extends StatelessWidget {
               user.username ?? 'Default',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(user.location?.longitude?.floor().toString()),
+            Text(user.location?.longitude?.floor().toString() + ' km'),
           ],
         ),
         subtitle: Row(
