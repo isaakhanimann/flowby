@@ -31,11 +31,12 @@ class ChatOverviewScreen extends StatelessWidget {
                     return Container(color: Colors.white);
                   }
                   User user = snapshot.data;
-                  print('From here is overview screen');
                   return StreamListUsers(
-                      userStream: FirebaseConnection
-                          .getSpecifiedUsersStreamWithDistance(
-                              loggedInUser: user, uids: uids));
+                    userStream:
+                        FirebaseConnection.getSpecifiedUsersStreamWithDistance(
+                            loggedInUser: user, uids: uids),
+                    searchSkill: true,
+                  );
                 },
               ),
             ],

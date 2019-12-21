@@ -27,10 +27,12 @@ class StreamListUsers extends StatelessWidget {
           );
         }
         List<User> users = snapshot.data;
-        print('users = $users');
+        print('before sort');
+        //todo: the sorting only works when using getUsersStreamWithDistance() and not getSpecifiedUsersStreamWithDistance()
 //        users.sort((user1, user2) =>
 //            (user1.distanceInKm ?? 1000).compareTo(user2.distanceInKm ?? 1000));
 
+        print('after sort');
         return Expanded(
           child: UsersListView(users: users, searchSkill: searchSkill),
         );

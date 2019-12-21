@@ -48,19 +48,19 @@ class User {
         startLongitude: point1.longitude,
         endLatitude: point2.latitude,
         endLongitude: point2.longitude);
-    int distanceInKm = (distanceInMeters / 1000).floor();
+    int distanceInKm = (distanceInMeters / 1000).round();
     return distanceInKm;
   }
 
   @override
   String toString() {
-    String toPrint = '{ username: $username, ';
+    String toPrint = '\n{ username: $username, ';
     toPrint += 'email: $email, ';
     toPrint += 'skillHashtags: $skillHashtags, ';
     toPrint += 'wishHashtags: $wishHashtags, ';
     toPrint += 'skillRate: ${skillRate.toString()}, ';
     toPrint += 'location: ${location.toString()}, ';
-    toPrint += 'distanceInKm: ${distanceInKm.toString()} }';
+    toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';
 
     return toPrint;
   }
