@@ -12,16 +12,16 @@ class ChatOverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var loggedInUser = Provider.of<FirebaseUser>(context);
     return FutureBuilder(
-        future: FirebaseConnection.getUidOfChatUsers(
+        future: FirebaseConnection.getUidsOfUsersInChats(
             loggedInUser: loggedInUser.email),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Container(color: Colors.white);
           }
           List<String> uids = snapshot.data;
-
           return Column(
             children: <Widget>[
+              //display all users specified with the uids
               StreamListUsers(
                   userStream:
                       FirebaseConnection.getSpecifiedUsersStream(uids: uids)),

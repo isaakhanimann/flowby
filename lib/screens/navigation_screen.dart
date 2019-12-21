@@ -6,7 +6,7 @@ import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/home_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/services/location.dart';
-import 'package:float/widgets/profile_item.dart';
+import 'package:float/widgets/users_listview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -197,24 +197,8 @@ class DataSearch extends SearchDelegate<String> {
                         .contains(query.toLowerCase()))
                     .toList();
               }
-
-              return ListView(
-                children: suggestedUsers
-                    .map<Widget>(
-                      (user) => Column(
-                        children: <Widget>[
-                          Divider(
-                            height: 10,
-                          ),
-                          ProfileItem(
-                            user: user,
-                            isSkillSearch: isSkillSearch,
-                          )
-                        ],
-                      ),
-                    )
-                    .toList(),
-              );
+              return UsersListView(
+                  users: suggestedUsers, searchSkill: isSkillSearch);
             },
           );
         });

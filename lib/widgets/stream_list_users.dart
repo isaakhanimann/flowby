@@ -1,6 +1,6 @@
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
-import 'package:float/widgets/profile_item.dart';
+import 'package:float/widgets/users_listview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -26,25 +26,12 @@ class StreamListUsers extends StatelessWidget {
             ),
           );
         }
-        final List<User> users = snapshot.data;
-        users.sort((user1, user2) =>
-            (user1.distanceInKm ?? 1000).compareTo(user2.distanceInKm ?? 1000));
+        List<User> users = snapshot.data;
+//        users.sort((user1, user2) =>
+//            (user1.distanceInKm ?? 1000).compareTo(user2.distanceInKm ?? 1000));
 
         return Expanded(
-          child: ListView(
-            children: users
-                .map<Widget>(
-                  (user) => Column(
-                    children: <Widget>[
-                      ProfileItem(
-                        user: user,
-                        isSkillSearch: searchSkill,
-                      )
-                    ],
-                  ),
-                )
-                .toList(),
-          ),
+          child: UsersListView(users: users, searchSkill: searchSkill),
         );
       },
     );

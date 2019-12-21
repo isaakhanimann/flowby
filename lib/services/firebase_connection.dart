@@ -176,7 +176,7 @@ class FirebaseConnection {
     }
   }
 
-  static Future<List<String>> getUidOfChatUsers(
+  static Future<List<String>> getUidsOfUsersInChats(
       {@required String loggedInUser}) async {
     List<String> uids = [];
     QuerySnapshot snap1 = await _fireStore
