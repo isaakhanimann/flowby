@@ -12,7 +12,6 @@ class ProfileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('profileUser = ${user.toString()}');
     return Card(
       elevation: 0,
       color: kLightGrey2,

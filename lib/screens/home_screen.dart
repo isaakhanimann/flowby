@@ -38,6 +38,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
+        SizedBox(height: 10),
         StreamBuilder(
           stream: FirebaseConnection.getSpecifiedUserStream(
               uid: loggedInUser.email),

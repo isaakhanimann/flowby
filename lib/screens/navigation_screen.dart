@@ -161,49 +161,63 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     var loggedInUser = Provider.of<FirebaseUser>(context);
-    return StreamBuilder<List<User>>(
-      stream: FirebaseConnection.getUsersStream(loggedInUser: loggedInUser),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: Text('Nodata'),
-          );
-        }
+    return StreamBuilder(
+        stream:
+            FirebaseConnection.getSpecifiedUserStream(uid: loggedInUser.email),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container(color: Colors.white);
+          }
+          User user = snapshot.data;
+          return StreamBuilder<List<User>>(
+            stream: FirebaseConnection.getUsersStreamWithDistance(
+                loggedInUser: user),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: Text('Nodata'),
+                );
+              }
 
-        final List<User> allUsers = snapshot.data;
-        List<User> suggestedUsers;
+              final List<User> allUsers = snapshot.data;
+              List<User> suggestedUsers;
 
-        if (isSkillSearch) {
-          suggestedUsers = allUsers
-              .where((u) =>
-                  u.skillHashtags.toString().toLowerCase().contains(query))
-              .toList();
-        } else {
-          suggestedUsers = allUsers
-              .where((u) =>
-                  u.wishHashtags.toString().toLowerCase().contains(query))
-              .toList();
-        }
+              if (isSkillSearch) {
+                suggestedUsers = allUsers
+                    .where((u) => u.skillHashtags
+                        .toString()
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
+                    .toList();
+              } else {
+                suggestedUsers = allUsers
+                    .where((u) => u.wishHashtags
+                        .toString()
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
+                    .toList();
+              }
 
-        return ListView(
-          children: suggestedUsers
-              .map<Widget>(
-                (user) => Column(
-                  children: <Widget>[
-                    Divider(
-                      height: 10,
-                    ),
-                    ProfileItem(
-                      user: user,
-                      isSkillSearch: isSkillSearch,
+              return ListView(
+                children: suggestedUsers
+                    .map<Widget>(
+                      (user) => Column(
+                        children: <Widget>[
+                          Divider(
+                            height: 10,
+                          ),
+                          ProfileItem(
+                            user: user,
+                            isSkillSearch: isSkillSearch,
+                          )
+                        ],
+                      ),
                     )
-                  ],
-                ),
-              )
-              .toList(),
-        );
-      },
-    );
+                    .toList(),
+              );
+            },
+          );
+        });
   }
 
   @override
@@ -225,13 +239,17 @@ class DataSearch extends SearchDelegate<String> {
 
         if (isSkillSearch) {
           suggestedUsers = allUsers
-              .where((u) =>
-                  u.skillHashtags.toString().toLowerCase().contains(query))
+              .where((u) => u.skillHashtags
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
               .toList();
         } else {
           suggestedUsers = allUsers
-              .where((u) =>
-                  u.wishHashtags.toString().toLowerCase().contains(query))
+              .where((u) => u.wishHashtags
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
               .toList();
         }
 
