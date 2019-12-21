@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:float/models/user.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/stream_list_users.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,9 +23,21 @@ class ChatOverviewScreen extends StatelessWidget {
           return Column(
             children: <Widget>[
               //display all users specified with the uids
-              StreamListUsers(
-                  userStream:
-                      FirebaseConnection.getSpecifiedUsersStream(uids: uids)),
+              StreamBuilder(
+                stream: FirebaseConnection.getSpecifiedUserStream(
+                    uid: loggedInUser.email),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container(color: Colors.white);
+                  }
+                  User user = snapshot.data;
+                  print('From here is overview screen');
+                  return StreamListUsers(
+                      userStream: FirebaseConnection
+                          .getSpecifiedUsersStreamWithDistance(
+                              loggedInUser: user, uids: uids));
+                },
+              ),
             ],
           );
         });

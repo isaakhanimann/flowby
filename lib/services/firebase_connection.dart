@@ -135,6 +135,33 @@ class FirebaseConnection {
     }
   }
 
+  static Stream<List<User>> getSpecifiedUsersStreamWithDistance(
+      {@required User loggedInUser, @required List<String> uids}) {
+    try {
+      List<Stream<User>> listOfStreams = [];
+      for (var uid in uids) {
+        Stream<User> streamToAdd = _fireStore
+            .collection('users')
+            .where('email', isEqualTo: uid)
+            .snapshots()
+            .map((snap) => snap.documents
+                    .map((doc) => User.fromMap(map: doc.data))
+                    .map((user) {
+                  user.updateDistanceToOtherUser(otherUser: loggedInUser);
+                  return user;
+                }).toList()[0]);
+        listOfStreams.add(streamToAdd);
+      }
+
+      Stream<List<User>> usersStream = ZipStream.list(listOfStreams);
+
+      return usersStream;
+    } catch (e) {
+      print('Isaak could not get specified stream of users');
+      return null;
+    }
+  }
+
   static Stream<List<User>> getSpecifiedUsersStream(
       {@required List<String> uids}) {
     try {

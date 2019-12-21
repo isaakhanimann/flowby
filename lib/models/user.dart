@@ -54,13 +54,13 @@ class User {
 
   @override
   String toString() {
-    String toPrint = 'username = $username, ';
-    toPrint += 'email = $email, ';
-    toPrint += 'skillHashtags = $skillHashtags, ';
-    toPrint += 'wishHashtags = $wishHashtags, ';
-    toPrint += 'skillRate = ${skillRate.toString()}, ';
-    toPrint += 'location = ${location.toString()}, ';
-    toPrint += 'distanceInKm = ${distanceInKm.toString()}, ';
+    String toPrint = '{ username: $username, ';
+    toPrint += 'email: $email, ';
+    toPrint += 'skillHashtags: $skillHashtags, ';
+    toPrint += 'wishHashtags: $wishHashtags, ';
+    toPrint += 'skillRate: ${skillRate.toString()}, ';
+    toPrint += 'location: ${location.toString()}, ';
+    toPrint += 'distanceInKm: ${distanceInKm.toString()} }';
 
     return toPrint;
   }
