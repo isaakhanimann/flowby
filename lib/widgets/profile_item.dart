@@ -43,10 +43,13 @@ class ProfileItem extends StatelessWidget {
           children: <Widget>[
             Text(
               user.username ?? 'Default',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: kUsernameTextStyle,
             ),
             if (user.distanceInKm != null)
-              Text(user.distanceInKm.toString() + ' km')
+              Text(
+                user.distanceInKm.toString() + ' km',
+                style: kLocationTextStyle,
+              )
           ],
         ),
         subtitle: Row(
@@ -55,7 +58,7 @@ class ProfileItem extends StatelessWidget {
             Flexible(
               child: Text(
                 isSkillSearch ? user.skillHashtags : user.wishHashtags,
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+                style: kSkillTextStyle,
               ),
             ),
             Padding(
@@ -63,7 +66,7 @@ class ProfileItem extends StatelessWidget {
               child: Text(
                 (isSkillSearch ? user.skillRate : user.wishRate).toString() +
                     ' CHF/h',
-                style: TextStyle(color: Colors.grey, fontSize: 15),
+                style: kLocationTextStyle,
               ),
             ),
           ],

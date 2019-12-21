@@ -24,6 +24,10 @@ const kSmallTitleTextStyle = TextStyle(
   color: kDarkGreenColor,
 );
 
+const kLocationTextStyle = TextStyle(color: Colors.grey, fontSize: 14);
+const kUsernameTextStyle = TextStyle(fontWeight: FontWeight.bold);
+const kSkillTextStyle = TextStyle(color: Colors.grey, fontSize: 16);
+
 const kMessageTextFieldDecoration = InputDecoration(
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
   hintText: 'Type your message here...',

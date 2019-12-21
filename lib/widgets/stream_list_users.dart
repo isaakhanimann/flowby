@@ -27,6 +27,8 @@ class StreamListUsers extends StatelessWidget {
           );
         }
         final List<User> users = snapshot.data;
+        users.sort((user1, user2) =>
+            (user1.distanceInKm ?? 1000).compareTo(user2.distanceInKm ?? 1000));
 
         return Expanded(
           child: ListView(
