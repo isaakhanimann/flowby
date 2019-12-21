@@ -116,6 +116,25 @@ class FirebaseConnection {
     }
   }
 
+  static Stream<List<User>> getUsersStreamWithDistance(
+      {@required User loggedInUser}) {
+    try {
+      var userSnapshots = _fireStore.collection('users').snapshots().map(
+          (snap) => snap.documents
+                  .map((doc) => User.fromMap(map: doc.data))
+                  .where((user) => user.email != loggedInUser.email)
+                  .map((user) {
+                user.updateDistanceToOtherUser(otherUser: loggedInUser);
+                return user;
+              }).toList());
+      return userSnapshots;
+    } catch (e) {
+      print('Isaak could not get stream of users with distance');
+      print(e);
+      return null;
+    }
+  }
+
   static Stream<List<User>> getSpecifiedUsersStream(
       {@required List<String> uids}) {
     try {
@@ -136,6 +155,23 @@ class FirebaseConnection {
       return usersStream;
     } catch (e) {
       print('Isaak could not get specified stream of users');
+      return null;
+    }
+  }
+
+  static Stream<User> getSpecifiedUserStream({@required String uid}) {
+    try {
+      Stream<User> userStream = _fireStore
+          .collection('users')
+          .where('email', isEqualTo: uid)
+          .snapshots()
+          .map((snap) => snap.documents
+              .map((doc) => User.fromMap(map: doc.data))
+              .toList()[0]);
+
+      return userStream;
+    } catch (e) {
+      print('Isaak could not get stream of the specified user');
       return null;
     }
   }

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
+import 'package:float/models/user.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/stream_list_users.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,10 +38,20 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        StreamListUsers(
-          userStream:
-              FirebaseConnection.getUsersStream(loggedInUser: loggedInUser),
-          searchSkill: selections[0],
+        StreamBuilder(
+          stream: FirebaseConnection.getSpecifiedUserStream(
+              uid: loggedInUser.email),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container(color: Colors.white);
+            }
+            User user = snapshot.data;
+            return StreamListUsers(
+              userStream: FirebaseConnection.getUsersStreamWithDistance(
+                  loggedInUser: user),
+              searchSkill: selections[0],
+            );
+          },
         ),
       ],
     );

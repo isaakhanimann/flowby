@@ -12,6 +12,7 @@ class ProfileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('profileUser = ${user.toString()}');
     return Card(
       elevation: 0,
       color: kLightGrey2,
@@ -44,7 +45,8 @@ class ProfileItem extends StatelessWidget {
               user.username ?? 'Default',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(user.location?.longitude?.floor().toString() + ' km'),
+            if (user.distanceInKm != null)
+              Text(user.distanceInKm.toString() + ' km')
           ],
         ),
         subtitle: Row(
