@@ -14,19 +14,14 @@ class UsersListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: users
-          .map<Widget>(
-            (user) => Column(
-              children: <Widget>[
-                ProfileItem(
-                  user: user,
-                  isSkillSearch: searchSkill,
-                )
-              ],
-            ),
-          )
-          .toList(),
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        return ProfileItem(
+          user: users[index],
+          isSkillSearch: searchSkill,
+        );
+      },
+      itemCount: users.length,
     );
   }
 }
