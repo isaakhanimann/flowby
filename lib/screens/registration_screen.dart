@@ -1,12 +1,13 @@
+import 'package:float/constants.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/login_screen.dart';
-import 'package:flutter/material.dart';
-import '../widgets/rounded_button.dart';
-import 'package:float/constants.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:float/widgets/login_input_field.dart';
-import 'package:float/widgets/alert.dart';
 import 'package:float/services/firebase_connection.dart';
+import 'package:float/widgets/alert.dart';
+import 'package:float/widgets/login_input_field.dart';
+import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+import '../widgets/rounded_button.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -18,8 +19,8 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen>
     with SingleTickerProviderStateMixin {
   bool showSpinner = false;
-  String email = '';
-  String password = '';
+  String email;
+  String password;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +60,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 color: kDarkGreenColor,
                 text: 'Register',
                 onPressed: () async {
+                  if (email == null || password == null) {
+                    return;
+                  }
                   setState(() {
                     showSpinner = true;
                   });
@@ -86,7 +90,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           showAlert(
                               context: context,
                               title: "Invalid Email",
-                              description: e.message);
+                              description:
+                                  "Please enter a valid email address");
                           break;
                         }
                       case 'ERROR_EMAIL_ALREADY_IN_USE':

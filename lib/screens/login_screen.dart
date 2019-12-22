@@ -1,12 +1,12 @@
 import 'package:float/constants.dart';
-import 'package:float/screens/registration_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:float/widgets/rounded_button.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:float/widgets/login_input_field.dart';
-import 'package:float/widgets/alert.dart';
 import 'package:float/screens/navigation_screen.dart';
+import 'package:float/screens/registration_screen.dart';
 import 'package:float/services/firebase_connection.dart';
+import 'package:float/widgets/alert.dart';
+import 'package:float/widgets/login_input_field.dart';
+import 'package:float/widgets/rounded_button.dart';
+import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -73,6 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
               RoundedButton(
                   color: kDarkGreenColor,
                   onPressed: () async {
+                    if (email == null || password == null) {
+                      return;
+                    }
                     setState(() {
                       showSpinner = true;
                     });
@@ -92,7 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             showAlert(
                                 context: context,
                                 title: "Invalid Email",
-                                description: e.message);
+                                description:
+                                    "Please input a valid email address");
                             break;
                           }
                         case 'ERROR_WRONG_PASSWORD':
@@ -100,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             showAlert(
                                 context: context,
                                 title: "Wrong Password",
-                                description: e.message);
+                                description: "The password is invalid");
                             break;
                           }
                         case 'ERROR_USER_NOT_FOUND':
@@ -108,7 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             showAlert(
                                 context: context,
                                 title: "User not found",
-                                description: e.message);
+                                description:
+                                    "There is no user with this email address");
                             break;
                           }
                         case 'ERROR_USER_DISABLED':
@@ -116,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             showAlert(
                                 context: context,
                                 title: "User Disabled",
-                                description: e.message);
+                                description: "This user is disabled");
                             break;
                           }
                         case 'ERROR_TOO_MANY_REQUESTS':
