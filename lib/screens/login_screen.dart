@@ -43,11 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               Text(
                 'Login',
-                style: TextStyle(
-                    fontSize: 45.0,
-                    fontWeight: FontWeight.w900,
-                    color: kDarkGreenColor,
-                    letterSpacing: 3.0),
+                style: kBigTitleTextStyle,
               ),
               SizedBox(
                 height: 48.0,

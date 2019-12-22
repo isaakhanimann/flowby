@@ -71,10 +71,7 @@ class ProfileItem extends StatelessWidget {
               ),
             ],
           ),
-          trailing: IconButton(
-            icon: Icon(Icons.keyboard_arrow_right),
-            onPressed: () {},
-          ),
+          trailing: Icon(Icons.keyboard_arrow_right),
         ),
       ),
     );
