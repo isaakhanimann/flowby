@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/message.dart';
 import 'package:float/models/user.dart';
-import 'package:float/screens/login_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,15 +43,6 @@ class _ChatScreenState extends State<ChatScreen> {
         return Scaffold(
           appBar: AppBar(
             leading: null,
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    //Implement logout functionality
-                    FirebaseConnection.signOut();
-                    Navigator.pushNamed(context, LoginScreen.id);
-                  }),
-            ],
             title: Text(widget.otherUser.username ?? 'Default'),
             backgroundColor: kDarkGreenColor,
           ),
@@ -139,7 +129,7 @@ class MessagesStream extends StatelessWidget {
               );
             },
             reverse: true,
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 20.0),
           ),
         );
       },
@@ -258,7 +248,7 @@ class SendButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Material(
         color: kDarkGreenColor,
         borderRadius: BorderRadius.circular(30.0),
@@ -267,7 +257,7 @@ class SendButton extends StatelessWidget {
           icon: Icon(
             Icons.send,
             color: Colors.white,
-            size: 30,
+            size: 20,
           ),
         ),
       ),

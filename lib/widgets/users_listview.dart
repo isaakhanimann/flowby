@@ -15,6 +15,7 @@ class UsersListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      itemExtent: 90,
       itemBuilder: (context, index) {
         return ProfileItem(
           user: users[index],

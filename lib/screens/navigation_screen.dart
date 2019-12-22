@@ -239,6 +239,7 @@ class DataSearch extends SearchDelegate<String> {
 
         return ListView.builder(
           itemCount: suggestedUsers.length,
+          itemExtent: 50,
           itemBuilder: (context, index) {
             return SuggestionItem(
               user: suggestedUsers[index],
