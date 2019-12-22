@@ -237,17 +237,18 @@ class DataSearch extends SearchDelegate<String> {
               .toList();
         }
 
-        return ListView(
-          children: suggestedUsers
-              .map<Widget>((u) => SuggestionItem(
-                    user: u,
-                    setQuery: (newQuery) {
-                      query = newQuery;
-                    },
-                    showResults: showResults,
-                    isSkillSearch: isSkillSearch,
-                  ))
-              .toList(),
+        return ListView.builder(
+          itemCount: suggestedUsers.length,
+          itemBuilder: (context, index) {
+            return SuggestionItem(
+              user: suggestedUsers[index],
+              setQuery: (newQuery) {
+                query = newQuery;
+              },
+              showResults: showResults,
+              isSkillSearch: isSkillSearch,
+            );
+          },
         );
       },
     );

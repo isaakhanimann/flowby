@@ -125,28 +125,21 @@ class MessagesStream extends StatelessWidget {
 
         final List<Message> messages = snapshot.data;
 
-        List<MessageBubble> messageBubbles = [];
-        for (var message in messages) {
-          final messageText = message.text;
-          final messageSender = message.sender;
-          final messageTimestamp = message.timestamp;
-          final String timestamp =
-              '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.';
-
-          final currentUser = loggedInUser.email;
-
-          final messageBubble = MessageBubble(
-            text: messageText,
-            timestamp: timestamp,
-            isMe: currentUser == messageSender,
-          );
-          messageBubbles.add(messageBubble);
-        }
         return Expanded(
-          child: ListView(
+          child: ListView.builder(
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              Message message = messages[index];
+              var messageTimestamp = message.timestamp;
+              return MessageBubble(
+                text: message.text,
+                timestamp:
+                    '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.',
+                isMe: loggedInUser.email == message.sender,
+              );
+            },
             reverse: true,
             padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-            children: messageBubbles,
           ),
         );
       },
