@@ -5,8 +5,8 @@ import 'package:float/models/message.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/services/firebase_connection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -119,10 +119,7 @@ class MessagesStream extends StatelessWidget {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Expanded(
-            child: SpinKitPumpingHeart(
-              color: kDarkGreenColor,
-              size: 100,
-            ),
+            child: CupertinoActivityIndicator(),
           );
         }
 

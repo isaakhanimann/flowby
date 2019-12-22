@@ -1,9 +1,7 @@
-import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/widgets/users_listview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class StreamListUsers extends StatelessWidget {
   final Stream<List<User>> userStream;
@@ -19,10 +17,7 @@ class StreamListUsers extends StatelessWidget {
         if (!snapshot.hasData) {
           return Expanded(
             child: Center(
-              child: SpinKitPumpingHeart(
-                color: kDarkGreenColor,
-                size: 100,
-              ),
+              child: CupertinoActivityIndicator(),
             ),
           );
         }

@@ -1,15 +1,15 @@
 import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:float/constants.dart';
+import 'package:float/models/user.dart';
+import 'package:float/screens/login_screen.dart';
+import 'package:float/services/firebase_connection.dart';
+import 'package:float/widgets/hashtag_bubble.dart';
+import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:float/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:float/widgets/rounded_button.dart';
-import 'package:float/widgets/hashtag_bubble.dart';
-import 'package:float/services/firebase_connection.dart';
-import 'package:float/screens/login_screen.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:float/models/user.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   static const String id = 'create_profile_screen';
@@ -123,10 +123,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   Widget build(BuildContext context) {
     if (showSpinner) {
       return Center(
-        child: SpinKitPumpingHeart(
-          color: kDarkGreenColor,
-          size: 100,
-        ),
+        child: CupertinoActivityIndicator(),
       );
     }
     return Scaffold(
