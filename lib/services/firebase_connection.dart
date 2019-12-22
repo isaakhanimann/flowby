@@ -129,7 +129,6 @@ class FirebaseConnection {
               }).toList());
       return userSnapshots;
     } catch (e) {
-      print('Isaak could not get stream of users with distance');
       print(e);
       return null;
     }
@@ -158,6 +157,7 @@ class FirebaseConnection {
       return usersStream;
     } catch (e) {
       print('Isaak could not get specified stream of users');
+      print(e);
       return null;
     }
   }
