@@ -22,13 +22,11 @@ class _NavigationScreensState extends State<NavigationScreens> {
   int _selectedPage = 0;
   bool showSearchBar = false;
   List<Widget> _pageOptions;
-  List<bool> selections = [true, false];
+  bool isSkillSelected = true;
 
-  void changeSearch(int index) {
+  void switchSearch(int index) {
     setState(() {
-      selections[index] = !selections[index];
-      int otherIndex = (index + 1) % 2;
-      selections[otherIndex] = !selections[otherIndex];
+      isSkillSelected = !isSkillSelected;
     });
   }
 
@@ -57,7 +55,9 @@ class _NavigationScreensState extends State<NavigationScreens> {
   @override
   Widget build(BuildContext context) {
     _pageOptions = [
-      HomeScreen(selections: selections, changeSearch: changeSearch),
+      HomeScreen(
+          selections: [isSkillSelected, !isSkillSelected],
+          switchSearch: switchSearch),
       ChatOverviewScreen(),
       CreateProfileScreen()
     ];
@@ -77,7 +77,7 @@ class _NavigationScreensState extends State<NavigationScreens> {
               //search was pressed
               await showSearch(
                   context: context,
-                  delegate: DataSearch(isSkillSearch: selections[0]));
+                  delegate: DataSearch(isSkillSearch: isSkillSelected));
               setState(() {
                 _selectedPage = 1;
               });

@@ -9,9 +9,9 @@ import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String id = 'home_screen';
-  final List<bool> selections;
-  final Function changeSearch;
-  HomeScreen({@required this.selections, @required this.changeSearch});
+  final Function switchSearch;
+  final selections;
+  HomeScreen({@required this.selections, @required this.switchSearch});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
       children: <Widget>[
         ToggleButtons(
           isSelected: selections,
-          onPressed: changeSearch,
+          onPressed: switchSearch,
           selectedColor: kDarkGreenColor,
           fillColor: Colors.transparent,
           selectedBorderColor: kDarkGreenColor,
