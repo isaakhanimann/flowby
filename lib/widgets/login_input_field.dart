@@ -14,7 +14,7 @@ class LoginInputField extends StatelessWidget {
       obscureText: !isEmail,
       onChanged: setText,
       decoration: kLoginInputFieldDecoration.copyWith(
-          hintText: isEmail ? 'Enter your email' : placeholder),
+          hintText: placeholder),
     );
   }
 }

@@ -55,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 LoginInputField(
                   isEmail: true,
+                  placeholder: 'Enter your email',
                   setText: (value) {
                     email = value;
                   },

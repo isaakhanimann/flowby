@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/registration_screen.dart';
+import 'package:float/screens/splash_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:float/screens/navigation_screen.dart';
 import 'package:float/models/user.dart';
@@ -25,6 +26,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case RegistrationScreen.id:
         return MaterialPageRoute(builder: (_) => RegistrationScreen());
+      case SplashScreen.id:
+        return MaterialPageRoute(builder: (_) => SplashScreen());
       default:
         return _errorRoute();
     }

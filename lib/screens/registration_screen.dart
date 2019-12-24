@@ -1,6 +1,5 @@
 import 'package:float/constants.dart';
 import 'package:float/screens/create_profile_screen.dart';
-import 'package:float/screens/login_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
@@ -36,6 +35,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         ),
       ),
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+        ),
         backgroundColor: Colors.transparent,
         body: ModalProgressHUD(
           inAsyncCall: showSpinner,
@@ -45,14 +48,14 @@ class _RegistrationScreenState extends State<RegistrationScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Text('Sign Up', style: kBigTitleTextStyle),
-                SizedBox(
-                  height: 48.0,
+                /*SizedBox(
+                  height: 0.0,
                 ),
                 LoginInputField(
                   isEmail: false,
                   placeholder: 'Full name',
                   setText: (value) {
+                    print(name);
                     name = value;
                   },
                 ),
@@ -68,9 +71,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 ),
                 SizedBox(
                   height: 8.0,
-                ),
+                ),*/
                 LoginInputField(
                   isEmail: true,
+                  placeholder: 'Enter your email',
                   setText: (value) {
                     email = value;
                   },
@@ -90,7 +94,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 ),
                 RoundedButton(
                   color: kDarkGreenColor,
-                  text: 'Register',
+                  text: 'Sign up',
                   onPressed: () async {
                     if (email == null || password == null) {
                       return;
@@ -145,7 +149,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     }
                   },
                 ),
-                SizedBox(
+                /*SizedBox(
                   height: 40.0,
                 ),
                 GestureDetector(
@@ -160,7 +164,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                       decoration: TextDecoration.underline,
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -169,3 +173,5 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     );
   }
 }
+
+
