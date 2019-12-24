@@ -41,7 +41,14 @@ const kMessageContainerDecoration = BoxDecoration(
 );
 
 const kLoginInputFieldDecoration = InputDecoration(
+  filled: true,
+  fillColor: Colors.white,
   contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.all(
+      Radius.circular(30.0),
+    ),
+  ),
 );
 
 const kBeigeColor = Color(0xFFFCF9EC);
