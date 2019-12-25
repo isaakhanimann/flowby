@@ -36,6 +36,24 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Column(
           children: <Widget>[
+            GestureDetector(
+              onTap: () {
+                showSearch(
+                    context: context,
+                    delegate: DataSearch(isSkillSearch: isSkillSelected));
+              },
+              child: Card(
+                color: kLightGrey,
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15))),
+                child: ListTile(
+                  leading: Icon(Icons.search),
+                  title: Text('Search'),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
             CupertinoSegmentedControl(
               borderColor: kDarkGreenColor,
               pressedColor: kLightGreenColor,
@@ -56,7 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             SizedBox(height: 10),
-            CupertinoTextField(),
             StreamBuilder(
               stream: FirebaseConnection.getUserStream(uid: loggedInUser.email),
               builder: (context, snapshot) {
