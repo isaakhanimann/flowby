@@ -8,11 +8,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
-  final Function switchSearch;
-  final isSkillSelected;
-  HomeScreen({@required this.isSkillSelected, @required this.switchSearch});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool isSkillSelected = true;
+  void switchSearch(var newIsSelected) {
+    setState(() {
+      isSkillSelected = !isSkillSelected;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +56,7 @@ class HomeScreen extends StatelessWidget {
               },
             ),
             SizedBox(height: 10),
+            CupertinoTextField(),
             StreamBuilder(
               stream: FirebaseConnection.getUserStream(uid: loggedInUser.email),
               builder: (context, snapshot) {

@@ -5,20 +5,8 @@ import 'package:float/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class NavigationScreen extends StatefulWidget {
+class NavigationScreen extends StatelessWidget {
   static const String id = 'navigation_screen';
-
-  @override
-  _NavigationScreenState createState() => _NavigationScreenState();
-}
-
-class _NavigationScreenState extends State<NavigationScreen> {
-  bool isSkillSelected = true;
-  void switchSearch(var newIsSelected) {
-    setState(() {
-      isSkillSelected = !isSkillSelected;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +37,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         return CupertinoTabView(builder: (context) {
           switch (index) {
             case 0:
-              return HomeScreen(
-                  isSkillSelected: isSkillSelected, switchSearch: switchSearch);
+              return HomeScreen();
               break;
             case 1:
               return ChatOverviewScreen();
