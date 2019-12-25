@@ -246,23 +246,27 @@ class FirebaseConnection {
         //loggedInUser is user2
         chatPath = snap2.documents[0].reference.path;
       } else {
-        //there is no chat yet
+        //there is no chat yet, so create one
+        chatPath = await _createChat(user: user, otherUser: otherUser);
       }
       return chatPath;
     } catch (e) {
       print('Isaak could not get chatpath');
+      return null;
     }
-    return null;
   }
 
-  static void createChat({@required String user, @required String otherUser}) {
+  static Future<String> _createChat(
+      {@required String user, @required String otherUser}) async {
     try {
-      _fireStore.collection('chats').add({
+      var docReference = await _fireStore.collection('chats').add({
         'user1': user,
         'user2': otherUser,
       });
+      return docReference.path;
     } catch (e) {
       print('Isaak could not createChat');
+      return null;
     }
   }
 

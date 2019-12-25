@@ -16,6 +16,15 @@ class ChatOverviewScreen extends StatelessWidget {
         future: FirebaseConnection.getUidsOfUsersInChats(
             loggedInUser: loggedInUser.email),
         builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Center(child: CupertinoActivityIndicator());
+          }
+          if (snapshot.hasError) {
+            return Container(
+              color: Colors.red,
+              child: Text('Something went wrong'),
+            );
+          }
           if (!snapshot.hasData) {
             return Container(color: Colors.white);
           }
@@ -28,7 +37,8 @@ class ChatOverviewScreen extends StatelessWidget {
                     uid: loggedInUser.email),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return Container(color: Colors.white);
+                    return Expanded(
+                        child: Center(child: CupertinoActivityIndicator()));
                   }
                   User user = snapshot.data;
                   return StreamListUsers(
