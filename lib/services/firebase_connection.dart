@@ -186,7 +186,7 @@ class FirebaseConnection {
     }
   }
 
-  static Stream<User> getSpecifiedUserStream({@required String uid}) {
+  static Stream<User> getUserStream({@required String uid}) {
     try {
       Stream<User> userStream = _fireStore
           .collection('users')

@@ -106,7 +106,8 @@ class MessagesStream extends StatelessWidget {
     return StreamBuilder<List<Message>>(
       stream: messagesStream,
       builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.active) {
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.connectionState == ConnectionState.none) {
           return Expanded(
             child: CupertinoActivityIndicator(),
           );

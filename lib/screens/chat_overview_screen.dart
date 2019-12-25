@@ -33,8 +33,8 @@ class ChatOverviewScreen extends StatelessWidget {
             children: <Widget>[
               //display all users specified with the uids
               StreamBuilder(
-                stream: FirebaseConnection.getSpecifiedUserStream(
-                    uid: loggedInUser.email),
+                stream:
+                    FirebaseConnection.getUserStream(uid: loggedInUser.email),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Expanded(

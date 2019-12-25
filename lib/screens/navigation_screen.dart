@@ -162,8 +162,7 @@ class DataSearch extends SearchDelegate<String> {
   Widget buildResults(BuildContext context) {
     var loggedInUser = Provider.of<FirebaseUser>(context);
     return StreamBuilder(
-        stream:
-            FirebaseConnection.getSpecifiedUserStream(uid: loggedInUser.email),
+        stream: FirebaseConnection.getUserStream(uid: loggedInUser.email),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Container(color: Colors.white);

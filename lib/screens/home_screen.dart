@@ -40,8 +40,7 @@ class HomeScreen extends StatelessWidget {
         ),
         SizedBox(height: 10),
         StreamBuilder(
-          stream: FirebaseConnection.getSpecifiedUserStream(
-              uid: loggedInUser.email),
+          stream: FirebaseConnection.getUserStream(uid: loggedInUser.email),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Container(color: Colors.white);
