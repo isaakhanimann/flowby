@@ -79,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       final user = await FirebaseConnection.signIn(
                           email: email, password: password);
                       if (user != null) {
-                        Navigator.pushNamed(context, NavigationScreens.id);
+                        Navigator.pushNamed(context, NavigationScreen.id);
                       }
                       setState(() {
                         showSpinner = false;

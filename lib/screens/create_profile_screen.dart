@@ -309,7 +309,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       skillRate: _databaseSkillRate,
                       wishRate: _databaseWishRate);
                   await FirebaseConnection.uploadUser(user: user);
-                  await _reloadUserFromDatabase();
+                  _reloadUserFromDatabase();
                 } catch (e) {
                   print('Could not upload and get on Save');
                 }

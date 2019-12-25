@@ -34,7 +34,7 @@ class FirebaseConnection {
   static Future<void> autoLogin({@required BuildContext context}) async {
     final user = await _auth.currentUser();
     if (user != null) {
-      Navigator.pushNamed(context, NavigationScreens.id);
+      Navigator.pushNamed(context, NavigationScreen.id);
     }
   }
 
