@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/services/firebase_connection.dart';
+import 'package:float/widgets/stream_list_users.dart';
 import 'package:float/widgets/users_listview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,112 +29,53 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              title: ButtonThatLooksLikeTextField(
-                  isSkillSelected: isSkillSelected),
-              backgroundColor: Colors.white,
-              expandedHeight: 70.0,
+        child: Column(
+          children: <Widget>[
+            ButtonThatLooksLikeSearchField(isSkillSelected: isSkillSelected),
+            SizedBox(height: 10),
+            CupertinoSegmentedControl(
+              borderColor: kDarkGreenColor,
+              pressedColor: kLightGreenColor,
+              selectedColor: kDarkGreenColor,
+              groupValue: isSkillSelected,
+              onValueChanged: switchSearch,
+              children: <bool, Widget>{
+                true: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                  child: Text('Skills', style: TextStyle(fontSize: 18)),
+                ),
+                false: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                  child: Text('Wishes', style: TextStyle(fontSize: 18)),
+                ),
+              },
             ),
+            SizedBox(height: 10),
             StreamBuilder(
               stream: FirebaseConnection.getUserStream(uid: loggedInUser.email),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        return Container(color: Colors.white);
-                      },
-                    ),
-                  );
+                  return Container(color: Colors.white);
                 }
                 User user = snapshot.data;
-                return StreamBuilder(
-                  stream: FirebaseConnection.getUsersStreamWithDistance(
+                return StreamListUsers(
+                  userStream: FirebaseConnection.getUsersStreamWithDistance(
                       loggedInUser: user),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            return CupertinoActivityIndicator();
-                          },
-                        ),
-                      );
-                    }
-                    List<User> users =
-                        List.from(snapshot.data); // to convert it editable list
-                    users.sort((user1, user2) => (user1.distanceInKm ?? 1000)
-                        .compareTo(user2.distanceInKm ?? 1000));
-                    return SliverListUser();
-                  },
+                  searchSkill: isSkillSelected,
                 );
-//                return StreamListUsers(
-//                  userStream: FirebaseConnection.getUsersStreamWithDistance(
-//                      loggedInUser: user),
-//                  searchSkill: isSkillSelected,
-//                );
               },
             ),
           ],
-//            SizedBox(height: 10),
-//            CupertinoSegmentedControl(
-//              borderColor: kDarkGreenColor,
-//              pressedColor: kLightGreenColor,
-//              selectedColor: kDarkGreenColor,
-//              groupValue: isSkillSelected,
-//              onValueChanged: switchSearch,
-//              children: <bool, Widget>{
-//                true: Padding(
-//                  padding:
-//                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
-//                  child: Text('Skills', style: TextStyle(fontSize: 18)),
-//                ),
-//                false: Padding(
-//                  padding:
-//                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
-//                  child: Text('Wishes', style: TextStyle(fontSize: 18)),
-//                ),
-//              },
-//            ),
-//            SizedBox(height: 10),
-//            StreamBuilder(
-//              stream: FirebaseConnection.getUserStream(uid: loggedInUser.email),
-//              builder: (context, snapshot) {
-//                if (!snapshot.hasData) {
-//                  return Container(color: Colors.white);
-//                }
-//                User user = snapshot.data;
-//                return StreamListUsers(
-//                  userStream: FirebaseConnection.getUsersStreamWithDistance(
-//                      loggedInUser: user),
-//                  searchSkill: isSkillSelected,
-//                );
-//              },
-//            ),
-//          ],
         ),
       ),
     );
   }
 }
 
-class SliverListUser extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return Container(color: Colors.orange);
-        },
-      ),
-    );
-  }
-}
-
-class ButtonThatLooksLikeTextField extends StatelessWidget {
-  const ButtonThatLooksLikeTextField({
+class ButtonThatLooksLikeSearchField extends StatelessWidget {
+  const ButtonThatLooksLikeSearchField({
     Key key,
     @required this.isSkillSelected,
   }) : super(key: key);
@@ -145,9 +87,8 @@ class ButtonThatLooksLikeTextField extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         showSearch(
-          context: context,
-          delegate: DataSearch(isSkillSearch: isSkillSelected),
-        );
+            context: context,
+            delegate: DataSearch(isSkillSearch: isSkillSelected));
       },
       child: Card(
         color: kLightGrey,
@@ -160,16 +101,6 @@ class ButtonThatLooksLikeTextField extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class SkillToggleButton extends StatelessWidget with PreferredSizeWidget {
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => Size.fromHeight(50);
-  @override
-  Widget build(BuildContext context) {
-    return Container(color: Colors.purple);
   }
 }
 

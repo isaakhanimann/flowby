@@ -5,8 +5,19 @@ import 'package:float/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class NavigationScreen extends StatelessWidget {
+class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
+
+  @override
+  _NavigationScreenState createState() => _NavigationScreenState();
+}
+
+class _NavigationScreenState extends State<NavigationScreen> {
+  List<Widget> tabScreens = [
+    HomeScreen(),
+    ChatOverviewScreen(),
+    CreateProfileScreen()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -35,18 +46,7 @@ class NavigationScreen extends StatelessWidget {
       ),
       tabBuilder: (context, index) {
         return CupertinoTabView(builder: (context) {
-          switch (index) {
-            case 0:
-              return HomeScreen();
-              break;
-            case 1:
-              return ChatOverviewScreen();
-              break;
-            case 2:
-              return CreateProfileScreen();
-              break;
-          }
-          return ChatOverviewScreen();
+          return tabScreens[index];
         });
 //to navigate somewhere else do:
 //        return CupertinoTabView(
