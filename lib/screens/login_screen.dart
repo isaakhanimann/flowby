@@ -1,6 +1,5 @@
 import 'package:float/constants.dart';
 import 'package:float/screens/navigation_screen.dart';
-import 'package:float/screens/registration_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
@@ -38,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
       child: Scaffold(
+        appBar: AppBar(),
         backgroundColor: Colors.transparent,
         body: ModalProgressHUD(
           inAsyncCall: showSpinner,
@@ -87,7 +87,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         final user = await FirebaseConnection.signIn(
                             email: email, password: password);
                         if (user != null) {
-                          Navigator.pushNamed(context, NavigationScreens.id);
+                          //Navigator.pushNamed(context, NavigationScreens.id);
+                          //cleans the navigation stack, so we don't come back to the login page if we
+                          //press the back button in Android
+                          Navigator.of(context)
+                              .pushNamedAndRemoveUntil(NavigationScreens.id, (Route<dynamic> route) => false);
                         }
                         setState(() {
                           showSpinner = false;
@@ -158,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 10.0,
                 ),
-                GestureDetector(
+                /*GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, RegistrationScreen.id);
                   },
@@ -170,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: TextDecoration.underline,
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
           ),

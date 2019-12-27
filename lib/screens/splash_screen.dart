@@ -61,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         Navigator.pushNamed(context, LoginScreen.id);
                       },
                       child: Text(
-                        'Login',
+                        'Sign in',
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.white,
