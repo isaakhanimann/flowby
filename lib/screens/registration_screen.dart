@@ -36,120 +36,127 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       ),
       child: Scaffold(
         appBar: AppBar(
+          title: Text('Sign Up'),
+          centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0.0,
         ),
         backgroundColor: Colors.transparent,
-        body: ModalProgressHUD(
-          inAsyncCall: showSpinner,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                /*SizedBox(
-                  height: 0.0,
-                ),
-                LoginInputField(
-                  isEmail: false,
-                  placeholder: 'Full name',
-                  setText: (value) {
-                    print(name);
-                    name = value;
-                  },
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),
-                LoginInputField(
-                  isEmail: false,
-                  placeholder: 'Username',
-                  setText: (value) {
-                    username = value;
-                  },
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),*/
-                LoginInputField(
-                  isEmail: true,
-                  placeholder: 'Enter your email',
-                  setText: (value) {
-                    email = value;
-                  },
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),
-                LoginInputField(
-                  isEmail: false,
-                  placeholder: 'Enter your password',
-                  setText: (value) {
-                    password = value;
-                  },
-                ),
-                SizedBox(
-                  height: 24.0,
-                ),
-                RoundedButton(
-                  color: kDarkGreenColor,
-                  text: 'Sign up',
-                  onPressed: () async {
-                    if (email == null || password == null) {
-                      return;
-                    }
-                    setState(() {
-                      showSpinner = true;
-                    });
-                    try {
-                      final newUser = await FirebaseConnection.createUser(
-                          email: email, password: password);
-                      if (newUser != null) {
-                        Navigator.pushNamed(context, CreateProfileScreen.id);
+        body: SingleChildScrollView(
+          child: ModalProgressHUD(
+            inAsyncCall: showSpinner,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(
+                    height: 0.0,
+                  ),
+                  LoginInputField(
+                    isLast: false,
+                    isEmail: false,
+                    placeholder: 'Full name',
+                    setText: (value) {
+                      print(name);
+                      name = value;
+                    },
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  LoginInputField(
+                    isLast: false,
+                    isEmail: false,
+                    placeholder: 'Username',
+                    setText: (value) {
+                      username = value;
+                    },
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  LoginInputField(
+                    isLast: false,
+                    isEmail: true,
+                    placeholder: 'Enter your email',
+                    setText: (value) {
+                      email = value;
+                    },
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  LoginInputField(
+                    isLast: true,
+                    isEmail: false,
+                    placeholder: 'Enter your password',
+                    setText: (value) {
+                      password = value;
+                    },
+                  ),
+                  SizedBox(
+                    height: 24.0,
+                  ),
+                  RoundedButton(
+                    color: kDarkGreenColor,
+                    text: 'Sign up',
+                    onPressed: () async {
+                      if (email == null || password == null) {
+                        return;
                       }
                       setState(() {
-                        showSpinner = false;
+                        showSpinner = true;
                       });
-                    } catch (e) {
-                      switch (e.code) {
-                        case 'ERROR_WEAK_PASSWORD':
-                          {
-                            showAlert(
-                                context: context,
-                                title: "Weak Password",
-                                description: e.message);
-                            break;
-                          }
-                        case 'ERROR_INVALID_EMAIL':
-                          {
-                            showAlert(
-                                context: context,
-                                title: "Invalid Email",
-                                description:
-                                    "Please enter a valid email address");
-                            break;
-                          }
-                        case 'ERROR_EMAIL_ALREADY_IN_USE':
-                          {
-                            showAlert(
-                                context: context,
-                                title: "Email Already in Use",
-                                description: e.message);
-                            break;
-                          }
-                        default:
-                          {
-                            print(e);
-                          }
+                      try {
+                        final newUser = await FirebaseConnection.createUser(
+                            email: email, password: password);
+                        if (newUser != null) {
+                          Navigator.pushNamed(context, CreateProfileScreen.id);
+                        }
+                        setState(() {
+                          showSpinner = false;
+                        });
+                      } catch (e) {
+                        switch (e.code) {
+                          case 'ERROR_WEAK_PASSWORD':
+                            {
+                              showAlert(
+                                  context: context,
+                                  title: "Weak Password",
+                                  description: e.message);
+                              break;
+                            }
+                          case 'ERROR_INVALID_EMAIL':
+                            {
+                              showAlert(
+                                  context: context,
+                                  title: "Invalid Email",
+                                  description:
+                                      "Please enter a valid email address");
+                              break;
+                            }
+                          case 'ERROR_EMAIL_ALREADY_IN_USE':
+                            {
+                              showAlert(
+                                  context: context,
+                                  title: "Email Already in Use",
+                                  description: e.message);
+                              break;
+                            }
+                          default:
+                            {
+                              print(e);
+                            }
+                        }
+                        setState(() {
+                          showSpinner = false;
+                        });
                       }
-                      setState(() {
-                        showSpinner = false;
-                      });
-                    }
-                  },
-                ),
-                /*SizedBox(
+                    },
+                  ),
+                  /*SizedBox(
                   height: 40.0,
                 ),
                 GestureDetector(
@@ -165,7 +172,22 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     ),
                   ),
                 ),*/
-              ],
+                  Text(
+                    'OR',
+                    textAlign: TextAlign.center,
+                  ),
+                  RoundedButton(
+                    color: Colors.blueAccent[100],
+                    text: 'Sign Up with Facebook',
+                    onPressed: null,
+                  ),
+                  RoundedButton(
+                    color: Colors.redAccent[100],
+                    text: 'Sign Up with Google',
+                    onPressed: null,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -173,5 +195,3 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     );
   }
 }
-
-

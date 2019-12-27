@@ -53,23 +53,12 @@ class _SplashScreenState extends State<SplashScreen> {
                   },
                   text: 'Sign Up',
                 ),
-                Row(
-                  children: <Widget>[
-                    Text('Already have an account?'),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, LoginScreen.id);
-                      },
-                      child: Text(
-                        'Sign in',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ],
+                RoundedButton(
+                  color: kDarkGreenColor,
+                  onPressed: () {
+                    Navigator.pushNamed(context, LoginScreen.id);
+                  },
+                  text: 'I already have an account',
                 ),
               ],
             ),
