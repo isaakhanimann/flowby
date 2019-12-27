@@ -27,18 +27,16 @@ class _ChatScreenState extends State<ChatScreen> {
       future: FirebaseConnection.getChatPath(
           user: loggedInUser.email, otherUser: widget.otherUser.email),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Container(color: Colors.white);
+        if (snapshot.connectionState != ConnectionState.done) {
+          return CupertinoActivityIndicator();
+        }
+        if (snapshot.hasError) {
+          return Container(
+            color: Colors.red,
+            child: Text('Something went wrong'),
+          );
         }
         String chatPath = snapshot.data;
-        if (chatPath == null) {
-          //create chat
-          FirebaseConnection.createChat(
-              user: loggedInUser.email, otherUser: widget.otherUser.email);
-        }
-
-        var messageStream =
-            FirebaseConnection.getMessageStream(chatPath: chatPath);
 
         return Scaffold(
           appBar: AppBar(
@@ -52,7 +50,8 @@ class _ChatScreenState extends State<ChatScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 MessagesStream(
-                  messagesStream: messageStream,
+                  messagesStream:
+                      FirebaseConnection.getMessageStream(chatPath: chatPath),
                 ),
                 MessageSendingSection(chatPath: chatPath),
               ],
@@ -107,7 +106,8 @@ class MessagesStream extends StatelessWidget {
     return StreamBuilder<List<Message>>(
       stream: messagesStream,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.connectionState == ConnectionState.none) {
           return Expanded(
             child: CupertinoActivityIndicator(),
           );

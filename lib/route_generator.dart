@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:float/models/user.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:float/screens/login_screen.dart';
+import 'package:float/screens/navigation_screen.dart';
 import 'package:float/screens/registration_screen.dart';
 import 'package:float/screens/splash_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:float/screens/navigation_screen.dart';
-import 'package:float/models/user.dart';
+import 'package:flutter/material.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -20,8 +20,8 @@ class RouteGenerator {
                   ));
         }
         return _errorRoute();
-      case NavigationScreens.id:
-        return MaterialPageRoute(builder: (_) => NavigationScreens());
+      case NavigationScreen.id:
+        return MaterialPageRoute(builder: (_) => NavigationScreen());
       case LoginScreen.id:
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case RegistrationScreen.id:

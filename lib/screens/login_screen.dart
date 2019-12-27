@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           //cleans the navigation stack, so we don't come back to the login page if we
                           //press the back button in Android
                           Navigator.of(context)
-                              .pushNamedAndRemoveUntil(NavigationScreens.id, (Route<dynamic> route) => false);
+                              .pushNamedAndRemoveUntil(NavigationScreen.id, (Route<dynamic> route) => false);
                         }
                         setState(() {
                           showSpinner = false;
@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context: context,
                                   title: "Invalid Email",
                                   description:
-                                      "Please input a valid email address");
+                                  "Please input a valid email address");
                               break;
                             }
                           case 'ERROR_WRONG_PASSWORD':
@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context: context,
                                   title: "User not found",
                                   description:
-                                      "There is no user with this email address");
+                                  "There is no user with this email address");
                               break;
                             }
                           case 'ERROR_USER_DISABLED':
