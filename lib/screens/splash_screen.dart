@@ -3,6 +3,7 @@ import 'package:float/screens/registration_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/rounded_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -28,8 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
       decoration: BoxDecoration(
         image: DecorationImage(
           colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("images/Freeflowter_Stony_Fond2.png"),
-          alignment: Alignment(1.0, 1.0),
+          image: AssetImage("images/splash_screen_background.png"),
+          alignment: Alignment(0.0, 0.0),
           fit: BoxFit.cover,
         ),
       ),
@@ -49,14 +50,16 @@ class _SplashScreenState extends State<SplashScreen> {
                 RoundedButton(
                   color: kDarkGreenColor,
                   onPressed: () {
-                    Navigator.pushNamed(context, RegistrationScreen.id);
+                    //Navigator.pushNamed(context, RegistrationScreen.id);
+                    Navigator.push(context, CupertinoPageRoute(builder: (context) => RegistrationScreen()));
                   },
                   text: 'Sign Up',
                 ),
                 RoundedButton(
                   color: kDarkGreenColor,
                   onPressed: () {
-                    Navigator.pushNamed(context, LoginScreen.id);
+                    //Navigator.pushNamed(context, LoginScreen.id);
+                    Navigator.push(context, CupertinoPageRoute(builder: (context) => LoginScreen()));
                   },
                   text: 'I already have an account',
                 ),
