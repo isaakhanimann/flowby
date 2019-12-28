@@ -24,7 +24,7 @@ class ProfileItem extends StatelessWidget {
           onTap: () {
             Navigator.of(context, rootNavigator: true)
                 .push(CupertinoPageRoute<void>(
-              builder: (BuildContext context) {
+              builder: (context) {
                 return ChatScreen(otherUser: user);
               },
               fullscreenDialog: true,
