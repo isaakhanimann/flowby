@@ -84,21 +84,19 @@ class ButtonThatLooksLikeSearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        showSearch(
-            context: context,
-            delegate: DataSearch(isSkillSearch: isSkillSelected));
-      },
-      child: Card(
-        color: kLightGrey,
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15))),
-        child: ListTile(
-          leading: Icon(Icons.search),
-          title: Text('Search'),
-        ),
+    return Card(
+      color: kLightGrey,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15))),
+      child: ListTile(
+        onTap: () {
+          showSearch(
+              context: context,
+              delegate: DataSearch(isSkillSearch: isSkillSelected));
+        },
+        leading: Icon(Icons.search),
+        title: Text('Search'),
       ),
     );
   }

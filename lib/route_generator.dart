@@ -13,25 +13,25 @@ class RouteGenerator {
     switch (settings.name) {
       case ChatScreen.id:
         if (args is User) {
-          return MaterialPageRoute(
+          return CupertinoPageRoute(
               builder: (_) => ChatScreen(
                     otherUser: args,
                   ));
         }
         return _errorRoute();
       case NavigationScreen.id:
-        return MaterialPageRoute(builder: (_) => NavigationScreen());
+        return CupertinoPageRoute(builder: (_) => NavigationScreen());
       case LoginScreen.id:
-        return MaterialPageRoute(builder: (_) => LoginScreen());
+        return CupertinoPageRoute(builder: (_) => LoginScreen());
       case RegistrationScreen.id:
-        return MaterialPageRoute(builder: (_) => RegistrationScreen());
+        return CupertinoPageRoute(builder: (_) => RegistrationScreen());
       default:
         return _errorRoute();
     }
   }
 
   static Route<dynamic> _errorRoute() {
-    return MaterialPageRoute(builder: (_) {
+    return CupertinoPageRoute(builder: (_) {
       return Scaffold(
         appBar: AppBar(
           title: Text('Error'),

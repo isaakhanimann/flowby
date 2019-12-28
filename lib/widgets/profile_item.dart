@@ -2,6 +2,7 @@ import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:float/services/firebase_connection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileItem extends StatelessWidget {
@@ -21,7 +22,13 @@ class ProfileItem extends StatelessWidget {
       child: Center(
         child: ListTile(
           onTap: () {
-            Navigator.pushNamed(context, ChatScreen.id, arguments: user);
+            Navigator.of(context, rootNavigator: true)
+                .push(CupertinoPageRoute<void>(
+              builder: (BuildContext context) {
+                return ChatScreen(otherUser: user);
+              },
+              fullscreenDialog: true,
+            ));
           },
           leading: FutureBuilder(
             future: FirebaseConnection.getImageUrl(fileName: user.email),

@@ -40,7 +40,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            leading: null,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: Icon(Icons.arrow_back_ios),
+            ),
             title: Text(widget.otherUser.username ?? 'Default'),
             backgroundColor: kDarkGreenColor,
           ),
