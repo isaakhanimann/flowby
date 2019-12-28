@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
-import 'package:float/screens/login_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/hashtag_bubble.dart';
 import 'package:float/widgets/rounded_button.dart';
@@ -324,7 +323,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             GestureDetector(
               onTap: () {
                 FirebaseConnection.signOut();
-                Navigator.pushNamed(context, LoginScreen.id);
+                Navigator.of(context, rootNavigator: true).pop();
               },
               child: Text('Sign Out'),
             )
