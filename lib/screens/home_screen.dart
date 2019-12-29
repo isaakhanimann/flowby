@@ -6,6 +6,7 @@ import 'package:float/widgets/stream_list_users.dart';
 import 'package:float/widgets/users_listview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var loggedInUser = Provider.of<FirebaseUser>(context);
+    var currentPosition = Provider.of<Position>(context);
 
     return Scaffold(
       body: SafeArea(
@@ -53,19 +55,10 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             SizedBox(height: 10),
-            StreamBuilder(
-              stream: FirebaseConnection.getUserStream(uid: loggedInUser.email),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Container(color: Colors.white);
-                }
-                User user = snapshot.data;
-                return StreamListUsers(
-                  userStream: FirebaseConnection.getUsersStreamWithDistance(
-                      loggedInUser: user),
-                  searchSkill: isSkillSelected,
-                );
-              },
+            StreamListUsers(
+              userStream: FirebaseConnection.getUsersStreamWithDistance(
+                  position: currentPosition, uidToExclude: loggedInUser?.email),
+              searchSkill: isSkillSelected,
             ),
           ],
         ),
@@ -136,46 +129,39 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     var loggedInUser = Provider.of<FirebaseUser>(context);
-    return StreamBuilder(
-        stream: FirebaseConnection.getUserStream(uid: loggedInUser.email),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container(color: Colors.white);
-          }
-          User user = snapshot.data;
-          return StreamBuilder<List<User>>(
-            stream: FirebaseConnection.getUsersStreamWithDistance(
-                loggedInUser: user),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: Text('Nodata'),
-                );
-              }
+    var currentPosition = Provider.of<Position>(context);
 
-              final List<User> allUsers = snapshot.data;
-              List<User> suggestedUsers;
-
-              if (isSkillSearch) {
-                suggestedUsers = allUsers
-                    .where((u) => u.skillHashtags
-                        .toString()
-                        .toLowerCase()
-                        .contains(query.toLowerCase()))
-                    .toList();
-              } else {
-                suggestedUsers = allUsers
-                    .where((u) => u.wishHashtags
-                        .toString()
-                        .toLowerCase()
-                        .contains(query.toLowerCase()))
-                    .toList();
-              }
-              return UsersListView(
-                  users: suggestedUsers, searchSkill: isSkillSearch);
-            },
+    return StreamBuilder<List<User>>(
+      stream: FirebaseConnection.getUsersStreamWithDistance(
+          position: currentPosition, uidToExclude: loggedInUser.email),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: Text('Nodata'),
           );
-        });
+        }
+
+        final List<User> allUsers = snapshot.data;
+        List<User> suggestedUsers;
+
+        if (isSkillSearch) {
+          suggestedUsers = allUsers
+              .where((u) => u.skillHashtags
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
+              .toList();
+        } else {
+          suggestedUsers = allUsers
+              .where((u) => u.wishHashtags
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
+              .toList();
+        }
+        return UsersListView(users: suggestedUsers, searchSkill: isSkillSearch);
+      },
+    );
   }
 
   @override
