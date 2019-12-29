@@ -26,6 +26,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     CreateProfileScreen()
   ];
 
+  Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
 
   @override
@@ -34,8 +35,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     //upload the users location whenever it changes
     var loggedInUser = Provider.of<FirebaseUser>(context);
-    positionStreamSubscription =
-        Location.getPositionStream().listen((Position position) {
+    //asBroadcast because the streamprovider for the homescreen also listens to it
+    positionStream = Location.getPositionStream().asBroadcastStream();
+    positionStreamSubscription = positionStream.listen((Position position) {
       if (loggedInUser != null) {
         FirebaseConnection.uploadUsersLocation(
             userEmail: loggedInUser.email, position: position);
@@ -51,34 +53,37 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        activeColor: kDarkGreenColor,
-        items: [
-          BottomNavigationBarItem(
+    return StreamProvider<Position>.value(
+      value: positionStream,
+      child: CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+          activeColor: kDarkGreenColor,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(
+                  CupertinoIcons.home,
+                ),
+                title: Text('Home')),
+            BottomNavigationBarItem(
               icon: Icon(
-                CupertinoIcons.home,
+                CupertinoIcons.conversation_bubble,
               ),
-              title: Text('Home')),
-          BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.conversation_bubble,
+              title: Text('Messages'),
             ),
-            title: Text('Messages'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.person,
+            BottomNavigationBarItem(
+              icon: Icon(
+                CupertinoIcons.person,
+              ),
+              title: Text('Profile'),
             ),
-            title: Text('Profile'),
-          ),
-        ],
+          ],
+        ),
+        tabBuilder: (context, index) {
+          return CupertinoTabView(builder: (context) {
+            return tabScreens[index];
+          });
+        },
       ),
-      tabBuilder: (context, index) {
-        return CupertinoTabView(builder: (context) {
-          return tabScreens[index];
-        });
-      },
     );
   }
 }
