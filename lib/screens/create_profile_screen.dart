@@ -349,8 +349,6 @@ class RatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //todo: the initialItem for the second CupertinoPicker does not work, maybe add a key
-//    print('initialValue = $initialValue');
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
