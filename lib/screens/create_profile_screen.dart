@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
-import 'package:float/screens/splash_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/hashtag_bubble.dart';
 import 'package:float/widgets/rounded_button.dart';
@@ -324,11 +323,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             GestureDetector(
               onTap: () {
                 FirebaseConnection.signOut();
-                //Navigator.pushNamed(context, SplashScreen.id);
-                //cleans the navigation stack, so we don't come back to the login page if we
-                //press the back button in Android
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(SplashScreen.id, (Route<dynamic> route) => false);
+                Navigator.of(context, rootNavigator: true).pop();
               },
               child: Text('Sign Out'),
             )
@@ -354,8 +349,6 @@ class RatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //todo: the initialItem for the second CupertinoPicker does not work, maybe add a key
-//    print('initialValue = $initialValue');
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[

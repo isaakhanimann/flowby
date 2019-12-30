@@ -87,7 +87,6 @@ class FirebaseConnection {
 
   static Future<User> getUser({@required String userID}) async {
     try {
-      print('userID = $userID');
       var userDocument =
           await _fireStore.collection('users').document(userID).get();
       if (userDocument.data == null) {
@@ -117,14 +116,16 @@ class FirebaseConnection {
   }
 
   static Stream<List<User>> getUsersStreamWithDistance(
-      {@required User loggedInUser}) {
+      {@required Position position, String uidToExclude}) {
     try {
       var userSnapshots = _fireStore.collection('users').snapshots().map(
           (snap) => snap.documents
                   .map((doc) => User.fromMap(map: doc.data))
-                  .where((user) => user.email != loggedInUser.email)
+                  .where((user) => (uidToExclude != null)
+                      ? user.email != uidToExclude
+                      : true)
                   .map((user) {
-                user.updateDistanceToOtherUser(otherUser: loggedInUser);
+                user.updateDistanceToPositionIfPossible(position: position);
                 return user;
               }).toList());
       return userSnapshots;
@@ -135,7 +136,7 @@ class FirebaseConnection {
   }
 
   static Stream<List<User>> getSpecifiedUsersStreamWithDistance(
-      {@required User loggedInUser, @required List<String> uids}) {
+      {@required Position position, @required List<String> uids}) {
     try {
       List<Stream<User>> listOfStreams = [];
       for (var uid in uids) {
@@ -146,7 +147,7 @@ class FirebaseConnection {
             .map((snap) => snap.documents
                     .map((doc) => User.fromMap(map: doc.data))
                     .map((user) {
-                  user.updateDistanceToOtherUser(otherUser: loggedInUser);
+                  user.updateDistanceToPositionIfPossible(position: position);
                   return user;
                 }).toList()[0]);
         listOfStreams.add(streamToAdd);

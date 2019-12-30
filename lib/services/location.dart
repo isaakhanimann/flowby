@@ -7,14 +7,14 @@ import 'package:geolocator/geolocator.dart';
 class Location {
   static Future<Position> getCurrentPosition() async {
     Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
     return position;
   }
 
   static void getLastKnownPositionAndUploadIt(
       {@required String userEmail}) async {
     Position position = await Geolocator()
-        .getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
+        .getLastKnownPosition(desiredAccuracy: LocationAccuracy.medium);
     FirebaseConnection.uploadUsersLocation(
         userEmail: userEmail, position: position);
   }
@@ -22,7 +22,7 @@ class Location {
   static StreamSubscription<Position> getPositionStreamSubscription() {
     //To listen for location changes you can subscribe to the onPositionChanged stream. Supply an instance of the LocationOptions class to configure the desired accuracy and the minimum distance change (in meters) before updates are send to the application.
     var locationOptions =
-        LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 100);
+        LocationOptions(accuracy: LocationAccuracy.medium, distanceFilter: 500);
 
     StreamSubscription<Position> positionStreamSubscription = Geolocator()
         .getPositionStream(locationOptions)
@@ -39,7 +39,7 @@ class Location {
   static Stream<Position> getPositionStream() {
     //To listen for location changes you can subscribe to the onPositionChanged stream. Supply an instance of the LocationOptions class to configure the desired accuracy and the minimum distance change (in meters) before updates are send to the application.
     var locationOptions =
-        LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 100);
+        LocationOptions(accuracy: LocationAccuracy.medium, distanceFilter: 500);
     Stream<Position> positionStream =
         Geolocator().getPositionStream(locationOptions);
     return positionStream;

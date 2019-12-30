@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:float/services/location.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 
 class User {
   String username;
@@ -31,25 +32,16 @@ class User {
     this.location = map['location'];
   }
 
-  void updateDistanceToOtherUser({@required User otherUser}) async {
-    this.distanceInKm =
-        await getDistanceBetweenUsers(user1: this, user2: otherUser);
-  }
-
-  Future<int> getDistanceBetweenUsers(
-      {@required User user1, @required User user2}) async {
-    GeoPoint point1 = user1.location;
-    GeoPoint point2 = user2.location;
-    if (point1 == null || point2 == null) {
-      return null;
+  void updateDistanceToPositionIfPossible({@required Position position}) async {
+    if (position == null || this.location == null) {
+      return;
     }
     double distanceInMeters = await Location.distanceBetween(
-        startLatitude: point1.latitude,
-        startLongitude: point1.longitude,
-        endLatitude: point2.latitude,
-        endLongitude: point2.longitude);
-    int distanceInKm = (distanceInMeters / 1000).round();
-    return distanceInKm;
+        startLatitude: this.location.latitude,
+        startLongitude: this.location.longitude,
+        endLatitude: position.latitude,
+        endLongitude: position.longitude);
+    this.distanceInKm = (distanceInMeters / 1000).round();
   }
 
   @override
