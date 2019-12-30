@@ -37,8 +37,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         appBar: AppBar(
           title: Text('Reset password'),
           centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xFF0D4FF7),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),

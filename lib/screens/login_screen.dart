@@ -42,8 +42,10 @@ class _LoginScreenState extends State<LoginScreen> {
         appBar: AppBar(
           title: Text('Log In'),
           centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xFF0D4FF7),
         body: SingleChildScrollView(
           child: ModalProgressHUD(
             inAsyncCall: showSpinner,

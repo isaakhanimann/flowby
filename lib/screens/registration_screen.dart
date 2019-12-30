@@ -41,7 +41,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
           backgroundColor: Colors.transparent,
           elevation: 0.0,
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xFF0D4FF7),
         body: SingleChildScrollView(
           child: ModalProgressHUD(
             inAsyncCall: showSpinner,
