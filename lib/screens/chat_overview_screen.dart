@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/services/firebase_connection.dart';
-import 'package:float/widgets/stream_list_users.dart';
+import 'package:float/widgets/streambuilder_with_loading_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -34,7 +34,8 @@ class ChatOverviewScreen extends StatelessWidget {
           return Column(
             children: <Widget>[
               //display all users specified with the uids
-              StreamListUsers(
+              StreambuilderWithLoadingIndicator(
+                showProfiles: false,
                 userStream:
                     FirebaseConnection.getSpecifiedUsersStreamWithDistance(
                         position: currentPosition, uids: uids),

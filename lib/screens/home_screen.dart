@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/services/firebase_connection.dart';
-import 'package:float/widgets/stream_list_users.dart';
-import 'package:float/widgets/users_listview.dart';
+import 'package:float/widgets/list_of_profiles.dart';
+import 'package:float/widgets/streambuilder_with_loading_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -55,7 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             SizedBox(height: 10),
-            StreamListUsers(
+            StreambuilderWithLoadingIndicator(
+              showProfiles: true,
               userStream: FirebaseConnection.getUsersStreamWithDistance(
                   position: currentPosition, uidToExclude: loggedInUser?.email),
               searchSkill: isSkillSelected,
@@ -159,7 +160,8 @@ class DataSearch extends SearchDelegate<String> {
                   .contains(query.toLowerCase()))
               .toList();
         }
-        return UsersListView(users: suggestedUsers, searchSkill: isSkillSearch);
+        return ListOfProfiles(
+            users: suggestedUsers, searchSkill: isSkillSearch);
       },
     );
   }

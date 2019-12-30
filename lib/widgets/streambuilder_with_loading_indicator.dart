@@ -1,13 +1,18 @@
 import 'package:float/models/user.dart';
-import 'package:float/widgets/users_listview.dart';
+import 'package:float/widgets/list_of_chats.dart';
+import 'package:float/widgets/list_of_profiles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class StreamListUsers extends StatelessWidget {
+class StreambuilderWithLoadingIndicator extends StatelessWidget {
   final Stream<List<User>> userStream;
   final bool searchSkill;
+  final bool showProfiles;
 
-  StreamListUsers({@required this.userStream, this.searchSkill = true});
+  StreambuilderWithLoadingIndicator(
+      {@required this.userStream,
+      @required this.showProfiles,
+      this.searchSkill = true});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,9 @@ class StreamListUsers extends StatelessWidget {
         users.sort((user1, user2) =>
             (user1.distanceInKm ?? 1000).compareTo(user2.distanceInKm ?? 1000));
         return Expanded(
-          child: UsersListView(users: users, searchSkill: searchSkill),
+          child: showProfiles
+              ? ListOfProfiles(users: users, searchSkill: searchSkill)
+              : ListOfChats(users: users, searchSkill: searchSkill),
         );
       },
     );

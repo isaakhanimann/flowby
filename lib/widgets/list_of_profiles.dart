@@ -5,6 +5,31 @@ import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+class ListOfProfiles extends StatelessWidget {
+  const ListOfProfiles({
+    Key key,
+    @required this.users,
+    @required this.searchSkill,
+  }) : super(key: key);
+
+  final List<User> users;
+  final bool searchSkill;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemExtent: 90,
+      itemBuilder: (context, index) {
+        return ProfileItem(
+          user: users[index],
+          isSkillSearch: searchSkill,
+        );
+      },
+      itemCount: users.length,
+    );
+  }
+}
+
 class ProfileItem extends StatelessWidget {
   final isSkillSearch;
   final User user;
