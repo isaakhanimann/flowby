@@ -31,6 +31,10 @@ class FirebaseConnection {
     return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
+  static Future<void> resetPassword({@required String email}) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
+
   static Future<void> autoLogin({@required BuildContext context}) async {
     final user = await _auth.currentUser();
     if (user != null) {

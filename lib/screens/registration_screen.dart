@@ -1,5 +1,5 @@
 import 'package:float/constants.dart';
-import 'package:float/screens/create_profile_screen.dart';
+import 'package:float/screens/navigation_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
@@ -113,7 +113,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         final newUser = await FirebaseConnection.createUser(
                             email: email, password: password);
                         if (newUser != null) {
-                          Navigator.pushNamed(context, CreateProfileScreen.id);
+                          Navigator.pushNamed(context, NavigationScreen.id);
                         }
                         setState(() {
                           showSpinner = false;

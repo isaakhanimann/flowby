@@ -324,6 +324,11 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               onTap: () {
                 FirebaseConnection.signOut();
                 Navigator.of(context, rootNavigator: true).pop();
+                /*Navigator.of(context).pushNamedAndRemoveUntil(
+                    SplashScreen.id,
+                        (Route<dynamic> route) => false);
+                        */
+
               },
               child: Text('Sign Out'),
             )

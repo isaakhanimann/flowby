@@ -6,6 +6,8 @@ import 'package:float/widgets/login_input_field.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:float/screens/reset_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -76,9 +78,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       password = value;
                     },
                   ),
-                  Text(
-                    'Forgot your password?',
-                    textAlign: TextAlign.left,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, CupertinoPageRoute(builder: (context) => ResetPasswordScreen()));
+                    },
+                    child: Text('Forgot your password?'),
                   ),
                   RoundedButton(
                       color: kDarkGreenColor,
@@ -93,12 +97,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           final user = await FirebaseConnection.signIn(
                               email: email, password: password);
                           if (user != null) {
-                            //Navigator.pushNamed(context, NavigationScreens.id);
+                            Navigator.pushNamed(context, NavigationScreen.id);
                             //cleans the navigation stack, so we don't come back to the login page if we
                             //press the back button in Android
-                            Navigator.of(context).pushNamedAndRemoveUntil(
+                            /* Navigator.of(context).pushNamedAndRemoveUntil(
                                 NavigationScreen.id,
-                                (Route<dynamic> route) => false);
+                                (Route<dynamic> route) => false);*/
                           }
                           setState(() {
                             showSpinner = false;

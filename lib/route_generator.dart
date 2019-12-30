@@ -4,6 +4,7 @@ import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/navigation_screen.dart';
 import 'package:float/screens/registration_screen.dart';
 import 'package:float/screens/splash_screen.dart';
+import 'package:float/screens/reset_password_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,27 +15,29 @@ class RouteGenerator {
     switch (settings.name) {
       case ChatScreen.id:
         if (args is User) {
-          return MaterialPageRoute(
+          return CupertinoPageRoute(
               builder: (_) => ChatScreen(
                     otherUser: args,
                   ));
         }
         return _errorRoute();
       case NavigationScreen.id:
-        return MaterialPageRoute(builder: (_) => NavigationScreen());
+        return CupertinoPageRoute(builder: (_) => NavigationScreen());
       case LoginScreen.id:
-        return MaterialPageRoute(builder: (_) => LoginScreen());
+        return CupertinoPageRoute(builder: (_) => LoginScreen());
       case RegistrationScreen.id:
-        return MaterialPageRoute(builder: (_) => RegistrationScreen());
+        return CupertinoPageRoute(builder: (_) => RegistrationScreen());
       case SplashScreen.id:
-        return MaterialPageRoute(builder: (_) => SplashScreen());
+        return CupertinoPageRoute(builder: (_) => SplashScreen());
+      case ResetPasswordScreen.id:
+        return CupertinoPageRoute(builder: (_) => ResetPasswordScreen());
       default:
         return _errorRoute();
     }
   }
 
   static Route<dynamic> _errorRoute() {
-    return MaterialPageRoute(builder: (_) {
+    return CupertinoPageRoute(builder: (_) {
       return Scaffold(
         appBar: AppBar(
           title: Text('Error'),
