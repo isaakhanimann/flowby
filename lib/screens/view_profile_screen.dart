@@ -127,13 +127,13 @@ class ViewProfileScreen extends StatelessWidget {
               text: 'Chat',
               color: kDarkGreenColor,
               onPressed: () async {
-                Navigator.of(context, rootNavigator: true)
-                    .push(CupertinoPageRoute<void>(
-                  builder: (context) {
-                    return ChatScreen(otherUser: user);
-                  },
-                  fullscreenDialog: true,
-                ));
+                Navigator.of(context, rootNavigator: true).push(
+                  CupertinoPageRoute<void>(
+                    builder: (context) {
+                      return ChatScreen(otherUser: user);
+                    },
+                  ),
+                );
               },
             ),
             SizedBox(
