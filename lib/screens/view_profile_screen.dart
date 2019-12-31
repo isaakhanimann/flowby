@@ -16,17 +16,6 @@ class ViewProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          color: kDarkGreenColor,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back_ios),
-        ),
-      ),
       body: SafeArea(
         child: Column(
           children: <Widget>[
@@ -36,31 +25,45 @@ class ViewProfileScreen extends StatelessWidget {
                 child: ListView(
                   children: <Widget>[
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('${user.distanceInKm.toString()} km'),
-                        Icon(CupertinoIcons.location)
+                        IconButton(
+                          color: kDarkGreenColor,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(Icons.arrow_back_ios),
+                        ),
+                        Center(
+                          heightFactor: 1.2,
+                          child: FutureBuilder(
+                            future: FirebaseConnection.getImageUrl(
+                                fileName: user.email),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                String imageUrl = snapshot.data;
+                                return CircleAvatar(
+                                  radius: 50,
+                                  backgroundColor: Colors.grey,
+                                  backgroundImage: NetworkImage(imageUrl),
+                                );
+                              }
+                              return CircleAvatar(
+                                backgroundColor: Colors.grey,
+                              );
+                            },
+                          ),
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: <Widget>[
+                            Text('${user.distanceInKm.toString()} km'),
+                            Icon(CupertinoIcons.location)
+                          ],
+                        ),
                       ],
-                    ),
-                    Center(
-                      heightFactor: 1.2,
-                      child: FutureBuilder(
-                        future: FirebaseConnection.getImageUrl(
-                            fileName: user.email),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            String imageUrl = snapshot.data;
-                            return CircleAvatar(
-                              radius: 50,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: NetworkImage(imageUrl),
-                            );
-                          }
-                          return CircleAvatar(
-                            backgroundColor: Colors.grey,
-                          );
-                        },
-                      ),
                     ),
                     SizedBox(
                       height: 5,
