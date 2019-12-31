@@ -47,13 +47,14 @@ class ProfileItem extends StatelessWidget {
       child: Center(
         child: ListTile(
           onTap: () {
-            Navigator.of(context, rootNavigator: true)
-                .push(CupertinoPageRoute<void>(
-              builder: (context) {
-                return ViewProfileScreen(user: user, showSkills: isSkillSearch);
-              },
-              fullscreenDialog: true,
-            ));
+            Navigator.of(context, rootNavigator: true).push(
+              CupertinoPageRoute<void>(
+                builder: (context) {
+                  return ViewProfileScreen(
+                      user: user, showSkills: isSkillSearch);
+                },
+              ),
+            );
           },
           leading: FutureBuilder(
             future: FirebaseConnection.getImageUrl(fileName: user.email),

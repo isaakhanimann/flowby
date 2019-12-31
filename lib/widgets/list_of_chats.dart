@@ -2,7 +2,6 @@ import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:float/services/firebase_connection.dart';
-import 'package:float/widgets/list_of_profiles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +20,7 @@ class ListOfChats extends StatelessWidget {
     return ListView.builder(
       itemExtent: 90,
       itemBuilder: (context, index) {
-        return ProfileItem(
+        return ChatItem(
           user: users[index],
           isSkillSearch: searchSkill,
         );
@@ -48,13 +47,13 @@ class ChatItem extends StatelessWidget {
       child: Center(
         child: ListTile(
           onTap: () {
-            Navigator.of(context, rootNavigator: true)
-                .push(CupertinoPageRoute<void>(
-              builder: (context) {
-                return ChatScreen(otherUser: user);
-              },
-              fullscreenDialog: true,
-            ));
+            Navigator.of(context, rootNavigator: true).push(
+              CupertinoPageRoute<void>(
+                builder: (context) {
+                  return ChatScreen(otherUser: user);
+                },
+              ),
+            );
           },
           leading: FutureBuilder(
             future: FirebaseConnection.getImageUrl(fileName: user.email),
