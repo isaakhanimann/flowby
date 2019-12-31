@@ -223,7 +223,16 @@ class FirebaseConnection {
       uids.add(doc.data['user1']);
     }
 
-    return uids;
+    List<String> uidsThatAreInUsersCollection = [];
+    for (var uid in uids) {
+      DocumentSnapshot ds =
+          await _fireStore.collection('users').document(uid).get();
+      if (ds.exists) {
+        uidsThatAreInUsersCollection.add(uid);
+      }
+    }
+
+    return uidsThatAreInUsersCollection;
   }
 
   static Future<String> getChatPath(
