@@ -22,6 +22,7 @@
 **/doc/api/
 .dart_tool/
 .flutter-plugins
+.flutter-plugins-dependencies
 .packages
 .pub-cache/
 .pub/
@@ -49,6 +50,8 @@
 **/ios/**/DerivedData/
 **/ios/**/Icon?
 **/ios/**/Pods/
+**/ios/Podfile
+**/ios/Flutter/Flutter.podspec
 **/ios/**/.symlinks/
 **/ios/**/profile
 **/ios/**/xcuserdata
