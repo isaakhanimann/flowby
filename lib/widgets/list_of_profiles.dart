@@ -1,6 +1,6 @@
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
-import 'package:float/screens/chat_screen.dart';
+import 'package:float/screens/view_profile_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +50,7 @@ class ProfileItem extends StatelessWidget {
             Navigator.of(context, rootNavigator: true)
                 .push(CupertinoPageRoute<void>(
               builder: (context) {
-                return ChatScreen(otherUser: user);
+                return ViewProfileScreen(user: user, showSkills: isSkillSearch);
               },
               fullscreenDialog: true,
             ));
