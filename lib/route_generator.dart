@@ -1,5 +1,6 @@
 import 'package:float/models/user.dart';
 import 'package:float/screens/chat_screen.dart';
+import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/navigation_screen.dart';
 import 'package:float/screens/registration_screen.dart';
@@ -25,6 +26,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => LoginScreen());
       case RegistrationScreen.id:
         return CupertinoPageRoute(builder: (_) => RegistrationScreen());
+      case CreateProfileScreen.id:
+        return CupertinoPageRoute(builder: (_) => CreateProfileScreen());
       default:
         return _errorRoute();
     }
