@@ -15,6 +15,9 @@
 *.iws
 .idea/
 
+# Firebase related
+.float-a5628-firebase-adminsdk-rn1nj-616e208ad4.json
+
 # Visual Studio Code related
 .vscode/
 
