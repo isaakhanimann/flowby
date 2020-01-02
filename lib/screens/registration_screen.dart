@@ -1,5 +1,5 @@
 import 'package:float/constants.dart';
-import 'package:float/screens/navigation_screen.dart';
+import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
@@ -22,6 +22,15 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   String name;
   String email;
   String password;
+
+  var _nameController = TextEditingController();
+  var _userNameController = TextEditingController();
+  var _emailController = TextEditingController();
+  var _passwordController = TextEditingController();
+  final FocusNode _nameFocus = FocusNode();
+  final FocusNode _userNameFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +64,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     height: 0.0,
                   ),
                   LoginInputField(
+                    controller: _nameController,
+                    focusNode: _nameFocus,
+                    onFieldSubmitted: (term){
+                      FocusScope.of(context).requestFocus(_userNameFocus);
+                    },
                     isLast: false,
                     isEmail: false,
                     placeholder: 'Full name',
@@ -67,6 +81,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     height: 8.0,
                   ),
                   LoginInputField(
+                    controller: _userNameController,
+                    focusNode: _userNameFocus,
+                    onFieldSubmitted: (term){
+                      FocusScope.of(context).requestFocus(_emailFocus);
+                    },
                     isLast: false,
                     isEmail: false,
                     placeholder: 'Username',
@@ -78,9 +97,14 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     height: 8.0,
                   ),
                   LoginInputField(
+                    controller: _emailController,
+                    focusNode: _emailFocus,
+                    onFieldSubmitted: (term){
+                      FocusScope.of(context).requestFocus(_passwordFocus);
+                    },
                     isLast: false,
                     isEmail: true,
-                    placeholder: 'Enter your email',
+                    placeholder: 'Email address',
                     setText: (value) {
                       email = value;
                     },
@@ -89,9 +113,14 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     height: 8.0,
                   ),
                   LoginInputField(
+                    controller: _passwordController,
+                    focusNode: _passwordFocus,
+                    onFieldSubmitted: (term){
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
                     isLast: true,
                     isEmail: false,
-                    placeholder: 'Enter your password',
+                    placeholder: 'Password',
                     setText: (value) {
                       password = value;
                     },
@@ -100,8 +129,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     height: 24.0,
                   ),
                   RoundedButton(
-                    color: kDarkGreenColor,
-                    text: 'Sign up',
+                    textColor: Colors.white,
+                    color: ffDarkBlue,
+                    text: 'Sign up with Email',
                     onPressed: () async {
                       if (email == null || password == null) {
                         return;
@@ -113,7 +143,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         final newUser = await FirebaseConnection.createUser(
                             email: email, password: password);
                         if (newUser != null) {
-                          Navigator.pushNamed(context, NavigationScreen.id);
+                          Navigator.pushNamed(context, CreateProfileScreen.id);
                         }
                         setState(() {
                           showSpinner = false;
@@ -175,6 +205,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   Text(
                     'OR',
                     textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'MontserratRegular',
+                      fontSize: 18.0,
+                    ),
                   ),
                   RoundedButton(
                     color: Colors.blueAccent[100],

@@ -21,6 +21,12 @@ class _LoginScreenState extends State<LoginScreen> {
   String email;
   String password;
 
+
+  var _emailController = TextEditingController();
+  var _passwordController = TextEditingController();
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -62,9 +68,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 48.0,
                   ),
                   LoginInputField(
+                    controller: _emailController,
+                    focusNode: _emailFocus,
+                    onFieldSubmitted: (term){
+                      FocusScope.of(context).requestFocus(_passwordFocus);
+                    },
                     isLast: false,
                     isEmail: true,
-                    placeholder: 'Enter your email',
+                    placeholder: 'Email address',
                     setText: (value) {
                       email = value;
                     },
@@ -73,21 +84,39 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 8.0,
                   ),
                   LoginInputField(
+                    controller: _passwordController,
+                    focusNode: _passwordFocus,
+                    onFieldSubmitted: (term){
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
                     isLast: true,
                     isEmail: false,
-                    placeholder: 'Enter your password',
+                    placeholder: 'Password',
                     setText: (value) {
                       password = value;
                     },
                   ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context, CupertinoPageRoute(builder: (context) => ResetPasswordScreen()));
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => ResetPasswordScreen()));
                     },
-                    child: Text('Forgot your password?'),
+                    child: Text(
+                      'Forgot your password?',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                   RoundedButton(
-                      color: kDarkGreenColor,
+                      color: ffDarkBlue,
+                      textColor: Colors.white,
                       onPressed: () async {
                         if (email == null || password == null) {
                           return;
@@ -171,13 +200,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
                         }
                       },
-                      text: 'Login'),
-                  SizedBox(
-                    height: 10.0,
-                  ),
+                      text: 'Log In'),
                   Text(
                     'OR',
                     textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'MontserratRegular',
+                      fontSize: 18.0,
+                    ),
                   ),
                   RoundedButton(
                     color: Colors.blueAccent[100],

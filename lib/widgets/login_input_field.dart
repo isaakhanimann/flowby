@@ -7,21 +7,31 @@ class LoginInputField extends StatelessWidget {
   final bool isEmail;
   final String placeholder;
 
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final Function onFieldSubmitted;
+
   LoginInputField({
     this.isLast,
     this.setText,
     this.isEmail,
     this.placeholder,
+    this.controller,
+    this.focusNode,
+    this.onFieldSubmitted,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      controller: controller,
+      focusNode: focusNode,
+      onFieldSubmitted: onFieldSubmitted,
       textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
       keyboardType: isEmail ? TextInputType.emailAddress : null,
       obscureText: !isEmail,
       onChanged: setText,
-      decoration: kLoginInputFieldDecoration.copyWith(hintText: placeholder),
+      decoration: ffLoginInputFieldDecoration.copyWith(hintText: placeholder),
     );
   }
 }

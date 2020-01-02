@@ -48,7 +48,8 @@ class _SplashScreenState extends State<SplashScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 RoundedButton(
-                  color: kDarkGreenColor,
+                  color: ffDarkBlue,
+                  textColor: Colors.white,
                   onPressed: () {
                     //Navigator.pushNamed(context, RegistrationScreen.id);
                     Navigator.push(context, CupertinoPageRoute(builder: (context) => RegistrationScreen()));
@@ -56,7 +57,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   text: 'Sign Up',
                 ),
                 RoundedButton(
-                  color: kDarkGreenColor,
+                  color: Colors.white,
+                  textColor: ffDarkBlue,
                   onPressed: () {
                     //Navigator.pushNamed(context, LoginScreen.id);
                     Navigator.push(context, CupertinoPageRoute(builder: (context) => LoginScreen()));
