@@ -1,5 +1,5 @@
 import 'package:float/constants.dart';
-import 'package:float/screens/create_profile_screen.dart';
+import 'package:float/screens/navigation_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
@@ -64,6 +64,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     height: 0.0,
                   ),
                   LoginInputField(
+                    placeholder: 'Full name',
                     controller: _nameController,
                     focusNode: _nameFocus,
                     onFieldSubmitted: (term){
@@ -71,7 +72,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     },
                     isLast: false,
                     isEmail: false,
-                    placeholder: 'Full name',
                     setText: (value) {
                       print(name);
                       name = value;
@@ -81,6 +81,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     height: 8.0,
                   ),
                   LoginInputField(
+                    placeholder: 'Username',
                     controller: _userNameController,
                     focusNode: _userNameFocus,
                     onFieldSubmitted: (term){
@@ -88,7 +89,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     },
                     isLast: false,
                     isEmail: false,
-                    placeholder: 'Username',
                     setText: (value) {
                       username = value;
                     },
@@ -97,6 +97,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     height: 8.0,
                   ),
                   LoginInputField(
+                    placeholder: 'Email address',
                     controller: _emailController,
                     focusNode: _emailFocus,
                     onFieldSubmitted: (term){
@@ -104,7 +105,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     },
                     isLast: false,
                     isEmail: true,
-                    placeholder: 'Email address',
                     setText: (value) {
                       email = value;
                     },
@@ -113,6 +113,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     height: 8.0,
                   ),
                   LoginInputField(
+                    placeholder: 'Password',
                     controller: _passwordController,
                     focusNode: _passwordFocus,
                     onFieldSubmitted: (term){
@@ -120,7 +121,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     },
                     isLast: true,
                     isEmail: false,
-                    placeholder: 'Password',
                     setText: (value) {
                       password = value;
                     },
@@ -134,6 +134,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     text: 'Sign up with Email',
                     onPressed: () async {
                       if (email == null || password == null) {
+                        showAlert(
+                            context: context,
+                            title: "Missing email or password",
+                            description: 'Enter an email and an passaword. Thank you.');
                         return;
                       }
                       setState(() {
@@ -143,7 +147,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         final newUser = await FirebaseConnection.createUser(
                             email: email, password: password);
                         if (newUser != null) {
-                          Navigator.pushNamed(context, CreateProfileScreen.id);
+                          Navigator.pushNamed(context, NavigationScreen.id);
                         }
                         setState(() {
                           showSpinner = false;
@@ -212,13 +216,15 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     ),
                   ),
                   RoundedButton(
-                    color: Colors.blueAccent[100],
                     text: 'Sign Up with Facebook',
+                    color: Color(0xFF4864B3),
+                    textColor: Colors.white,
                     onPressed: null,
                   ),
                   RoundedButton(
-                    color: Colors.redAccent[100],
-                    text: 'Sign Up with Google',
+                    text: 'Sign up with Google',
+                    color: Color(0xFFDD4B39),
+                    textColor: Colors.white,
                     onPressed: null,
                   ),
                 ],

@@ -9,6 +9,8 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:float/screens/reset_password_screen.dart';
 
+//TODO: change box border when the user doesn't enter an input
+
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
 
@@ -20,7 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showSpinner = false;
   String email;
   String password;
-
 
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
@@ -70,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   LoginInputField(
                     controller: _emailController,
                     focusNode: _emailFocus,
-                    onFieldSubmitted: (term){
+                    onFieldSubmitted: (term) {
                       FocusScope.of(context).requestFocus(_passwordFocus);
                     },
                     isLast: false,
@@ -86,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   LoginInputField(
                     controller: _passwordController,
                     focusNode: _passwordFocus,
-                    onFieldSubmitted: (term){
+                    onFieldSubmitted: (term) {
                       FocusScope.of(context).requestFocus(FocusNode());
                     },
                     isLast: true,
@@ -211,13 +212,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   RoundedButton(
-                    color: Colors.blueAccent[100],
                     text: 'Log In with Facebook',
+                    color: Color(0xFF4864B3),
+                    textColor: Colors.white,
                     onPressed: null,
                   ),
                   RoundedButton(
-                    color: Colors.redAccent[100],
                     text: 'Log In with Google',
+                    color: Color(0xFFDD4B39),
+                    textColor: Colors.white,
                     onPressed: null,
                   ),
                   /*GestureDetector(
