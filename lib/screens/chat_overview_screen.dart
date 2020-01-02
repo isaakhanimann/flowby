@@ -28,7 +28,11 @@ class ChatOverviewScreen extends StatelessWidget {
           if (!snapshot.hasData) {
             return Container(color: Colors.white);
           }
-          List<Chat> chats = snapshot.data;
+          List<Chat> chats =
+              List.from(snapshot.data); // to convert it to editable list
+          chats.sort((chat1, chat2) => (chat2.lastMessageTimestamp)
+              .compareTo(chat1.lastMessageTimestamp));
+
           return ListOfChats(
             chats: chats,
           );

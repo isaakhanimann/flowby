@@ -7,14 +7,15 @@ class Chat {
   String username2;
   String chatpath;
   String lastMessageText;
+  var lastMessageTimestamp;
 
-  Chat({
-    this.user1,
-    this.username1,
-    this.user2,
-    this.username2,
-    this.lastMessageText,
-  });
+  Chat(
+      {this.user1,
+      this.username1,
+      this.user2,
+      this.username2,
+      this.lastMessageText,
+      this.lastMessageTimestamp});
 
   Chat.fromMap({Map<String, dynamic> map}) {
     this.user1 = map['user1'];
@@ -22,6 +23,8 @@ class Chat {
     this.user2 = map['user2'];
     this.username2 = map['username2'] ?? 'Default username2';
     this.lastMessageText = map['lastMessageText'] ?? 'Default lastMessageText';
+    this.lastMessageTimestamp =
+        map['lastMessageTimestamp']?.toDate() ?? DateTime.now();
   }
 
   void setChatpath({@required String chatpath}) {
@@ -34,8 +37,8 @@ class Chat {
     toPrint += 'username1: $username1, ';
     toPrint += 'user2: $user2, ';
     toPrint += 'username2: $username2, ';
-    toPrint += 'lastMessageText: $lastMessageText }\n';
-
+    toPrint += 'lastMessageText: $lastMessageText, ';
+    toPrint += 'lastMessageTimestamp: ${lastMessageTimestamp.toString()} }\n';
     return toPrint;
   }
 }
