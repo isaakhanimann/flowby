@@ -215,8 +215,11 @@ class FirebaseConnection {
         .where('user2', isEqualTo: loggedInUser)
         .getDocuments();
     var chatDocuments = snap1.documents + snap2.documents;
-    List<Chat> chats =
-        chatDocuments.map((doc) => Chat.fromMap(map: doc.data)).toList();
+    List<Chat> chats = chatDocuments.map((doc) {
+      Chat chat = Chat.fromMap(map: doc.data);
+      chat.setChatpath(chatpath: doc.reference.path);
+      return chat;
+    }).toList();
     return chats;
   }
 

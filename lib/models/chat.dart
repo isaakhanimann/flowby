@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
+
 class Chat {
   String user1;
   String username1;
   String user2;
   String username2;
+  String chatpath;
   String lastMessageText;
 
   Chat({
@@ -19,6 +22,10 @@ class Chat {
     this.user2 = map['user2'];
     this.username2 = map['username2'] ?? 'Default username2';
     this.lastMessageText = map['lastMessageText'] ?? 'Default lastMessageText';
+  }
+
+  void setChatpath({@required String chatpath}) {
+    this.chatpath = chatpath;
   }
 
   @override

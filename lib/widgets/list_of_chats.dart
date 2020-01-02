@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/chat.dart';
+import 'package:float/screens/chat_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,14 +47,21 @@ class ChatItem extends StatelessWidget {
       child: Center(
         child: ListTile(
           onTap: () {
-            //todo return something that makes sense
-//            Navigator.of(context, rootNavigator: true).push(
-//              CupertinoPageRoute<void>(
-//                builder: (context) {
-//                  return ChatScreen(otherUser: user);
-//                },
-//              ),
-//            );
+            Navigator.of(context, rootNavigator: true).push(
+              CupertinoPageRoute<void>(
+                builder: (context) {
+                  return ChatScreen(
+                    otherUserUid: (chat.user1 == loggedInUser.email)
+                        ? chat.user2
+                        : chat.user1,
+                    otherUsername: (chat.user1 == loggedInUser.email)
+                        ? chat.username2
+                        : chat.username1,
+                    chatPath: chat.chatpath,
+                  );
+                },
+              ),
+            );
           },
           leading: FutureBuilder(
             future: FirebaseConnection.getImageUrl(
