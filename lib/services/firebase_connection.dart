@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:float/models/chat.dart';
 import 'package:float/models/message.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/navigation_screen.dart';
@@ -204,9 +205,7 @@ class FirebaseConnection {
     }
   }
 
-  static Future<List<String>> getUidsOfUsersInChats(
-      {@required String loggedInUser}) async {
-    List<String> uids = [];
+  static Future<List<Chat>> getChats({@required String loggedInUser}) async {
     QuerySnapshot snap1 = await _fireStore
         .collection('chats')
         .where('user1', isEqualTo: loggedInUser)
@@ -215,25 +214,42 @@ class FirebaseConnection {
         .collection('chats')
         .where('user2', isEqualTo: loggedInUser)
         .getDocuments();
-
-    for (var doc in snap1.documents) {
-      uids.add(doc.data['user2']);
-    }
-    for (var doc in snap2.documents) {
-      uids.add(doc.data['user1']);
-    }
-
-    List<String> uidsThatAreInUsersCollection = [];
-    for (var uid in uids) {
-      DocumentSnapshot ds =
-          await _fireStore.collection('users').document(uid).get();
-      if (ds.exists) {
-        uidsThatAreInUsersCollection.add(uid);
-      }
-    }
-
-    return uidsThatAreInUsersCollection;
+    var chatDocuments = snap1.documents + snap2.documents;
+    List<Chat> chats =
+        chatDocuments.map((doc) => Chat.fromMap(map: doc.data)).toList();
+    return chats;
   }
+
+//  static Future<List<String>> getUidsOfUsersInChats(
+//      {@required String loggedInUser}) async {
+//    List<String> uids = [];
+//    QuerySnapshot snap1 = await _fireStore
+//        .collection('chats')
+//        .where('user1', isEqualTo: loggedInUser)
+//        .getDocuments();
+//    QuerySnapshot snap2 = await _fireStore
+//        .collection('chats')
+//        .where('user2', isEqualTo: loggedInUser)
+//        .getDocuments();
+//
+//    for (var doc in snap1.documents) {
+//      uids.add(doc.data['user2']);
+//    }
+//    for (var doc in snap2.documents) {
+//      uids.add(doc.data['user1']);
+//    }
+//
+//    List<String> uidsThatAreInUsersCollection = [];
+//    for (var uid in uids) {
+//      DocumentSnapshot ds =
+//          await _fireStore.collection('users').document(uid).get();
+//      if (ds.exists) {
+//        uidsThatAreInUsersCollection.add(uid);
+//      }
+//    }
+//
+//    return uidsThatAreInUsersCollection;
+//  }
 
   static Future<String> getChatPath(
       {@required String user, @required String otherUser}) async {

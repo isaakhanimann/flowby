@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:float/models/chat.dart';
 import 'package:float/services/firebase_connection.dart';
-import 'package:float/widgets/streambuilder_with_loading_indicator.dart';
+import 'package:float/widgets/list_of_chats.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class ChatOverviewScreen extends StatelessWidget {
@@ -12,11 +12,9 @@ class ChatOverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var loggedInUser = Provider.of<FirebaseUser>(context);
-    var currentPosition = Provider.of<Position>(context);
 
     return FutureBuilder(
-        future: FirebaseConnection.getUidsOfUsersInChats(
-            loggedInUser: loggedInUser?.email),
+        future: FirebaseConnection.getChats(loggedInUser: loggedInUser?.email),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CupertinoActivityIndicator());
@@ -24,24 +22,15 @@ class ChatOverviewScreen extends StatelessWidget {
           if (snapshot.hasError) {
             return Container(
               color: Colors.red,
-              child: Text('Something went wrong'),
+              child: Text('Something went wrong on chat overview screen'),
             );
           }
           if (!snapshot.hasData) {
             return Container(color: Colors.white);
           }
-          List<String> uids = snapshot.data;
-          return Column(
-            children: <Widget>[
-              //display all users specified with the uids
-              StreambuilderWithLoadingIndicator(
-                showProfiles: false,
-                userStream:
-                    FirebaseConnection.getSpecifiedUsersStreamWithDistance(
-                        position: currentPosition, uids: uids),
-                searchSkill: true,
-              ),
-            ],
+          List<Chat> chats = snapshot.data;
+          return ListOfChats(
+            chats: chats,
           );
         });
   }

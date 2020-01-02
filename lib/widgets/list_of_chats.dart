@@ -1,19 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
-import 'package:float/screens/chat_screen.dart';
+import 'package:float/models/chat.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ListOfChats extends StatelessWidget {
   const ListOfChats({
     Key key,
-    @required this.users,
-    @required this.searchSkill,
+    @required this.chats,
   }) : super(key: key);
 
-  final List<User> users;
-  final bool searchSkill;
+  final List<Chat> chats;
 
   @override
   Widget build(BuildContext context) {
@@ -21,23 +20,23 @@ class ListOfChats extends StatelessWidget {
       itemExtent: 90,
       itemBuilder: (context, index) {
         return ChatItem(
-          user: users[index],
-          isSkillSearch: searchSkill,
+          chat: chats[index],
         );
       },
-      itemCount: users.length,
+      itemCount: chats.length,
     );
   }
 }
 
 class ChatItem extends StatelessWidget {
-  final isSkillSearch;
-  final User user;
+  final Chat chat;
 
-  ChatItem({@required this.user, this.isSkillSearch = true});
+  ChatItem({@required this.chat});
 
   @override
   Widget build(BuildContext context) {
+    var loggedInUser = Provider.of<FirebaseUser>(context);
+
     return Card(
       elevation: 0,
       color: kLightGrey2,
@@ -47,16 +46,20 @@ class ChatItem extends StatelessWidget {
       child: Center(
         child: ListTile(
           onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              CupertinoPageRoute<void>(
-                builder: (context) {
-                  return ChatScreen(otherUser: user);
-                },
-              ),
-            );
+            //todo return something that makes sense
+//            Navigator.of(context, rootNavigator: true).push(
+//              CupertinoPageRoute<void>(
+//                builder: (context) {
+//                  return ChatScreen(otherUser: user);
+//                },
+//              ),
+//            );
           },
           leading: FutureBuilder(
-            future: FirebaseConnection.getImageUrl(fileName: user.email),
+            future: FirebaseConnection.getImageUrl(
+                fileName: (chat.user1 == loggedInUser.email)
+                    ? chat.user2
+                    : chat.user1),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 return CircleAvatar(
@@ -70,38 +73,15 @@ class ChatItem extends StatelessWidget {
               );
             },
           ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                user.username ?? 'Default',
-                style: kUsernameTextStyle,
-              ),
-              if (user.distanceInKm != null)
-                Text(
-                  user.distanceInKm.toString() + ' km',
-                  style: kLocationTextStyle,
-                )
-            ],
+          title: Text(
+            (chat.user1 == loggedInUser.email)
+                ? chat.username2
+                : chat.username1,
+            style: kUsernameTextStyle,
           ),
-          subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Flexible(
-                child: Text(
-                  isSkillSearch ? user.skillHashtags : user.wishHashtags,
-                  style: kSkillTextStyle,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Text(
-                  (isSkillSearch ? user.skillRate : user.wishRate).toString() +
-                      ' CHF/h',
-                  style: kLocationTextStyle,
-                ),
-              ),
-            ],
+          subtitle: Text(
+            chat.lastMessageText,
+            style: kUsernameTextStyle,
           ),
           trailing: Icon(Icons.keyboard_arrow_right),
         ),
