@@ -13,20 +13,14 @@ class ChatOverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var loggedInUser = Provider.of<FirebaseUser>(context);
 
-    return FutureBuilder(
-        future: FirebaseConnection.getChats(loggedInUser: loggedInUser?.email),
+    return StreamBuilder(
+        stream:
+            FirebaseConnection.getChatStream(loggedInUser: loggedInUser?.email),
         builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(child: CupertinoActivityIndicator());
-          }
-          if (snapshot.hasError) {
-            return Container(
-              color: Colors.red,
-              child: Text('Something went wrong on chat overview screen'),
-            );
-          }
           if (!snapshot.hasData) {
-            return Container(color: Colors.white);
+            return Center(
+              child: CupertinoActivityIndicator(),
+            );
           }
           List<Chat> chats =
               List.from(snapshot.data); // to convert it to editable list

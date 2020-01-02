@@ -205,22 +205,33 @@ class FirebaseConnection {
     }
   }
 
-  static Future<List<Chat>> getChats({@required String loggedInUser}) async {
-    QuerySnapshot snap1 = await _fireStore
+  static Stream<List<Chat>> getChatStream({@required String loggedInUser}) {
+    Stream<List<Chat>> stream1 = _fireStore
         .collection('chats')
         .where('user1', isEqualTo: loggedInUser)
-        .getDocuments();
-    QuerySnapshot snap2 = await _fireStore
+        .snapshots()
+        .map((snap) => snap.documents.map((doc) {
+              Chat chat = Chat.fromMap(map: doc.data);
+              chat.setChatpath(chatpath: doc.reference.path);
+              return chat;
+            }).toList());
+    Stream<List<Chat>> stream2 = _fireStore
         .collection('chats')
         .where('user2', isEqualTo: loggedInUser)
-        .getDocuments();
-    var chatDocuments = snap1.documents + snap2.documents;
-    List<Chat> chats = chatDocuments.map((doc) {
-      Chat chat = Chat.fromMap(map: doc.data);
-      chat.setChatpath(chatpath: doc.reference.path);
-      return chat;
-    }).toList();
-    return chats;
+        .snapshots()
+        .map((snap) => snap.documents.map((doc) {
+              Chat chat = Chat.fromMap(map: doc.data);
+              chat.setChatpath(chatpath: doc.reference.path);
+              return chat;
+            }).toList());
+
+    //i have 2 streams of lists
+    //i want one stream with the list of those streams combined
+
+    Stream<List<Chat>> chatStream =
+        ZipStream.zip2(stream1, stream2, (list1, list2) => list1 + list2);
+
+    return chatStream;
   }
 
 //  static Future<List<String>> getUidsOfUsersInChats(
