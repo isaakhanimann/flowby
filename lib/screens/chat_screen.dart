@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/message.dart';
+import 'package:float/models/user.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ class ChatScreen extends StatelessWidget {
   final String otherUsername;
 
   final String chatPath;
-//either the chatPath is supplied and we can get the messageStream directly
+  //either the chatPath is supplied and we can get the messageStream directly
   //or if he isn't we can user the other user to figure out the chatpath ourselves
   ChatScreen(
       {@required this.otherUserUid,
@@ -22,7 +22,7 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var currentUser = Provider.of<User>(context);
 
     if (chatPath != null) {
       return ChatScreenWithPath(
@@ -31,7 +31,10 @@ class ChatScreen extends StatelessWidget {
 
     return FutureBuilder(
       future: FirebaseConnection.getChatPath(
-          user: loggedInUser.email, otherUser: otherUserUid),
+          loggedInUserUid: currentUser.email,
+          loggedInUsername: currentUser.username,
+          otherUserUid: otherUserUid,
+          otherUsername: otherUsername),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return CupertinoActivityIndicator();
@@ -129,7 +132,7 @@ class MessagesStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var currentUser = Provider.of<User>(context);
 
     return StreamBuilder<List<Message>>(
       stream: messagesStream,
@@ -153,7 +156,7 @@ class MessagesStream extends StatelessWidget {
                 text: message.text,
                 timestamp:
                     '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.',
-                isMe: loggedInUser.email == message.sender,
+                isMe: currentUser.email == message.sender,
               );
             },
             reverse: true,
@@ -180,7 +183,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var currentUser = Provider.of<User>(context);
 
     return Container(
       decoration: kMessageContainerDecoration,
@@ -204,7 +207,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
                 //Implement send functionality.
                 messageTextController.clear();
                 Message message = Message(
-                    sender: loggedInUser.email,
+                    sender: currentUser.email,
                     text: messageText,
                     timestamp: FieldValue.serverTimestamp());
                 FirebaseConnection.uploadMessage(
