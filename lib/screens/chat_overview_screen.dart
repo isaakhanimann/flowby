@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/models/chat.dart';
+import 'package:float/models/user.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/list_of_chats.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +11,7 @@ class ChatOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var loggedInUser = Provider.of<User>(context);
 
     return StreamBuilder(
         stream:

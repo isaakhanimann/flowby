@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
+import 'package:float/models/user.dart';
 import 'package:float/screens/chat_overview_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/home_screen.dart';
@@ -34,7 +34,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     super.didChangeDependencies();
 
     //upload the users location whenever it changes
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var loggedInUser = Provider.of<User>(context);
     //asBroadcast because the streamprovider for the homescreen also listens to it
     positionStream = Location.getPositionStream().asBroadcastStream();
     positionStreamSubscription = positionStream.listen((Position position) {

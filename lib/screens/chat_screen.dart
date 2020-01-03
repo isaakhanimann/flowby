@@ -22,7 +22,7 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currentUser = Provider.of<User>(context);
+    var loggedInUser = Provider.of<User>(context);
 
     if (chatPath != null) {
       return ChatScreenWithPath(
@@ -31,8 +31,8 @@ class ChatScreen extends StatelessWidget {
 
     return FutureBuilder(
       future: FirebaseConnection.getChatPath(
-          loggedInUserUid: currentUser.email,
-          loggedInUsername: currentUser.username,
+          loggedInUserUid: loggedInUser.email,
+          loggedInUsername: loggedInUser.username,
           otherUserUid: otherUserUid,
           otherUsername: otherUsername),
       builder: (context, snapshot) {
@@ -132,7 +132,7 @@ class MessagesStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currentUser = Provider.of<User>(context);
+    var loggedInUser = Provider.of<User>(context);
 
     return StreamBuilder<List<Message>>(
       stream: messagesStream,
@@ -156,7 +156,7 @@ class MessagesStream extends StatelessWidget {
                 text: message.text,
                 timestamp:
                     '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.',
-                isMe: currentUser.email == message.sender,
+                isMe: loggedInUser.email == message.sender,
               );
             },
             reverse: true,
@@ -183,7 +183,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
 
   @override
   Widget build(BuildContext context) {
-    var currentUser = Provider.of<User>(context);
+    var loggedInUser = Provider.of<User>(context);
 
     return Container(
       decoration: kMessageContainerDecoration,
@@ -207,7 +207,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
                 //Implement send functionality.
                 messageTextController.clear();
                 Message message = Message(
-                    sender: currentUser.email,
+                    sender: loggedInUser.email,
                     text: messageText,
                     timestamp: FieldValue.serverTimestamp());
                 FirebaseConnection.uploadMessage(
