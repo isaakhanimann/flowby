@@ -72,7 +72,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   }
 
   void _reloadUserFromDatabase() async {
-    User user = await FirebaseConnection.getUser(userID: loggedInUser.email);
+    User user = await FirebaseConnection.getUser(uid: loggedInUser.email);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
       _databaseUsername = user?.username;
@@ -92,7 +92,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     loggedInUser = await FirebaseConnection.getCurrentUser();
     String email = loggedInUser.email;
     String imgUrl = await FirebaseConnection.getImageUrl(fileName: email);
-    User user = await FirebaseConnection.getUser(userID: email);
+    User user = await FirebaseConnection.getUser(uid: email);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
       _databaseUsername = user?.username;

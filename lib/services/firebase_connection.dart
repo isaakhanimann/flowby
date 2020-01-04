@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:float/models/chat.dart';
 import 'package:float/models/message.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/navigation_screen.dart';
@@ -89,10 +90,10 @@ class FirebaseConnection {
     }
   }
 
-  static Future<User> getUser({@required String userID}) async {
+  static Future<User> getUser({@required String uid}) async {
     try {
       var userDocument =
-          await _fireStore.collection('users').document(userID).get();
+          await _fireStore.collection('users').document(uid).get();
       if (userDocument.data == null) {
         print('Isaak could not get user info1');
       }
@@ -104,13 +105,12 @@ class FirebaseConnection {
     }
   }
 
-  static Stream<List<User>> getUsersStream(
-      {@required FirebaseUser loggedInUser}) {
+  static Stream<List<User>> getUsersStream({@required String uid}) {
     try {
       var userSnapshots = _fireStore.collection('users').snapshots().map(
           (snap) => snap.documents
               .map((doc) => User.fromMap(map: doc.data))
-              .where((user) => user.email != loggedInUser.email)
+              .where((user) => user.email != uid)
               .toList());
       return userSnapshots;
     } catch (e) {
@@ -208,50 +208,51 @@ class FirebaseConnection {
     }
   }
 
-  static Future<List<String>> getUidsOfUsersInChats(
-      {@required String loggedInUser}) async {
-    List<String> uids = [];
-    QuerySnapshot snap1 = await _fireStore
+  static Stream<List<Chat>> getChatStream({@required String loggedInUser}) {
+    Stream<List<Chat>> stream1 = _fireStore
         .collection('chats')
         .where('user1', isEqualTo: loggedInUser)
-        .getDocuments();
-    QuerySnapshot snap2 = await _fireStore
+        .snapshots()
+        .map((snap) => snap.documents.map((doc) {
+              Chat chat = Chat.fromMap(map: doc.data);
+              chat.setChatpath(chatpath: doc.reference.path);
+              return chat;
+            }).toList());
+    Stream<List<Chat>> stream2 = _fireStore
         .collection('chats')
         .where('user2', isEqualTo: loggedInUser)
-        .getDocuments();
+        .snapshots()
+        .map((snap) => snap.documents.map((doc) {
+              Chat chat = Chat.fromMap(map: doc.data);
+              chat.setChatpath(chatpath: doc.reference.path);
+              return chat;
+            }).toList());
 
-    for (var doc in snap1.documents) {
-      uids.add(doc.data['user2']);
-    }
-    for (var doc in snap2.documents) {
-      uids.add(doc.data['user1']);
-    }
+    //i have 2 streams of lists
+    //i want one stream with the list of those streams combined
 
-    List<String> uidsThatAreInUsersCollection = [];
-    for (var uid in uids) {
-      DocumentSnapshot ds =
-          await _fireStore.collection('users').document(uid).get();
-      if (ds.exists) {
-        uidsThatAreInUsersCollection.add(uid);
-      }
-    }
+    Stream<List<Chat>> chatStream =
+        ZipStream.zip2(stream1, stream2, (list1, list2) => list1 + list2);
 
-    return uidsThatAreInUsersCollection;
+    return chatStream;
   }
 
   static Future<String> getChatPath(
-      {@required String user, @required String otherUser}) async {
+      {@required String loggedInUserUid,
+      @required String loggedInUsername,
+      @required String otherUserUid,
+      @required String otherUsername}) async {
     try {
       String chatPath;
       QuerySnapshot snap1 = await _fireStore
           .collection('chats')
-          .where('user1', isEqualTo: user)
-          .where('user2', isEqualTo: otherUser)
+          .where('user1', isEqualTo: loggedInUserUid)
+          .where('user2', isEqualTo: otherUserUid)
           .getDocuments();
       QuerySnapshot snap2 = await _fireStore
           .collection('chats')
-          .where('user1', isEqualTo: otherUser)
-          .where('user2', isEqualTo: user)
+          .where('user1', isEqualTo: otherUserUid)
+          .where('user2', isEqualTo: loggedInUserUid)
           .getDocuments();
       if (snap1.documents.isNotEmpty) {
         //loggedInUser is user1
@@ -261,7 +262,11 @@ class FirebaseConnection {
         chatPath = snap2.documents[0].reference.path;
       } else {
         //there is no chat yet, so create one
-        chatPath = await _createChat(user: user, otherUser: otherUser);
+        chatPath = await _createChat(
+            loggedInUserUid: loggedInUserUid,
+            loggedInUsername: loggedInUsername,
+            otherUserUid: otherUserUid,
+            otherUsername: otherUsername);
       }
       return chatPath;
     } catch (e) {
@@ -271,11 +276,17 @@ class FirebaseConnection {
   }
 
   static Future<String> _createChat(
-      {@required String user, @required String otherUser}) async {
+      {@required String loggedInUserUid,
+      @required String loggedInUsername,
+      @required String otherUserUid,
+      @required String otherUsername}) async {
     try {
       var docReference = await _fireStore.collection('chats').add({
-        'user1': user,
-        'user2': otherUser,
+        'user1': loggedInUserUid,
+        'username1': loggedInUsername,
+        'user2': otherUserUid,
+        'username2': otherUsername,
+        'lastMessageTimestamp': FieldValue.serverTimestamp(),
       });
       return docReference.path;
     } catch (e) {

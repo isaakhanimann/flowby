@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:float/models/chat.dart';
+import 'package:float/models/user.dart';
 import 'package:float/services/firebase_connection.dart';
-import 'package:float/widgets/streambuilder_with_loading_indicator.dart';
+import 'package:float/widgets/list_of_chats.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class ChatOverviewScreen extends StatelessWidget {
@@ -11,37 +11,24 @@ class ChatOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
-    var currentPosition = Provider.of<Position>(context);
+    var loggedInUser = Provider.of<User>(context);
 
-    return FutureBuilder(
-        future: FirebaseConnection.getUidsOfUsersInChats(
-            loggedInUser: loggedInUser?.email),
+    return StreamBuilder(
+        stream:
+            FirebaseConnection.getChatStream(loggedInUser: loggedInUser?.email),
         builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(child: CupertinoActivityIndicator());
-          }
-          if (snapshot.hasError) {
-            return Container(
-              color: Colors.red,
-              child: Text('Something went wrong'),
+          if (!snapshot.hasData) {
+            return Center(
+              child: CupertinoActivityIndicator(),
             );
           }
-          if (!snapshot.hasData) {
-            return Container(color: Colors.white);
-          }
-          List<String> uids = snapshot.data;
-          return Column(
-            children: <Widget>[
-              //display all users specified with the uids
-              StreambuilderWithLoadingIndicator(
-                showProfiles: false,
-                userStream:
-                    FirebaseConnection.getSpecifiedUsersStreamWithDistance(
-                        position: currentPosition, uids: uids),
-                searchSkill: true,
-              ),
-            ],
+          List<Chat> chats =
+              List.from(snapshot.data); // to convert it to editable list
+          chats.sort((chat1, chat2) => (chat2.lastMessageTimestamp)
+              .compareTo(chat1.lastMessageTimestamp));
+
+          return ListOfChats(
+            chats: chats,
           );
         });
   }

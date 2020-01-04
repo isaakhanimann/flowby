@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/message.dart';
 import 'package:float/models/user.dart';
@@ -8,24 +7,34 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
-  final User otherUser;
+  final String otherUserUid;
+  final String otherUsername;
 
-  ChatScreen({this.otherUser});
+  final String chatPath;
+  //either the chatPath is supplied and we can get the messageStream directly
+  //or if he isn't we can user the other user to figure out the chatpath ourselves
+  ChatScreen(
+      {@required this.otherUserUid,
+      @required this.otherUsername,
+      this.chatPath});
 
-  @override
-  _ChatScreenState createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var loggedInUser = Provider.of<User>(context);
+
+    if (chatPath != null) {
+      return ChatScreenWithPath(
+          otherUsername: otherUsername, chatPath: chatPath);
+    }
 
     return FutureBuilder(
       future: FirebaseConnection.getChatPath(
-          user: loggedInUser.email, otherUser: widget.otherUser.email),
+          loggedInUserUid: loggedInUser.email,
+          loggedInUsername: loggedInUser.username,
+          otherUserUid: otherUserUid,
+          otherUsername: otherUsername),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return CupertinoActivityIndicator();
@@ -36,34 +45,51 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Text('Something went wrong'),
           );
         }
-        String chatPath = snapshot.data;
+        String foundChatPath = snapshot.data;
 
-        return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: Icon(Icons.arrow_back_ios),
-            ),
-            title: Text(widget.otherUser.username ?? 'Default'),
-            backgroundColor: kDarkGreenColor,
-          ),
-          body: SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                MessagesStream(
-                  messagesStream:
-                      FirebaseConnection.getMessageStream(chatPath: chatPath),
-                ),
-                MessageSendingSection(chatPath: chatPath),
-              ],
-            ),
-          ),
-        );
+        return ChatScreenWithPath(
+            otherUsername: otherUsername, chatPath: foundChatPath);
       },
+    );
+  }
+}
+
+class ChatScreenWithPath extends StatelessWidget {
+  const ChatScreenWithPath({
+    Key key,
+    @required this.otherUsername,
+    @required this.chatPath,
+  }) : super(key: key);
+
+  final String otherUsername;
+  final String chatPath;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back_ios),
+        ),
+        title: Text(otherUsername ?? 'Default'),
+        backgroundColor: kDarkGreenColor,
+      ),
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            MessagesStream(
+              messagesStream:
+                  FirebaseConnection.getMessageStream(chatPath: chatPath),
+            ),
+            MessageSendingSection(chatPath: chatPath),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -106,7 +132,7 @@ class MessagesStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var loggedInUser = Provider.of<User>(context);
 
     return StreamBuilder<List<Message>>(
       stream: messagesStream,
@@ -157,7 +183,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var loggedInUser = Provider.of<User>(context);
 
     return Container(
       decoration: kMessageContainerDecoration,

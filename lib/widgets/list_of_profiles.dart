@@ -60,10 +60,19 @@ class ProfileItem extends StatelessWidget {
             future: FirebaseConnection.getImageUrl(fileName: user.email),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
+                String imageUrl = snapshot.data;
+                if (imageUrl == null) {
+                  return CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.grey,
+                    backgroundImage:
+                        AssetImage('images/default-profile-pic.jpg'),
+                  );
+                }
                 return CircleAvatar(
                   radius: 30,
                   backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage(snapshot.data),
+                  backgroundImage: NetworkImage(imageUrl),
                 );
               }
               return CircleAvatar(

@@ -130,7 +130,10 @@ class ViewProfileScreen extends StatelessWidget {
                 Navigator.of(context, rootNavigator: true).push(
                   CupertinoPageRoute<void>(
                     builder: (context) {
-                      return ChatScreen(otherUser: user);
+                      return ChatScreen(
+                        otherUserUid: user.email,
+                        otherUsername: user.username,
+                      );
                     },
                   ),
                 );

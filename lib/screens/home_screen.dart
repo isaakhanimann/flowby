@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/services/firebase_connection.dart';
@@ -26,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var loggedInUser = Provider.of<User>(context);
     var currentPosition = Provider.of<Position>(context);
 
     return Scaffold(
@@ -129,7 +128,7 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var loggedInUser = Provider.of<User>(context);
     var currentPosition = Provider.of<Position>(context);
 
     return StreamBuilder<List<User>>(
@@ -168,10 +167,10 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    var loggedInUser = Provider.of<FirebaseUser>(context);
+    var loggedInUser = Provider.of<User>(context);
 
     return StreamBuilder<List<User>>(
-      stream: FirebaseConnection.getUsersStream(loggedInUser: loggedInUser),
+      stream: FirebaseConnection.getUsersStream(uid: loggedInUser.email),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(

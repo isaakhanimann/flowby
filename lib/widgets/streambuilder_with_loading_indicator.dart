@@ -1,5 +1,4 @@
 import 'package:float/models/user.dart';
-import 'package:float/widgets/list_of_chats.dart';
 import 'package:float/widgets/list_of_profiles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,10 +30,7 @@ class StreambuilderWithLoadingIndicator extends StatelessWidget {
         users.sort((user1, user2) =>
             (user1.distanceInKm ?? 1000).compareTo(user2.distanceInKm ?? 1000));
         return Expanded(
-          child: showProfiles
-              ? ListOfProfiles(users: users, searchSkill: searchSkill)
-              : ListOfChats(users: users, searchSkill: searchSkill),
-        );
+            child: ListOfProfiles(users: users, searchSkill: searchSkill));
       },
     );
   }
