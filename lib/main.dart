@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/models/user.dart';
-import 'package:float/screens/login_screen.dart';
+import 'package:float/screens/splash_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +46,7 @@ class _FloatState extends State<Float> {
       value: loggedInUserStream,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: LoginScreen.id,
+        initialRoute: SplashScreen.id,
         onGenerateRoute: RouteGenerator.generateRoute,
       ),
     );
