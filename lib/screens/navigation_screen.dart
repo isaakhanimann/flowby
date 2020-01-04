@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
+//TODO: change box border when the user doesn't enter an input
+
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
 
@@ -35,6 +37,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     //upload the users location whenever it changes
     var loggedInUser = Provider.of<FirebaseUser>(context);
+    print(loggedInUser);
     //asBroadcast because the streamprovider for the homescreen also listens to it
     positionStream = Location.getPositionStream().asBroadcastStream();
     positionStreamSubscription = positionStream.listen((Position position) {

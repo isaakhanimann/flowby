@@ -41,7 +41,26 @@ const kMessageContainerDecoration = BoxDecoration(
 );
 
 const kLoginInputFieldDecoration = InputDecoration(
+  filled: true,
+  fillColor: Colors.white,
   contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.all(
+      Radius.circular(30.0),
+    ),
+  ),
+);
+
+const ffLoginInputFieldDecoration = InputDecoration(
+  filled: true,
+  fillColor: Colors.white,
+  hintStyle: TextStyle(fontFamily: 'MontserratRegular'),
+  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.all(
+      Radius.circular(5.0),
+    ),
+  ),
 );
 
 const kBeigeColor = Color(0xFFFCF9EC);
@@ -56,3 +75,7 @@ const kDarkBlue = Color(0xFF204969);
 
 const kVeryLightGrey = Color(0xFFf6f6f6);
 const kLightGrey2 = Color(0xFFf4f4f4);
+
+const ffDarkBlue = Color(0xFF294FED);
+const ffMiddleBlue = Color(0xFF2862F7);
+const ffLightBlue = Color(0xff65C4EA);
