@@ -48,7 +48,7 @@ class ViewProfileScreen extends StatelessWidget {
                                     radius: 30,
                                     backgroundColor: Colors.grey,
                                     backgroundImage:
-                                    AssetImage('images/default-profile-pic.jpg'),
+                                    AssetImage('images/default-profile-pic_old.jpg'),
                                   );
                                 }
                                 return CircleAvatar(

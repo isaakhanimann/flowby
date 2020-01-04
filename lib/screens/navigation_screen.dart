@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/chat_overview_screen.dart';
-import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/home_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/services/location.dart';
@@ -11,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:float/screens/user_profile_screen.dart';
 
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -23,7 +23,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   List<Widget> tabScreens = [
     HomeScreen(),
     ChatOverviewScreen(),
-    CreateProfileScreen()
+    UserProfileScreen()
   ];
 
   Stream<Position> positionStream;
