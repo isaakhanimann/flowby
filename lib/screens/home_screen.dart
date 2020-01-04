@@ -43,12 +43,12 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <bool, Widget>{
                 true: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
                   child: Text('Skills', style: TextStyle(fontSize: 18)),
                 ),
                 false: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
                   child: Text('Wishes', style: TextStyle(fontSize: 18)),
                 ),
               },
@@ -147,16 +147,16 @@ class DataSearch extends SearchDelegate<String> {
         if (isSkillSearch) {
           suggestedUsers = allUsers
               .where((u) => u.skillHashtags
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
               .toList();
         } else {
           suggestedUsers = allUsers
               .where((u) => u.wishHashtags
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
               .toList();
         }
         return ListOfProfiles(
@@ -185,16 +185,16 @@ class DataSearch extends SearchDelegate<String> {
         if (isSkillSearch) {
           suggestedUsers = allUsers
               .where((u) => u.skillHashtags
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
               .toList();
         } else {
           suggestedUsers = allUsers
               .where((u) => u.wishHashtags
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
               .toList();
         }
 
@@ -225,9 +225,9 @@ class SuggestionItem extends StatelessWidget {
 
   SuggestionItem(
       {@required this.user,
-      @required this.setQuery,
-      @required this.showResults,
-      @required this.isSkillSearch});
+        @required this.setQuery,
+        @required this.showResults,
+        @required this.isSkillSearch});
 
   @override
   Widget build(BuildContext context) {

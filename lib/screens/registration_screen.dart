@@ -1,5 +1,5 @@
 import 'package:float/constants.dart';
-import 'package:float/screens/upload_picture_registration_screen.dart';
+import 'package:float/screens/navigation_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
@@ -160,7 +160,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           await FirebaseConnection.uploadUser(user: user);
                          // await FirebaseConnection.uploadImage(
                          //     fileName: email, image: _profilePic);
-                          Navigator.pushNamed(context, UploadPictureRegistrationScreen.id);
+                          Navigator.pushNamed(context, NavigationScreen.id);
                         }
                         setState(() {
                           showSpinner = false;

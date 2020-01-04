@@ -17,8 +17,8 @@ class ChatScreen extends StatelessWidget {
   //or if he isn't we can user the other user to figure out the chatpath ourselves
   ChatScreen(
       {@required this.otherUserUid,
-      @required this.otherUsername,
-      this.chatPath});
+        @required this.otherUsername,
+        this.chatPath});
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,7 @@ class ChatScreenWithPath extends StatelessWidget {
           children: <Widget>[
             MessagesStream(
               messagesStream:
-                  FirebaseConnection.getMessageStream(chatPath: chatPath),
+              FirebaseConnection.getMessageStream(chatPath: chatPath),
             ),
             MessageSendingSection(chatPath: chatPath),
           ],
@@ -155,7 +155,7 @@ class MessagesStream extends StatelessWidget {
               return MessageBubble(
                 text: message.text,
                 timestamp:
-                    '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.',
+                '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.',
                 isMe: loggedInUser.email == message.sender,
               );
             },
@@ -235,7 +235,7 @@ class MessageBubble extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment:
-            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             timestamp,
@@ -244,18 +244,18 @@ class MessageBubble extends StatelessWidget {
           Material(
             borderRadius: isMe
                 ? BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30))
+                topLeft: Radius.circular(30),
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30))
                 : BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30)),
+                topRight: Radius.circular(30),
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30)),
             elevation: 5.0,
             color: isMe ? kDarkGreenColor : Colors.white,
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Text(
                 text,
                 style: TextStyle(

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:float/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/screens/navigation_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
@@ -151,7 +150,6 @@ class _UploadPictureRegistrationScreenState
                             await FirebaseConnection.uploadImage(
                                 fileName: loggedInUser.email,
                                 image: _profilePic);
-                            Navigator.pushNamed(context, NavigationScreen.id);
                           }
                         } catch (e) {
                           print('Could not upload and get on Save');

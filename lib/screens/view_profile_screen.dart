@@ -43,6 +43,14 @@ class ViewProfileScreen extends StatelessWidget {
                               if (snapshot.connectionState ==
                                   ConnectionState.done) {
                                 String imageUrl = snapshot.data;
+                                if (imageUrl == null) {
+                                  return CircleAvatar(
+                                    radius: 30,
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage:
+                                    AssetImage('images/default-profile-pic.jpg'),
+                                  );
+                                }
                                 return CircleAvatar(
                                   radius: 50,
                                   backgroundColor: Colors.grey,

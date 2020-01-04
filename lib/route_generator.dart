@@ -4,6 +4,7 @@ import 'package:float/screens/navigation_screen.dart';
 import 'package:float/screens/registration_screen.dart';
 import 'package:float/screens/reset_password_screen.dart';
 import 'package:float/screens/splash_screen.dart';
+import 'package:float/screens/upload_picture_registration_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -32,6 +33,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => SplashScreen());
       case ResetPasswordScreen.id:
         return CupertinoPageRoute(builder: (_) => ResetPasswordScreen());
+      case UploadPictureRegistrationScreen.id:
+        return CupertinoPageRoute(builder: (_) => UploadPictureRegistrationScreen());
       default:
         return _errorRoute();
     }
