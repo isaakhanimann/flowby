@@ -45,20 +45,20 @@ class _LoginScreenState extends State<LoginScreen> {
           fit: BoxFit.cover,
         ),
       ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Log In'),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
+      child: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        progressIndicator: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
         ),
-        backgroundColor: Color(0xFF0D4FF7),
-        body: SingleChildScrollView(
-          child: ModalProgressHUD(
-            inAsyncCall: showSpinner,
-            progressIndicator: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
-            ),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Log In'),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+          ),
+          backgroundColor: Color(0xFF0D4FF7),
+          body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(

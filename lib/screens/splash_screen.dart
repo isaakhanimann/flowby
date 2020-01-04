@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
       decoration: BoxDecoration(
         image: DecorationImage(
           colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("images/splash_screen_background.png"),
+          image: AssetImage("images/animated_login.gif"),
           alignment: Alignment(0.0, 0.0),
           fit: BoxFit.cover,
         ),
@@ -52,7 +52,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   textColor: Colors.white,
                   onPressed: () {
                     //Navigator.pushNamed(context, RegistrationScreen.id);
-                    Navigator.push(context, CupertinoPageRoute(builder: (context) => RegistrationScreen()));
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => RegistrationScreen()));
                   },
                   text: 'Sign Up',
                 ),
@@ -61,7 +64,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   textColor: ffDarkBlue,
                   onPressed: () {
                     //Navigator.pushNamed(context, LoginScreen.id);
-                    Navigator.push(context, CupertinoPageRoute(builder: (context) => LoginScreen()));
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => LoginScreen()));
                   },
                   text: 'I already have an account',
                 ),

@@ -1,10 +1,11 @@
 import 'package:float/constants.dart';
-import 'package:float/screens/navigation_screen.dart';
+import 'package:float/screens/upload_picture_registration_screen.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:float/models/user.dart';
 
 import '../widgets/rounded_button.dart';
 
@@ -18,17 +19,17 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen>
     with SingleTickerProviderStateMixin {
   bool showSpinner = false;
-  String username;
+  String userName;
   String name;
   String email;
   String password;
 
   var _nameController = TextEditingController();
-  var _userNameController = TextEditingController();
+ // var _userNameController = TextEditingController();
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
   final FocusNode _nameFocus = FocusNode();
-  final FocusNode _userNameFocus = FocusNode();
+  //final FocusNode _userNameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
@@ -43,17 +44,17 @@ class _RegistrationScreenState extends State<RegistrationScreen>
           fit: BoxFit.cover,
         ),
       ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Sign Up'),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-        ),
-        backgroundColor: Color(0xFF0D4FF7),
-        body: SingleChildScrollView(
-          child: ModalProgressHUD(
-            inAsyncCall: showSpinner,
+      child: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Sign Up'),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+          ),
+          backgroundColor: Color(0xFF0D4FF7),
+          body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
@@ -67,11 +68,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     placeholder: 'Full name',
                     controller: _nameController,
                     focusNode: _nameFocus,
-                    onFieldSubmitted: (term){
-                      FocusScope.of(context).requestFocus(_userNameFocus);
+                    onFieldSubmitted: (term) {
+                      FocusScope.of(context).requestFocus(_emailFocus);
                     },
                     isLast: false,
-                    isEmail: false,
+                    isEmail: true,
                     setText: (value) {
                       print(name);
                       name = value;
@@ -80,27 +81,27 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   SizedBox(
                     height: 8.0,
                   ),
-                  LoginInputField(
+                 /* LoginInputField(
                     placeholder: 'Username',
                     controller: _userNameController,
                     focusNode: _userNameFocus,
-                    onFieldSubmitted: (term){
+                    onFieldSubmitted: (term) {
                       FocusScope.of(context).requestFocus(_emailFocus);
                     },
                     isLast: false,
-                    isEmail: false,
+                    isEmail: true,
                     setText: (value) {
-                      username = value;
+                      userName = value;
                     },
                   ),
                   SizedBox(
                     height: 8.0,
-                  ),
+                  ),*/
                   LoginInputField(
                     placeholder: 'Email address',
                     controller: _emailController,
                     focusNode: _emailFocus,
-                    onFieldSubmitted: (term){
+                    onFieldSubmitted: (term) {
                       FocusScope.of(context).requestFocus(_passwordFocus);
                     },
                     isLast: false,
@@ -116,7 +117,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     placeholder: 'Password',
                     controller: _passwordController,
                     focusNode: _passwordFocus,
-                    onFieldSubmitted: (term){
+                    onFieldSubmitted: (term) {
                       FocusScope.of(context).requestFocus(FocusNode());
                     },
                     isLast: true,
@@ -131,13 +132,14 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   RoundedButton(
                     textColor: Colors.white,
                     color: ffDarkBlue,
-                    text: 'Sign up with Email',
+                    text: 'Sign Up with Email',
                     onPressed: () async {
                       if (email == null || password == null) {
                         showAlert(
                             context: context,
                             title: "Missing email or password",
-                            description: 'Enter an email and an passaword. Thank you.');
+                            description:
+                                'Enter an email and an passaword. Thank you.');
                         return;
                       }
                       setState(() {
@@ -147,7 +149,18 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         final newUser = await FirebaseConnection.createUser(
                             email: email, password: password);
                         if (newUser != null) {
-                          Navigator.pushNamed(context, NavigationScreen.id);
+                          //var _profilePic = File('images/default-profile-pic.jpg');
+                          User user = User(
+                              username: name,
+                              email: email,
+                              skillHashtags: 'default',
+                              wishHashtags: 'default',
+                              skillRate: 20,
+                              wishRate: 20);
+                          await FirebaseConnection.uploadUser(user: user);
+                         // await FirebaseConnection.uploadImage(
+                         //     fileName: email, image: _profilePic);
+                          Navigator.pushNamed(context, UploadPictureRegistrationScreen.id);
                         }
                         setState(() {
                           showSpinner = false;
@@ -222,7 +235,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     onPressed: null,
                   ),
                   RoundedButton(
-                    text: 'Sign up with Google',
+                    text: 'Sign Up with Google',
                     color: Color(0xFFDD4B39),
                     textColor: Colors.white,
                     onPressed: null,
