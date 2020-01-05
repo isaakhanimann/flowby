@@ -43,12 +43,12 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <bool, Widget>{
                 true: Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
                   child: Text('Skills', style: TextStyle(fontSize: 18)),
                 ),
                 false: Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
                   child: Text('Wishes', style: TextStyle(fontSize: 18)),
                 ),
               },
@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
             StreambuilderWithLoadingIndicator(
               showProfiles: true,
               userStream: FirebaseConnection.getUsersStreamWithDistance(
-                  position: currentPosition, uidToExclude: loggedInUser?.email),
+                  position: currentPosition, uidToExclude: loggedInUser?.uid),
               searchSkill: isSkillSelected,
             ),
           ],
@@ -133,7 +133,7 @@ class DataSearch extends SearchDelegate<String> {
 
     return StreamBuilder<List<User>>(
       stream: FirebaseConnection.getUsersStreamWithDistance(
-          position: currentPosition, uidToExclude: loggedInUser.email),
+          position: currentPosition, uidToExclude: loggedInUser.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
@@ -147,16 +147,16 @@ class DataSearch extends SearchDelegate<String> {
         if (isSkillSearch) {
           suggestedUsers = allUsers
               .where((u) => u.skillHashtags
-              .toString()
-              .toLowerCase()
-              .contains(query.toLowerCase()))
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
               .toList();
         } else {
           suggestedUsers = allUsers
               .where((u) => u.wishHashtags
-              .toString()
-              .toLowerCase()
-              .contains(query.toLowerCase()))
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
               .toList();
         }
         return ListOfProfiles(
@@ -170,7 +170,7 @@ class DataSearch extends SearchDelegate<String> {
     var loggedInUser = Provider.of<User>(context);
 
     return StreamBuilder<List<User>>(
-      stream: FirebaseConnection.getUsersStream(uid: loggedInUser.email),
+      stream: FirebaseConnection.getUsersStream(uid: loggedInUser.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
@@ -185,16 +185,16 @@ class DataSearch extends SearchDelegate<String> {
         if (isSkillSearch) {
           suggestedUsers = allUsers
               .where((u) => u.skillHashtags
-              .toString()
-              .toLowerCase()
-              .contains(query.toLowerCase()))
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
               .toList();
         } else {
           suggestedUsers = allUsers
               .where((u) => u.wishHashtags
-              .toString()
-              .toLowerCase()
-              .contains(query.toLowerCase()))
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
               .toList();
         }
 
@@ -225,9 +225,9 @@ class SuggestionItem extends StatelessWidget {
 
   SuggestionItem(
       {@required this.user,
-        @required this.setQuery,
-        @required this.showResults,
-        @required this.isSkillSearch});
+      @required this.setQuery,
+      @required this.showResults,
+      @required this.isSkillSearch});
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 
 class User {
   String username;
-  String email;
+  String uid;
   String skillHashtags;
   String wishHashtags;
   int skillRate;
@@ -15,7 +15,7 @@ class User {
 
   User(
       {this.username,
-      this.email,
+      this.uid,
       this.skillHashtags,
       this.wishHashtags,
       this.skillRate,
@@ -24,7 +24,7 @@ class User {
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'];
-    this.email = map['email'];
+    this.uid = map['uid'];
     this.skillHashtags = map['skillHashtags'];
     this.wishHashtags = map['wishHashtags'];
     this.skillRate = map['skillRate'];
@@ -47,7 +47,7 @@ class User {
   @override
   String toString() {
     String toPrint = '\n{ username: $username, ';
-    toPrint += 'email: $email, ';
+    toPrint += 'uid: $uid, ';
     toPrint += 'skillHashtags: $skillHashtags, ';
     toPrint += 'wishHashtags: $wishHashtags, ';
     toPrint += 'skillRate: ${skillRate.toString()}, ';

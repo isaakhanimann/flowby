@@ -51,10 +51,9 @@ class ChatItem extends StatelessWidget {
               CupertinoPageRoute<void>(
                 builder: (context) {
                   return ChatScreen(
-                    otherUserUid: (chat.user1 == loggedInUser.email)
-                        ? chat.user2
-                        : chat.user1,
-                    otherUsername: (chat.user1 == loggedInUser.email)
+                    otherUserUid:
+                        (chat.uid1 == loggedInUser.uid) ? chat.uid2 : chat.uid1,
+                    otherUsername: (chat.uid1 == loggedInUser.uid)
                         ? chat.username2
                         : chat.username1,
                     chatPath: chat.chatpath,
@@ -65,26 +64,34 @@ class ChatItem extends StatelessWidget {
           },
           leading: FutureBuilder(
             future: FirebaseConnection.getImageUrl(
-                fileName: (chat.user1 == loggedInUser.email)
-                    ? chat.user2
-                    : chat.user1),
+                fileName:
+                    (chat.uid1 == loggedInUser.uid) ? chat.uid2 : chat.uid1),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage(snapshot.data),
-                );
+                String imageUrl = snapshot.data;
+                if (imageUrl != null) {
+                  return CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: NetworkImage(imageUrl),
+                  );
+                } else {
+                  return CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.grey,
+                    backgroundImage:
+                        AssetImage('images/default-profile-pic.jpg'),
+                  );
+                }
               }
               return CircleAvatar(
+                radius: 30,
                 backgroundColor: Colors.grey,
               );
             },
           ),
           title: Text(
-            (chat.user1 == loggedInUser.email)
-                ? chat.username2
-                : chat.username1,
+            (chat.uid1 == loggedInUser.uid) ? chat.username2 : chat.username1,
             style: kUsernameTextStyle,
           ),
           subtitle: Text(

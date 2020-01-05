@@ -57,7 +57,7 @@ class ProfileItem extends StatelessWidget {
             );
           },
           leading: FutureBuilder(
-            future: FirebaseConnection.getImageUrl(fileName: user.email),
+            future: FirebaseConnection.getImageUrl(fileName: user.uid),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 String imageUrl = snapshot.data;
@@ -76,6 +76,7 @@ class ProfileItem extends StatelessWidget {
                 );
               }
               return CircleAvatar(
+                radius: 30,
                 backgroundColor: Colors.grey,
               );
             },

@@ -77,9 +77,9 @@ class FirebaseConnection {
 
   static Future<void> uploadUser({@required User user}) async {
     try {
-      _fireStore.collection('users').document(user.email).setData({
+      _fireStore.collection('users').document(user.uid).setData({
         'username': user.username,
-        'email': user.email,
+        'uid': user.uid,
         'skillHashtags': user.skillHashtags,
         'wishHashtags': user.wishHashtags,
         'skillRate': user.skillRate,
@@ -110,7 +110,7 @@ class FirebaseConnection {
       var userSnapshots = _fireStore.collection('users').snapshots().map(
           (snap) => snap.documents
               .map((doc) => User.fromMap(map: doc.data))
-              .where((user) => user.email != uid)
+              .where((user) => user.uid != uid)
               .toList());
       return userSnapshots;
     } catch (e) {
@@ -125,9 +125,8 @@ class FirebaseConnection {
       var userSnapshots = _fireStore.collection('users').snapshots().map(
           (snap) => snap.documents
                   .map((doc) => User.fromMap(map: doc.data))
-                  .where((user) => (uidToExclude != null)
-                      ? user.email != uidToExclude
-                      : true)
+                  .where((user) =>
+                      (uidToExclude != null) ? user.uid != uidToExclude : true)
                   .map((user) {
                 user.updateDistanceToPositionIfPossible(position: position);
                 return user;
@@ -146,7 +145,7 @@ class FirebaseConnection {
       for (var uid in uids) {
         Stream<User> streamToAdd = _fireStore
             .collection('users')
-            .where('email', isEqualTo: uid)
+            .where('uid', isEqualTo: uid)
             .snapshots()
             .map((snap) => snap.documents
                     .map((doc) => User.fromMap(map: doc.data))
@@ -174,7 +173,7 @@ class FirebaseConnection {
       for (var uid in uids) {
         Stream<User> streamToAdd = _fireStore
             .collection('users')
-            .where('email', isEqualTo: uid)
+            .where('uid', isEqualTo: uid)
             .snapshots()
             .map((snap) => snap.documents
                 .map((doc) => User.fromMap(map: doc.data))
@@ -195,7 +194,7 @@ class FirebaseConnection {
     try {
       Stream<User> userStream = _fireStore
           .collection('users')
-          .where('email', isEqualTo: uid)
+          .where('uid', isEqualTo: uid)
           .snapshots()
           .map((snap) => snap.documents
               .map((doc) => User.fromMap(map: doc.data))
@@ -208,10 +207,10 @@ class FirebaseConnection {
     }
   }
 
-  static Stream<List<Chat>> getChatStream({@required String loggedInUser}) {
+  static Stream<List<Chat>> getChatStream({@required String loggedInUid}) {
     Stream<List<Chat>> stream1 = _fireStore
         .collection('chats')
-        .where('user1', isEqualTo: loggedInUser)
+        .where('uid1', isEqualTo: loggedInUid)
         .snapshots()
         .map((snap) => snap.documents.map((doc) {
               Chat chat = Chat.fromMap(map: doc.data);
@@ -220,7 +219,7 @@ class FirebaseConnection {
             }).toList());
     Stream<List<Chat>> stream2 = _fireStore
         .collection('chats')
-        .where('user2', isEqualTo: loggedInUser)
+        .where('uid2', isEqualTo: loggedInUid)
         .snapshots()
         .map((snap) => snap.documents.map((doc) {
               Chat chat = Chat.fromMap(map: doc.data);
@@ -238,21 +237,21 @@ class FirebaseConnection {
   }
 
   static Future<String> getChatPath(
-      {@required String loggedInUserUid,
+      {@required String loggedInUid,
       @required String loggedInUsername,
-      @required String otherUserUid,
+      @required String otherUid,
       @required String otherUsername}) async {
     try {
       String chatPath;
       QuerySnapshot snap1 = await _fireStore
           .collection('chats')
-          .where('user1', isEqualTo: loggedInUserUid)
-          .where('user2', isEqualTo: otherUserUid)
+          .where('uid1', isEqualTo: loggedInUid)
+          .where('uid2', isEqualTo: otherUid)
           .getDocuments();
       QuerySnapshot snap2 = await _fireStore
           .collection('chats')
-          .where('user1', isEqualTo: otherUserUid)
-          .where('user2', isEqualTo: loggedInUserUid)
+          .where('uid1', isEqualTo: otherUid)
+          .where('uid2', isEqualTo: loggedInUid)
           .getDocuments();
       if (snap1.documents.isNotEmpty) {
         //loggedInUser is user1
@@ -263,9 +262,9 @@ class FirebaseConnection {
       } else {
         //there is no chat yet, so create one
         chatPath = await _createChat(
-            loggedInUserUid: loggedInUserUid,
+            loggedInUserUid: loggedInUid,
             loggedInUsername: loggedInUsername,
-            otherUserUid: otherUserUid,
+            otherUserUid: otherUid,
             otherUsername: otherUsername);
       }
       return chatPath;
@@ -282,9 +281,9 @@ class FirebaseConnection {
       @required String otherUsername}) async {
     try {
       var docReference = await _fireStore.collection('chats').add({
-        'user1': loggedInUserUid,
+        'uid1': loggedInUserUid,
         'username1': loggedInUsername,
-        'user2': otherUserUid,
+        'uid2': otherUserUid,
         'username2': otherUsername,
         'lastMessageTimestamp': FieldValue.serverTimestamp(),
       });
@@ -318,7 +317,7 @@ class FirebaseConnection {
       _fireStore.document(chatPath).collection('messages').add(
         {
           'text': message.text,
-          'sender': message.sender,
+          'senderUid': message.senderUid,
           'timestamp': message.timestamp,
         },
       );
@@ -328,9 +327,9 @@ class FirebaseConnection {
   }
 
   static void uploadUsersLocation(
-      {@required String userEmail, @required Position position}) {
+      {@required String uid, @required Position position}) {
     try {
-      _fireStore.collection('users').document(userEmail).updateData({
+      _fireStore.collection('users').document(uid).updateData({
         'location': GeoPoint(position.latitude, position.longitude)
 //        , 'locationTimestamp': position.timestamp
       });

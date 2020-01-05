@@ -38,7 +38,7 @@ class ViewProfileScreen extends StatelessWidget {
                           heightFactor: 1.2,
                           child: FutureBuilder(
                             future: FirebaseConnection.getImageUrl(
-                                fileName: user.email),
+                                fileName: user.uid),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.done) {
@@ -47,8 +47,8 @@ class ViewProfileScreen extends StatelessWidget {
                                   return CircleAvatar(
                                     radius: 30,
                                     backgroundColor: Colors.grey,
-                                    backgroundImage:
-                                    AssetImage('images/default-profile-pic_old.jpg'),
+                                    backgroundImage: AssetImage(
+                                        'images/default-profile-pic.jpg'),
                                   );
                                 }
                                 return CircleAvatar(
@@ -139,7 +139,7 @@ class ViewProfileScreen extends StatelessWidget {
                   CupertinoPageRoute<void>(
                     builder: (context) {
                       return ChatScreen(
-                        otherUserUid: user.email,
+                        otherUserUid: user.uid,
                         otherUsername: user.username,
                       );
                     },

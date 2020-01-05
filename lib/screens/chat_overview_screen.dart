@@ -15,7 +15,7 @@ class ChatOverviewScreen extends StatelessWidget {
 
     return StreamBuilder(
         stream:
-            FirebaseConnection.getChatStream(loggedInUser: loggedInUser?.email),
+            FirebaseConnection.getChatStream(loggedInUid: loggedInUser?.uid),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(

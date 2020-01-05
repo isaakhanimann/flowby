@@ -24,8 +24,9 @@ class _FloatState extends State<Float> {
     authenticationStreamSubscription =
         FirebaseConnection.getAuthenticationStream().listen((firebaseUser) {
       loggedInUserStream =
-          FirebaseConnection.getUserStream(uid: firebaseUser?.email);
+          FirebaseConnection.getUserStream(uid: firebaseUser?.uid);
     });
+    return authenticationStreamSubscription;
   }
 
   @override
