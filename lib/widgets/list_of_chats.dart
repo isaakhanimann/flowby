@@ -68,13 +68,24 @@ class ChatItem extends StatelessWidget {
                     (chat.uid1 == loggedInUser.uid) ? chat.uid2 : chat.uid1),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage(snapshot.data),
-                );
+                String imageUrl = snapshot.data;
+                if (imageUrl != null) {
+                  return CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: NetworkImage(imageUrl),
+                  );
+                } else {
+                  return CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.grey,
+                    backgroundImage:
+                        AssetImage('images/default-profile-pic.jpg'),
+                  );
+                }
               }
               return CircleAvatar(
+                radius: 30,
                 backgroundColor: Colors.grey,
               );
             },
