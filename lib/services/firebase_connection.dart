@@ -317,7 +317,7 @@ class FirebaseConnection {
       _fireStore.document(chatPath).collection('messages').add(
         {
           'text': message.text,
-          'sender': message.senderUid,
+          'senderUid': message.senderUid,
           'timestamp': message.timestamp,
         },
       );

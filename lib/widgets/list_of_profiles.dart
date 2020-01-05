@@ -76,6 +76,7 @@ class ProfileItem extends StatelessWidget {
                 );
               }
               return CircleAvatar(
+                radius: 30,
                 backgroundColor: Colors.grey,
               );
             },
