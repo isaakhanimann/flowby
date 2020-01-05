@@ -15,6 +15,17 @@
 *.iws
 .idea/
 
+# Firebase cloud functions related
+**/firecast/.firebaserc
+**/firecast/node_modules
+**/firecast/functions/lib
+**/firecast/functions/node_modules
+**/firecast/functions/tslint.json
+**/firecast/functions/tsconfig.json
+**/firecast/functions/package-lock.json
+**/firecast/functions/package.json
+**/firecast/package-lock.json
+
 
 # Visual Studio Code related
 .vscode/
