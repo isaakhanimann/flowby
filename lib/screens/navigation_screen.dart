@@ -40,7 +40,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     positionStreamSubscription = positionStream.listen((Position position) {
       if (loggedInUser != null) {
         FirebaseConnection.uploadUsersLocation(
-            userEmail: loggedInUser.email, position: position);
+            uid: loggedInUser.uid, position: position);
       }
     });
   }

@@ -15,8 +15,7 @@ class Location {
       {@required String userEmail}) async {
     Position position = await Geolocator()
         .getLastKnownPosition(desiredAccuracy: LocationAccuracy.medium);
-    FirebaseConnection.uploadUsersLocation(
-        userEmail: userEmail, position: position);
+    FirebaseConnection.uploadUsersLocation(uid: userEmail, position: position);
   }
 
   static StreamSubscription<Position> getPositionStreamSubscription() {

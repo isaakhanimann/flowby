@@ -72,7 +72,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   }
 
   void _reloadUserFromDatabase() async {
-    User user = await FirebaseConnection.getUser(uid: loggedInUser.email);
+    User user = await FirebaseConnection.getUser(uid: loggedInUser.uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
       _databaseUsername = user?.username;
@@ -90,9 +90,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   void _getAndSetData() async {
     loggedInUser = await FirebaseConnection.getCurrentUser();
-    String email = loggedInUser.email;
-    String imgUrl = await FirebaseConnection.getImageUrl(fileName: email);
-    User user = await FirebaseConnection.getUser(uid: email);
+    String uid = loggedInUser.uid;
+    String imgUrl = await FirebaseConnection.getImageUrl(fileName: uid);
+    User user = await FirebaseConnection.getUser(uid: uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
       _databaseUsername = user?.username;
@@ -298,11 +298,11 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                 try {
                   if (_profilePic != null) {
                     await FirebaseConnection.uploadImage(
-                        fileName: loggedInUser.email, image: _profilePic);
+                        fileName: loggedInUser.uid, image: _profilePic);
                   }
                   User user = User(
                       username: _localUsername,
-                      email: loggedInUser.email,
+                      uid: loggedInUser.uid,
                       skillHashtags: _localHashtagSkills,
                       wishHashtags: _localHashtagWishes,
                       skillRate: _databaseSkillRate,
@@ -328,7 +328,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     SplashScreen.id,
                         (Route<dynamic> route) => false);
                         */
-
               },
               child: Text('Sign Out'),
             )

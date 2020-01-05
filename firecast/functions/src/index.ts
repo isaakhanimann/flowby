@@ -5,7 +5,10 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 
+const db = admin.firestore();
+
 //erstelle cloud function
+
 exports.createMessageWithPizza = functions.firestore
   .document("/chats/{chatId}/messages/{messageId}")
   .onCreate((snap: any, context: any) => {
@@ -73,4 +76,19 @@ exports.createMessageUpdateChat = functions.firestore
 //   .catch(err => {
 //     console.error("Error getting document", err);
 //     process.exit();
+//   });
+
+//mache etwas wenn ein firebaseuser created wird
+// exports.createAuthUserCreateUserinUsersCollection = functions.auth
+//   .user()
+//   .onCreate((user: any) => {
+//     const newUser = {
+//       uid: user.uid
+//     };
+//     db.collection("users")
+//       .doc(newUser.uid)
+//       .set(newUser)
+//       .then(() => {
+//         console.log("New user created in users collection");
+//       });
 //   });
