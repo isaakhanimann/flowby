@@ -49,6 +49,68 @@ exports.createMessageUpdateChat = functions.firestore
     });
   });
 
+// to storage
+exports.updateImageUpdateUserAndChats = functions.storage
+  .object()
+  .onFinalize(async (object: any) => {
+    const filePath = object.name; // File path in the bucket.
+    // Get the file name, this should be the uid of the user
+    const uid = path.basename(filePath);
+    // Exit if the user already had a unique imageFileName
+    const doc = await db
+      .collection("users")
+      .doc(uid)
+      .get();
+    if (doc.exists) {
+      if (doc.data().imageFileName == uid) {
+        console.log(
+          "ImageFileName is already uid so it does not need to be changed anywhere"
+        );
+        return;
+      }
+    }
+    // Update the user in the users collection
+    db.collection("users")
+      .doc(uid)
+      .update({ imageFileName: uid })
+      .then(() => {
+        console.log(`Users imageFileName updated to ${uid}`);
+      });
+    // Update all the chats of this user to have the same imageFileName
+    // First update all the chats where the user is user1
+    db.collection("chats")
+      .where("uid1", "==", uid)
+      .get()
+      .then((querySnapshot: any) => {
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("chats")
+              .doc(documentSnapshot.ref.id)
+              .update({ user1ImageFileName: uid })
+              .then(() => {
+                console.log("Users user1ImageFileName updated");
+              });
+          }
+        });
+      });
+    // Then update all the chats where the user is user2
+    db.collection("chats")
+      .where("uid2", "==", uid)
+      .get()
+      .then((querySnapshot: any) => {
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("chats")
+              .doc(documentSnapshot.ref.id)
+              .update({ user2ImageFileName: uid })
+              .then(() => {
+                console.log("Users user2ImageFileName updated");
+              });
+          }
+        });
+      });
+  });
+
 // const db = admin.firestore();
 
 // //write data to database

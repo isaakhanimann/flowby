@@ -306,7 +306,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       skillHashtags: _localHashtagSkills,
                       wishHashtags: _localHashtagWishes,
                       skillRate: _databaseSkillRate,
-                      wishRate: _databaseWishRate);
+                      wishRate: _databaseWishRate,
+                      imageFileName: loggedInUser.uid);
                   await FirebaseConnection.uploadUser(user: user);
                   _reloadUserFromDatabase();
                 } catch (e) {
