@@ -61,6 +61,7 @@ class FirebaseConnection {
       await uploadTask.onComplete;
     } catch (e) {
       print('Isaak could not upload image');
+      print(e);
     }
   }
 
@@ -83,7 +84,8 @@ class FirebaseConnection {
         'skillHashtags': user.skillHashtags,
         'wishHashtags': user.wishHashtags,
         'skillRate': user.skillRate,
-        'wishRate': user.wishRate
+        'wishRate': user.wishRate,
+        'imageFileName': user.imageFileName
       });
     } catch (e) {
       print('Isaak could not upload user info');
@@ -120,7 +122,7 @@ class FirebaseConnection {
   }
 
   static Stream<List<User>> getUsersStreamWithDistance(
-      {@required Position position, String uidToExclude}) {
+      {@required Position position, @required String uidToExclude}) {
     try {
       var userSnapshots = _fireStore.collection('users').snapshots().map(
           (snap) => snap.documents
@@ -239,8 +241,10 @@ class FirebaseConnection {
   static Future<String> getChatPath(
       {@required String loggedInUid,
       @required String loggedInUsername,
+      @required String loggedInImageFileName,
       @required String otherUid,
-      @required String otherUsername}) async {
+      @required String otherUsername,
+      @required String otherUserImageFileName}) async {
     try {
       String chatPath;
       QuerySnapshot snap1 = await _fireStore
@@ -264,8 +268,10 @@ class FirebaseConnection {
         chatPath = await _createChat(
             loggedInUserUid: loggedInUid,
             loggedInUsername: loggedInUsername,
+            loggedInImageFileName: loggedInImageFileName,
             otherUserUid: otherUid,
-            otherUsername: otherUsername);
+            otherUsername: otherUsername,
+            otherUserImageFileName: otherUserImageFileName);
       }
       return chatPath;
     } catch (e) {
@@ -277,14 +283,18 @@ class FirebaseConnection {
   static Future<String> _createChat(
       {@required String loggedInUserUid,
       @required String loggedInUsername,
+      @required String loggedInImageFileName,
       @required String otherUserUid,
-      @required String otherUsername}) async {
+      @required String otherUsername,
+      @required String otherUserImageFileName}) async {
     try {
       var docReference = await _fireStore.collection('chats').add({
         'uid1': loggedInUserUid,
         'username1': loggedInUsername,
+        'user1ImageFileName': loggedInImageFileName,
         'uid2': otherUserUid,
         'username2': otherUsername,
+        'user2ImageFileName': otherUserImageFileName,
         'lastMessageTimestamp': FieldValue.serverTimestamp(),
       });
       return docReference.path;

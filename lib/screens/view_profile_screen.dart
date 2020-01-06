@@ -1,7 +1,6 @@
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/chat_screen.dart';
-import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,31 +35,11 @@ class ViewProfileScreen extends StatelessWidget {
                         ),
                         Center(
                           heightFactor: 1.2,
-                          child: FutureBuilder(
-                            future: FirebaseConnection.getImageUrl(
-                                fileName: user.uid),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                String imageUrl = snapshot.data;
-                                if (imageUrl == null) {
-                                  return CircleAvatar(
-                                    radius: 30,
-                                    backgroundColor: Colors.grey,
-                                    backgroundImage: AssetImage(
-                                        'images/default-profile-pic.jpg'),
-                                  );
-                                }
-                                return CircleAvatar(
-                                  radius: 50,
-                                  backgroundColor: Colors.grey,
-                                  backgroundImage: NetworkImage(imageUrl),
-                                );
-                              }
-                              return CircleAvatar(
-                                backgroundColor: Colors.grey,
-                              );
-                            },
+                          child: CircleAvatar(
+                            radius: 60,
+                            backgroundColor: Colors.grey,
+                            backgroundImage: NetworkImage(
+                                'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
                           ),
                         ),
                         Row(
@@ -139,8 +118,9 @@ class ViewProfileScreen extends StatelessWidget {
                   CupertinoPageRoute<void>(
                     builder: (context) {
                       return ChatScreen(
-                        otherUserUid: user.uid,
+                        otherUid: user.uid,
                         otherUsername: user.username,
+                        otherImageFileName: user.imageFileName,
                       );
                     },
                   ),

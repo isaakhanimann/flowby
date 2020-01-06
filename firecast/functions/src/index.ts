@@ -3,6 +3,8 @@ const functions = require("firebase-functions");
 
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 const admin = require("firebase-admin");
+const path = require("path");
+
 admin.initializeApp();
 
 const db = admin.firestore();
@@ -40,7 +42,7 @@ exports.createMessageUpdateChat = functions.firestore
     // Get an object representing the document
     const newMessage = snap.data();
 
-    // perform desired operations ...
+    // to add to or update a document use update(), set() replaces the whole document
     return snap.ref.parent.parent.update({
       lastMessageText: newMessage.text,
       lastMessageTimestamp: newMessage.timestamp

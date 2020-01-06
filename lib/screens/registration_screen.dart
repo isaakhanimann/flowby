@@ -74,7 +74,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     isLast: false,
                     isEmail: true,
                     setText: (value) {
-                      print(name);
                       name = value;
                     },
                   ),
@@ -149,17 +148,15 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         final authResult = await FirebaseConnection.createUser(
                             email: email, password: password);
                         if (authResult != null) {
-                          //var _profilePic = File('images/default-profile-pic.jpg');
                           User user = User(
                               username: name,
                               uid: authResult.user.uid,
                               skillHashtags: 'default',
                               wishHashtags: 'default',
                               skillRate: 20,
-                              wishRate: 20);
+                              wishRate: 20,
+                              imageFileName: 'default-profile-pic.jpg');
                           await FirebaseConnection.uploadUser(user: user);
-                          // await FirebaseConnection.uploadImage(
-                          //     fileName: email, image: _profilePic);
                           Navigator.pushNamed(context, NavigationScreen.id);
                         }
                         setState(() {

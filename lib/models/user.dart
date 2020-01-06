@@ -12,6 +12,7 @@ class User {
   int wishRate;
   GeoPoint location;
   int distanceInKm;
+  String imageFileName;
 
   User(
       {this.username,
@@ -20,7 +21,8 @@ class User {
       this.wishHashtags,
       this.skillRate,
       this.wishRate,
-      this.location});
+      this.location,
+      this.imageFileName});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'];
@@ -30,6 +32,7 @@ class User {
     this.skillRate = map['skillRate'];
     this.wishRate = map['wishRate'];
     this.location = map['location'];
+    this.imageFileName = map['imageFileName'];
   }
 
   void updateDistanceToPositionIfPossible({@required Position position}) async {
@@ -52,6 +55,7 @@ class User {
     toPrint += 'wishHashtags: $wishHashtags, ';
     toPrint += 'skillRate: ${skillRate.toString()}, ';
     toPrint += 'location: ${location.toString()}, ';
+    toPrint += 'imageFileName: ${imageFileName.toString()}, ';
     toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';
 
     return toPrint;

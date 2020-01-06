@@ -1,7 +1,6 @@
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/view_profile_screen.dart';
-import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -56,30 +55,11 @@ class ProfileItem extends StatelessWidget {
               ),
             );
           },
-          leading: FutureBuilder(
-            future: FirebaseConnection.getImageUrl(fileName: user.uid),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                String imageUrl = snapshot.data;
-                if (imageUrl == null) {
-                  return CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey,
-                    backgroundImage:
-                        AssetImage('images/default-profile-pic.jpg'),
-                  );
-                }
-                return CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage(imageUrl),
-                );
-              }
-              return CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.grey,
-              );
-            },
+          leading: CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.grey,
+            backgroundImage: NetworkImage(
+                'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

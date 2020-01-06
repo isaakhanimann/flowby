@@ -2,7 +2,6 @@ import 'package:float/constants.dart';
 import 'package:float/models/chat.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/chat_screen.dart';
-import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +36,12 @@ class ChatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var loggedInUser = Provider.of<User>(context);
+    bool user1IsLoggedInUser = (chat.uid1 == loggedInUser.uid);
+    String otherUid = user1IsLoggedInUser ? chat.uid2 : chat.uid1;
+    String otherUsername =
+        user1IsLoggedInUser ? chat.username2 : chat.username1;
+    String otherImageFileName =
+        user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
 
     return Card(
       elevation: 0,
@@ -51,47 +56,23 @@ class ChatItem extends StatelessWidget {
               CupertinoPageRoute<void>(
                 builder: (context) {
                   return ChatScreen(
-                    otherUserUid:
-                        (chat.uid1 == loggedInUser.uid) ? chat.uid2 : chat.uid1,
-                    otherUsername: (chat.uid1 == loggedInUser.uid)
-                        ? chat.username2
-                        : chat.username1,
+                    otherUid: otherUid,
+                    otherUsername: otherUsername,
+                    otherImageFileName: otherImageFileName,
                     chatPath: chat.chatpath,
                   );
                 },
               ),
             );
           },
-          leading: FutureBuilder(
-            future: FirebaseConnection.getImageUrl(
-                fileName:
-                    (chat.uid1 == loggedInUser.uid) ? chat.uid2 : chat.uid1),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                String imageUrl = snapshot.data;
-                if (imageUrl != null) {
-                  return CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: NetworkImage(imageUrl),
-                  );
-                } else {
-                  return CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey,
-                    backgroundImage:
-                        AssetImage('images/default-profile-pic.jpg'),
-                  );
-                }
-              }
-              return CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.grey,
-              );
-            },
+          leading: CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.grey,
+            backgroundImage: NetworkImage(
+                'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
           ),
           title: Text(
-            (chat.uid1 == loggedInUser.uid) ? chat.username2 : chat.username1,
+            otherUsername,
             style: kUsernameTextStyle,
           ),
           subtitle: Text(

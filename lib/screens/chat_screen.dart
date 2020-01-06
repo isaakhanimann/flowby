@@ -9,15 +9,17 @@ import 'package:provider/provider.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
-  final String otherUserUid;
+  final String otherUid;
   final String otherUsername;
+  final String otherImageFileName;
 
   final String chatPath;
   //either the chatPath is supplied and we can get the messageStream directly
   //or if he isn't we can user the other user to figure out the chatpath ourselves
   ChatScreen(
-      {@required this.otherUserUid,
+      {@required this.otherUid,
       @required this.otherUsername,
+      @required this.otherImageFileName,
       this.chatPath});
 
   @override
@@ -33,8 +35,10 @@ class ChatScreen extends StatelessWidget {
       future: FirebaseConnection.getChatPath(
           loggedInUid: loggedInUser.uid,
           loggedInUsername: loggedInUser.username,
-          otherUid: otherUserUid,
-          otherUsername: otherUsername),
+          loggedInImageFileName: loggedInUser.imageFileName,
+          otherUid: otherUid,
+          otherUsername: otherUsername,
+          otherUserImageFileName: otherImageFileName),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return CupertinoActivityIndicator();

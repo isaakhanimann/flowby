@@ -25,8 +25,9 @@ class StreambuilderWithLoadingIndicator extends StatelessWidget {
             ),
           );
         }
-        List<User> users =
-            List.from(snapshot.data); // to convert it editable list
+        List<User> users = List.from(snapshot.data);
+        print(
+            '**********************************users = $users'); // to convert it editable list
         users.sort((user1, user2) =>
             (user1.distanceInKm ?? 1000).compareTo(user2.distanceInKm ?? 1000));
         return Expanded(
