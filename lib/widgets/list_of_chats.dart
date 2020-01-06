@@ -16,6 +16,14 @@ class ListOfChats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (chats.isEmpty) {
+      // Scaffold damit text nicht gelb unterstrichen ist
+      return Scaffold(
+        body: Center(
+          child: Text('You have no open chats', style: kSkillTextStyle),
+        ),
+      );
+    }
     return ListView.builder(
       itemExtent: 90,
       itemBuilder: (context, index) {

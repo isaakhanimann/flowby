@@ -17,7 +17,8 @@ class ChatOverviewScreen extends StatelessWidget {
         stream:
             FirebaseConnection.getChatStream(loggedInUid: loggedInUser?.uid),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.connectionState == ConnectionState.none) {
             return Center(
               child: CupertinoActivityIndicator(),
             );
@@ -26,7 +27,6 @@ class ChatOverviewScreen extends StatelessWidget {
               List.from(snapshot.data); // to convert it to editable list
           chats.sort((chat1, chat2) => (chat2.lastMessageTimestamp)
               .compareTo(chat1.lastMessageTimestamp));
-
           return ListOfChats(
             chats: chats,
           );
