@@ -9,8 +9,8 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
-//erstelle cloud function
-
+// erstelle cloud function
+// when a message is added scan it for the string "pizza" and replace it with the emoji
 exports.createMessageWithPizza = functions.firestore
   .document("/chats/{chatId}/messages/{messageId}")
   .onCreate((snap: any, context: any) => {
@@ -32,6 +32,7 @@ function addPizzas(text: string) {
   return text.replace(/\bpizza\b/g, "🍕");
 }
 
+// when a message is added update the lastMessageText field of the respective chat
 exports.createMessageUpdateChat = functions.firestore
   .document("/chats/{chatId}/messages/{messageId}")
   .onCreate((snap: any, context: any) => {
@@ -49,7 +50,54 @@ exports.createMessageUpdateChat = functions.firestore
     });
   });
 
-// to storage
+// when the username of a user is changed update all the chats that contain that username (find them with uid)
+exports.updateUsernameUpdateChat = functions.firestore
+  .document("/users/{userId}")
+  .onUpdate((change: any, context: any) => {
+    // Get an object representing the document
+    const newUser = change.after.data();
+    // ...or the previous value before this update
+    const previousUser = change.before.data();
+    // if the username changed change all the chats
+    if (previousUser.username != newUser.username) {
+      // First update all the chats where the user is user1
+      db.collection("chats")
+        .where("uid1", "==", newUser.uid)
+        .get()
+        .then((querySnapshot: any) => {
+          querySnapshot.forEach((documentSnapshot: any) => {
+            if (documentSnapshot.exists) {
+              db.collection("chats")
+                .doc(documentSnapshot.ref.id)
+                .update({ username1: newUser.username })
+                .then(() => {
+                  console.log(`Users username1 updated to ${newUser.username}`);
+                });
+            }
+          });
+        });
+      // Then update all the chats where the user is user2
+      db.collection("chats")
+        .where("uid2", "==", newUser.uid)
+        .get()
+        .then((querySnapshot: any) => {
+          querySnapshot.forEach((documentSnapshot: any) => {
+            if (documentSnapshot.exists) {
+              db.collection("chats")
+                .doc(documentSnapshot.ref.id)
+                .update({ username2: newUser.username })
+                .then(() => {
+                  console.log(`Users username2 updated to ${newUser.username}`);
+                });
+            }
+          });
+        });
+    }
+  });
+
+// when an image is added to storage update its users imageFileName and also all the chats the user is in
+// a user can only upload an image with the same filename as his uid
+// if the imageFileName of the user (in users collection) is already his uid no update has to be made
 exports.updateImageUpdateUserAndChats = functions.storage
   .object()
   .onFinalize(async (object: any) => {
@@ -88,7 +136,7 @@ exports.updateImageUpdateUserAndChats = functions.storage
               .doc(documentSnapshot.ref.id)
               .update({ user1ImageFileName: uid })
               .then(() => {
-                console.log("Users user1ImageFileName updated");
+                console.log(`Users user1ImageFileName updated to ${uid}`);
               });
           }
         });
@@ -104,7 +152,7 @@ exports.updateImageUpdateUserAndChats = functions.storage
               .doc(documentSnapshot.ref.id)
               .update({ user2ImageFileName: uid })
               .then(() => {
-                console.log("Users user2ImageFileName updated");
+                console.log(`Users user2ImageFileName updated to ${uid}`);
               });
           }
         });
