@@ -2,7 +2,6 @@ import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/services/firebase_connection.dart';
 import 'package:float/widgets/list_of_profiles.dart';
-import 'package:float/widgets/streambuilder_with_loading_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -54,11 +53,26 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             SizedBox(height: 10),
-            StreambuilderWithLoadingIndicator(
-              showProfiles: true,
-              userStream: FirebaseConnection.getUsersStreamWithDistance(
+            StreamBuilder<List<User>>(
+              stream: FirebaseConnection.getUsersStreamWithDistance(
                   position: currentPosition, uidToExclude: loggedInUser?.uid),
-              searchSkill: isSkillSelected,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Expanded(
+                    child: Center(
+                      child: CupertinoActivityIndicator(),
+                    ),
+                  );
+                }
+                List<User> users = List.from(snapshot.data);
+                print(
+                    '**********************************users = $users'); // to convert it editable list
+                users.sort((user1, user2) => (user1.distanceInKm ?? 1000)
+                    .compareTo(user2.distanceInKm ?? 1000));
+                return Expanded(
+                    child: ListOfProfiles(
+                        users: users, searchSkill: isSkillSelected));
+              },
             ),
           ],
         ),
