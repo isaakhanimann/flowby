@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/message.dart';
-import 'package:float/models/user.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
+  final String loggedInUid;
   final String otherUid;
   final String otherUsername;
   final String otherImageFileName;
@@ -17,25 +17,28 @@ class ChatScreen extends StatelessWidget {
   //either the chatPath is supplied and we can get the messageStream directly
   //or if he isn't we can user the other user to figure out the chatpath ourselves
   ChatScreen(
-      {@required this.otherUid,
+      {@required this.loggedInUid,
+      @required this.otherUid,
       @required this.otherUsername,
       @required this.otherImageFileName,
       this.chatPath});
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     if (chatPath != null) {
-      return ChatScreenWithPath(
-          otherUsername: otherUsername, chatPath: chatPath);
+      return Provider<String>.value(
+        value: loggedInUid,
+        child: ChatScreenWithPath(
+            otherUsername: otherUsername, chatPath: chatPath),
+      );
     }
 
     return FutureBuilder(
-      future: FirebaseConnection.getChatPath(
-          loggedInUid: loggedInUser.uid,
-          loggedInUsername: loggedInUser.username,
-          loggedInImageFileName: loggedInUser.imageFileName,
+      future: cloudFirestoreService.getChatPath(
+          loggedInUid: loggedInUid,
           otherUid: otherUid,
           otherUsername: otherUsername,
           otherUserImageFileName: otherImageFileName),
@@ -51,8 +54,11 @@ class ChatScreen extends StatelessWidget {
         }
         String foundChatPath = snapshot.data;
 
-        return ChatScreenWithPath(
-            otherUsername: otherUsername, chatPath: foundChatPath);
+        return Provider<String>.value(
+          value: loggedInUid,
+          child: ChatScreenWithPath(
+              otherUsername: otherUsername, chatPath: foundChatPath),
+        );
       },
     );
   }
@@ -70,6 +76,9 @@ class ChatScreenWithPath extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -88,7 +97,7 @@ class ChatScreenWithPath extends StatelessWidget {
           children: <Widget>[
             MessagesStream(
               messagesStream:
-                  FirebaseConnection.getMessageStream(chatPath: chatPath),
+                  cloudFirestoreService.getMessageStream(chatPath: chatPath),
             ),
             MessageSendingSection(chatPath: chatPath),
           ],
@@ -136,8 +145,7 @@ class MessagesStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
-
+    String loggedInUid = Provider.of<String>(context);
     return StreamBuilder<List<Message>>(
       stream: messagesStream,
       builder: (context, snapshot) {
@@ -150,6 +158,9 @@ class MessagesStream extends StatelessWidget {
 
         final List<Message> messages = snapshot.data;
 
+        if (messages == null) {
+          return Container(color: Colors.white);
+        }
         return Expanded(
           child: ListView.builder(
             itemCount: messages.length,
@@ -160,7 +171,7 @@ class MessagesStream extends StatelessWidget {
                 text: message.text,
                 timestamp:
                     '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.',
-                isMe: loggedInUser.uid == message.senderUid,
+                isMe: loggedInUid == message.senderUid,
               );
             },
             reverse: true,
@@ -187,8 +198,9 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
-
+    String loggedInUid = Provider.of<String>(context);
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     return Container(
       decoration: kMessageContainerDecoration,
       child: Row(
@@ -211,10 +223,10 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
                 //Implement send functionality.
                 messageTextController.clear();
                 Message message = Message(
-                    senderUid: loggedInUser.uid,
+                    senderUid: loggedInUid,
                     text: messageText,
                     timestamp: FieldValue.serverTimestamp());
-                FirebaseConnection.uploadMessage(
+                cloudFirestoreService.uploadMessage(
                     chatPath: widget.chatPath, message: message);
                 messageText = ''; // Reset locally the sent message
               }

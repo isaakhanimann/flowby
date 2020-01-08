@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:float/services/location.dart';
+import 'package:float/services/location_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -39,7 +39,7 @@ class User {
     if (position == null || this.location == null) {
       return;
     }
-    double distanceInMeters = await Location.distanceBetween(
+    double distanceInMeters = await LocationService.distanceBetween(
         startLatitude: this.location.latitude,
         startLongitude: this.location.longitude,
         endLatitude: position.latitude,

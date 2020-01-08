@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/chat.dart';
-import 'package:float/models/user.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +43,7 @@ class ChatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     bool user1IsLoggedInUser = (chat.uid1 == loggedInUser.uid);
     String otherUid = user1IsLoggedInUser ? chat.uid2 : chat.uid1;
     String otherUsername =
@@ -64,6 +64,7 @@ class ChatItem extends StatelessWidget {
               CupertinoPageRoute<void>(
                 builder: (context) {
                   return ChatScreen(
+                    loggedInUid: loggedInUser.uid,
                     otherUid: otherUid,
                     otherUsername: otherUsername,
                     otherImageFileName: otherImageFileName,

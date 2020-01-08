@@ -1,11 +1,12 @@
 import 'package:float/constants.dart';
-import 'package:float/screens/registration_screen.dart';
 import 'package:float/screens/login_screen.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/screens/registration_screen.dart';
+import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String id = 'splash_screen';
@@ -20,7 +21,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    FirebaseConnection.autoLogin(context: context);
+    final authService =
+        Provider.of<FirebaseAuthService>(context, listen: false);
+    authService.tryToGetCurrentUserAndNavigate(context: context);
   }
 
   @override

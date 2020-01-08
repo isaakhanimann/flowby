@@ -3,12 +3,15 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/services/firebase_auth_service.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:float/services/firebase_storage_service.dart';
 import 'package:float/widgets/hashtag_bubble.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   static const String id = 'create_profile_screen';
@@ -71,8 +74,10 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     });
   }
 
-  void _reloadUserFromDatabase() async {
-    User user = await FirebaseConnection.getUser(uid: loggedInUser.uid);
+  void _reloadUserFromDatabase(BuildContext context) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    User user = await cloudFirestoreService.getUser(uid: loggedInUser.uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
       _databaseUsername = user?.username;
@@ -88,11 +93,15 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     });
   }
 
-  void _getAndSetData() async {
-    loggedInUser = await FirebaseConnection.getCurrentUser();
+  void _getAndSetData(BuildContext context) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    final storageService =
+        Provider.of<FirebaseStorageService>(context, listen: false);
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     String uid = loggedInUser.uid;
-    String imgUrl = await FirebaseConnection.getImageUrl(fileName: uid);
-    User user = await FirebaseConnection.getUser(uid: uid);
+    String imgUrl = await storageService.getImageUrl(fileName: uid);
+    User user = await cloudFirestoreService.getUser(uid: uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
       _databaseUsername = user?.username;
@@ -115,11 +124,17 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   void initState() {
     super.initState();
     //this is an asynchronous method
-    _getAndSetData();
+    _getAndSetData(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    final storageService =
+        Provider.of<FirebaseStorageService>(context, listen: false);
+
     if (showSpinner) {
       return Center(
         child: CupertinoActivityIndicator(),
@@ -297,7 +312,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                 });
                 try {
                   if (_profilePic != null) {
-                    await FirebaseConnection.uploadImage(
+                    await storageService.uploadImage(
                         fileName: loggedInUser.uid, image: _profilePic);
                   }
                   User user = User(
@@ -308,8 +323,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       skillRate: _databaseSkillRate,
                       wishRate: _databaseWishRate,
                       imageFileName: loggedInUser.uid);
-                  await FirebaseConnection.uploadUser(user: user);
-                  _reloadUserFromDatabase();
+                  await cloudFirestoreService.uploadUser(user: user);
+                  _reloadUserFromDatabase(context);
                 } catch (e) {
                   print('Could not upload and get on Save');
                 }
@@ -322,8 +337,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               height: 15,
             ),
             GestureDetector(
-              onTap: () {
-                FirebaseConnection.signOut();
+              onTap: () async {
+                final authService = Provider.of<FirebaseAuthService>(context);
+                await authService.signOut();
                 Navigator.of(context, rootNavigator: true).pop();
                 /*Navigator.of(context).pushNamedAndRemoveUntil(
                     SplashScreen.id,

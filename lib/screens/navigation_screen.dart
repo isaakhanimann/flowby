@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
 import 'package:float/screens/chat_overview_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/home_screen.dart';
-import 'package:float/services/firebase_connection.dart';
-import 'package:float/services/location.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:float/services/location_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,6 +14,10 @@ import 'package:provider/provider.dart';
 
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
+
+  final loggedInUser;
+
+  NavigationScreen({@required this.loggedInUser});
 
   @override
   _NavigationScreenState createState() => _NavigationScreenState();
@@ -34,15 +38,18 @@ class _NavigationScreenState extends State<NavigationScreen> {
     super.didChangeDependencies();
 
     //upload the users location whenever it changes
-    var loggedInUser = Provider.of<User>(context);
-    //asBroadcast because the streamprovider for the homescreen also listens to it
-    positionStream = Location.getPositionStream().asBroadcastStream();
-    positionStreamSubscription = positionStream.listen((Position position) {
-      if (loggedInUser != null) {
-        FirebaseConnection.uploadUsersLocation(
-            uid: loggedInUser.uid, position: position);
-      }
-    });
+    if (widget.loggedInUser != null) {
+      final cloudFirestoreService =
+          Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+      final locationService =
+          Provider.of<LocationService>(context, listen: false);
+      //asBroadcast because the streamprovider for the homescreen also listens to it
+      positionStream = locationService.getPositionStream().asBroadcastStream();
+      positionStreamSubscription = positionStream.listen((Position position) {
+        cloudFirestoreService.uploadUsersLocation(
+            uid: widget.loggedInUser.uid, position: position);
+      });
+    }
   }
 
   @override
@@ -53,8 +60,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<Position>.value(
-      value: positionStream,
+    return MultiProvider(
+      providers: [
+        StreamProvider<Position>.value(
+          value: positionStream,
+        ),
+        Provider<FirebaseUser>.value(
+          value: widget.loggedInUser,
+        ),
+      ],
       child: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
           activeColor: kDarkGreenColor,

@@ -1,9 +1,12 @@
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/chat_screen.dart';
+import 'package:float/screens/registration_screen.dart';
+import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ViewProfileScreen extends StatelessWidget {
   static const String id = 'view_profile_screen';
@@ -114,10 +117,24 @@ class ViewProfileScreen extends StatelessWidget {
               text: 'Chat',
               color: kDarkGreenColor,
               onPressed: () async {
+                final authService =
+                    Provider.of<FirebaseAuthService>(context, listen: false);
+                //todo let the user know something is happening while he is waiting
+                final loggedInUser = await authService.getCurrentUser();
+                if (loggedInUser == null) {
+                  Navigator.of(context, rootNavigator: true).push(
+                    CupertinoPageRoute<void>(
+                      builder: (context) {
+                        return RegistrationScreen();
+                      },
+                    ),
+                  );
+                }
                 Navigator.of(context, rootNavigator: true).push(
                   CupertinoPageRoute<void>(
                     builder: (context) {
                       return ChatScreen(
+                        loggedInUid: loggedInUser.uid,
                         otherUid: user.uid,
                         otherUsername: user.username,
                         otherImageFileName: user.imageFileName,

@@ -1,6 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/widgets/list_of_profiles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     var currentPosition = Provider.of<Position>(context);
+
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return Scaffold(
       body: SafeArea(
@@ -54,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 10),
             StreamBuilder<List<User>>(
-              stream: FirebaseConnection.getUsersStreamWithDistance(
+              stream: cloudFirestoreService.getUsersStreamWithDistance(
                   position: currentPosition, uidToExclude: loggedInUser?.uid),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -141,11 +145,14 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     var currentPosition = Provider.of<Position>(context);
 
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
     return StreamBuilder<List<User>>(
-      stream: FirebaseConnection.getUsersStreamWithDistance(
+      stream: cloudFirestoreService.getUsersStreamWithDistance(
           position: currentPosition, uidToExclude: loggedInUser.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -180,10 +187,13 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return StreamBuilder<List<User>>(
-      stream: FirebaseConnection.getUsersStream(uid: loggedInUser.uid),
+      stream: cloudFirestoreService.getUsersStream(uid: loggedInUser.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(

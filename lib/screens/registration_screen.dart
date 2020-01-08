@@ -1,13 +1,14 @@
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/navigation_screen.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/services/firebase_auth_service.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
+import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
-import '../widgets/rounded_button.dart';
+import 'package:provider/provider.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -145,7 +146,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         showSpinner = true;
                       });
                       try {
-                        final authResult = await FirebaseConnection.createUser(
+                        final authService = Provider.of<FirebaseAuthService>(
+                            context,
+                            listen: false);
+                        final cloudFirestoreService =
+                            Provider.of<FirebaseCloudFirestoreService>(context,
+                                listen: false);
+                        final authResult = await authService.createUser(
                             email: email, password: password);
                         if (authResult != null) {
                           User user = User(
@@ -156,7 +163,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                               skillRate: 20,
                               wishRate: 20,
                               imageFileName: 'default-profile-pic.jpg');
-                          await FirebaseConnection.uploadUser(user: user);
+                          await cloudFirestoreService.uploadUser(user: user);
                           Navigator.pushNamed(context, NavigationScreen.id);
                         }
                         setState(() {
