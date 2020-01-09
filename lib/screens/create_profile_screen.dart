@@ -136,7 +136,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     final storageService =
         Provider.of<FirebaseStorageService>(context, listen: false);
 
-    final loggedInUser = Provider.of<FirebaseUser>(context);
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     if (loggedInUser == null) {
       return Center(
         child: RoundedButton(

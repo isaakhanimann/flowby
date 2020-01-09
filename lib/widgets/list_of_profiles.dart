@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/view_profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ListOfProfiles extends StatelessWidget {
   const ListOfProfiles({
@@ -37,6 +39,8 @@ class ProfileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+
     return Card(
       elevation: 0,
       color: kLightGrey2,
@@ -50,7 +54,9 @@ class ProfileItem extends StatelessWidget {
               CupertinoPageRoute<void>(
                 builder: (context) {
                   return ViewProfileScreen(
-                      user: user, showSkills: isSkillSearch);
+                      user: user,
+                      loggedInUser: loggedInUser,
+                      showSkills: isSkillSearch);
                 },
               ),
             );

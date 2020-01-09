@@ -17,8 +17,8 @@ class ChatOverviewScreen extends StatelessWidget {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    //register this screen as a listener to changes to loggedInUser (so it rebuilds if necessary)
-    final loggedInUser = Provider.of<FirebaseUser>(context);
+    //listening to loggedInUser (so it rebuilds) is not necessary as the navigationscreen provides it and always has the up to date value because it is rebuilt whenever we navigate to it
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     if (loggedInUser == null) {
       return Center(
         child: RoundedButton(
