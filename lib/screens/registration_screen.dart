@@ -164,7 +164,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                               wishRate: 20,
                               imageFileName: 'default-profile-pic.jpg');
                           await cloudFirestoreService.uploadUser(user: user);
-                          Navigator.pushNamed(context, NavigationScreen.id);
+                          Navigator.pushNamed(context, NavigationScreen.id,
+                              arguments: authResult.user);
                         }
                         setState(() {
                           showSpinner = false;
