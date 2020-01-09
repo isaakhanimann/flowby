@@ -159,48 +159,64 @@ exports.updateImageUpdateUserAndChats = functions.storage
       });
   });
 
-// const db = admin.firestore();
+// when the firebase user is deleted the user in the users collection, his chats and image should also be deleted
+exports.deleteUserEveryhere = functions.auth
+  .user()
+  .onDelete(async (user: any) => {
+    // delete the user in the users collection
+    db.collection("users")
+      .doc(user.uid)
+      .delete();
 
-// //write data to database
-// const quoteData = {
-//   quote: "new quote2",
-//   author: "new author2"
-// };
-// db.collection("sampleData")
-//   .doc("inspiration")
-//   .set(quoteData)
-//   .then(() => {
-//     console.log("New quote written to database");
-//   });
+    // delete the image with his uid as the file name
+    const bucket = admin.storage().bucket();
+    bucket
+      .file(`images/${user.uid}`)
+      .delete()
+      .then(function() {
+        // File deleted successfully
+        console.log(`Deleted image ${user.uid} successfully`);
+      })
+      .catch(function(error: any) {
+        // Uh-oh, an error occurred!
+        console.log(`Could not delete the image ${user.uid}`);
+      });
 
-// //read data from database
-// db.collection("users")
-//   .doc("isaak@gmail.com")
-//   .get()
-//   .then(doc => {
-//     if (!doc.exists) {
-//       console.log("No such document");
-//     }
-//     //do stuff with data
-//     const obj = doc.data();
-//     console.log(`The username is ${obj.username}`);
-//   })
-//   .catch(err => {
-//     console.error("Error getting document", err);
-//     process.exit();
-//   });
-
-//mache etwas wenn ein firebaseuser created wird
-// exports.createAuthUserCreateUserinUsersCollection = functions.auth
-//   .user()
-//   .onCreate((user: any) => {
-//     const newUser = {
-//       uid: user.uid
-//     };
-//     db.collection("users")
-//       .doc(newUser.uid)
-//       .set(newUser)
-//       .then(() => {
-//         console.log("New user created in users collection");
-//       });
-//   });
+    // delete all the chats he was part of
+    // First delete all the chats where the user is user1
+    db.collection("chats")
+      .where("uid1", "==", user.uid)
+      .get()
+      .then((querySnapshot: any) => {
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("chats")
+              .doc(documentSnapshot.ref.id)
+              .delete()
+              .then(() => {
+                console.log(
+                  `Chat ${documentSnapshot.ref.id} deleted successfully`
+                );
+              });
+          }
+        });
+      });
+    // Then delete all the chats where the user is user2
+    db.collection("chats")
+      .where("uid2", "==", user.uid)
+      .get()
+      .then((querySnapshot: any) => {
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("chats")
+              .doc(documentSnapshot.ref.id)
+              .delete()
+              .then(() => {
+                console.log(
+                  `Chat ${documentSnapshot.ref.id} deleted successfully`
+                );
+              });
+          }
+        });
+      });
+  });

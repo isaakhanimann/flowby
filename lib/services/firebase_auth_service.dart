@@ -41,4 +41,15 @@ class FirebaseAuthService {
     return _auth.createUserWithEmailAndPassword(
         email: email, password: password);
   }
+
+  Future<void> deleteCurrentlyLoggedInUser() async {
+    try {
+      final user = await _auth.currentUser();
+      // this also signs out the user
+      await user.delete();
+    } catch (e) {
+      print('Isaak could not delete the user');
+      print(e);
+    }
+  }
 }

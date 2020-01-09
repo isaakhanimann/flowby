@@ -368,13 +368,25 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     },
                   ),
                 );
-                /*Navigator.of(context).pushNamedAndRemoveUntil(
-                    SplashScreen.id,
-                        (Route<dynamic> route) => false);
-                        */
               },
               child: Text('Sign Out'),
-            )
+            ),
+            SizedBox(height: 20),
+            GestureDetector(
+              onTap: () {
+                final authService = Provider.of<FirebaseAuthService>(context);
+                authService.deleteCurrentlyLoggedInUser();
+                Navigator.of(context, rootNavigator: true).push(
+                  CupertinoPageRoute<void>(
+                    builder: (context) {
+                      return ChooseSignupOrLoginScreen();
+                    },
+                  ),
+                );
+              },
+              child: Text('Delete Account'),
+            ),
+            SizedBox(height: 20),
           ],
         ),
       ),
