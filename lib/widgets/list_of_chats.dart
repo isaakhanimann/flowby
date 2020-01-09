@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/chat.dart';
+import 'package:float/models/timestamp_to_string.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -80,13 +81,23 @@ class ChatItem extends StatelessWidget {
             backgroundImage: NetworkImage(
                 'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
           ),
-          title: Text(
-            otherUsername,
-            style: kUsernameTextStyle,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                otherUsername,
+                style: kUsernameTextStyle,
+              ),
+              Text(
+                TimestampToString.getString(
+                    timestamp: chat.lastMessageTimestamp),
+                style: TextStyle(color: Colors.black38, fontSize: 12),
+              ),
+            ],
           ),
           subtitle: Text(
             chat.lastMessageText,
-            style: kUsernameTextStyle,
+            style: TextStyle(color: Colors.black38, fontSize: 15),
           ),
           trailing: Icon(Icons.keyboard_arrow_right),
         ),

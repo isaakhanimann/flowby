@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/message.dart';
+import 'package:float/models/timestamp_to_string.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -108,37 +109,6 @@ class ChatScreenWithPath extends StatelessWidget {
 }
 
 class MessagesStream extends StatelessWidget {
-  String getMonthString(int month) {
-    switch (month) {
-      case 1:
-        return 'Jan';
-      case 2:
-        return 'Feb';
-      case 3:
-        return 'Mar';
-      case 4:
-        return 'Apr';
-      case 5:
-        return 'May';
-      case 6:
-        return 'Jun';
-      case 7:
-        return 'Jul';
-      case 8:
-        return 'Aug';
-      case 9:
-        return 'Sep';
-      case 10:
-        return 'Okt';
-      case 11:
-        return 'Nov';
-      case 12:
-        return 'Dez';
-      default:
-        return 'Error';
-    }
-  }
-
   final messagesStream;
 
   MessagesStream({this.messagesStream});
@@ -170,7 +140,7 @@ class MessagesStream extends StatelessWidget {
               return MessageBubble(
                 text: message.text,
                 timestamp:
-                    '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.',
+                    TimestampToString.getString(timestamp: messageTimestamp),
                 isMe: loggedInUid == message.senderUid,
               );
             },

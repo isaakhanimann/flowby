@@ -40,7 +40,7 @@ class ChatOverviewScreen extends StatelessWidget {
 
     return StreamBuilder(
         stream:
-            cloudFirestoreService.getChatStream(loggedInUid: loggedInUser?.uid),
+            cloudFirestoreService.getChatStream(loggedInUid: loggedInUser.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.connectionState == ConnectionState.none) {

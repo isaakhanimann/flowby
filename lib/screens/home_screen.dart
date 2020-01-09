@@ -95,7 +95,8 @@ class ButtonThatLooksLikeSearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: kLightGrey,
+      elevation: 0,
+      color: kLightGrey2,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -105,8 +106,14 @@ class ButtonThatLooksLikeSearchField extends StatelessWidget {
               context: context,
               delegate: DataSearch(isSkillSearch: isSkillSelected));
         },
-        leading: Icon(Icons.search),
-        title: Text('Search'),
+        leading: Icon(
+          Icons.search,
+          color: Colors.black87,
+        ),
+        title: Text(
+          'Search',
+          style: TextStyle(color: Colors.black38, fontSize: 18),
+        ),
       ),
     );
   }
