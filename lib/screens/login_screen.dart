@@ -124,10 +124,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           final authService = Provider.of<FirebaseAuthService>(
                               context,
                               listen: false);
-                          final user = await authService.signIn(
+                          final authResult = await authService.signIn(
                               email: email, password: password);
+                          final user = authResult?.user;
                           if (user != null) {
-                            Navigator.pushNamed(context, NavigationScreen.id);
+                            Navigator.pushNamed(context, NavigationScreen.id,
+                                arguments: user);
                             //cleans the navigation stack, so we don't come back to the login page if we
                             //press the back button in Android
                             /* Navigator.of(context).pushNamedAndRemoveUntil(

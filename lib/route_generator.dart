@@ -1,3 +1,4 @@
+import 'package:float/screens/choose_signup_or_login_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/navigation_screen.dart';
@@ -21,6 +22,8 @@ class RouteGenerator {
 //                  ));
 //        }
 //        return _errorRoute();
+      case ChooseSignupOrLoginScreen.id:
+        return CupertinoPageRoute(builder: (_) => ChooseSignupOrLoginScreen());
       case NavigationScreen.id:
         return CupertinoPageRoute(
             builder: (_) => NavigationScreen(loggedInUser: args));

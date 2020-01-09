@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
-import 'package:float/screens/splash_screen.dart';
+import 'package:float/screens/choose_signup_or_login_screen.dart';
 import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/firebase_storage_service.dart';
@@ -136,7 +136,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     final storageService =
         Provider.of<FirebaseStorageService>(context, listen: false);
 
-    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    final loggedInUser = Provider.of<FirebaseUser>(context);
     if (loggedInUser == null) {
       return Center(
         child: RoundedButton(
@@ -147,7 +147,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             Navigator.of(context, rootNavigator: true).push(
               CupertinoPageRoute<void>(
                 builder: (context) {
-                  return SplashScreen();
+                  return ChooseSignupOrLoginScreen();
                 },
               ),
             );
@@ -361,7 +361,13 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               onTap: () async {
                 final authService = Provider.of<FirebaseAuthService>(context);
                 await authService.signOut();
-                Navigator.of(context, rootNavigator: true).pop();
+                Navigator.of(context, rootNavigator: true).push(
+                  CupertinoPageRoute<void>(
+                    builder: (context) {
+                      return ChooseSignupOrLoginScreen();
+                    },
+                  ),
+                );
                 /*Navigator.of(context).pushNamedAndRemoveUntil(
                     SplashScreen.id,
                         (Route<dynamic> route) => false);

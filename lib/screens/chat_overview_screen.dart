@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/chat.dart';
-import 'package:float/screens/splash_screen.dart';
+import 'package:float/screens/choose_signup_or_login_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/widgets/list_of_chats.dart';
 import 'package:float/widgets/rounded_button.dart';
@@ -17,7 +17,8 @@ class ChatOverviewScreen extends StatelessWidget {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    //register this screen as a listener to changes to loggedInUser (so it rebuilds if necessary)
+    final loggedInUser = Provider.of<FirebaseUser>(context);
     if (loggedInUser == null) {
       return Center(
         child: RoundedButton(
@@ -28,7 +29,7 @@ class ChatOverviewScreen extends StatelessWidget {
             Navigator.of(context, rootNavigator: true).push(
               CupertinoPageRoute<void>(
                 builder: (context) {
-                  return SplashScreen();
+                  return ChooseSignupOrLoginScreen();
                 },
               ),
             );
