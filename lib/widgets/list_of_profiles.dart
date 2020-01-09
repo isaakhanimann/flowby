@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
+import 'package:float/models/helper_functions.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/view_profile_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -91,7 +92,10 @@ class ProfileItem extends StatelessWidget {
             children: <Widget>[
               Flexible(
                 child: Text(
-                  isSkillSearch ? user.skillHashtags : user.wishHashtags,
+                  HelperFunctions.getDotDotDotString(
+                      maybeLongString: isSkillSearch
+                          ? user.skillHashtags
+                          : user.wishHashtags),
                   style: kSkillTextStyle,
                 ),
               ),

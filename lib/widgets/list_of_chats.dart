@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/chat.dart';
-import 'package:float/models/timestamp_to_string.dart';
+import 'package:float/models/helper_functions.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -94,14 +94,15 @@ class ChatItem extends StatelessWidget {
                 style: kUsernameTextStyle,
               ),
               Text(
-                TimestampToString.getString(
+                HelperFunctions.getTimestampAsString(
                     timestamp: chat.lastMessageTimestamp),
                 style: TextStyle(color: Colors.black38, fontSize: 12),
               ),
             ],
           ),
           subtitle: Text(
-            chat.lastMessageText,
+            HelperFunctions.getDotDotDotString(
+                maybeLongString: chat.lastMessageText),
             style: TextStyle(color: Colors.black38, fontSize: 15),
           ),
           trailing: Icon(Icons.keyboard_arrow_right),

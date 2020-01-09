@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:float/constants.dart';
+import 'package:float/models/helper_functions.dart';
 import 'package:float/models/message.dart';
-import 'package:float/models/timestamp_to_string.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -165,8 +165,8 @@ class MessagesStream extends StatelessWidget {
               var messageTimestamp = message.timestamp;
               return MessageBubble(
                 text: message.text,
-                timestamp:
-                    TimestampToString.getString(timestamp: messageTimestamp),
+                timestamp: HelperFunctions.getTimestampAsString(
+                    timestamp: messageTimestamp),
                 isMe: loggedInUid == message.senderUid,
               );
             },

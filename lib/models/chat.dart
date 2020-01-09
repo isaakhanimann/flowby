@@ -46,7 +46,8 @@ class Chat {
     toPrint += 'username2: $username2, ';
     toPrint += 'user2ImageFileName: $user2ImageFileName, ';
     toPrint += 'lastMessageText: $lastMessageText, ';
-    toPrint += 'lastMessageTimestamp: ${lastMessageTimestamp.getString()} }\n';
+    toPrint +=
+        'lastMessageTimestamp: ${lastMessageTimestamp.getTimestampAsString()} }\n';
     return toPrint;
   }
 }

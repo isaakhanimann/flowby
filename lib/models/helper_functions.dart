@@ -1,31 +1,31 @@
 import 'package:flutter/cupertino.dart';
 
-class TimestampToString {
-  static String getString({@required DateTime timestamp}) {
+class HelperFunctions {
+  static String getTimestampAsString({@required DateTime timestamp}) {
     int today = DateTime.now().day;
     if (today == timestamp.day) {
-      return makeInt2Digits(timestamp.hour) +
+      return _makeInt2Digits(timestamp.hour) +
           ':' +
-          makeInt2Digits(timestamp.minute);
+          _makeInt2Digits(timestamp.minute);
     } else if (today - 1 == timestamp.day) {
       return 'Yesterday';
     } else if (today - 7 < timestamp.day) {
-      return getWeekdayString(timestamp.weekday);
+      return _getWeekdayString(timestamp.weekday);
     } else {
-      return makeInt2Digits(timestamp.day) +
+      return _makeInt2Digits(timestamp.day) +
           ' ' +
           _getMonthString(timestamp.month);
     }
   }
 
-  static String makeInt2Digits(int number) {
+  static String _makeInt2Digits(int number) {
     if (number < 10) {
       return '0${number.toString()}';
     }
     return number.toString();
   }
 
-  static String getWeekdayString(int weekdayInt) {
+  static String _getWeekdayString(int weekdayInt) {
     switch (weekdayInt) {
       case DateTime.monday:
         return 'Monday';
@@ -74,6 +74,15 @@ class TimestampToString {
         return 'Dez';
       default:
         return 'Error';
+    }
+  }
+
+  static String getDotDotDotString({@required String maybeLongString}) {
+    int numLettersToKeep = 25;
+    if (maybeLongString.length < numLettersToKeep) {
+      return maybeLongString;
+    } else {
+      return maybeLongString.substring(0, numLettersToKeep) + '...';
     }
   }
 }
