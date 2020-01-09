@@ -13,6 +13,7 @@ class ChatScreen extends StatelessWidget {
   final String otherUid;
   final String otherUsername;
   final String otherImageFileName;
+  final String heroTag;
 
   final String chatPath;
   //either the chatPath is supplied and we can get the messageStream directly
@@ -21,6 +22,7 @@ class ChatScreen extends StatelessWidget {
       {@required this.loggedInUid,
       @required this.otherUid,
       @required this.otherUsername,
+      @required this.heroTag,
       @required this.otherImageFileName,
       this.chatPath});
 
@@ -33,7 +35,10 @@ class ChatScreen extends StatelessWidget {
       return Provider<String>.value(
         value: loggedInUid,
         child: ChatScreenWithPath(
-            otherUsername: otherUsername, chatPath: chatPath),
+            otherUsername: otherUsername,
+            otherImageFileName: otherImageFileName,
+            heroTag: heroTag,
+            chatPath: chatPath),
       );
     }
 
@@ -58,7 +63,10 @@ class ChatScreen extends StatelessWidget {
         return Provider<String>.value(
           value: loggedInUid,
           child: ChatScreenWithPath(
-              otherUsername: otherUsername, chatPath: foundChatPath),
+              otherUsername: otherUsername,
+              otherImageFileName: otherImageFileName,
+              heroTag: heroTag,
+              chatPath: foundChatPath),
         );
       },
     );
@@ -69,11 +77,15 @@ class ChatScreenWithPath extends StatelessWidget {
   const ChatScreenWithPath({
     Key key,
     @required this.otherUsername,
+    @required this.otherImageFileName,
+    @required this.heroTag,
     @required this.chatPath,
   }) : super(key: key);
 
   final String otherUsername;
   final String chatPath;
+  final String otherImageFileName;
+  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +100,21 @@ class ChatScreenWithPath extends StatelessWidget {
           },
           icon: Icon(Icons.arrow_back_ios),
         ),
-        title: Text(otherUsername ?? 'Default'),
+        title: Row(
+          children: <Widget>[
+            Hero(
+              tag: heroTag,
+              child: CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.grey,
+                backgroundImage: NetworkImage(
+                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
+              ),
+            ),
+            SizedBox(width: 30),
+            Text(otherUsername ?? 'Default'),
+          ],
+        ),
         backgroundColor: kDarkGreenColor,
       ),
       body: SafeArea(

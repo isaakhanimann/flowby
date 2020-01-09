@@ -40,6 +40,7 @@ class ProfileItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    final String heroTag = user.uid + 'home';
 
     return Card(
       elevation: 0,
@@ -55,17 +56,21 @@ class ProfileItem extends StatelessWidget {
                 builder: (context) {
                   return ViewProfileScreen(
                       user: user,
+                      heroTag: heroTag,
                       loggedInUser: loggedInUser,
                       showSkills: isSkillSearch);
                 },
               ),
             );
           },
-          leading: CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.grey,
-            backgroundImage: NetworkImage(
-                'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+          leading: Hero(
+            tag: heroTag,
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.grey,
+              backgroundImage: NetworkImage(
+                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+            ),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

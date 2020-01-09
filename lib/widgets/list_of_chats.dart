@@ -51,6 +51,7 @@ class ChatItem extends StatelessWidget {
         user1IsLoggedInUser ? chat.username2 : chat.username1;
     String otherImageFileName =
         user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
+    final heroTag = otherUid + 'chats';
 
     return Card(
       elevation: 0,
@@ -69,17 +70,21 @@ class ChatItem extends StatelessWidget {
                     otherUid: otherUid,
                     otherUsername: otherUsername,
                     otherImageFileName: otherImageFileName,
+                    heroTag: heroTag,
                     chatPath: chat.chatpath,
                   );
                 },
               ),
             );
           },
-          leading: CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.grey,
-            backgroundImage: NetworkImage(
-                'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
+          leading: Hero(
+            tag: heroTag,
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.grey,
+              backgroundImage: NetworkImage(
+                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
+            ),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

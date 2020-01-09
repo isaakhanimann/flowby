@@ -10,11 +10,13 @@ import 'package:flutter/material.dart';
 class ViewProfileScreen extends StatelessWidget {
   static const String id = 'view_profile_screen';
   final User user;
+  final String heroTag;
   final FirebaseUser loggedInUser;
   final bool showSkills;
 
   ViewProfileScreen(
       {@required this.user,
+      @required this.heroTag,
       @required this.loggedInUser,
       this.showSkills = true});
 
@@ -41,11 +43,14 @@ class ViewProfileScreen extends StatelessWidget {
                         ),
                         Center(
                           heightFactor: 1.2,
-                          child: CircleAvatar(
-                            radius: 60,
-                            backgroundColor: Colors.grey,
-                            backgroundImage: NetworkImage(
-                                'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+                          child: Hero(
+                            tag: heroTag,
+                            child: CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.grey,
+                              backgroundImage: NetworkImage(
+                                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+                            ),
                           ),
                         ),
                         Row(
@@ -137,6 +142,7 @@ class ViewProfileScreen extends StatelessWidget {
                           otherUid: user.uid,
                           otherUsername: user.username,
                           otherImageFileName: user.imageFileName,
+                          heroTag: heroTag,
                         );
                       },
                     ),
