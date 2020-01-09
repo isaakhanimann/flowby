@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
+import 'package:float/screens/splash_screen.dart';
 import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/firebase_storage_service.dart';
@@ -134,6 +135,26 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
     final storageService =
         Provider.of<FirebaseStorageService>(context, listen: false);
+
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    if (loggedInUser == null) {
+      return Center(
+        child: RoundedButton(
+          text: 'Signin',
+          color: kDarkGreenColor,
+          textColor: Colors.white,
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).push(
+              CupertinoPageRoute<void>(
+                builder: (context) {
+                  return SplashScreen();
+                },
+              ),
+            );
+          },
+        ),
+      );
+    }
 
     if (showSpinner) {
       return Center(
