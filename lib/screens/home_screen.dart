@@ -9,8 +9,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const String id = 'home_screen';
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }

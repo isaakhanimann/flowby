@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ChatOverviewScreen extends StatelessWidget {
-  static const String id = 'home_screen';
-
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =

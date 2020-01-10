@@ -15,8 +15,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class CreateProfileScreen extends StatefulWidget {
-  static const String id = 'create_profile_screen';
-
   @override
   _CreateProfileScreenState createState() => _CreateProfileScreenState();
 }

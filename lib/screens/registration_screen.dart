@@ -139,7 +139,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                             context: context,
                             title: "Missing email or password",
                             description:
-                                'Enter an email and an passaword. Thank you.');
+                                'Enter an email and an password. Thank you.');
                         return;
                       }
                       setState(() {
