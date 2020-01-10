@@ -140,7 +140,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     if (loggedInUser == null) {
       return Center(
         child: RoundedButton(
-          text: 'Signin',
+          text: 'Sign In',
           color: kDarkGreenColor,
           textColor: Colors.white,
           onPressed: () {
