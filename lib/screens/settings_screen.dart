@@ -84,13 +84,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 leading: Icon(Icons.delete),
                 title: Text('Delete Account', style: kUsernameTextStyle),
                 onTap: () {
-                  final authService = Provider.of<FirebaseAuthService>(context);
-                  authService.deleteCurrentlyLoggedInUser();
-                  Navigator.of(context, rootNavigator: true).push(
-                    CupertinoPageRoute<void>(
-                      builder: (context) {
-                        return ChooseSignupOrLoginScreen();
-                      },
+                  showCupertinoDialog(
+                    context: context,
+                    builder: (_) => CupertinoAlertDialog(
+                      title: Text('Are you sure?'),
+                      content:
+                          Text('Do you really want to delete all your info?'),
+                      actions: <Widget>[
+                        CupertinoDialogAction(
+                          child: Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop();
+                          },
+                        ),
+                        CupertinoDialogAction(
+                          child: Text('Delete'),
+                          onPressed: () async {
+                            final authService =
+                                Provider.of<FirebaseAuthService>(context);
+                            print('delete user called');
+                            await authService.deleteCurrentlyLoggedInUser();
+                            Navigator.of(context, rootNavigator: true).push(
+                              CupertinoPageRoute<void>(
+                                builder: (context) {
+                                  return ChooseSignupOrLoginScreen();
+                                },
+                              ),
+                            );
+                          },
+                          isDestructiveAction: true,
+                        ),
+                      ],
                     ),
                   );
                 },
