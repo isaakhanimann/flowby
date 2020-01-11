@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/screens/chat_overview_screen.dart';
-import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/home_screen.dart';
+import 'package:float/screens/settings_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/location_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -94,7 +94,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
               case 1:
                 return ChatOverviewScreen();
               case 2:
-                return CreateProfileScreen();
+                return SettingsScreen();
               default:
                 return Container(color: Colors.red);
             }
