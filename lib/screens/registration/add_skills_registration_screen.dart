@@ -1,25 +1,15 @@
-import 'dart:io';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/constants.dart';
-import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/services/firebase_storage_service.dart';
-import 'package:float/widgets/rounded_button.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:provider/provider.dart';
+
+import 'package:float/constants.dart';
+import 'package:float/widgets/rounded_button.dart';
+import 'package:float/widgets/rate_picker.dart';
+
 import 'package:float/screens/registration/add_wishes_registration_screen.dart';
 
-//TODO: change box border when the user doesn't enter an input
-
 class AddSkillsRegistrationScreen extends StatefulWidget {
-  static const String id = 'upload_picture_registration_screen';
-
-  final String username;
-
-  AddSkillsRegistrationScreen({this.username});
+  static const String id = 'add_skills_registration_screen';
 
   @override
   _AddSkillsRegistrationScreenState createState() =>
@@ -30,12 +20,13 @@ class _AddSkillsRegistrationScreenState
     extends State<AddSkillsRegistrationScreen> {
   bool showSpinner = false;
 
-  String _username;
+  String _databaseHashtagSkills;
+  String _localHashtagSkills;
+  int _databaseSkillRate;
+  int _localSkillRate;
 
   @override
   Widget build(BuildContext context) {
-    widget.username != null ? _username = widget.username : _username = 'error';
-
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -70,7 +61,7 @@ class _AddSkillsRegistrationScreenState
                         height: 10.0,
                       ),
                       Text(
-                        'Spread what you are good at',
+                        'Share what you are good at',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.black,
@@ -97,6 +88,24 @@ class _AddSkillsRegistrationScreenState
                             ),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Text(
+                        'How valuable is your presence? ',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'MontserratRegular',
+                          fontSize: 18.0,
+                        ),
+                      ),
+                      RatePicker(
+                        initialValue: _localSkillRate ?? 20,
+                        onSelected: (selectedIndex) {
+                          _databaseSkillRate = selectedIndex;
+                        },
                       ),
                       RoundedButton(
                         text: 'Next',
@@ -140,6 +149,7 @@ class _AddSkillsRegistrationScreenState
                           ),
                         ),
                       ),
+                      /*
                       SizedBox(
                         height: 10.0,
                       ),
@@ -164,7 +174,7 @@ class _AddSkillsRegistrationScreenState
                             fit: BoxFit.cover,
                           ),
                         ),
-                      ),
+                      ),*/
                     ]),
               ),
             ),

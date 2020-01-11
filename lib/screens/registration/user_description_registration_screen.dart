@@ -1,21 +1,14 @@
-import 'dart:io';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/constants.dart';
-import 'package:float/screens/registration/add_skills_registration_screen.dart';
-import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/services/firebase_storage_service.dart';
-import 'package:float/widgets/rounded_button.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:provider/provider.dart';
 
-//TODO: change box border when the user doesn't enter an input
+import 'package:float/constants.dart';
+import 'package:float/widgets/rounded_button.dart';
+
+import 'package:float/screens/registration/add_skills_registration_screen.dart';
 
 class UserDescriptionRegistrationScreen extends StatefulWidget {
-  static const String id = 'upload_picture_registration_screen';
+  static const String id = 'user_description_registration_screen';
 
   final String username;
 
@@ -110,7 +103,7 @@ class _UserDescriptionRegistrationScreenState
                           Navigator.of(context, rootNavigator: true).push(
                             CupertinoPageRoute<void>(
                               builder: (context) {
-                                return AddSkillsRegistrationScreen(username: _username,);
+                                return AddSkillsRegistrationScreen();
                               },
                             ),
                           );
