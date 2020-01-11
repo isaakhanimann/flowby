@@ -1,6 +1,6 @@
 import 'package:float/constants.dart';
 import 'package:float/screens/login_screen.dart';
-import 'package:float/screens/registration_screen.dart';
+import 'package:float/screens/registration/registration_screen.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

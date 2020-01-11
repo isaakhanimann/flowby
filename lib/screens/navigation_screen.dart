@@ -24,12 +24,6 @@ class NavigationScreen extends StatefulWidget {
 }
 
 class _NavigationScreenState extends State<NavigationScreen> {
-  List<Widget> tabScreens = [
-    HomeScreen(),
-    ChatOverviewScreen(),
-    CreateProfileScreen()
-  ];
-
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
 
@@ -94,7 +88,16 @@ class _NavigationScreenState extends State<NavigationScreen> {
         ),
         tabBuilder: (context, index) {
           return CupertinoTabView(builder: (context) {
-            return tabScreens[index];
+            switch (index) {
+              case 0:
+                return HomeScreen();
+              case 1:
+                return ChatOverviewScreen();
+              case 2:
+                return CreateProfileScreen();
+              default:
+                return Container(color: Colors.red);
+            }
           });
         },
       ),

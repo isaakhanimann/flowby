@@ -1,6 +1,7 @@
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/navigation_screen.dart';
+import 'package:float/screens/registration/upload_picture_registration_screen.dart';
 import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/widgets/alert.dart';
@@ -9,6 +10,7 @@ import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/cupertino.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -134,12 +136,20 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     color: ffDarkBlue,
                     text: 'Sign Up with Email',
                     onPressed: () async {
+                      Navigator.of(context, rootNavigator: true).push(
+                        CupertinoPageRoute<void>(
+                          builder: (context) {
+                            return UploadPictureRegistrationScreen(username: name,);
+                          },
+                        ),
+                      );
+                      /*
                       if (email == null || password == null) {
                         showAlert(
                             context: context,
                             title: "Missing email or password",
                             description:
-                            'Enter an email and an password. Thank you.');
+                                'Enter an email and an password. Thank you.');
                         return;
                       }
                       setState(() {
@@ -150,8 +160,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                             context,
                             listen: false);
                         final cloudFirestoreService =
-                        Provider.of<FirebaseCloudFirestoreService>(context,
-                            listen: false);
+                            Provider.of<FirebaseCloudFirestoreService>(context,
+                                listen: false);
                         final authResult = await authService.createUser(
                             email: email, password: password);
                         if (authResult != null) {
@@ -186,7 +196,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                   context: context,
                                   title: "Invalid Email",
                                   description:
-                                  "Please enter a valid email address");
+                                      "Please enter a valid email address");
                               break;
                             }
                           case 'ERROR_EMAIL_ALREADY_IN_USE':
@@ -205,7 +215,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         setState(() {
                           showSpinner = false;
                         });
-                      }
+                      }*/
                     },
                   ),
                   /*SizedBox(

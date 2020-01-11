@@ -15,8 +15,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class CreateProfileScreen extends StatefulWidget {
-  static const String id = 'create_profile_screen';
-
   @override
   _CreateProfileScreenState createState() => _CreateProfileScreenState();
 }
@@ -69,7 +67,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   void _setImage(ImageSource source) async {
     var selectedImage =
-    await ImagePicker.pickImage(source: source, imageQuality: 25);
+        await ImagePicker.pickImage(source: source, imageQuality: 25);
     setState(() {
       _profilePic = selectedImage;
     });
@@ -77,7 +75,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   void _reloadUserFromDatabase(BuildContext context) async {
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     User user = await cloudFirestoreService.getUser(uid: loggedInUser.uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
@@ -96,9 +94,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   void _getAndSetData(BuildContext context) async {
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     final storageService =
-    Provider.of<FirebaseStorageService>(context, listen: false);
+        Provider.of<FirebaseStorageService>(context, listen: false);
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     String uid = loggedInUser.uid;
     String imgUrl = await storageService.getImageUrl(fileName: uid);
@@ -131,10 +129,10 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     final storageService =
-    Provider.of<FirebaseStorageService>(context, listen: false);
+        Provider.of<FirebaseStorageService>(context, listen: false);
 
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     if (loggedInUser == null) {
@@ -176,23 +174,23 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         heightFactor: 1.2,
                         child: _profilePic == null
                             ? _profilePicUrl == null
-                            ? CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          backgroundImage: AssetImage(
-                              'images/default-profile-pic.jpg'),
-                          radius: 60,
-                        )
+                                ? CircleAvatar(
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage: AssetImage(
+                                        'images/default-profile-pic.jpg'),
+                                    radius: 60,
+                                  )
+                                : CircleAvatar(
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage:
+                                        NetworkImage(_profilePicUrl),
+                                    radius: 60,
+                                  )
                             : CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          backgroundImage:
-                          NetworkImage(_profilePicUrl),
-                          radius: 60,
-                        )
-                            : CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          backgroundImage: FileImage(_profilePic),
-                          radius: 60,
-                        ),
+                                backgroundColor: Colors.grey,
+                                backgroundImage: FileImage(_profilePic),
+                                radius: 60,
+                              ),
                       ),
                     ),
                     Center(
@@ -207,25 +205,25 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     Center(
                       child: _databaseUsername == null
                           ? TextFormField(
-                        textAlign: TextAlign.center,
-                        style: kMiddleTitleTextStyle,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _localUsername = newValue;
-                          });
-                        },
-                      )
+                              textAlign: TextAlign.center,
+                              style: kMiddleTitleTextStyle,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _localUsername = newValue;
+                                });
+                              },
+                            )
                           : GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _databaseUsername = null;
-                          });
-                        },
-                        child: Text(
-                          _databaseUsername,
-                          style: kBigTitleTextStyle,
-                        ),
-                      ),
+                              onTap: () {
+                                setState(() {
+                                  _databaseUsername = null;
+                                });
+                              },
+                              child: Text(
+                                _databaseUsername,
+                                style: kBigTitleTextStyle,
+                              ),
+                            ),
                     ),
                     SizedBox(
                       height: 15,
@@ -245,23 +243,23 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     ),
                     _databaseHashtagSkills == null
                         ? TextFormField(
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: kDarkGreenColor),
-                      onChanged: (newValue) {
-                        setState(() {
-                          _localHashtagSkills = newValue;
-                        });
-                      },
-                    )
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: kDarkGreenColor),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _localHashtagSkills = newValue;
+                              });
+                            },
+                          )
                         : HashtagBubble(
-                      text: _databaseHashtagSkills,
-                      onPress: () {
-                        setState(() {
-                          _databaseHashtagSkills = null;
-                          _localHashtagSkills = null;
-                        });
-                      },
-                    ),
+                            text: _databaseHashtagSkills,
+                            onPress: () {
+                              setState(() {
+                                _databaseHashtagSkills = null;
+                                _localHashtagSkills = null;
+                              });
+                            },
+                          ),
                     SizedBox(
                       height: 15,
                     ),
@@ -287,23 +285,23 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     ),
                     _databaseHashtagWishes == null
                         ? TextFormField(
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: kDarkGreenColor),
-                      onChanged: (newValue) {
-                        setState(() {
-                          _localHashtagWishes = newValue;
-                        });
-                      },
-                    )
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: kDarkGreenColor),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _localHashtagWishes = newValue;
+                              });
+                            },
+                          )
                         : HashtagBubble(
-                      text: _databaseHashtagWishes,
-                      onPress: () {
-                        setState(() {
-                          _databaseHashtagWishes = null;
-                          _localHashtagWishes = null;
-                        });
-                      },
-                    ),
+                            text: _databaseHashtagWishes,
+                            onPress: () {
+                              setState(() {
+                                _databaseHashtagWishes = null;
+                                _localHashtagWishes = null;
+                              });
+                            },
+                          ),
                     SizedBox(
                       height: 15,
                     ),
@@ -418,7 +416,7 @@ class RatePicker extends StatelessWidget {
           alignment: Alignment.center,
           child: CupertinoPicker(
             scrollController:
-            FixedExtentScrollController(initialItem: initialValue),
+                FixedExtentScrollController(initialItem: initialValue),
             backgroundColor: Colors.white,
             itemExtent: 32,
             onSelectedItemChanged: onSelected,

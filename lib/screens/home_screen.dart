@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var currentPosition = Provider.of<Position>(context);
 
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return Scaffold(
       body: SafeArea(
@@ -44,12 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <bool, Widget>{
                 true: Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
                   child: Text('Skills', style: TextStyle(fontSize: 18)),
                 ),
                 false: Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
                   child: Text('Wishes', style: TextStyle(fontSize: 18)),
                 ),
               },
@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 }
                 List<User> users =
-                List.from(snapshot.data); // to convert it editable list
+                    List.from(snapshot.data); // to convert it editable list
                 users.sort((user1, user2) => (user1.distanceInKm ?? 1000)
                     .compareTo(user2.distanceInKm ?? 1000));
                 return Expanded(
@@ -154,7 +154,7 @@ class DataSearch extends SearchDelegate<String> {
     var currentPosition = Provider.of<Position>(context);
 
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return StreamBuilder<List<User>>(
       stream: cloudFirestoreService.getUsersStreamWithDistance(
@@ -172,16 +172,16 @@ class DataSearch extends SearchDelegate<String> {
         if (isSkillSearch) {
           suggestedUsers = allUsers
               .where((u) => u.skillHashtags
-              .toString()
-              .toLowerCase()
-              .contains(query.toLowerCase()))
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
               .toList();
         } else {
           suggestedUsers = allUsers
               .where((u) => u.wishHashtags
-              .toString()
-              .toLowerCase()
-              .contains(query.toLowerCase()))
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
               .toList();
         }
         return ListOfProfiles(
@@ -195,7 +195,7 @@ class DataSearch extends SearchDelegate<String> {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
 
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return StreamBuilder<List<User>>(
       stream: cloudFirestoreService.getUsersStream(uid: loggedInUser.uid),
@@ -213,16 +213,16 @@ class DataSearch extends SearchDelegate<String> {
         if (isSkillSearch) {
           suggestedUsers = allUsers
               .where((u) => u.skillHashtags
-              .toString()
-              .toLowerCase()
-              .contains(query.toLowerCase()))
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
               .toList();
         } else {
           suggestedUsers = allUsers
               .where((u) => u.wishHashtags
-              .toString()
-              .toLowerCase()
-              .contains(query.toLowerCase()))
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
               .toList();
         }
 
@@ -253,9 +253,9 @@ class SuggestionItem extends StatelessWidget {
 
   SuggestionItem(
       {@required this.user,
-        @required this.setQuery,
-        @required this.showResults,
-        @required this.isSkillSearch});
+      @required this.setQuery,
+      @required this.showResults,
+      @required this.isSkillSearch});
 
   @override
   Widget build(BuildContext context) {

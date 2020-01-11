@@ -48,9 +48,9 @@ class ChatItem extends StatelessWidget {
     bool user1IsLoggedInUser = (chat.uid1 == loggedInUser.uid);
     String otherUid = user1IsLoggedInUser ? chat.uid2 : chat.uid1;
     String otherUsername =
-    user1IsLoggedInUser ? chat.username2 : chat.username1;
+        user1IsLoggedInUser ? chat.username2 : chat.username1;
     String otherImageFileName =
-    user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
+        user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
     final heroTag = otherUid + 'chats';
 
     return Card(

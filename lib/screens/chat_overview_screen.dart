@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ChatOverviewScreen extends StatelessWidget {
-  static const String id = 'home_screen';
-
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
@@ -22,7 +20,7 @@ class ChatOverviewScreen extends StatelessWidget {
     if (loggedInUser == null) {
       return Center(
         child: RoundedButton(
-          text: 'Signin',
+          text: 'Sign In',
           color: kDarkGreenColor,
           textColor: Colors.white,
           onPressed: () {
@@ -42,7 +40,8 @@ class ChatOverviewScreen extends StatelessWidget {
         stream:
             cloudFirestoreService.getChatStream(loggedInUid: loggedInUser.uid),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.connectionState == ConnectionState.none) {
             return Center(
               child: CupertinoActivityIndicator(),
             );
@@ -51,7 +50,6 @@ class ChatOverviewScreen extends StatelessWidget {
               List.from(snapshot.data); // to convert it to editable list
           chats.sort((chat1, chat2) => (chat2.lastMessageTimestamp)
               .compareTo(chat1.lastMessageTimestamp));
-
           return ListOfChats(
             chats: chats,
           );

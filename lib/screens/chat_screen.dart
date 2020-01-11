@@ -20,16 +20,16 @@ class ChatScreen extends StatelessWidget {
   //or if he isn't we can user the other user to figure out the chatpath ourselves
   ChatScreen(
       {@required this.loggedInUid,
-        @required this.otherUid,
-        @required this.otherUsername,
-        @required this.heroTag,
-        @required this.otherImageFileName,
-        this.chatPath});
+      @required this.otherUid,
+      @required this.otherUsername,
+      @required this.heroTag,
+      @required this.otherImageFileName,
+      this.chatPath});
 
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     if (chatPath != null) {
       return Provider<String>.value(
@@ -90,7 +90,7 @@ class ChatScreenWithPath extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -124,7 +124,7 @@ class ChatScreenWithPath extends StatelessWidget {
           children: <Widget>[
             MessagesStream(
               messagesStream:
-              cloudFirestoreService.getMessageStream(chatPath: chatPath),
+                  cloudFirestoreService.getMessageStream(chatPath: chatPath),
             ),
             MessageSendingSection(chatPath: chatPath),
           ],
@@ -196,7 +196,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
   Widget build(BuildContext context) {
     String loggedInUid = Provider.of<String>(context);
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     return Container(
       decoration: kMessageContainerDecoration,
       child: Row(
@@ -247,7 +247,7 @@ class MessageBubble extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment:
-        isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             timestamp,
@@ -256,18 +256,18 @@ class MessageBubble extends StatelessWidget {
           Material(
             borderRadius: isMe
                 ? BorderRadius.only(
-                topLeft: Radius.circular(30),
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30))
+                    topLeft: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30))
                 : BorderRadius.only(
-                topRight: Radius.circular(30),
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30)),
+                    topRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30)),
             elevation: 5.0,
             color: isMe ? kDarkGreenColor : Colors.white,
             child: Padding(
               padding:
-              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Text(
                 text,
                 style: TextStyle(

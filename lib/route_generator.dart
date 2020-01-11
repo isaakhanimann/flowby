@@ -1,11 +1,10 @@
 import 'package:float/screens/choose_signup_or_login_screen.dart';
-import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/navigation_screen.dart';
-import 'package:float/screens/registration_screen.dart';
+import 'package:float/screens/registration/registration_screen.dart';
 import 'package:float/screens/reset_password_screen.dart';
 import 'package:float/screens/splash_screen.dart';
-import 'package:float/screens/upload_picture_registration_screen.dart';
+import 'package:float/screens/registration/upload_picture_registration_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -31,8 +30,6 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => LoginScreen());
       case RegistrationScreen.id:
         return CupertinoPageRoute(builder: (_) => RegistrationScreen());
-      case CreateProfileScreen.id:
-        return CupertinoPageRoute(builder: (_) => CreateProfileScreen());
       case SplashScreen.id:
         return CupertinoPageRoute(builder: (_) => SplashScreen());
       case ResetPasswordScreen.id:

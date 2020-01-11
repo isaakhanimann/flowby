@@ -16,13 +16,13 @@ class User {
 
   User(
       {this.username,
-        this.uid,
-        this.skillHashtags,
-        this.wishHashtags,
-        this.skillRate,
-        this.wishRate,
-        this.location,
-        this.imageFileName});
+      this.uid,
+      this.skillHashtags,
+      this.wishHashtags,
+      this.skillRate,
+      this.wishRate,
+      this.location,
+      this.imageFileName});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'];
