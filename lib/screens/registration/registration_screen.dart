@@ -1,16 +1,18 @@
-import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
-import 'package:float/screens/navigation_screen.dart';
-import 'package:float/screens/registration/upload_picture_registration_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+import 'package:provider/provider.dart';
 import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
+
+import 'package:float/constants.dart';
+import 'package:float/models/user.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
 import 'package:float/widgets/rounded_button.dart';
-import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/cupertino.dart';
+
+import 'package:float/screens/registration/upload_picture_registration_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -28,10 +30,12 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   String password;
 
   var _nameController = TextEditingController();
+
   // var _userNameController = TextEditingController();
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
   final FocusNode _nameFocus = FocusNode();
+
   //final FocusNode _userNameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
@@ -136,14 +140,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     color: ffDarkBlue,
                     text: 'Sign Up with Email',
                     onPressed: () async {
-                      Navigator.of(context, rootNavigator: true).push(
-                        CupertinoPageRoute<void>(
-                          builder: (context) {
-                            return UploadPictureRegistrationScreen(username: name,);
-                          },
-                        ),
-                      );
-                      /*
                       if (email == null || password == null) {
                         showAlert(
                             context: context,
@@ -152,10 +148,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                 'Enter an email and an password. Thank you.');
                         return;
                       }
-                      setState(() {
-                        showSpinner = true;
-                      });
                       try {
+                        setState(() {
+                          showSpinner = true;
+                        });
+
                         final authService = Provider.of<FirebaseAuthService>(
                             context,
                             listen: false);
@@ -164,22 +161,27 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                 listen: false);
                         final authResult = await authService.createUser(
                             email: email, password: password);
+
                         if (authResult != null) {
-                          User user = User(
-                              username: name,
-                              uid: authResult.user.uid,
-                              skillHashtags: 'default',
-                              wishHashtags: 'default',
-                              skillRate: 20,
-                              wishRate: 20,
-                              imageFileName: 'default-profile-pic.jpg');
-                          await cloudFirestoreService.uploadUser(user: user);
-                          Navigator.pushNamed(context, NavigationScreen.id,
-                              arguments: authResult.user);
+                          User user =
+                              User(username: name, uid: authResult.user.uid);
+
+                          /*await cloudFirestoreService.uploadUser(user: user);*/
+
+                          setState(() {
+                            showSpinner = false;
+                          });
+
+                          Navigator.of(context, rootNavigator: true).push(
+                            CupertinoPageRoute<void>(
+                              builder: (context) {
+                                return UploadPictureRegistrationScreen(
+                                  user: user,
+                                );
+                              },
+                            ),
+                          );
                         }
-                        setState(() {
-                          showSpinner = false;
-                        });
                       } catch (e) {
                         switch (e.code) {
                           case 'ERROR_WEAK_PASSWORD':
@@ -215,25 +217,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         setState(() {
                           showSpinner = false;
                         });
-                      }*/
+                      }
                     },
                   ),
-                  /*SizedBox(
-                  height: 40.0,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, LoginScreen.id);
-                  },
-                  child: Text(
-                    'Login',
-                    style: TextStyle(
-                      fontSize: 25,
-                      color: kDarkGreenColor,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),*/
                   Text(
                     'OR',
                     textAlign: TextAlign.center,

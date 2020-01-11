@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:float/constants.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/registration/registration_screen.dart';
@@ -5,6 +6,7 @@ import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:video_player/video_player.dart';
 
 class ChooseSignupOrLoginScreen extends StatefulWidget {
   static const String id = 'ChooseSignupOrLoginScreen';
@@ -16,6 +18,9 @@ class ChooseSignupOrLoginScreen extends StatefulWidget {
 
 class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
   bool showSpinner = false;
+
+  var _controller =
+      VideoPlayerController.file(File('images/Freeflowter_Animation_home.mp4'));
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +46,11 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                Container(
+                  child: VideoPlayer(_controller),
+                ),
                 RoundedButton(
+                  text: 'Sign Up',
                   color: ffDarkBlue,
                   textColor: Colors.white,
                   onPressed: () {
@@ -51,9 +60,9 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
                         CupertinoPageRoute(
                             builder: (context) => RegistrationScreen()));
                   },
-                  text: 'Sign Up',
                 ),
                 RoundedButton(
+                  text: 'I already have an account',
                   color: Colors.white,
                   textColor: ffDarkBlue,
                   onPressed: () {
@@ -63,7 +72,6 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
                         CupertinoPageRoute(
                             builder: (context) => LoginScreen()));
                   },
-                  text: 'I already have an account',
                 ),
               ],
             ),

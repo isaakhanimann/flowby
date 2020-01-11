@@ -12,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
+import 'package:float/models/user.dart';
+
 //TODO: change box border when the user doesn't enter an input
 
 class UploadPictureRegistrationScreen extends StatefulWidget {
@@ -19,7 +21,9 @@ class UploadPictureRegistrationScreen extends StatefulWidget {
 
   final String username;
 
-  UploadPictureRegistrationScreen({this.username});
+  User user;
+
+  UploadPictureRegistrationScreen({this.username, this.user});
 
   @override
   _UploadPictureRegistrationScreenState createState() =>
@@ -74,6 +78,7 @@ class _UploadPictureRegistrationScreenState
 
   @override
   Widget build(BuildContext context) {
+    print(widget.user);
     widget.username != null ? _username = widget.username : _username = 'error';
 
     return Container(
