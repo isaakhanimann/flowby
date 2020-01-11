@@ -1,19 +1,45 @@
 import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
 import 'package:float/screens/settings_screen.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/services/firebase_storage_service.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:float/screens/edit_user_profile_screen.dart';
+
+import 'package:float/models/user.dart';
 
 class UserProfileScreen extends StatelessWidget {
   static const String id = 'user_profile_screen';
 
   static var showSkills = true;
+  User user;
+  FirebaseUser loggedInUser;
+  FirebaseStorageService storageService;
+
+  void _getUserData(BuildContext context) async {
+    final cloudFirestoreService =
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    final storageService =
+    Provider.of<FirebaseStorageService>(context, listen: false);
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    String uid = loggedInUser.uid;
+    String imgUrl = await storageService.getImageUrl(fileName: uid);
+    User user = await cloudFirestoreService.getUser(uid: uid);
+  }
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
+
+    _getUserData(context);
+    if (loggedInUser.uid == null) {
+      return Center(
+        child: CupertinoActivityIndicator(),
+      );
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -30,8 +56,8 @@ class UserProfileScreen extends StatelessWidget {
                         Center(
                           heightFactor: 1.2,
                           child: FutureBuilder(
-                            future: FirebaseConnection.getImageUrl(
-                                fileName: loggedInUser.email),
+                            future: storageService.getImageUrl(
+                                fileName: user.uid),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.done) {
@@ -60,7 +86,7 @@ class UserProfileScreen extends StatelessWidget {
                           children: <Widget>[
                             Center(
                               child: Text(
-                                loggedInUser.username,
+                                user.username,
                                 style: kMiddleTitleTextStyle,
                               ),
                             ),
@@ -69,7 +95,7 @@ class UserProfileScreen extends StatelessWidget {
                               textBaseline: TextBaseline.alphabetic,
                               children: <Widget>[
                                 Text(
-                                    '${loggedInUser.distanceInKm.toString()} km'),
+                                    '${user.distanceInKm.toString()} km'),
                                 Icon(CupertinoIcons.location)
                               ],
                             ),
@@ -110,15 +136,15 @@ class UserProfileScreen extends StatelessWidget {
                           style: kMiddleTitleTextStyle,
                         ),
                         Text(
-                          '${loggedInUser.skillRate} CHF/h',
+                          '${user.skillRate} CHF/h',
                           style: kSmallTitleTextStyle,
                         ),
                       ],
                     ),
                     Text(
                       showSkills
-                          ? loggedInUser.skillHashtags
-                          : loggedInUser.wishHashtags,
+                          ? user.skillHashtags
+                          : user.wishHashtags,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -128,7 +154,7 @@ class UserProfileScreen extends StatelessWidget {
                           style: kMiddleTitleTextStyle,
                         ),
                         Text(
-                          '${loggedInUser.wishRate} CHF/h',
+                          '${user.wishRate} CHF/h',
                           style: kSmallTitleTextStyle,
                         ),
                       ],
@@ -138,8 +164,8 @@ class UserProfileScreen extends StatelessWidget {
                     ),
                     Text(
                       !showSkills
-                          ? loggedInUser.skillHashtags
-                          : loggedInUser.wishHashtags,
+                          ? user.skillHashtags
+                          : user.wishHashtags,
                     ),
                     SizedBox(
                       height: 5,
@@ -151,6 +177,20 @@ class UserProfileScreen extends StatelessWidget {
             SizedBox(
               height: 15,
             ),
+            RoundedButton(
+              text: 'Edit your profile',
+              color: ffDarkBlue,
+              textColor: Colors.white,
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) {
+                      return EditUserProfileScreen();
+                    },
+                  ),
+                );
+              },
+            )
           ],
         ),
       ),

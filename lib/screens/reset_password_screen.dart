@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-
-import 'package:float/services/firebase_connection.dart';
 import 'package:float/constants.dart';
+import 'package:float/services/firebase_auth_service.dart';
+import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
 import 'package:float/widgets/rounded_button.dart';
-import 'package:float/widgets/alert.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   static const String id = 'reset_password_screen';
@@ -15,12 +15,6 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   String email;
-
-  @override
-  void initState() {
-    super.initState();
-    FirebaseConnection.autoLogin(context: context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +56,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 RoundedButton(
                     color: kDarkGreenColor,
                     onPressed: () async {
+                      final authService = Provider.of<FirebaseAuthService>(
+                          context,
+                          listen: false);
                       showAlert(
                           context: context,
                           title: "You've got mail",
                           description:
                               "We sent you an email. Tap the link in that email to reset your password.");
-                      await FirebaseConnection.resetPassword(email: email);
+                      await authService.resetPassword(email: email);
                     },
                     text: 'Send'),
               ],

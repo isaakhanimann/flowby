@@ -1,3 +1,4 @@
+import 'package:float/screens/choose_signup_or_login_screen.dart';
 import 'package:float/screens/create_profile_screen.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/navigation_screen.dart';
@@ -11,7 +12,7 @@ import 'package:flutter/material.dart';
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
 //    //getting arguments passed in while calling Navigator.pushNamed
-//    final args = settings.arguments;
+    final args = settings.arguments;
     switch (settings.name) {
 //      case ChatScreen.id:
 //        if (args is User) {
@@ -21,8 +22,11 @@ class RouteGenerator {
 //                  ));
 //        }
 //        return _errorRoute();
+      case ChooseSignupOrLoginScreen.id:
+        return CupertinoPageRoute(builder: (_) => ChooseSignupOrLoginScreen());
       case NavigationScreen.id:
-        return CupertinoPageRoute(builder: (_) => NavigationScreen());
+        return CupertinoPageRoute(
+            builder: (_) => NavigationScreen(loggedInUser: args));
       case LoginScreen.id:
         return CupertinoPageRoute(builder: (_) => LoginScreen());
       case RegistrationScreen.id:
@@ -34,7 +38,8 @@ class RouteGenerator {
       case ResetPasswordScreen.id:
         return CupertinoPageRoute(builder: (_) => ResetPasswordScreen());
       case UploadPictureRegistrationScreen.id:
-        return CupertinoPageRoute(builder: (_) => UploadPictureRegistrationScreen());
+        return CupertinoPageRoute(
+            builder: (_) => UploadPictureRegistrationScreen());
       default:
         return _errorRoute();
     }

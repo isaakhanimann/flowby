@@ -1,24 +1,23 @@
 import 'dart:async';
 
-import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
-class Location {
-  static Future<Position> getCurrentPosition() async {
+class LocationService {
+  Future<Position> getCurrentPosition() async {
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
     return position;
   }
 
-  static void getLastKnownPositionAndUploadIt(
-      {@required String userEmail}) async {
-    Position position = await Geolocator()
-        .getLastKnownPosition(desiredAccuracy: LocationAccuracy.medium);
-    FirebaseConnection.uploadUsersLocation(uid: userEmail, position: position);
-  }
+//  static void getLastKnownPositionAndUploadIt(
+//      {@required String userEmail}) async {
+//    Position position = await Geolocator()
+//        .getLastKnownPosition(desiredAccuracy: LocationAccuracy.medium);
+//    FirebaseConnection.uploadUsersLocation(uid: userEmail, position: position);
+//  }
 
-  static StreamSubscription<Position> getPositionStreamSubscription() {
+  StreamSubscription<Position> getPositionStreamSubscription() {
     //To listen for location changes you can subscribe to the onPositionChanged stream. Supply an instance of the LocationOptions class to configure the desired accuracy and the minimum distance change (in meters) before updates are send to the application.
     var locationOptions =
         LocationOptions(accuracy: LocationAccuracy.medium, distanceFilter: 500);
@@ -35,7 +34,7 @@ class Location {
     return positionStreamSubscription;
   }
 
-  static Stream<Position> getPositionStream() {
+  Stream<Position> getPositionStream() {
     //To listen for location changes you can subscribe to the onPositionChanged stream. Supply an instance of the LocationOptions class to configure the desired accuracy and the minimum distance change (in meters) before updates are send to the application.
     var locationOptions =
         LocationOptions(accuracy: LocationAccuracy.medium, distanceFilter: 500);

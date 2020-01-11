@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
+import 'package:float/models/helper_functions.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/view_profile_screen.dart';
-import 'package:float/services/firebase_connection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ListOfProfiles extends StatelessWidget {
   const ListOfProfiles({
@@ -38,6 +40,9 @@ class ProfileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    final String heroTag = user.uid + 'home';
+
     return Card(
       elevation: 0,
       color: kLightGrey2,
@@ -51,35 +56,22 @@ class ProfileItem extends StatelessWidget {
               CupertinoPageRoute<void>(
                 builder: (context) {
                   return ViewProfileScreen(
-                      user: user, showSkills: isSkillSearch);
+                      user: user,
+                      heroTag: heroTag,
+                      loggedInUser: loggedInUser,
+                      showSkills: isSkillSearch);
                 },
               ),
             );
           },
-          leading: FutureBuilder(
-            future: FirebaseConnection.getImageUrl(fileName: user.uid),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                String imageUrl = snapshot.data;
-                if (imageUrl == null) {
-                  return CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey,
-                    backgroundImage:
-                        AssetImage('images/default-profile-pic_old.jpg'),
-                  );
-                }
-                return CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage(imageUrl),
-                );
-              }
-              return CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.grey,
-              );
-            },
+          leading: Hero(
+            tag: heroTag,
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.grey,
+              backgroundImage: NetworkImage(
+                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+            ),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,7 +92,10 @@ class ProfileItem extends StatelessWidget {
             children: <Widget>[
               Flexible(
                 child: Text(
-                  isSkillSearch ? user.skillHashtags : user.wishHashtags,
+                  HelperFunctions.getDotDotDotString(
+                      maybeLongString: isSkillSearch
+                          ? user.skillHashtags
+                          : user.wishHashtags),
                   style: kSkillTextStyle,
                 ),
               ),

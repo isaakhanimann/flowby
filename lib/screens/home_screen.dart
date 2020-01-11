@@ -1,16 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/widgets/list_of_profiles.dart';
-import 'package:float/widgets/streambuilder_with_loading_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const String id = 'home_screen';
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -25,8 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     var currentPosition = Provider.of<Position>(context);
+
+    final cloudFirestoreService =
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return Scaffold(
       body: SafeArea(
@@ -43,22 +44,36 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <bool, Widget>{
                 true: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
                   child: Text('Skills', style: TextStyle(fontSize: 18)),
                 ),
                 false: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
                   child: Text('Wishes', style: TextStyle(fontSize: 18)),
                 ),
               },
             ),
             SizedBox(height: 10),
-            StreambuilderWithLoadingIndicator(
-              showProfiles: true,
-              userStream: FirebaseConnection.getUsersStreamWithDistance(
+            StreamBuilder<List<User>>(
+              stream: cloudFirestoreService.getUsersStreamWithDistance(
                   position: currentPosition, uidToExclude: loggedInUser?.uid),
-              searchSkill: isSkillSelected,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Expanded(
+                    child: Center(
+                      child: CupertinoActivityIndicator(),
+                    ),
+                  );
+                }
+                List<User> users =
+                List.from(snapshot.data); // to convert it editable list
+                users.sort((user1, user2) => (user1.distanceInKm ?? 1000)
+                    .compareTo(user2.distanceInKm ?? 1000));
+                return Expanded(
+                    child: ListOfProfiles(
+                        users: users, searchSkill: isSkillSelected));
+              },
             ),
           ],
         ),
@@ -78,7 +93,8 @@ class ButtonThatLooksLikeSearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: kLightGrey,
+      elevation: 0,
+      color: kLightGrey2,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -88,8 +104,14 @@ class ButtonThatLooksLikeSearchField extends StatelessWidget {
               context: context,
               delegate: DataSearch(isSkillSearch: isSkillSelected));
         },
-        leading: Icon(Icons.search),
-        title: Text('Search'),
+        leading: Icon(
+          Icons.search,
+          color: Colors.black87,
+        ),
+        title: Text(
+          'Search',
+          style: TextStyle(color: Colors.black38, fontSize: 18),
+        ),
       ),
     );
   }
@@ -128,11 +150,14 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     var currentPosition = Provider.of<Position>(context);
 
+    final cloudFirestoreService =
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
     return StreamBuilder<List<User>>(
-      stream: FirebaseConnection.getUsersStreamWithDistance(
+      stream: cloudFirestoreService.getUsersStreamWithDistance(
           position: currentPosition, uidToExclude: loggedInUser.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -147,16 +172,16 @@ class DataSearch extends SearchDelegate<String> {
         if (isSkillSearch) {
           suggestedUsers = allUsers
               .where((u) => u.skillHashtags
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
               .toList();
         } else {
           suggestedUsers = allUsers
               .where((u) => u.wishHashtags
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
               .toList();
         }
         return ListOfProfiles(
@@ -167,10 +192,13 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+
+    final cloudFirestoreService =
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return StreamBuilder<List<User>>(
-      stream: FirebaseConnection.getUsersStream(uid: loggedInUser.uid),
+      stream: cloudFirestoreService.getUsersStream(uid: loggedInUser.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
@@ -185,16 +213,16 @@ class DataSearch extends SearchDelegate<String> {
         if (isSkillSearch) {
           suggestedUsers = allUsers
               .where((u) => u.skillHashtags
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
               .toList();
         } else {
           suggestedUsers = allUsers
               .where((u) => u.wishHashtags
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
               .toList();
         }
 
@@ -225,9 +253,9 @@ class SuggestionItem extends StatelessWidget {
 
   SuggestionItem(
       {@required this.user,
-      @required this.setQuery,
-      @required this.showResults,
-      @required this.isSkillSearch});
+        @required this.setQuery,
+        @required this.showResults,
+        @required this.isSkillSearch});
 
   @override
   Widget build(BuildContext context) {

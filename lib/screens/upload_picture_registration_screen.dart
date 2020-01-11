@@ -1,13 +1,15 @@
 import 'dart:io';
 
-import 'package:float/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/constants.dart';
+import 'package:float/services/firebase_auth_service.dart';
+import 'package:float/services/firebase_storage_service.dart';
 import 'package:float/widgets/rounded_button.dart';
-import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
 
 //TODO: change box border when the user doesn't enter an input
 
@@ -24,7 +26,6 @@ class _UploadPictureRegistrationScreenState
   bool showSpinner = false;
   File _profilePic;
   String _profilePicUrl;
-  FirebaseUser loggedInUser;
 
   void changeProfilePic() async {
     showCupertinoModalPopup(
@@ -62,16 +63,6 @@ class _UploadPictureRegistrationScreenState
     setState(() {
       _profilePic = selectedImage;
     });
-  }
-
-  void _getLoggedInUser() async {
-    loggedInUser = await FirebaseConnection.getCurrentUser();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    FirebaseConnection.autoLogin(context: context);
   }
 
   @override
@@ -146,10 +137,16 @@ class _UploadPictureRegistrationScreenState
                         });
                         try {
                           if (_profilePic != null) {
-                            _getLoggedInUser();
-                            await FirebaseConnection.uploadImage(
-                                fileName: loggedInUser.email,
-                                image: _profilePic);
+                            final authService =
+                                Provider.of<FirebaseAuthService>(context,
+                                    listen: false);
+                            final storageService =
+                                Provider.of<FirebaseStorageService>(context,
+                                    listen: false);
+                            FirebaseUser loggedInUser =
+                                await authService.getCurrentUser();
+                            await storageService.uploadImage(
+                                fileName: loggedInUser.uid, image: _profilePic);
                           }
                         } catch (e) {
                           print('Could not upload and get on Save');

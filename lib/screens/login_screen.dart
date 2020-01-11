@@ -1,13 +1,14 @@
 import 'package:float/constants.dart';
 import 'package:float/screens/navigation_screen.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/screens/reset_password_screen.dart';
+import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
 import 'package:float/widgets/rounded_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:float/screens/reset_password_screen.dart';
+import 'package:provider/provider.dart';
 
 //TODO: change box border when the user doesn't enter an input
 
@@ -27,12 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
   var _passwordController = TextEditingController();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-    FirebaseConnection.autoLogin(context: context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,10 +121,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           showSpinner = true;
                         });
                         try {
-                          final user = await FirebaseConnection.signIn(
+                          final authService = Provider.of<FirebaseAuthService>(
+                              context,
+                              listen: false);
+                          final authResult = await authService.signIn(
                               email: email, password: password);
+                          final user = authResult?.user;
                           if (user != null) {
-                            Navigator.pushNamed(context, NavigationScreen.id);
+                            Navigator.pushNamed(context, NavigationScreen.id,
+                                arguments: user);
                             //cleans the navigation stack, so we don't come back to the login page if we
                             //press the back button in Android
                             /* Navigator.of(context).pushNamedAndRemoveUntil(

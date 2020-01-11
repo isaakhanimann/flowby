@@ -1,40 +1,53 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:float/constants.dart';
+import 'package:float/models/helper_functions.dart';
 import 'package:float/models/message.dart';
-import 'package:float/models/user.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
-  final String otherUserUid;
+  final String loggedInUid;
+  final String otherUid;
   final String otherUsername;
+  final String otherImageFileName;
+  final String heroTag;
 
   final String chatPath;
   //either the chatPath is supplied and we can get the messageStream directly
   //or if he isn't we can user the other user to figure out the chatpath ourselves
   ChatScreen(
-      {@required this.otherUserUid,
-      @required this.otherUsername,
-      this.chatPath});
+      {@required this.loggedInUid,
+        @required this.otherUid,
+        @required this.otherUsername,
+        @required this.heroTag,
+        @required this.otherImageFileName,
+        this.chatPath});
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
+    final cloudFirestoreService =
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     if (chatPath != null) {
-      return ChatScreenWithPath(
-          otherUsername: otherUsername, chatPath: chatPath);
+      return Provider<String>.value(
+        value: loggedInUid,
+        child: ChatScreenWithPath(
+            otherUsername: otherUsername,
+            otherImageFileName: otherImageFileName,
+            heroTag: heroTag,
+            chatPath: chatPath),
+      );
     }
 
     return FutureBuilder(
-      future: FirebaseConnection.getChatPath(
-          loggedInUid: loggedInUser.uid,
-          loggedInUsername: loggedInUser.username,
-          otherUid: otherUserUid,
-          otherUsername: otherUsername),
+      future: cloudFirestoreService.getChatPath(
+          loggedInUid: loggedInUid,
+          otherUid: otherUid,
+          otherUsername: otherUsername,
+          otherUserImageFileName: otherImageFileName),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return CupertinoActivityIndicator();
@@ -47,8 +60,14 @@ class ChatScreen extends StatelessWidget {
         }
         String foundChatPath = snapshot.data;
 
-        return ChatScreenWithPath(
-            otherUsername: otherUsername, chatPath: foundChatPath);
+        return Provider<String>.value(
+          value: loggedInUid,
+          child: ChatScreenWithPath(
+              otherUsername: otherUsername,
+              otherImageFileName: otherImageFileName,
+              heroTag: heroTag,
+              chatPath: foundChatPath),
+        );
       },
     );
   }
@@ -58,14 +77,21 @@ class ChatScreenWithPath extends StatelessWidget {
   const ChatScreenWithPath({
     Key key,
     @required this.otherUsername,
+    @required this.otherImageFileName,
+    @required this.heroTag,
     @required this.chatPath,
   }) : super(key: key);
 
   final String otherUsername;
   final String chatPath;
+  final String otherImageFileName;
+  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
+    final cloudFirestoreService =
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -74,7 +100,21 @@ class ChatScreenWithPath extends StatelessWidget {
           },
           icon: Icon(Icons.arrow_back_ios),
         ),
-        title: Text(otherUsername ?? 'Default'),
+        title: Row(
+          children: <Widget>[
+            Hero(
+              tag: heroTag,
+              child: CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.grey,
+                backgroundImage: NetworkImage(
+                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
+              ),
+            ),
+            SizedBox(width: 30),
+            Text(otherUsername ?? 'Default'),
+          ],
+        ),
         backgroundColor: kDarkGreenColor,
       ),
       body: SafeArea(
@@ -84,7 +124,7 @@ class ChatScreenWithPath extends StatelessWidget {
           children: <Widget>[
             MessagesStream(
               messagesStream:
-                  FirebaseConnection.getMessageStream(chatPath: chatPath),
+              cloudFirestoreService.getMessageStream(chatPath: chatPath),
             ),
             MessageSendingSection(chatPath: chatPath),
           ],
@@ -95,45 +135,13 @@ class ChatScreenWithPath extends StatelessWidget {
 }
 
 class MessagesStream extends StatelessWidget {
-  String getMonthString(int month) {
-    switch (month) {
-      case 1:
-        return 'Jan';
-      case 2:
-        return 'Feb';
-      case 3:
-        return 'Mar';
-      case 4:
-        return 'Apr';
-      case 5:
-        return 'May';
-      case 6:
-        return 'Jun';
-      case 7:
-        return 'Jul';
-      case 8:
-        return 'Aug';
-      case 9:
-        return 'Sep';
-      case 10:
-        return 'Okt';
-      case 11:
-        return 'Nov';
-      case 12:
-        return 'Dez';
-      default:
-        return 'Error';
-    }
-  }
-
   final messagesStream;
 
   MessagesStream({this.messagesStream});
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
-
+    String loggedInUid = Provider.of<String>(context);
     return StreamBuilder<List<Message>>(
       stream: messagesStream,
       builder: (context, snapshot) {
@@ -146,6 +154,9 @@ class MessagesStream extends StatelessWidget {
 
         final List<Message> messages = snapshot.data;
 
+        if (messages == null) {
+          return Container(color: Colors.white);
+        }
         return Expanded(
           child: ListView.builder(
             itemCount: messages.length,
@@ -154,9 +165,9 @@ class MessagesStream extends StatelessWidget {
               var messageTimestamp = message.timestamp;
               return MessageBubble(
                 text: message.text,
-                timestamp:
-                    '${messageTimestamp.hour.toString()}:${messageTimestamp.minute.toString()} ${messageTimestamp.day.toString()}. ${getMonthString(messageTimestamp.month)}.',
-                isMe: loggedInUser.uid == message.senderUid,
+                timestamp: HelperFunctions.getTimestampAsString(
+                    timestamp: messageTimestamp),
+                isMe: loggedInUid == message.senderUid,
               );
             },
             reverse: true,
@@ -183,8 +194,9 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUser = Provider.of<User>(context);
-
+    String loggedInUid = Provider.of<String>(context);
+    final cloudFirestoreService =
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     return Container(
       decoration: kMessageContainerDecoration,
       child: Row(
@@ -207,10 +219,10 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
                 //Implement send functionality.
                 messageTextController.clear();
                 Message message = Message(
-                    senderUid: loggedInUser.uid,
+                    senderUid: loggedInUid,
                     text: messageText,
                     timestamp: FieldValue.serverTimestamp());
-                FirebaseConnection.uploadMessage(
+                cloudFirestoreService.uploadMessage(
                     chatPath: widget.chatPath, message: message);
                 messageText = ''; // Reset locally the sent message
               }
@@ -235,7 +247,7 @@ class MessageBubble extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment:
-            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             timestamp,
@@ -244,18 +256,18 @@ class MessageBubble extends StatelessWidget {
           Material(
             borderRadius: isMe
                 ? BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30))
+                topLeft: Radius.circular(30),
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30))
                 : BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30)),
+                topRight: Radius.circular(30),
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30)),
             elevation: 5.0,
             color: isMe ? kDarkGreenColor : Colors.white,
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Text(
                 text,
                 style: TextStyle(

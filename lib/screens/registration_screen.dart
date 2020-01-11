@@ -1,13 +1,14 @@
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/navigation_screen.dart';
-import 'package:float/services/firebase_connection.dart';
+import 'package:float/services/firebase_auth_service.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/widgets/alert.dart';
 import 'package:float/widgets/login_input_field.dart';
+import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
-import '../widgets/rounded_button.dart';
+import 'package:provider/provider.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -74,7 +75,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     isLast: false,
                     isEmail: true,
                     setText: (value) {
-                      print(name);
                       name = value;
                     },
                   ),
@@ -139,28 +139,33 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                             context: context,
                             title: "Missing email or password",
                             description:
-                                'Enter an email and an passaword. Thank you.');
+                            'Enter an email and an password. Thank you.');
                         return;
                       }
                       setState(() {
                         showSpinner = true;
                       });
                       try {
-                        final authResult = await FirebaseConnection.createUser(
+                        final authService = Provider.of<FirebaseAuthService>(
+                            context,
+                            listen: false);
+                        final cloudFirestoreService =
+                        Provider.of<FirebaseCloudFirestoreService>(context,
+                            listen: false);
+                        final authResult = await authService.createUser(
                             email: email, password: password);
                         if (authResult != null) {
-                          //var _profilePic = File('images/default-profile-pic.jpg');
                           User user = User(
                               username: name,
                               uid: authResult.user.uid,
                               skillHashtags: 'default',
                               wishHashtags: 'default',
                               skillRate: 20,
-                              wishRate: 20);
-                          await FirebaseConnection.uploadUser(user: user);
-                          // await FirebaseConnection.uploadImage(
-                          //     fileName: email, image: _profilePic);
-                          Navigator.pushNamed(context, NavigationScreen.id);
+                              wishRate: 20,
+                              imageFileName: 'default-profile-pic.jpg');
+                          await cloudFirestoreService.uploadUser(user: user);
+                          Navigator.pushNamed(context, NavigationScreen.id,
+                              arguments: authResult.user);
                         }
                         setState(() {
                           showSpinner = false;
@@ -181,7 +186,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                   context: context,
                                   title: "Invalid Email",
                                   description:
-                                      "Please enter a valid email address");
+                                  "Please enter a valid email address");
                               break;
                             }
                           case 'ERROR_EMAIL_ALREADY_IN_USE':
