@@ -92,32 +92,28 @@ class ChatScreenWithPath extends StatelessWidget {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        leading: CupertinoButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(Icons.arrow_back_ios),
+          child: Icon(Icons.arrow_back_ios),
         ),
-        title: Row(
+        middle: Row(
           children: <Widget>[
-            Hero(
-              tag: heroTag,
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.grey,
-                backgroundImage: NetworkImage(
-                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
-              ),
+            CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.grey,
+              backgroundImage: NetworkImage(
+                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
             ),
-            SizedBox(width: 30),
-            Text(otherUsername ?? 'Default'),
           ],
         ),
+        trailing: Text(otherUsername ?? 'Default'),
         backgroundColor: kDarkGreenColor,
       ),
-      body: SafeArea(
+      child: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -203,13 +199,12 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            child: TextField(
+            child: CupertinoTextField(
               controller: messageTextController,
               onChanged: (value) {
                 //Do something with the user input.
                 messageText = value;
               },
-              decoration: kMessageTextFieldDecoration,
             ),
           ),
           SendButton(
@@ -295,9 +290,9 @@ class SendButton extends StatelessWidget {
       child: Material(
         color: kDarkGreenColor,
         borderRadius: BorderRadius.circular(30.0),
-        child: IconButton(
+        child: CupertinoButton(
           onPressed: onPress,
-          icon: Icon(
+          child: Icon(
             Icons.send,
             color: Colors.white,
             size: 20,

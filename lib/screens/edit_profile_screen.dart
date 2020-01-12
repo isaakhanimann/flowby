@@ -5,7 +5,6 @@ import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/firebase_storage_service.dart';
-import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,14 +35,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       builder: (BuildContext context) => CupertinoActionSheet(
           actions: <Widget>[
             CupertinoActionSheetAction(
-              child: const Text('Take Photo'),
+              child: Text('Take Photo'),
               onPressed: () {
                 Navigator.pop(context);
                 _setImage(ImageSource.camera);
               },
             ),
             CupertinoActionSheetAction(
-              child: const Text('Choose Photo'),
+              child: Text('Choose Photo'),
               onPressed: () {
                 Navigator.pop(context);
                 _setImage(ImageSource.gallery);
@@ -51,7 +50,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             )
           ],
           cancelButton: CupertinoActionSheetAction(
-            child: const Text('Cancel'),
+            child: Text('Cancel'),
             isDefaultAction: true,
             onPressed: () {
               Navigator.pop(context);
@@ -94,14 +93,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('loggedInUser = $widget.loggedInUser');
     if (showSpinner) {
       return Center(
         child: CupertinoActivityIndicator(),
       );
     }
-    print('imagefilename = ${user.imageFileName}');
-
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
@@ -113,42 +109,48 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: CupertinoActivityIndicator(),
       );
     }
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
         backgroundColor: Colors.transparent,
-        leading: RoundedButton(
-          text: 'Save',
-          color: kDarkGreenColor,
-          onPressed: () async {
-            setState(() {
-              showSpinner = true;
-            });
-            try {
-              if (_profilePic != null) {
-                await storageService.uploadImage(
-                    fileName: widget.loggedInUser.uid, image: _profilePic);
-              }
-              User user = User(
-                  username: _localUsername,
-                  uid: widget.loggedInUser.uid,
-                  skillHashtags: _localHashtagSkills,
-                  wishHashtags: _localHashtagWishes,
-                  skillRate: _localSkillRate,
-                  wishRate: _localWishRate,
-                  imageFileName: widget.loggedInUser.uid);
-              await cloudFirestoreService.uploadUser(user: user);
-              Navigator.of(context).pop();
-            } catch (e) {
-              print('Could not upload and get on Save');
-            }
-            setState(() {
-              showSpinner = false;
-            });
+        leading: CupertinoButton(
+          padding: EdgeInsets.all(10),
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context).pop();
           },
         ),
+        middle: Text('Edit Profile'),
+        trailing: CupertinoButton(
+            padding: EdgeInsets.all(10),
+            child: Text('Done'),
+            onPressed: () async {
+              setState(() {
+                showSpinner = true;
+              });
+              try {
+                if (_profilePic != null) {
+                  await storageService.uploadImage(
+                      fileName: widget.loggedInUser.uid, image: _profilePic);
+                }
+                User user = User(
+                    username: _localUsername,
+                    uid: widget.loggedInUser.uid,
+                    skillHashtags: _localHashtagSkills,
+                    wishHashtags: _localHashtagWishes,
+                    skillRate: _localSkillRate,
+                    wishRate: _localWishRate,
+                    imageFileName: widget.loggedInUser.uid);
+                await cloudFirestoreService.uploadUser(user: user);
+                Navigator.of(context).pop();
+              } catch (e) {
+                print('Could not upload and get on Save');
+              }
+              setState(() {
+                showSpinner = false;
+              });
+            }),
       ),
-      body: SafeArea(
+      child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: ListView(
@@ -174,7 +176,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Center(
                 child: GestureDetector(
                   onTap: changeProfilePic,
-                  child: Text('Edit'),
+                  child: Text(''),
                 ),
               ),
               SizedBox(
@@ -184,7 +186,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: <Widget>[
                   Text('Name'),
                   Expanded(
-                    child: TextFormField(
+                    child: CupertinoTextField(
                       textAlign: TextAlign.center,
                       style: kMiddleTitleTextStyle,
                       onChanged: (newValue) {
