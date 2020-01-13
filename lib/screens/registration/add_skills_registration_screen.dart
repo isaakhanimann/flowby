@@ -26,7 +26,7 @@ class _AddSkillsRegistrationScreenState
   bool showSpinner = false;
 
   String _databaseHashtagSkills;
-  int _databaseSkillRate;
+  int _databaseSkillRate = 20;
   User _user;
 
   @override

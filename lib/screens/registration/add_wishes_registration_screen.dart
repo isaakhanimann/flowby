@@ -9,6 +9,7 @@ import 'package:float/widgets/rate_picker.dart';
 import 'package:float/models/user.dart';
 
 import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:float/services/firebase_auth_service.dart';
 import 'package:provider/provider.dart';
 
 class AddWishesRegistrationScreen extends StatefulWidget {
@@ -27,7 +28,7 @@ class _AddWishesRegistrationScreenState
     extends State<AddWishesRegistrationScreen> {
   bool showSpinner = false;
 
-  int _databaseWishRate;
+  int _databaseWishRate = 20;
   String _databaseHashtagWishes;
 
   User _user;
@@ -150,14 +151,11 @@ class _AddWishesRegistrationScreenState
                                   listen: false);
 
                           await cloudFirestoreService.uploadUser(user: _user);
+                          final authService = Provider.of<FirebaseAuthService>(
+                              context,
+                              listen: false);
 
-                          Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute<void>(
-                              builder: (context) {
-                                return NavigationScreen();
-                              },
-                            ),
-                          );
+                          await authService.tryToGetCurrentUserAndNavigate(context: context);
 
                           setState(() {
                             showSpinner = false;
