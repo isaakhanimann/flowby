@@ -19,65 +19,90 @@ class ChooseSignupOrLoginScreen extends StatefulWidget {
 class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
   bool showSpinner = false;
 
-  var _controller =
-      VideoPlayerController.file(File('images/Freeflowter_Animation_home.mp4'));
+  VideoPlayerController _controller;
+  var videoFile = File('images/Freeflowter_Animation_home.mp4');
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        VideoPlayerController.asset('images/Freeflowter_Animation_home.mp4')
+          ..initialize().then((_) {
+            // Ensure the first frame is shown after the video is initialized
+            _controller.play();
+            _controller.setLooping(true);
+            setState(() {});
+          });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("images/animated_login.gif"),
-          alignment: Alignment(0.0, 0.0),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: ModalProgressHUD(
-          inAsyncCall: showSpinner,
-          progressIndicator: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  child: VideoPlayer(_controller),
-                ),
-                RoundedButton(
-                  text: 'Sign Up',
-                  color: ffDarkBlue,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    //Navigator.pushNamed(context, RegistrationScreen.id);
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => RegistrationScreen()));
-                  },
-                ),
-                RoundedButton(
-                  text: 'I already have an account',
-                  color: Colors.white,
-                  textColor: ffDarkBlue,
-                  onPressed: () {
-                    //Navigator.pushNamed(context, LoginScreen.id);
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => LoginScreen()));
-                  },
-                ),
-              ],
+    return Stack(
+      children: [
+        SizedBox.expand(
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: SizedBox(
+              width: _controller.value.size?.width ?? 0,
+              height: _controller.value.size?.height ?? 0,
+              child: VideoPlayer(_controller),
             ),
           ),
         ),
-      ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          body: ModalProgressHUD(
+            inAsyncCall: showSpinner,
+            progressIndicator: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(
+                    width: 700.0,
+                    height: 400.0,
+                    child: null,
+                  ),
+                  RoundedButton(
+                    text: 'Sign Up',
+                    color: ffDarkBlue,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      //Navigator.pushNamed(context, RegistrationScreen.id);
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => RegistrationScreen()));
+                    },
+                  ),
+                  RoundedButton(
+                    text: 'I already have an account',
+                    color: Colors.white,
+                    textColor: ffDarkBlue,
+                    onPressed: () {
+                      //Navigator.pushNamed(context, LoginScreen.id);
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => LoginScreen()));
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
