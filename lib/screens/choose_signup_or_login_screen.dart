@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:float/constants.dart';
 import 'package:float/screens/login_screen.dart';
 import 'package:float/screens/registration/registration_screen.dart';
@@ -20,7 +19,6 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
   bool showSpinner = false;
 
   VideoPlayerController _controller;
-  var videoFile = File('images/Freeflowter_Animation_home.mp4');
 
   @override
   void initState() {

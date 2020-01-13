@@ -5,11 +5,16 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/constants.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:float/widgets/rate_picker.dart';
+import 'package:float/models/user.dart';
 
 import 'package:float/screens/registration/add_wishes_registration_screen.dart';
 
 class AddSkillsRegistrationScreen extends StatefulWidget {
   static const String id = 'add_skills_registration_screen';
+
+  final User user;
+
+  AddSkillsRegistrationScreen({this.user});
 
   @override
   _AddSkillsRegistrationScreenState createState() =>
@@ -21,12 +26,16 @@ class _AddSkillsRegistrationScreenState
   bool showSpinner = false;
 
   String _databaseHashtagSkills;
-  String _localHashtagSkills;
   int _databaseSkillRate;
-  int _localSkillRate;
+  User _user;
 
   @override
   Widget build(BuildContext context) {
+    widget.user != null
+        ? _user = widget.user
+        : print('Why da fuck is User == NULL?!');
+
+    print(_user);
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -73,6 +82,9 @@ class _AddSkillsRegistrationScreenState
                         height: 10.0,
                       ),
                       TextFormField(
+                        onChanged: (value) {
+                          _databaseHashtagSkills = value;
+                        },
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         decoration: InputDecoration(
@@ -102,7 +114,7 @@ class _AddSkillsRegistrationScreenState
                         ),
                       ),
                       RatePicker(
-                        initialValue: _localSkillRate ?? 20,
+                        initialValue: _databaseSkillRate ?? 20,
                         onSelected: (selectedIndex) {
                           _databaseSkillRate = selectedIndex;
                         },
@@ -116,10 +128,13 @@ class _AddSkillsRegistrationScreenState
                             showSpinner = true;
                           });
 
+                          _user.skillHashtags = _databaseHashtagSkills;
+                          _user.skillRate = _databaseSkillRate;
+
                           Navigator.of(context, rootNavigator: true).push(
                             CupertinoPageRoute<void>(
                               builder: (context) {
-                                return AddWishesRegistrationScreen();
+                                return AddWishesRegistrationScreen(user: _user);
                               },
                             ),
                           );
@@ -134,7 +149,7 @@ class _AddSkillsRegistrationScreenState
                           Navigator.of(context, rootNavigator: true).push(
                             CupertinoPageRoute<void>(
                               builder: (context) {
-                                return AddWishesRegistrationScreen();
+                                return AddWishesRegistrationScreen(user: _user);
                               },
                             ),
                           );

@@ -4,15 +4,16 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:float/constants.dart';
 import 'package:float/widgets/rounded_button.dart';
+import 'package:float/models/user.dart';
 
 import 'package:float/screens/registration/add_skills_registration_screen.dart';
 
 class UserDescriptionRegistrationScreen extends StatefulWidget {
   static const String id = 'user_description_registration_screen';
 
-  final String username;
+  final User user;
 
-  UserDescriptionRegistrationScreen({this.username});
+  UserDescriptionRegistrationScreen({this.user});
 
   @override
   _UserDescriptionRegistrationScreenState createState() =>
@@ -23,12 +24,14 @@ class _UserDescriptionRegistrationScreenState
     extends State<UserDescriptionRegistrationScreen> {
   bool showSpinner = false;
 
-  String _username;
+  String _bio;
+  User _user;
 
   @override
   Widget build(BuildContext context) {
-    widget.username != null ? _username = widget.username : _username = 'error';
+    widget.user != null ? _user = widget.user : print('error, no user found');
 
+    print(_user);
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -75,6 +78,9 @@ class _UserDescriptionRegistrationScreenState
                         height: 10.0,
                       ),
                       TextFormField(
+                        onChanged: (value) {
+                          _bio = value;
+                        },
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         decoration: InputDecoration(
@@ -100,10 +106,12 @@ class _UserDescriptionRegistrationScreenState
                             showSpinner = true;
                           });
 
+                          _user.bio = _bio;
+
                           Navigator.of(context, rootNavigator: true).push(
                             CupertinoPageRoute<void>(
                               builder: (context) {
-                                return AddSkillsRegistrationScreen();
+                                return AddSkillsRegistrationScreen(user: _user);
                               },
                             ),
                           );

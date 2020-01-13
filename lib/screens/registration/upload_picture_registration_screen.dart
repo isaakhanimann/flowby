@@ -18,12 +18,9 @@ import 'package:float/models/user.dart';
 
 class UploadPictureRegistrationScreen extends StatefulWidget {
   static const String id = 'upload_picture_registration_screen';
+  final User user;
 
-  final String username;
-
-  User user;
-
-  UploadPictureRegistrationScreen({this.username, this.user});
+  UploadPictureRegistrationScreen({this.user});
 
   @override
   _UploadPictureRegistrationScreenState createState() =>
@@ -37,6 +34,7 @@ class _UploadPictureRegistrationScreenState
   String _profilePicUrl;
 
   String _username;
+  User _user;
 
   void changeProfilePic() async {
     showCupertinoModalPopup(
@@ -78,8 +76,8 @@ class _UploadPictureRegistrationScreenState
 
   @override
   Widget build(BuildContext context) {
-    print(widget.user);
-    widget.username != null ? _username = widget.username : _username = 'error';
+    widget.user.username != null ? _username = widget.user.username : _username = 'error';
+    widget.user != null ? _user = widget.user : print('Why da fuck is User == NULL?!');
 
     return Container(
       decoration: BoxDecoration(
@@ -166,7 +164,7 @@ class _UploadPictureRegistrationScreenState
                           setState(() {
                             showSpinner = true;
                           });
-                          /*try {
+                          try {
                             if (_profilePic != null) {
                               final authService =
                                   Provider.of<FirebaseAuthService>(context,
@@ -182,12 +180,12 @@ class _UploadPictureRegistrationScreenState
                             }
                           } catch (e) {
                             print('Could not upload and get on Save');
-                          }*/
+                          }
                           Navigator.of(context, rootNavigator: true).push(
                             CupertinoPageRoute<void>(
                               builder: (context) {
                                 return UserDescriptionRegistrationScreen(
-                                  username: _username,
+                                  user: _user,
                                 );
                               },
                             ),

@@ -6,9 +6,17 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/constants.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:float/widgets/rate_picker.dart';
+import 'package:float/models/user.dart';
+
+import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:provider/provider.dart';
 
 class AddWishesRegistrationScreen extends StatefulWidget {
   static const String id = 'add_whishes_registration_screen';
+
+  final User user;
+
+  AddWishesRegistrationScreen({this.user});
 
   @override
   _AddWishesRegistrationScreenState createState() =>
@@ -20,12 +28,18 @@ class _AddWishesRegistrationScreenState
   bool showSpinner = false;
 
   int _databaseWishRate;
-  int _localWishRate;
   String _databaseHashtagWishes;
-  String _localHashtagWishes;
+
+  User _user;
 
   @override
   Widget build(BuildContext context) {
+    widget.user != null
+        ? _user = widget.user
+        : print('Why da fuck is User == NULL?!');
+
+    print(_user);
+
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -81,6 +95,9 @@ class _AddWishesRegistrationScreenState
                         height: 10.0,
                       ),
                       TextFormField(
+                        onChanged: (value) {
+                          _databaseHashtagWishes = value;
+                        },
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         decoration: InputDecoration(
@@ -110,7 +127,7 @@ class _AddWishesRegistrationScreenState
                         ),
                       ),
                       RatePicker(
-                        initialValue: _localWishRate ?? 20,
+                        initialValue: _databaseWishRate ?? 20,
                         onSelected: (selectedIndex) {
                           _databaseWishRate = selectedIndex;
                         },
@@ -123,6 +140,16 @@ class _AddWishesRegistrationScreenState
                           setState(() {
                             showSpinner = true;
                           });
+
+                          _user.wishHashtags = _databaseHashtagWishes;
+                          _user.wishRate = _databaseWishRate;
+
+                          final cloudFirestoreService =
+                              Provider.of<FirebaseCloudFirestoreService>(
+                                  context,
+                                  listen: false);
+
+                          await cloudFirestoreService.uploadUser(user: _user);
 
                           Navigator.of(context, rootNavigator: true).push(
                             CupertinoPageRoute<void>(

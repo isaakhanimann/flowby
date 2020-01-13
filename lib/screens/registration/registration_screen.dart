@@ -166,7 +166,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           User user =
                               User(username: name, uid: authResult.user.uid);
 
-                          /*await cloudFirestoreService.uploadUser(user: user);*/
+                          print(user);
+
+                          //await cloudFirestoreService.uploadUser(user: user);
 
                           setState(() {
                             showSpinner = false;
