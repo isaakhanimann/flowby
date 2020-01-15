@@ -50,7 +50,9 @@ class ChatScreen extends StatelessWidget {
           otherUserImageFileName: otherImageFileName),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return CupertinoActivityIndicator();
+          return CupertinoPageScaffold(
+              backgroundColor: CupertinoColors.white,
+              child: CupertinoActivityIndicator());
         }
         if (snapshot.hasError) {
           return Container(
@@ -93,6 +95,7 @@ class ChatScreenWithPath extends StatelessWidget {
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
       navigationBar: CupertinoNavigationBar(
         backgroundColor: CupertinoColors.white,
         border: null,

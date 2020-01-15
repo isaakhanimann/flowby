@@ -105,7 +105,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         Provider.of<FirebaseStorageService>(context, listen: false);
 
     if (showSpinner) {
-      return Center(
+      return CupertinoPageScaffold(
+        backgroundColor: CupertinoColors.white,
         child: CupertinoActivityIndicator(),
       );
     }

@@ -52,7 +52,19 @@ class ViewProfileScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Row(
+                        Container(
+                          color: CupertinoColors.white,
+                          width: 50,
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    if (user.distanceInKm != null)
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.baseline,
                           textBaseline: TextBaseline.alphabetic,
                           children: <Widget>[
@@ -60,11 +72,7 @@ class ViewProfileScreen extends StatelessWidget {
                             Icon(CupertinoIcons.location)
                           ],
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
+                      ),
                     Center(
                       child: Text(
                         user.username,
