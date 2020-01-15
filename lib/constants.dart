@@ -63,6 +63,19 @@ const ffLoginInputFieldDecoration = InputDecoration(
   ),
 );
 
+const TextStyle kSearchText = TextStyle(
+  color: Color.fromRGBO(0, 0, 0, 1),
+  fontSize: 14,
+  fontStyle: FontStyle.normal,
+  fontWeight: FontWeight.normal,
+);
+
+const Color kSearchBackground = Color(0xffe0e0e0);
+
+const Color kSearchCursorColor = Color.fromRGBO(0, 122, 255, 1);
+
+const Color kSearchIconColor = Color.fromRGBO(128, 128, 128, 1);
+
 const kBeigeColor = Color(0xFFFCF9EC);
 const kLightGreenColor = Color(0xFFB0F4E6);
 const kMiddleGreenColor = Color(0xFF67EACA);
