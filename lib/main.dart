@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'constants.dart';
 import 'route_generator.dart';
 
 void main() {
@@ -42,7 +43,8 @@ class Float extends StatelessWidget {
         ),
       ],
       child: CupertinoApp(
-        theme: CupertinoThemeData(brightness: Brightness.light),
+        theme: CupertinoThemeData(
+            brightness: Brightness.light, primaryColor: kLoginBackgroundColor),
         debugShowCheckedModeBanner: false,
         initialRoute: SplashScreen.id,
         onGenerateRoute: RouteGenerator.generateRoute,

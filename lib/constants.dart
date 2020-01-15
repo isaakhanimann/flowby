@@ -36,7 +36,7 @@ const kMessageTextFieldDecoration = InputDecoration(
 
 const kMessageContainerDecoration = BoxDecoration(
   border: Border(
-    top: BorderSide(color: kDarkGreenColor, width: 2.0),
+    top: BorderSide(color: kLoginBackgroundColor, width: 1.0),
   ),
 );
 
@@ -58,10 +58,12 @@ const TextStyle kSearchText = TextStyle(
   fontWeight: FontWeight.normal,
 );
 
+const Color kLoginBackgroundColor = Color(0xFF0D4FF7);
+const Color kDefaultProfilePicColor = Color(0xff00ffab);
+
 const Color kSearchBackground = Color(0xffe0e0e0);
 
 const Color kPlaceHolderColor = Color(0xff979797);
-const Color kDefaultProfilePicColor = Color(0xff00ffab);
 
 const kBeigeColor = Color(0xFFFCF9EC);
 const kLightGreenColor = Color(0xFFB0F4E6);

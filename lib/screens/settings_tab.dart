@@ -3,7 +3,7 @@ import 'package:float/constants.dart';
 import 'package:float/screens/choose_signup_or_login_screen.dart';
 import 'package:float/screens/edit_profile_screen.dart';
 import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/widgets/rounded_button.dart';
+import 'package:float/widgets/sign_in_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -94,20 +94,7 @@ class SettingsTab extends StatelessWidget {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     if (loggedInUser == null) {
       return Center(
-        child: RoundedButton(
-          text: 'Sign In',
-          color: kDarkGreenColor,
-          textColor: Colors.white,
-          onPressed: () {
-            Navigator.of(context, rootNavigator: true).push(
-              CupertinoPageRoute<void>(
-                builder: (context) {
-                  return ChooseSignupOrLoginScreen();
-                },
-              ),
-            );
-          },
-        ),
+        child: SignInButton(),
       );
     }
     return CustomScrollView(

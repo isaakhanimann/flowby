@@ -22,8 +22,8 @@ class ViewProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    return CupertinoPageScaffold(
+      child: SafeArea(
         child: Column(
           children: <Widget>[
             Expanded(
@@ -34,12 +34,11 @@ class ViewProfileScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        IconButton(
-                          color: kDarkGreenColor,
+                        CupertinoButton(
+                          child: Icon(Icons.arrow_back_ios),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          icon: Icon(Icons.arrow_back_ios),
                         ),
                         Center(
                           heightFactor: 1.2,

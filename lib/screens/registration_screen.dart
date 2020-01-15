@@ -40,6 +40,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     return ModalProgressHUD(
       inAsyncCall: showSpinner,
       child: CupertinoPageScaffold(
+        resizeToAvoidBottomInset:
+            false, //avoid the keyboard causing an overflow
         navigationBar: CupertinoNavigationBar(
           border: null,
           leading: CupertinoButton(
@@ -54,7 +56,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
           ),
           backgroundColor: Colors.transparent,
         ),
-        backgroundColor: Color(0xFF0D4FF7),
+        backgroundColor: kLoginBackgroundColor,
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),

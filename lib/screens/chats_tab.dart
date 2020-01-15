@@ -3,9 +3,8 @@ import 'package:float/constants.dart';
 import 'package:float/models/chat.dart';
 import 'package:float/models/helper_functions.dart';
 import 'package:float/screens/chat_screen.dart';
-import 'package:float/screens/choose_signup_or_login_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
-import 'package:float/widgets/rounded_button.dart';
+import 'package:float/widgets/sign_in_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,22 +18,7 @@ class ChatsTab extends StatelessWidget {
     //listening to loggedInUser (so it rebuilds) is not necessary as the navigationscreen provides it and always has the up to date value because it is rebuilt whenever we navigate to it
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     if (loggedInUser == null) {
-      return Center(
-        child: RoundedButton(
-          text: 'Sign In',
-          color: kDarkGreenColor,
-          textColor: Colors.white,
-          onPressed: () {
-            Navigator.of(context, rootNavigator: true).push(
-              CupertinoPageRoute<void>(
-                builder: (context) {
-                  return ChooseSignupOrLoginScreen();
-                },
-              ),
-            );
-          },
-        ),
-      );
+      return Center(child: SignInButton());
     }
 
     return StreamBuilder(

@@ -94,6 +94,8 @@ class ChatScreenWithPath extends StatelessWidget {
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
+        backgroundColor: CupertinoColors.white,
+        border: null,
         leading: CupertinoButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -101,6 +103,7 @@ class ChatScreenWithPath extends StatelessWidget {
           child: Icon(Icons.arrow_back_ios),
         ),
         middle: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             CircleAvatar(
               radius: 25,
@@ -108,10 +111,12 @@ class ChatScreenWithPath extends StatelessWidget {
               backgroundImage: NetworkImage(
                   'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
             ),
+            SizedBox(
+              width: 10,
+            ),
+            Text(otherUsername ?? 'Default')
           ],
         ),
-        trailing: Text(otherUsername ?? 'Default'),
-        backgroundColor: kDarkGreenColor,
       ),
       child: SafeArea(
         child: Column(
@@ -259,7 +264,7 @@ class MessageBubble extends StatelessWidget {
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30)),
             elevation: 5.0,
-            color: isMe ? kDarkGreenColor : Colors.white,
+            color: isMe ? ffMiddleBlue : Colors.white,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
@@ -288,7 +293,7 @@ class SendButton extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Material(
-        color: kDarkGreenColor,
+        color: kDefaultProfilePicColor,
         borderRadius: BorderRadius.circular(30.0),
         child: CupertinoButton(
           onPressed: onPress,

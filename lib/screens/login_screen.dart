@@ -37,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
         valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
       ),
       child: CupertinoPageScaffold(
+        resizeToAvoidBottomInset: false,
         navigationBar: CupertinoNavigationBar(
           border: null,
           leading: CupertinoButton(
@@ -51,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           backgroundColor: Colors.transparent,
         ),
-        backgroundColor: Color(0xFF0D4FF7),
+        backgroundColor: kLoginBackgroundColor,
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),

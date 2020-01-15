@@ -65,7 +65,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ],
       child: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
-          activeColor: kDarkGreenColor,
+          activeColor: kDefaultProfilePicColor,
           items: [
             BottomNavigationBarItem(
                 icon: Icon(
