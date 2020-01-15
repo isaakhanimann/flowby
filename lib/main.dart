@@ -6,11 +6,18 @@ import 'package:float/services/image_picker_service.dart';
 import 'package:float/services/location_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'route_generator.dart';
 
-void main() => runApp(Float());
+void main() {
+  // This app is designed only to work vertically, so we limit
+  // orientations to portrait up and down.
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  return runApp(Float());
+}
 
 class Float extends StatelessWidget {
   @override
