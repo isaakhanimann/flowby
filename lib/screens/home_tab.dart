@@ -48,7 +48,7 @@ class _HomeTabState extends State<HomeTab> {
 
   Widget _buildSearchBox() {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
       child: SearchBar(
         controller: _controller,
         focusNode: _focusNode,
@@ -98,6 +98,8 @@ class _HomeTabState extends State<HomeTab> {
         return CustomScrollView(
           slivers: <Widget>[
             CupertinoSliverNavigationBar(
+              backgroundColor: CupertinoColors.white,
+              border: null,
               largeTitle: Text('Search'),
             ),
             SliverSafeArea(
@@ -108,26 +110,18 @@ class _HomeTabState extends State<HomeTab> {
                     if (index == 0) {
                       return _buildSearchBox();
                     } else if (index == 1) {
-                      return CupertinoSegmentedControl(
-                        borderColor: kDarkGreenColor,
-                        pressedColor: kLightGreenColor,
-                        selectedColor: kDarkGreenColor,
-                        groupValue: isSkillSelected,
-                        onValueChanged: switchSearch,
-                        children: <bool, Widget>{
-                          true: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 60, vertical: 10),
-                            child:
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        child: CupertinoSegmentedControl(
+                          groupValue: isSkillSelected,
+                          onValueChanged: switchSearch,
+                          children: <bool, Widget>{
+                            true:
                                 Text('Skills', style: TextStyle(fontSize: 18)),
-                          ),
-                          false: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 60, vertical: 10),
-                            child:
+                            false:
                                 Text('Wishes', style: TextStyle(fontSize: 18)),
-                          ),
-                        },
+                          },
+                        ),
                       );
                     } else if (index < searchResultUsers.length + 2) {
                       return ProfileItem(
@@ -243,39 +237,25 @@ class SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: kSearchBackground,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
-          vertical: 8,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+      child: CupertinoTextField(
+        decoration: BoxDecoration(
+            color: kLightGrey2,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        padding: EdgeInsets.symmetric(vertical: 10),
+        placeholder: 'Search',
+        placeholderStyle: TextStyle(fontSize: 16, color: kPlaceHolderColor),
+        prefix: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Icon(
+            CupertinoIcons.search,
+            color: kPlaceHolderColor,
+          ),
         ),
-        child: Row(
-          children: [
-            const Icon(
-              CupertinoIcons.search,
-              color: kSearchIconColor,
-            ),
-            Expanded(
-              child: CupertinoTextField(
-                controller: controller,
-                focusNode: focusNode,
-                style: kSearchText,
-                cursorColor: kSearchCursorColor,
-              ),
-            ),
-            GestureDetector(
-              onTap: controller.clear,
-              child: const Icon(
-                CupertinoIcons.clear_thick_circled,
-                color: kSearchIconColor,
-              ),
-            ),
-          ],
-        ),
+        controller: controller,
+        focusNode: focusNode,
+        style: kSearchText,
       ),
     );
   }

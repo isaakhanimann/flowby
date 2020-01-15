@@ -72,9 +72,8 @@ const TextStyle kSearchText = TextStyle(
 
 const Color kSearchBackground = Color(0xffe0e0e0);
 
-const Color kSearchCursorColor = Color.fromRGBO(0, 122, 255, 1);
-
-const Color kSearchIconColor = Color.fromRGBO(128, 128, 128, 1);
+const Color kPlaceHolderColor = Color(0xff979797);
+const Color kDefaultProfilePicColor = Color(0xff00ffab);
 
 const kBeigeColor = Color(0xFFFCF9EC);
 const kLightGreenColor = Color(0xFFB0F4E6);

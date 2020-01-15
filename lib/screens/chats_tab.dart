@@ -64,6 +64,8 @@ class ChatsTab extends StatelessWidget {
             semanticChildCount: chats.length,
             slivers: <Widget>[
               CupertinoSliverNavigationBar(
+                backgroundColor: CupertinoColors.white,
+                border: null,
                 largeTitle: Text('Chats'),
               ),
               SliverSafeArea(

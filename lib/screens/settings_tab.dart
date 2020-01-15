@@ -113,9 +113,12 @@ class SettingsTab extends StatelessWidget {
     return CustomScrollView(
       slivers: <Widget>[
         CupertinoSliverNavigationBar(
+          backgroundColor: CupertinoColors.white,
+          border: null,
           largeTitle: Text('Settings'),
         ),
         SliverSafeArea(
+          top: false,
           sliver: SliverList(
             delegate: SliverChildListDelegate(
               _buildSettingsChildren(context),
