@@ -51,18 +51,6 @@ const kLoginInputFieldDecoration = InputDecoration(
   ),
 );
 
-const ffLoginInputFieldDecoration = InputDecoration(
-  filled: true,
-  fillColor: Colors.white,
-  hintStyle: TextStyle(fontFamily: 'MontserratRegular'),
-  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
-  border: OutlineInputBorder(
-    borderRadius: BorderRadius.all(
-      Radius.circular(5.0),
-    ),
-  ),
-);
-
 const TextStyle kSearchText = TextStyle(
   color: Color.fromRGBO(0, 0, 0, 1),
   fontSize: 14,
