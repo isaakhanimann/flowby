@@ -14,6 +14,7 @@ import 'route_generator.dart';
 void main() {
   // This app is designed only to work vertically, so we limit
   // orientations to portrait up and down.
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   return runApp(Float());
@@ -41,6 +42,7 @@ class Float extends StatelessWidget {
         ),
       ],
       child: CupertinoApp(
+        theme: CupertinoThemeData(brightness: Brightness.light),
         debugShowCheckedModeBanner: false,
         initialRoute: SplashScreen.id,
         onGenerateRoute: RouteGenerator.generateRoute,
