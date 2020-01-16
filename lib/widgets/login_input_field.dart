@@ -1,5 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:float/constants.dart';
 
 class LoginInputField extends StatelessWidget {
   final bool isLast;
@@ -23,15 +23,19 @@ class LoginInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return CupertinoTextField(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      placeholder: placeholder,
+      placeholderStyle: TextStyle(
+        fontFamily: 'MontserratRegular',
+      ),
       controller: controller,
       focusNode: focusNode,
-      onFieldSubmitted: onFieldSubmitted,
+      onSubmitted: onFieldSubmitted,
       textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
       keyboardType: isEmail ? TextInputType.emailAddress : null,
       obscureText: !isEmail,
       onChanged: setText,
-      decoration: ffLoginInputFieldDecoration.copyWith(hintText: placeholder),
     );
   }
 }

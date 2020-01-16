@@ -36,7 +36,7 @@ const kMessageTextFieldDecoration = InputDecoration(
 
 const kMessageContainerDecoration = BoxDecoration(
   border: Border(
-    top: BorderSide(color: kDarkGreenColor, width: 2.0),
+    top: BorderSide(color: kLoginBackgroundColor, width: 1.0),
   ),
 );
 
@@ -51,17 +51,19 @@ const kLoginInputFieldDecoration = InputDecoration(
   ),
 );
 
-const ffLoginInputFieldDecoration = InputDecoration(
-  filled: true,
-  fillColor: Colors.white,
-  hintStyle: TextStyle(fontFamily: 'MontserratRegular'),
-  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
-  border: OutlineInputBorder(
-    borderRadius: BorderRadius.all(
-      Radius.circular(5.0),
-    ),
-  ),
+const TextStyle kSearchText = TextStyle(
+  color: Color.fromRGBO(0, 0, 0, 1),
+  fontSize: 14,
+  fontStyle: FontStyle.normal,
+  fontWeight: FontWeight.normal,
 );
+
+const Color kLoginBackgroundColor = Color(0xFF0D4FF7);
+const Color kDefaultProfilePicColor = Color(0xff00ffab);
+
+const Color kSearchBackground = Color(0xffe0e0e0);
+
+const Color kPlaceHolderColor = Color(0xff979797);
 
 const kBeigeColor = Color(0xFFFCF9EC);
 const kLightGreenColor = Color(0xFFB0F4E6);

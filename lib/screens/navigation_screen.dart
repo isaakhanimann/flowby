@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
-import 'package:float/screens/chat_overview_screen.dart';
-import 'package:float/screens/create_profile_screen.dart';
-import 'package:float/screens/home_screen.dart';
+import 'package:float/screens/chats_tab.dart';
+import 'package:float/screens/home_tab.dart';
+import 'package:float/screens/settings_tab.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/location_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,12 +24,6 @@ class NavigationScreen extends StatefulWidget {
 }
 
 class _NavigationScreenState extends State<NavigationScreen> {
-  List<Widget> tabScreens = [
-    HomeScreen(),
-    ChatOverviewScreen(),
-    CreateProfileScreen()
-  ];
-
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
 
@@ -71,7 +65,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ],
       child: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
-          activeColor: kDarkGreenColor,
+          activeColor: kDefaultProfilePicColor,
           items: [
             BottomNavigationBarItem(
                 icon: Icon(
@@ -93,9 +87,32 @@ class _NavigationScreenState extends State<NavigationScreen> {
           ],
         ),
         tabBuilder: (context, index) {
-          return CupertinoTabView(builder: (context) {
-            return tabScreens[index];
-          });
+          // since every tabview is created new on every call maybe this code can be shorter without side effects
+          CupertinoTabView returnValue;
+          switch (index) {
+            case 0:
+              returnValue = CupertinoTabView(builder: (context) {
+                return CupertinoPageScaffold(
+                  child: HomeTab(),
+                );
+              });
+              break;
+            case 1:
+              returnValue = CupertinoTabView(builder: (context) {
+                return CupertinoPageScaffold(
+                  child: ChatsTab(),
+                );
+              });
+              break;
+            case 2:
+              returnValue = CupertinoTabView(builder: (context) {
+                return CupertinoPageScaffold(
+                  child: SettingsTab(),
+                );
+              });
+              break;
+          }
+          return returnValue;
         },
       ),
     );

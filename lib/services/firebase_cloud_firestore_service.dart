@@ -31,7 +31,7 @@ class FirebaseCloudFirestoreService {
   Future<User> getUser({@required String uid}) async {
     try {
       var userDocument =
-      await _fireStore.collection('users').document(uid).get();
+          await _fireStore.collection('users').document(uid).get();
       if (userDocument.data == null) {
         print('Isaak could not get user info1');
       }
@@ -46,7 +46,7 @@ class FirebaseCloudFirestoreService {
   Stream<List<User>> getUsersStream({@required String uid}) {
     try {
       var userSnapshots = _fireStore.collection('users').snapshots().map(
-              (snap) => snap.documents
+          (snap) => snap.documents
               .map((doc) => User.fromMap(map: doc.data))
               .where((user) => user.uid != uid)
               .toList());
@@ -61,14 +61,14 @@ class FirebaseCloudFirestoreService {
       {@required Position position, @required String uidToExclude}) {
     try {
       var userSnapshots = _fireStore.collection('users').snapshots().map(
-              (snap) => snap.documents
-              .map((doc) => User.fromMap(map: doc.data))
-              .where((user) =>
-          (uidToExclude != null) ? user.uid != uidToExclude : true)
-              .map((user) {
-            user.updateDistanceToPositionIfPossible(position: position);
-            return user;
-          }).toList());
+          (snap) => snap.documents
+                  .map((doc) => User.fromMap(map: doc.data))
+                  .where((user) =>
+                      (uidToExclude != null) ? user.uid != uidToExclude : true)
+                  .map((user) {
+                user.updateDistanceToPositionIfPossible(position: position);
+                return user;
+              }).toList());
       return userSnapshots;
     } catch (e) {
       print(e);
@@ -86,11 +86,11 @@ class FirebaseCloudFirestoreService {
             .where('uid', isEqualTo: uid)
             .snapshots()
             .map((snap) => snap.documents
-            .map((doc) => User.fromMap(map: doc.data))
-            .map((user) {
-          user.updateDistanceToPositionIfPossible(position: position);
-          return user;
-        }).toList()[0]);
+                    .map((doc) => User.fromMap(map: doc.data))
+                    .map((user) {
+                  user.updateDistanceToPositionIfPossible(position: position);
+                  return user;
+                }).toList()[0]);
         listOfStreams.add(streamToAdd);
       }
 
@@ -113,8 +113,8 @@ class FirebaseCloudFirestoreService {
             .where('uid', isEqualTo: uid)
             .snapshots()
             .map((snap) => snap.documents
-            .map((doc) => User.fromMap(map: doc.data))
-            .toList()[0]);
+                .map((doc) => User.fromMap(map: doc.data))
+                .toList()[0]);
         listOfStreams.add(streamToAdd);
       }
 
@@ -137,8 +137,8 @@ class FirebaseCloudFirestoreService {
           .where('uid', isEqualTo: uid)
           .snapshots()
           .map((snap) => snap.documents
-          .map((doc) => User.fromMap(map: doc.data))
-          .toList()[0]);
+              .map((doc) => User.fromMap(map: doc.data))
+              .toList()[0]);
 
       return userStream;
     } catch (e) {
@@ -153,34 +153,34 @@ class FirebaseCloudFirestoreService {
         .where('uid1', isEqualTo: loggedInUid)
         .snapshots()
         .map((snap) => snap.documents.map((doc) {
-      Chat chat = Chat.fromMap(map: doc.data);
-      chat.setChatpath(chatpath: doc.reference.path);
-      return chat;
-    }).toList());
+              Chat chat = Chat.fromMap(map: doc.data);
+              chat.setChatpath(chatpath: doc.reference.path);
+              return chat;
+            }).toList());
     Stream<List<Chat>> stream2 = _fireStore
         .collection('chats')
         .where('uid2', isEqualTo: loggedInUid)
         .snapshots()
         .map((snap) => snap.documents.map((doc) {
-      Chat chat = Chat.fromMap(map: doc.data);
-      chat.setChatpath(chatpath: doc.reference.path);
-      return chat;
-    }).toList());
+              Chat chat = Chat.fromMap(map: doc.data);
+              chat.setChatpath(chatpath: doc.reference.path);
+              return chat;
+            }).toList());
 
 //i have 2 streams of lists
 //i want one stream with the list of those streams combined
 
     Stream<List<Chat>> chatStream =
-    ZipStream.zip2(stream1, stream2, (list1, list2) => list1 + list2);
+        ZipStream.zip2(stream1, stream2, (list1, list2) => list1 + list2);
 
     return chatStream;
   }
 
   Future<String> getChatPath(
       {@required String loggedInUid,
-        @required String otherUid,
-        @required String otherUsername,
-        @required String otherUserImageFileName}) async {
+      @required String otherUid,
+      @required String otherUsername,
+      @required String otherUserImageFileName}) async {
     try {
       String chatPath;
       QuerySnapshot snap1 = await _fireStore
@@ -216,9 +216,9 @@ class FirebaseCloudFirestoreService {
 
   Future<String> _createChat(
       {@required String loggedInUid,
-        @required String otherUserUid,
-        @required String otherUsername,
-        @required String otherUserImageFileName}) async {
+      @required String otherUserUid,
+      @required String otherUsername,
+      @required String otherUserImageFileName}) async {
     try {
       User loggedInUser = await getUser(uid: loggedInUid);
       var docReference = await _fireStore.collection('chats').add({
@@ -245,8 +245,8 @@ class FirebaseCloudFirestoreService {
           .orderBy('timestamp')
           .snapshots()
           .map((snap) => snap.documents.reversed
-          .map((doc) => Message.fromMap(map: doc.data))
-          .toList());
+              .map((doc) => Message.fromMap(map: doc.data))
+              .toList());
       return messageStream;
     } catch (e) {
       print('Isaak could not get the message stream');

@@ -65,6 +65,9 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
                   },
                   text: 'I already have an account',
                 ),
+                SizedBox(
+                  height: 70,
+                )
               ],
             ),
           ),

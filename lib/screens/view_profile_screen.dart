@@ -16,14 +16,14 @@ class ViewProfileScreen extends StatelessWidget {
 
   ViewProfileScreen(
       {@required this.user,
-        @required this.heroTag,
-        @required this.loggedInUser,
-        this.showSkills = true});
+      @required this.heroTag,
+      @required this.loggedInUser,
+      this.showSkills = true});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    return CupertinoPageScaffold(
+      child: SafeArea(
         child: Column(
           children: <Widget>[
             Expanded(
@@ -34,12 +34,11 @@ class ViewProfileScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        IconButton(
-                          color: kDarkGreenColor,
+                        CupertinoButton(
+                          child: Icon(Icons.arrow_back_ios),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          icon: Icon(Icons.arrow_back_ios),
                         ),
                         Center(
                           heightFactor: 1.2,
@@ -83,31 +82,31 @@ class ViewProfileScreen extends StatelessWidget {
                     ),
                     showSkills
                         ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          'Skills',
-                          style: kMiddleTitleTextStyle,
-                        ),
-                        Text(
-                          '${user.skillRate} CHF/h',
-                          style: kSmallTitleTextStyle,
-                        ),
-                      ],
-                    )
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                'Skills',
+                                style: kMiddleTitleTextStyle,
+                              ),
+                              Text(
+                                '${user.skillRate} CHF/h',
+                                style: kSmallTitleTextStyle,
+                              ),
+                            ],
+                          )
                         : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          'Wishes',
-                          style: kMiddleTitleTextStyle,
-                        ),
-                        Text(
-                          '${user.wishRate} CHF/h',
-                          style: kSmallTitleTextStyle,
-                        ),
-                      ],
-                    ),
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                'Wishes',
+                                style: kMiddleTitleTextStyle,
+                              ),
+                              Text(
+                                '${user.wishRate} CHF/h',
+                                style: kSmallTitleTextStyle,
+                              ),
+                            ],
+                          ),
                     SizedBox(
                       height: 5,
                     ),

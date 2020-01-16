@@ -3,37 +3,75 @@ import 'package:float/constants.dart';
 import 'package:float/models/chat.dart';
 import 'package:float/models/helper_functions.dart';
 import 'package:float/screens/chat_screen.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:float/widgets/sign_in_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ListOfChats extends StatelessWidget {
-  const ListOfChats({
-    Key key,
-    @required this.chats,
-  }) : super(key: key);
-
-  final List<Chat> chats;
-
+class ChatsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    if (chats.isEmpty) {
-      // Scaffold damit text nicht gelb unterstrichen ist
-      return Scaffold(
-        body: Center(
-          child: Text('You have no open chats', style: kSkillTextStyle),
-        ),
-      );
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    //listening to loggedInUser (so it rebuilds) is not necessary as the navigationscreen provides it and always has the up to date value because it is rebuilt whenever we navigate to it
+    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    if (loggedInUser == null) {
+      return Center(child: SignInButton());
     }
-    return ListView.builder(
-      itemExtent: 90,
-      itemBuilder: (context, index) {
-        return ChatItem(
-          chat: chats[index],
-        );
-      },
-      itemCount: chats.length,
-    );
+
+    return StreamBuilder(
+        stream:
+            cloudFirestoreService.getChatStream(loggedInUid: loggedInUser.uid),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.connectionState == ConnectionState.none) {
+            return Center(
+              child: CupertinoActivityIndicator(),
+            );
+          }
+          List<Chat> chats =
+              List.from(snapshot.data); // to convert it to editable list
+          chats.sort((chat1, chat2) => (chat2.lastMessageTimestamp)
+              .compareTo(chat1.lastMessageTimestamp));
+
+          if (chats.isEmpty) {
+            // Scaffold damit text nicht gelb unterstrichen ist
+            return CupertinoPageScaffold(
+              child: Center(
+                child: Text('You have no open chats', style: kSkillTextStyle),
+              ),
+            );
+          }
+          return CustomScrollView(
+            semanticChildCount: chats.length,
+            slivers: <Widget>[
+              CupertinoSliverNavigationBar(
+                backgroundColor: CupertinoColors.white,
+                border: null,
+                largeTitle: Text('Chats'),
+              ),
+              SliverSafeArea(
+                top: false,
+                sliver: SliverFixedExtentList(
+                  itemExtent: 90,
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      if (index < chats.length) {
+                        return ChatItem(
+                          chat: chats[index],
+                        );
+                      }
+                      return null;
+                    },
+                    childCount: chats.length,
+                  ),
+                ),
+              )
+            ],
+          );
+        });
   }
 }
 
@@ -48,15 +86,15 @@ class ChatItem extends StatelessWidget {
     bool user1IsLoggedInUser = (chat.uid1 == loggedInUser.uid);
     String otherUid = user1IsLoggedInUser ? chat.uid2 : chat.uid1;
     String otherUsername =
-    user1IsLoggedInUser ? chat.username2 : chat.username1;
+        user1IsLoggedInUser ? chat.username2 : chat.username1;
     String otherImageFileName =
-    user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
+        user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
     final heroTag = otherUid + 'chats';
 
     return Card(
       elevation: 0,
       color: kLightGrey2,
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15))),
       child: Center(

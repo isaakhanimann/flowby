@@ -20,16 +20,16 @@ class ChatScreen extends StatelessWidget {
   //or if he isn't we can user the other user to figure out the chatpath ourselves
   ChatScreen(
       {@required this.loggedInUid,
-        @required this.otherUid,
-        @required this.otherUsername,
-        @required this.heroTag,
-        @required this.otherImageFileName,
-        this.chatPath});
+      @required this.otherUid,
+      @required this.otherUsername,
+      @required this.heroTag,
+      @required this.otherImageFileName,
+      this.chatPath});
 
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     if (chatPath != null) {
       return Provider<String>.value(
@@ -90,41 +90,42 @@ class ChatScreenWithPath extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: CupertinoColors.white,
+        border: null,
+        leading: CupertinoButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(Icons.arrow_back_ios),
+          child: Icon(Icons.arrow_back_ios),
         ),
-        title: Row(
+        middle: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Hero(
-              tag: heroTag,
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.grey,
-                backgroundImage: NetworkImage(
-                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
-              ),
+            CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.grey,
+              backgroundImage: NetworkImage(
+                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
             ),
-            SizedBox(width: 30),
-            Text(otherUsername ?? 'Default'),
+            SizedBox(
+              width: 10,
+            ),
+            Text(otherUsername ?? 'Default')
           ],
         ),
-        backgroundColor: kDarkGreenColor,
       ),
-      body: SafeArea(
+      child: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             MessagesStream(
               messagesStream:
-              cloudFirestoreService.getMessageStream(chatPath: chatPath),
+                  cloudFirestoreService.getMessageStream(chatPath: chatPath),
             ),
             MessageSendingSection(chatPath: chatPath),
           ],
@@ -196,20 +197,19 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
   Widget build(BuildContext context) {
     String loggedInUid = Provider.of<String>(context);
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     return Container(
       decoration: kMessageContainerDecoration,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            child: TextField(
+            child: CupertinoTextField(
               controller: messageTextController,
               onChanged: (value) {
                 //Do something with the user input.
                 messageText = value;
               },
-              decoration: kMessageTextFieldDecoration,
             ),
           ),
           SendButton(
@@ -247,7 +247,7 @@ class MessageBubble extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment:
-        isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             timestamp,
@@ -256,18 +256,18 @@ class MessageBubble extends StatelessWidget {
           Material(
             borderRadius: isMe
                 ? BorderRadius.only(
-                topLeft: Radius.circular(30),
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30))
+                    topLeft: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30))
                 : BorderRadius.only(
-                topRight: Radius.circular(30),
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30)),
+                    topRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30)),
             elevation: 5.0,
-            color: isMe ? kDarkGreenColor : Colors.white,
+            color: isMe ? ffMiddleBlue : Colors.white,
             child: Padding(
               padding:
-              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Text(
                 text,
                 style: TextStyle(
@@ -293,11 +293,11 @@ class SendButton extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Material(
-        color: kDarkGreenColor,
+        color: kDefaultProfilePicColor,
         borderRadius: BorderRadius.circular(30.0),
-        child: IconButton(
+        child: CupertinoButton(
           onPressed: onPress,
-          icon: Icon(
+          child: Icon(
             Icons.send,
             color: Colors.white,
             size: 20,

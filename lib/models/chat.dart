@@ -13,13 +13,13 @@ class Chat {
 
   Chat(
       {this.uid1,
-        this.username1,
-        this.user1ImageFileName,
-        this.uid2,
-        this.username2,
-        this.user2ImageFileName,
-        this.lastMessageText,
-        this.lastMessageTimestamp});
+      this.username1,
+      this.user1ImageFileName,
+      this.uid2,
+      this.username2,
+      this.user2ImageFileName,
+      this.lastMessageText,
+      this.lastMessageTimestamp});
 
   Chat.fromMap({Map<String, dynamic> map}) {
     this.uid1 = map['uid1'];

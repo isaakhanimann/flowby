@@ -4,12 +4,22 @@ import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/firebase_storage_service.dart';
 import 'package:float/services/image_picker_service.dart';
 import 'package:float/services/location_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'constants.dart';
 import 'route_generator.dart';
 
-void main() => runApp(Float());
+void main() {
+  // This app is designed only to work vertically, so we limit
+  // orientations to portrait up and down.
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  return runApp(Float());
+}
 
 class Float extends StatelessWidget {
   @override
@@ -32,7 +42,9 @@ class Float extends StatelessWidget {
           create: (_) => LocationService(),
         ),
       ],
-      child: MaterialApp(
+      child: CupertinoApp(
+        theme: CupertinoThemeData(
+            brightness: Brightness.light, primaryColor: kLoginBackgroundColor),
         debugShowCheckedModeBanner: false,
         initialRoute: SplashScreen.id,
         onGenerateRoute: RouteGenerator.generateRoute,
