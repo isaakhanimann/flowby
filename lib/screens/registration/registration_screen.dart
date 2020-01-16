@@ -55,7 +55,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         inAsyncCall: showSpinner,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Sign Up'),
+            title: Text(
+              'Sign Up',
+              style: TextStyle(fontFamily: 'MontserratRegular'),
+            ),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0.0,

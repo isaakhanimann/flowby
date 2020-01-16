@@ -13,7 +13,7 @@ class ChatOverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     //listening to loggedInUser (so it rebuilds) is not necessary as the navigationscreen provides it and always has the up to date value because it is rebuilt whenever we navigate to it
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
@@ -38,7 +38,7 @@ class ChatOverviewScreen extends StatelessWidget {
 
     return StreamBuilder(
         stream:
-            cloudFirestoreService.getChatStream(loggedInUid: loggedInUser.uid),
+        cloudFirestoreService.getChatStream(loggedInUid: loggedInUser.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.connectionState == ConnectionState.none) {
@@ -47,7 +47,7 @@ class ChatOverviewScreen extends StatelessWidget {
             );
           }
           List<Chat> chats =
-              List.from(snapshot.data); // to convert it to editable list
+          List.from(snapshot.data); // to convert it to editable list
           chats.sort((chat1, chat2) => (chat2.lastMessageTimestamp)
               .compareTo(chat1.lastMessageTimestamp));
           return ListOfChats(

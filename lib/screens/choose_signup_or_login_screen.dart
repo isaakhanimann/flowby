@@ -24,7 +24,7 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
   void initState() {
     super.initState();
     _controller =
-        VideoPlayerController.asset('images/Freeflowter_Animation_home.mp4')
+        VideoPlayerController.asset('assets/videos/Freeflowter_Animation_home.mp4')
           ..initialize().then((_) {
             // Ensure the first frame is shown after the video is initialized
             _controller.play();

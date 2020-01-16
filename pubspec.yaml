@@ -32,8 +32,12 @@ flutter:
   uses-material-design: true
 
   assets:
-    - images/
+    - assets/images/
+    - assets/videos/
   fonts:
     - family: MontserratRegular
       fonts:
-        - asset: fonts/Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Regular.ttf
+    - family: NotoRegular
+      fonts:
+        - asset: assets/fonts/Noto_Sans_JP/NotoSansJP-Regular.otf

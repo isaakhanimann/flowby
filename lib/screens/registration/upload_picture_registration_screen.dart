@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/screens/registration/user_description_registration_screen.dart';
-import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/services/firebase_storage_service.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +16,7 @@ import 'package:float/models/user.dart';
 
 class UploadPictureRegistrationScreen extends StatefulWidget {
   static const String id = 'upload_picture_registration_screen';
+
   final User user;
 
   UploadPictureRegistrationScreen({this.user});
@@ -166,17 +165,14 @@ class _UploadPictureRegistrationScreenState
                           });
                           try {
                             if (_profilePic != null) {
-                              final authService =
-                                  Provider.of<FirebaseAuthService>(context,
-                                      listen: false);
                               final storageService =
                                   Provider.of<FirebaseStorageService>(context,
                                       listen: false);
-                              FirebaseUser loggedInUser =
-                                  await authService.getCurrentUser();
                               await storageService.uploadImage(
-                                  fileName: loggedInUser.uid,
+                                  fileName: _user.uid,
                                   image: _profilePic);
+
+                              _user.imageFileName = _user.uid;
                             }
                           } catch (e) {
                             print('Could not upload and get on Save');

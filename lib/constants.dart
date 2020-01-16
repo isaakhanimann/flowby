@@ -54,7 +54,7 @@ const kLoginInputFieldDecoration = InputDecoration(
 const ffLoginInputFieldDecoration = InputDecoration(
   filled: true,
   fillColor: Colors.white,
-  hintStyle: TextStyle(fontFamily: 'MontserratRegular'),
+  hintStyle: TextStyle(fontFamily: 'NotoRegular'),
   contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
   border: OutlineInputBorder(
     borderRadius: BorderRadius.all(

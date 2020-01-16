@@ -47,7 +47,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Log In'),
+            title: Text(
+              'Log In',
+              style: TextStyle(fontFamily: 'MontserratRegular'),
+            ),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0.0,
@@ -60,9 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  SizedBox(
-                    height: 48.0,
-                  ),
                   LoginInputField(
                     controller: _emailController,
                     focusNode: _emailFocus,
