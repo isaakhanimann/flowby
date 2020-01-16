@@ -16,9 +16,8 @@ class SettingsTab extends StatelessWidget {
         leading: CircleAvatar(
           radius: 20,
           backgroundColor: Colors.grey,
-          // todo get the real imagefilename of the logged in user
           backgroundImage: NetworkImage(
-              'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${'default-profile-pic.jpg'}?alt=media'),
+              'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${loggedInUser.uid}?alt=media'),
         ),
         title: Text('Edit Profile', style: kUsernameTextStyle),
         onTap: () {

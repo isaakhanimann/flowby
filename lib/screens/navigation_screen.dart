@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/screens/chats_tab.dart';
 import 'package:float/screens/home_tab.dart';
-import 'package:float/screens/settings_tab.dart';
+import 'package:float/screens/user_profile_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/location_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -107,7 +107,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
             case 2:
               returnValue = CupertinoTabView(builder: (context) {
                 return CupertinoPageScaffold(
-                  child: SettingsTab(),
+                  child: UserProfileScreen(),
                 );
               });
               break;

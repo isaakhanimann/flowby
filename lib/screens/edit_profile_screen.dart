@@ -22,6 +22,7 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   User user;
   String _localUsername;
+  String _localBio;
   String _localHashtagSkills;
   String _localHashtagWishes;
   File _profilePic;
@@ -75,6 +76,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
       _localUsername = user.username;
+      _localBio = user.bio;
       _localHashtagSkills = user.skillHashtags;
       _localHashtagWishes = user.wishHashtags;
       _localSkillRate = user?.skillRate;
@@ -135,6 +137,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 User user = User(
                     username: _localUsername,
                     uid: widget.loggedInUser.uid,
+                    bio: _localBio,
                     skillHashtags: _localHashtagSkills,
                     wishHashtags: _localHashtagWishes,
                     skillRate: _localSkillRate,
@@ -184,11 +187,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               Row(
                 children: <Widget>[
-                  Text('Name'),
                   Expanded(
                     child: CupertinoTextField(
-                      textAlign: TextAlign.center,
-                      style: kMiddleTitleTextStyle,
+                      prefix: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Name', style: TextStyle(color: Colors.grey[600])),
+                      ),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[600]),
+                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                      controller: TextEditingController(text: user.username),
+                      textAlign: TextAlign.left,
                       onChanged: (newValue) {
                         setState(() {
                           _localUsername = newValue;
@@ -258,6 +267,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 class RatePicker extends StatelessWidget {
   final Function onSelected;
   final int initialValue;
+
   RatePicker({@required this.onSelected, this.initialValue});
 
   List<Text> _getPickerItems() {

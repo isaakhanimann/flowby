@@ -152,7 +152,7 @@ class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
                                 ? CircleAvatar(
                                     backgroundColor: Colors.grey,
                                     backgroundImage: AssetImage(
-                                        'images/default-profile-pic_old.jpg'),
+                                        'assets/images/default-profile-pic_old.jpg'),
                                     radius: 60,
                                   )
                                 : CircleAvatar(
