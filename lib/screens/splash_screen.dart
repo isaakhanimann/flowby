@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return SizedBox.expand(
       child: Container(
         color: Colors.white,
-        child: Image.asset('images/logo.png'),
+        child: Image.asset('assets/images/logo.png'),
       ),
     );
   }
