@@ -21,13 +21,17 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   User user;
-  String _localUsername;
-  String _localHashtagSkills;
-  String _localHashtagWishes;
+  bool _localHasSkills;
+  bool _localHasWishes;
   File _profilePic;
   int _localSkillRate;
   int _localWishRate;
   bool showSpinner = true;
+
+  var _usernameController = TextEditingController();
+  var _bioController = TextEditingController();
+  var _hashtagSkillController = TextEditingController();
+  var _hashtagWishController = TextEditingController();
 
   void changeProfilePic() async {
     showCupertinoModalPopup(
@@ -74,9 +78,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     user = await cloudFirestoreService.getUser(uid: uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
     setState(() {
-      _localUsername = user.username;
-      _localHashtagSkills = user.skillHashtags;
-      _localHashtagWishes = user.wishHashtags;
+      _usernameController.text = user.username;
+      _bioController.text = user.bio;
+      _localHasSkills = user.hasSkills;
+      _localHasWishes = user.hasWishes;
+      _hashtagSkillController.text = user.skillHashtags;
+      _hashtagWishController.text = user.wishHashtags;
       _localSkillRate = user?.skillRate;
       _localWishRate = user?.wishRate;
       _profilePic = null;
@@ -112,6 +119,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
+        border: null,
         backgroundColor: Colors.transparent,
         leading: CupertinoButton(
           padding: EdgeInsets.all(10),
@@ -134,10 +142,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       fileName: widget.loggedInUser.uid, image: _profilePic);
                 }
                 User user = User(
-                    username: _localUsername,
+                    username: _usernameController.text,
                     uid: widget.loggedInUser.uid,
-                    skillHashtags: _localHashtagSkills,
-                    wishHashtags: _localHashtagWishes,
+                    skillHashtags: _hashtagSkillController.text,
+                    wishHashtags: _hashtagWishController.text,
                     skillRate: _localSkillRate,
                     wishRate: _localWishRate,
                     imageFileName: widget.loggedInUser.uid);
@@ -177,7 +185,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Center(
                 child: GestureDetector(
                   onTap: changeProfilePic,
-                  child: Text(''),
+                  child: Text('Edit'),
                 ),
               ),
               SizedBox(
@@ -188,13 +196,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Text('Name'),
                   Expanded(
                     child: CupertinoTextField(
+                      controller: _usernameController,
                       textAlign: TextAlign.center,
                       style: kMiddleTitleTextStyle,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _localUsername = newValue;
-                        });
-                      },
                     ),
                   )
                 ],
@@ -202,52 +206,108 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 15,
               ),
-              Text(
-                'Add skills',
-                style: kMiddleTitleTextStyle,
+              Row(
+                children: <Widget>[
+                  Text('Bio'),
+                  Expanded(
+                    child: CupertinoTextField(
+                      controller: _bioController,
+                      textAlign: TextAlign.center,
+                      style: kMiddleTitleTextStyle,
+                    ),
+                  )
+                ],
               ),
-              SizedBox(
-                height: 5,
+              Row(
+                children: <Widget>[
+                  Text('Show Skills'),
+                  CupertinoSwitch(
+                    value: _localHasSkills,
+                    onChanged: (newBool) {
+                      setState(() {
+                        _localHasSkills = newBool;
+                      });
+                    },
+                  ),
+                ],
               ),
-              Text(
-                'Add your skills in hashtags so people can find you',
+              if (_localHasSkills)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          'Skills',
+                          style: kMiddleTitleTextStyle,
+                        ),
+                        RatePicker(
+                          initialValue: user.skillRate ?? 20,
+                          onSelected: (selectedIndex) {
+                            _localSkillRate = selectedIndex;
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Add your skills in hashtags so people can find you',
+                    ),
+                    CupertinoTextField(
+                      controller: _hashtagSkillController,
+                      textAlign: TextAlign.center,
+                      style: kMiddleTitleTextStyle,
+                      placeholder: user.skillHashtags,
+                    ),
+                  ],
+                ),
+              SizedBox(height: 60),
+              Row(
+                children: <Widget>[
+                  Text('Show Wishes'),
+                  CupertinoSwitch(
+                    value: _localHasWishes,
+                    onChanged: (newBool) {
+                      setState(() {
+                        _localHasWishes = newBool;
+                      });
+                    },
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 5,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                'Add your hourly rate',
-                style: kSmallTitleTextStyle,
-              ),
-              RatePicker(
-                initialValue: user.skillRate ?? 20,
-                onSelected: (selectedIndex) {
-                  _localSkillRate = selectedIndex;
-                },
-              ),
-              Text(
-                'Add wishes',
-                style: kMiddleTitleTextStyle,
-              ),
-              Text(
-                'Add hashtags to let people know what they can help you with',
-              ),
-              Text(
-                'Add maximum you would be willing to pay',
-                style: kSmallTitleTextStyle,
-              ),
-              RatePicker(
-                initialValue: user.wishRate ?? 20,
-                onSelected: (selectedIndex) {
-                  _localWishRate = selectedIndex;
-                },
-              ),
-              SizedBox(
-                height: 5,
-              ),
+              if (_localHasWishes)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          'Wishes',
+                          style: kMiddleTitleTextStyle,
+                        ),
+                        RatePicker(
+                          initialValue: user.wishRate ?? 20,
+                          onSelected: (selectedIndex) {
+                            _localWishRate = selectedIndex;
+                          },
+                        ),
+                      ],
+                    ),
+                    Text(
+                      'Add hashtags to let people know what they can help you with',
+                    ),
+                    CupertinoTextField(
+                      controller: _hashtagWishController,
+                      textAlign: TextAlign.center,
+                      style: kMiddleTitleTextStyle,
+                      placeholder: user.wishHashtags,
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
