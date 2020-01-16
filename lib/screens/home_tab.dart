@@ -79,6 +79,7 @@ class _HomeTabState extends State<HomeTab> {
 
         if (isSkillSelected) {
           searchResultUsers = allUsers
+              .where((u) => u.hasSkills)
               .where((u) => u.skillHashtags
                   .toString()
                   .toLowerCase()
@@ -86,6 +87,7 @@ class _HomeTabState extends State<HomeTab> {
               .toList();
         } else {
           searchResultUsers = allUsers
+              .where((u) => u.hasWishes)
               .where((u) => u.wishHashtags
                   .toString()
                   .toLowerCase()
