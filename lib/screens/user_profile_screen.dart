@@ -1,16 +1,15 @@
-import 'package:float/constants.dart';
-import 'package:float/screens/settings_tab.dart';
-import 'package:float/services/firebase_storage_service.dart';
-import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/widgets/rounded_button.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
-import 'package:float/screens/edit_profile_screen.dart';
-import 'package:float/widgets/sign_in_button.dart';
-
+import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
+import 'package:float/screens/edit_profile_screen.dart';
+import 'package:float/screens/settings_tab.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:float/services/firebase_storage_service.dart';
+import 'package:float/widgets/rounded_button.dart';
+import 'package:float/widgets/sign_in_button.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UserProfileScreen extends StatelessWidget {
   static const String id = 'user_profile_screen';
@@ -168,7 +167,8 @@ class UserProfileScreen extends StatelessWidget {
                       Navigator.of(context, rootNavigator: false).push(
                         MaterialPageRoute<void>(
                           builder: (context) {
-                            return EditProfileScreen(loggedInUser: loggedInUser, user: user);
+                            return EditProfileScreen(
+                                loggedInUser: loggedInUser);
                           },
                         ),
                       );
