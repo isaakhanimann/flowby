@@ -29,7 +29,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Reset password'),
+          title: Text(
+            'Reset password',
+            style: TextStyle(fontFamily: 'MontserratRegular'),
+          ),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0.0,
@@ -42,19 +45,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                SizedBox(
-                  height: 48.0,
-                ),
                 LoginInputField(
                   isLast: false,
                   isEmail: true,
-                  placeholder: 'Email Address',
+                  placeholder: 'Email address',
                   setText: (value) {
                     email = value;
                   },
                 ),
                 RoundedButton(
-                    color: kDarkGreenColor,
+                    color: ffDarkBlue,
+                    textColor: Colors.white,
                     onPressed: () async {
                       final authService = Provider.of<FirebaseAuthService>(
                           context,

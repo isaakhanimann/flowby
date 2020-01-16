@@ -73,7 +73,7 @@ class ViewProfileScreen extends StatelessWidget {
                     ),
                     Center(
                       child: Text(
-                        'This is the description',
+                        user.bio != null ? user.bio : 'This is the description!!!',
                         style: kSmallTitleTextStyle,
                       ),
                     ),
