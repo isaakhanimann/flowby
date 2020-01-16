@@ -164,8 +164,8 @@ class UserProfileScreen extends StatelessWidget {
                     color: ffDarkBlue,
                     textColor: Colors.white,
                     onPressed: () {
-                      Navigator.of(context, rootNavigator: false).push(
-                        MaterialPageRoute<void>(
+                      Navigator.of(context, rootNavigator: true).push(
+                        CupertinoPageRoute<void>(
                           builder: (context) {
                             return EditProfileScreen(
                                 loggedInUser: loggedInUser);

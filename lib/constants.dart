@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const kSendButtonTextStyle = TextStyle(
@@ -15,7 +16,7 @@ const kBigTitleTextStyle = TextStyle(
 const kMiddleTitleTextStyle = TextStyle(
   fontSize: 35.0,
   fontWeight: FontWeight.w900,
-  color: kDarkGreenColor,
+  color: kLoginBackgroundColor,
 );
 
 const kSmallTitleTextStyle = TextStyle(

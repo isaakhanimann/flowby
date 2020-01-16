@@ -144,6 +144,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 User user = User(
                     username: _usernameController.text,
                     uid: widget.loggedInUser.uid,
+                    bio: _bioController.text,
+                    hasSkills: _localHasSkills,
+                    hasWishes: _localHasWishes,
                     skillHashtags: _hashtagSkillController.text,
                     wishHashtags: _hashtagWishController.text,
                     skillRate: _localSkillRate,
@@ -192,13 +195,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 height: 5,
               ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Text('Name'),
+                  Text(
+                    'Name',
+                  ),
                   Expanded(
                     child: CupertinoTextField(
                       controller: _usernameController,
                       textAlign: TextAlign.center,
-                      style: kMiddleTitleTextStyle,
                     ),
                   )
                 ],
@@ -213,14 +218,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     child: CupertinoTextField(
                       controller: _bioController,
                       textAlign: TextAlign.center,
-                      style: kMiddleTitleTextStyle,
                     ),
                   )
                 ],
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Show Skills'),
+                  Text(
+                    'Skills',
+                    style: kMiddleTitleTextStyle,
+                  ),
                   CupertinoSwitch(
                     value: _localHasSkills,
                     onChanged: (newBool) {
@@ -233,41 +241,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               if (_localHasSkills)
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          'Skills',
-                          style: kMiddleTitleTextStyle,
-                        ),
-                        RatePicker(
-                          initialValue: user.skillRate ?? 20,
-                          onSelected: (selectedIndex) {
-                            _localSkillRate = selectedIndex;
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
                     Text(
                       'Add your skills in hashtags so people can find you',
                     ),
                     CupertinoTextField(
                       controller: _hashtagSkillController,
                       textAlign: TextAlign.center,
-                      style: kMiddleTitleTextStyle,
                       placeholder: user.skillHashtags,
+                    ),
+                    RatePicker(
+                      initialValue: user.skillRate ?? 20,
+                      onSelected: (selectedIndex) {
+                        _localSkillRate = selectedIndex;
+                      },
                     ),
                   ],
                 ),
               SizedBox(height: 60),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Show Wishes'),
+                  Text(
+                    'Wishes',
+                    style: kMiddleTitleTextStyle,
+                  ),
                   CupertinoSwitch(
                     value: _localHasWishes,
                     onChanged: (newBool) {
@@ -280,31 +278,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               if (_localHasWishes)
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          'Wishes',
-                          style: kMiddleTitleTextStyle,
-                        ),
-                        RatePicker(
-                          initialValue: user.wishRate ?? 20,
-                          onSelected: (selectedIndex) {
-                            _localWishRate = selectedIndex;
-                          },
-                        ),
-                      ],
-                    ),
                     Text(
-                      'Add hashtags to let people know what they can help you with',
+                      'Add your skills in hashtags so people can find you',
                     ),
                     CupertinoTextField(
                       controller: _hashtagWishController,
                       textAlign: TextAlign.center,
-                      style: kMiddleTitleTextStyle,
                       placeholder: user.wishHashtags,
+                    ),
+                    RatePicker(
+                      initialValue: user.wishRate ?? 20,
+                      onSelected: (selectedIndex) {
+                        _localWishRate = selectedIndex;
+                      },
                     ),
                   ],
                 ),
@@ -349,7 +336,7 @@ class RatePicker extends StatelessWidget {
         ),
         Text(
           'CHF/h',
-          style: TextStyle(fontSize: 25),
+          style: TextStyle(fontSize: 16),
         ),
       ],
     );
