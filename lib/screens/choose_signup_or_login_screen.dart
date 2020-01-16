@@ -90,7 +90,7 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
                     },
                   ),
                   SizedBox(
-                    height: 70,
+                    height: 60,
                   )
                 ],
               ),

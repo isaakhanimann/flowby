@@ -12,8 +12,9 @@ import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final FirebaseUser loggedInUser;
+  User user;
 
-  EditProfileScreen({@required this.loggedInUser});
+  EditProfileScreen({@required this.loggedInUser, this.user});
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
@@ -29,6 +30,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   int _localSkillRate;
   int _localWishRate;
   bool showSpinner = true;
+
+  TextEditingController _ctrlInputName;
+  TextEditingController _ctrlInputBio;
 
   void changeProfilePic() async {
     showCupertinoModalPopup(
@@ -73,7 +77,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     String uid = widget.loggedInUser.uid;
     user = await cloudFirestoreService.getUser(uid: uid);
-    //also fill the temps in case the user presses save and the messageboxes are filled
+    //also fill the temps in case the user presses save and the message boxes are filled
     setState(() {
       _localUsername = user.username;
       _localBio = user.bio;
@@ -90,7 +94,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void initState() {
     super.initState();
     //this is an asynchronous method
+    user = widget.user;
     _getUser(context);
+    _ctrlInputName = TextEditingController(text: user.username);
+    _ctrlInputBio = TextEditingController(text: user.bio);
   }
 
   @override
@@ -111,6 +118,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: CupertinoActivityIndicator(),
       );
     }
+
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Colors.transparent,
@@ -132,7 +140,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               try {
                 if (_profilePic != null) {
                   await storageService.uploadImage(
-                      fileName: widget.loggedInUser.uid, image: _profilePic);
+                    fileName: widget.loggedInUser.uid,
+                    image: _profilePic,
+                  );
                 }
                 User user = User(
                     username: _localUsername,
@@ -191,16 +201,47 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     child: CupertinoTextField(
                       prefix: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('Name', style: TextStyle(color: Colors.grey[600])),
+                        child: Text(
+                          'Name',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
                       ),
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey[600]),
                           borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                      controller: TextEditingController(text: user.username),
                       textAlign: TextAlign.left,
+                      controller: _ctrlInputName,
                       onChanged: (newValue) {
                         setState(() {
                           _localUsername = newValue;
+                        });
+                      },
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: CupertinoTextField(
+                      prefix: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Bio',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[600]),
+                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                      textAlign: TextAlign.left,
+                      controller: _ctrlInputBio,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _localBio = newValue;
                         });
                       },
                     ),

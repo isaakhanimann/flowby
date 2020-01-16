@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:float/screens/edit_profile_screen.dart';
+import 'package:float/widgets/sign_in_button.dart';
 
 import 'package:float/models/user.dart';
 
@@ -19,6 +20,9 @@ class UserProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    if (loggedInUser == null) {
+      return Center(child: SignInButton());
+    }
     final storageService =
         Provider.of<FirebaseStorageService>(context, listen: false);
     final cloudFirestoreService =
@@ -164,7 +168,7 @@ class UserProfileScreen extends StatelessWidget {
                       Navigator.of(context, rootNavigator: false).push(
                         MaterialPageRoute<void>(
                           builder: (context) {
-                            return EditProfileScreen(loggedInUser: loggedInUser,);
+                            return EditProfileScreen(loggedInUser: loggedInUser, user: user);
                           },
                         ),
                       );
