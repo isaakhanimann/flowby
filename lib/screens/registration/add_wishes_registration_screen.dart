@@ -6,10 +6,12 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/constants.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:float/widgets/rate_picker.dart';
+import 'package:float/widgets/progress_bar.dart';
 import 'package:float/models/user.dart';
 
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/firebase_auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 class AddWishesRegistrationScreen extends StatefulWidget {
@@ -39,13 +41,13 @@ class _AddWishesRegistrationScreenState
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
 
-    print(_user);
+    //print(_user);
 
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
           colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("images/Freeflowter_Stony.png"),
+          image: AssetImage("assets/images/Freeflowter_Stony.png"),
           alignment: Alignment(0.0, 0.0),
           fit: BoxFit.cover,
         ),
@@ -65,151 +67,149 @@ class _AddWishesRegistrationScreenState
             ),*/
             backgroundColor: Colors.white,
             body: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Container(
-                        width: 20.0,
-                        margin: const EdgeInsets.all(0.0),
-                        padding: const EdgeInsets.all(0.0),
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(width: 5, color: Colors.blueAccent)),
-                        child: Text("My Awesome Border"),
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Text(
-                        'Add what you would like to learn',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'MontserratRegular',
-                          fontSize: 22.0,
+              child: Stack(children: [
+                ProgressBar(progress: 1),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 10.0,
                         ),
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      TextFormField(
-                        onChanged: (value) {
-                          _databaseHashtagWishes = value;
-                        },
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                          hintText: 'Your wishes (e.g. #sushis)',
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintStyle: TextStyle(fontFamily: 'MontserratRegular'),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 15.0, horizontal: 30.0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(5.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      Text(
-                        'How much would you pay?',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'MontserratRegular',
-                          fontSize: 18.0,
-                        ),
-                      ),
-                      RatePicker(
-                        initialValue: _databaseWishRate ?? 20,
-                        onSelected: (selectedIndex) {
-                          _databaseWishRate = selectedIndex;
-                        },
-                      ),
-                      RoundedButton(
-                        text: 'I am ready!',
-                        color: ffDarkBlue,
-                        textColor: Colors.white,
-                        onPressed: () async {
-                          setState(() {
-                            showSpinner = true;
-                          });
-
-                          _user.wishHashtags = _databaseHashtagWishes;
-                          _user.wishRate = _databaseWishRate;
-
-                          final cloudFirestoreService =
-                              Provider.of<FirebaseCloudFirestoreService>(
-                                  context,
-                                  listen: false);
-
-                          await cloudFirestoreService.uploadUser(user: _user);
-                          final authService = Provider.of<FirebaseAuthService>(
-                              context,
-                              listen: false);
-
-                          await authService.tryToGetCurrentUserAndNavigate(context: context);
-
-                          setState(() {
-                            showSpinner = false;
-                          });
-                        },
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute<void>(
-                              builder: (context) {
-                                return NavigationScreen();
-                              },
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Skip this step',
+                        Text(
+                          'Add what you would like to learn',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'MontserratRegular',
-                            fontSize: 16.0,
+                            fontSize: 22.0,
                           ),
                         ),
-                      ),
-                      /*
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Text(
-                        'We all have at least a valuable skill',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'MontserratRegular',
-                          fontSize: 22.0,
+                        SizedBox(
+                          height: 10.0,
                         ),
-                      ),
-                      Container(
-                        height: 350.0,
-                        width: 350.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            colorFilter: ColorFilter.mode(
-                                Colors.white, BlendMode.colorBurn),
-                            image: AssetImage("images/Freeflowter_Stony.png"),
-                            alignment: Alignment(0.0, 0.0),
-                            fit: BoxFit.cover,
+                        TextFormField(
+                          onChanged: (value) {
+                            _databaseHashtagWishes = value;
+                          },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            hintText: 'Your wishes (e.g. #sushis)',
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintStyle:
+                                TextStyle(fontFamily: 'MontserratRegular'),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 30.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5.0),
+                              ),
+                            ),
                           ),
                         ),
-                      ),*/
-                    ]),
-              ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Text(
+                          'How much would you pay?',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'MontserratRegular',
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        RatePicker(
+                          initialValue: _databaseWishRate ?? 20,
+                          onSelected: (selectedIndex) {
+                            _databaseWishRate = selectedIndex;
+                          },
+                        ),
+                        RoundedButton(
+                          text: 'I am ready!',
+                          color: ffDarkBlue,
+                          textColor: Colors.white,
+                          onPressed: () async {
+                            setState(() {
+                              showSpinner = true;
+                            });
+
+                            _user.wishHashtags = _databaseHashtagWishes;
+                            _user.wishRate = _databaseWishRate;
+
+                            final cloudFirestoreService =
+                                Provider.of<FirebaseCloudFirestoreService>(
+                                    context,
+                                    listen: false);
+
+                            await cloudFirestoreService.uploadUser(user: _user);
+                            final authService =
+                                Provider.of<FirebaseAuthService>(context,
+                                    listen: false);
+
+                            await authService.tryToGetCurrentUserAndNavigate(
+                                context: context);
+
+                            setState(() {
+                              showSpinner = false;
+                            });
+                          },
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+
+                            Navigator.of(context, rootNavigator: true).push(
+                              CupertinoPageRoute<void>(
+                                builder: (context) {
+                                  return NavigationScreen(loggedInUser: loggedInUser);
+                                },
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Skip this step',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'MontserratRegular',
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ),
+                        /*
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          'We all have at least a valuable skill',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'MontserratRegular',
+                            fontSize: 22.0,
+                          ),
+                        ),
+                        Container(
+                          height: 350.0,
+                          width: 350.0,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              colorFilter: ColorFilter.mode(
+                                  Colors.white, BlendMode.colorBurn),
+                              image: AssetImage("images/Freeflowter_Stony.png"),
+                              alignment: Alignment(0.0, 0.0),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),*/
+                      ]),
+                ),
+              ]),
             ),
           ),
         ),

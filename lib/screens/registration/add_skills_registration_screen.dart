@@ -5,6 +5,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:float/constants.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:float/widgets/rate_picker.dart';
+import 'package:float/widgets/progress_bar.dart';
 import 'package:float/models/user.dart';
 
 import 'package:float/screens/registration/add_wishes_registration_screen.dart';
@@ -25,7 +26,7 @@ class _AddSkillsRegistrationScreenState
     extends State<AddSkillsRegistrationScreen> {
   bool showSpinner = false;
 
-  String _databaseHashtagSkills;
+  String _databaseHashtagSkills = "#default";
   int _databaseSkillRate = 20;
   User _user;
 
@@ -35,12 +36,12 @@ class _AddSkillsRegistrationScreenState
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
 
-    print(_user);
+    //print(_user);
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
           colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("images/Freeflowter_Stony.png"),
+          image: AssetImage("assets/images/Freeflowter_Stony.png"),
           alignment: Alignment(0.0, 0.0),
           fit: BoxFit.cover,
         ),
@@ -60,138 +61,144 @@ class _AddSkillsRegistrationScreenState
             ),*/
             backgroundColor: Colors.white,
             body: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Text(
-                        'Share what you are good at',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'MontserratRegular',
-                          fontSize: 22.0,
+              child: Stack(children: [
+                ProgressBar(progress: 0.75),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 10.0,
                         ),
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      TextFormField(
-                        onChanged: (value) {
-                          _databaseHashtagSkills = value;
-                        },
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                          hintText: 'Your skills (e.g. #guillaumetell)',
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintStyle: TextStyle(fontFamily: 'MontserratRegular'),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 15.0, horizontal: 30.0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(5.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      Text(
-                        'How valuable is your presence? ',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'MontserratRegular',
-                          fontSize: 18.0,
-                        ),
-                      ),
-                      RatePicker(
-                        initialValue: _databaseSkillRate ?? 20,
-                        onSelected: (selectedIndex) {
-                          _databaseSkillRate = selectedIndex;
-                        },
-                      ),
-                      RoundedButton(
-                        text: 'Next',
-                        color: ffDarkBlue,
-                        textColor: Colors.white,
-                        onPressed: () async {
-                          setState(() {
-                            showSpinner = true;
-                          });
-
-                          _user.skillHashtags = _databaseHashtagSkills;
-                          _user.skillRate = _databaseSkillRate;
-
-                          Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute<void>(
-                              builder: (context) {
-                                return AddWishesRegistrationScreen(user: _user);
-                              },
-                            ),
-                          );
-
-                          setState(() {
-                            showSpinner = false;
-                          });
-                        },
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute<void>(
-                              builder: (context) {
-                                return AddWishesRegistrationScreen(user: _user);
-                              },
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Skip this step',
+                        Text(
+                          'Share what you are good at',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'MontserratRegular',
-                            fontSize: 16.0,
+                            fontSize: 22.0,
                           ),
                         ),
-                      ),
-                      /*
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Text(
-                        'We all have at least a valuable skill',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'MontserratRegular',
-                          fontSize: 22.0,
+                        SizedBox(
+                          height: 10.0,
                         ),
-                      ),
-                      Container(
-                        height: 350.0,
-                        width: 350.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            colorFilter: ColorFilter.mode(
-                                Colors.white, BlendMode.colorBurn),
-                            image: AssetImage("images/Freeflowter_Stony.png"),
-                            alignment: Alignment(0.0, 0.0),
-                            fit: BoxFit.cover,
+                        TextFormField(
+                          onChanged: (value) {
+                            _databaseHashtagSkills = value;
+                          },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            hintText: 'Your skills (e.g. #guillaumetell)',
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintStyle:
+                                TextStyle(fontFamily: 'MontserratRegular'),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 30.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5.0),
+                              ),
+                            ),
                           ),
                         ),
-                      ),*/
-                    ]),
-              ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Text(
+                          'How valuable is your presence? ',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'MontserratRegular',
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        RatePicker(
+                          initialValue: _databaseSkillRate ?? 20,
+                          onSelected: (selectedIndex) {
+                            _databaseSkillRate = selectedIndex;
+                          },
+                        ),
+                        RoundedButton(
+                          text: 'Next',
+                          color: ffDarkBlue,
+                          textColor: Colors.white,
+                          onPressed: () async {
+                            setState(() {
+                              showSpinner = true;
+                            });
+
+                            _user.skillHashtags = _databaseHashtagSkills;
+                            _user.skillRate = _databaseSkillRate;
+
+                            Navigator.of(context, rootNavigator: true).push(
+                              CupertinoPageRoute<void>(
+                                builder: (context) {
+                                  return AddWishesRegistrationScreen(
+                                      user: _user);
+                                },
+                              ),
+                            );
+
+                            setState(() {
+                              showSpinner = false;
+                            });
+                          },
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context, rootNavigator: true).push(
+                              CupertinoPageRoute<void>(
+                                builder: (context) {
+                                  return AddWishesRegistrationScreen(
+                                      user: _user);
+                                },
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Skip this step',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'MontserratRegular',
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ),
+                        /*
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          'We all have at least a valuable skill',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'MontserratRegular',
+                            fontSize: 22.0,
+                          ),
+                        ),
+                        Container(
+                          height: 350.0,
+                          width: 350.0,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              colorFilter: ColorFilter.mode(
+                                  Colors.white, BlendMode.colorBurn),
+                              image: AssetImage("images/Freeflowter_Stony.png"),
+                              alignment: Alignment(0.0, 0.0),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),*/
+                      ]),
+                ),
+              ]),
             ),
           ),
         ),

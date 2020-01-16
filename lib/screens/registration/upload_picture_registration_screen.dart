@@ -4,6 +4,7 @@ import 'package:float/constants.dart';
 import 'package:float/screens/registration/user_description_registration_screen.dart';
 import 'package:float/services/firebase_storage_service.dart';
 import 'package:float/widgets/rounded_button.dart';
+import 'package:float/widgets/progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -75,14 +76,18 @@ class _UploadPictureRegistrationScreenState
 
   @override
   Widget build(BuildContext context) {
-    widget.user.username != null ? _username = widget.user.username : _username = 'error';
-    widget.user != null ? _user = widget.user : print('Why da fuck is User == NULL?!');
+    widget.user.username != null
+        ? _username = widget.user.username
+        : _username = 'error';
+    widget.user != null
+        ? _user = widget.user
+        : print('Why da fuck is User == NULL?!');
 
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
           colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("images/Freeflowter_Stony.png"),
+          image: AssetImage("assets/images/Freeflowter_Stony.png"),
           alignment: Alignment(0.0, 0.0),
           fit: BoxFit.cover,
         ),
@@ -102,119 +107,122 @@ class _UploadPictureRegistrationScreenState
             ),*/
             backgroundColor: Colors.white,
             body: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Text(
-                        'Choose a picture',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'MontserratRegular',
-                          fontSize: 22.0,
+              child: Stack(children: [
+                ProgressBar(progress: 0.25),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 10.0,
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: changeProfilePic,
-                        child: Center(
-                          heightFactor: 1.2,
-                          child: _profilePic == null
-                              ? _profilePicUrl == null
-                                  ? CircleAvatar(
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: AssetImage(
-                                          'images/default-profile-pic.jpg'),
-                                      radius: 60,
-                                    )
-                                  : CircleAvatar(
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage:
-                                          NetworkImage(_profilePicUrl),
-                                      radius: 60,
-                                    )
-                              : CircleAvatar(
-                                  backgroundColor: Colors.grey,
-                                  backgroundImage: FileImage(_profilePic),
-                                  radius: 60,
-                                ),
-                        ),
-                      ),
-                      Center(
-                        child: GestureDetector(
-                          onTap: changeProfilePic,
-                          child: Text('Edit',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'MontserratRegular',
-                              )),
-                        ),
-                      ),
-                      RoundedButton(
-                        text: 'Next',
-                        color: ffDarkBlue,
-                        textColor: Colors.white,
-                        onPressed: () async {
-                          setState(() {
-                            showSpinner = true;
-                          });
-                          try {
-                            if (_profilePic != null) {
-                              final storageService =
-                                  Provider.of<FirebaseStorageService>(context,
-                                      listen: false);
-                              await storageService.uploadImage(
-                                  fileName: _user.uid,
-                                  image: _profilePic);
-
-                              _user.imageFileName = _user.uid;
-                            }
-                          } catch (e) {
-                            print('Could not upload and get on Save');
-                          }
-                          Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute<void>(
-                              builder: (context) {
-                                return UserDescriptionRegistrationScreen(
-                                  user: _user,
-                                );
-                              },
-                            ),
-                          );
-                          setState(() {
-                            showSpinner = false;
-                          });
-                        },
-                      ),
-                      Text(
-                        'Hello $_username, welcome!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'MontserratRegular',
-                          fontSize: 22.0,
-                        ),
-                      ),
-                      Container(
-                        height: 350.0,
-                        width: 350.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            colorFilter: ColorFilter.mode(
-                                Colors.white, BlendMode.colorBurn),
-                            image: AssetImage("images/Freeflowter_Stony.png"),
-                            alignment: Alignment(0.0, 0.0),
-                            fit: BoxFit.cover,
+                        Text(
+                          'Choose a picture',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'MontserratRegular',
+                            fontSize: 22.0,
                           ),
                         ),
-                      ),
-                    ]),
-              ),
+                        GestureDetector(
+                          onTap: changeProfilePic,
+                          child: Center(
+                            heightFactor: 1.2,
+                            child: _profilePic == null
+                                ? _profilePicUrl == null
+                                    ? CircleAvatar(
+                                        backgroundColor: Colors.grey,
+                                        backgroundImage: AssetImage(
+                                            'assets/images/default-profile-pic.jpg'),
+                                        radius: 60,
+                                      )
+                                    : CircleAvatar(
+                                        backgroundColor: Colors.grey,
+                                        backgroundImage:
+                                            NetworkImage(_profilePicUrl),
+                                        radius: 60,
+                                      )
+                                : CircleAvatar(
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage: FileImage(_profilePic),
+                                    radius: 60,
+                                  ),
+                          ),
+                        ),
+                        Center(
+                          child: GestureDetector(
+                            onTap: changeProfilePic,
+                            child: Text('Edit',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'MontserratRegular',
+                                )),
+                          ),
+                        ),
+                        RoundedButton(
+                          text: 'Next',
+                          color: ffDarkBlue,
+                          textColor: Colors.white,
+                          onPressed: () async {
+                            setState(() {
+                              showSpinner = true;
+                            });
+                            try {
+                              if (_profilePic != null) {
+                                final storageService =
+                                    Provider.of<FirebaseStorageService>(context,
+                                        listen: false);
+                                await storageService.uploadImage(
+                                    fileName: _user.uid, image: _profilePic);
+
+                                _user.imageFileName = _user.uid;
+                              }
+                            } catch (e) {
+                              print('Could not upload and get on Save');
+                            }
+                            Navigator.of(context, rootNavigator: true).push(
+                              CupertinoPageRoute<void>(
+                                builder: (context) {
+                                  return UserDescriptionRegistrationScreen(
+                                    user: _user,
+                                  );
+                                },
+                              ),
+                            );
+                            setState(() {
+                              showSpinner = false;
+                            });
+                          },
+                        ),
+                        Text(
+                          'Hello $_username, welcome!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'MontserratRegular',
+                            fontSize: 22.0,
+                          ),
+                        ),
+                        Container(
+                          height: 350.0,
+                          width: 350.0,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              colorFilter: ColorFilter.mode(
+                                  Colors.white, BlendMode.colorBurn),
+                              image: AssetImage(
+                                  "assets/images/Freeflowter_Stony.png"),
+                              alignment: Alignment(0.0, 0.0),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ]),
+                ),
+              ]),
             ),
           ),
         ),
