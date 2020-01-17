@@ -280,4 +280,15 @@ class FirebaseCloudFirestoreService {
       print('Isaak could not upload position info');
     }
   }
+
+  void uploadPushToken(
+      {@required String uid, @required String pushToken}) {
+    try {
+      _fireStore.collection('users').document(uid).updateData({
+        'pushToken': pushToken
+      });
+    } catch (e) {
+      print('Isaak could not upload Push Token');
+    }
+  }
 }

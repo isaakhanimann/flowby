@@ -6,6 +6,7 @@ import 'package:float/screens/chats_tab.dart';
 import 'package:float/screens/home_tab.dart';
 import 'package:float/screens/user_profile_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:float/services/firebase_cloud_messaging.dart';
 import 'package:float/services/location_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,24 @@ class _NavigationScreenState extends State<NavigationScreen> {
       positionStreamSubscription = positionStream.listen((Position position) {
         cloudFirestoreService.uploadUsersLocation(
             uid: widget.loggedInUser.uid, position: position);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.loggedInUser != null) {
+      final cloudFirestoreService =
+      Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+      final firebaseMessaging =
+          Provider.of<FirebaseCloudMessaging>(context, listen: false);
+
+      firebaseMessaging.firebaseCloudMessagingListeners();
+      firebaseMessaging.getToken().then((token) {
+        cloudFirestoreService.uploadPushToken(
+            uid: widget.loggedInUser.uid, pushToken: token);
+        //print('token: $token');
       });
     }
   }
