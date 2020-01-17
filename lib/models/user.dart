@@ -44,6 +44,21 @@ class User {
     this.imageFileName = map['imageFileName'];
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'username': username,
+      'uid': uid,
+      'bio': bio,
+      'hasSkills': hasSkills,
+      'hasWishes': hasWishes,
+      'skillHashtags': skillHashtags,
+      'wishHashtags': wishHashtags,
+      'skillRate': skillRate,
+      'wishRate': wishRate,
+      'imageFileName': imageFileName
+    };
+  }
+
   void updateDistanceToPositionIfPossible({@required Position position}) async {
     if (position == null || this.location == null) {
       return;

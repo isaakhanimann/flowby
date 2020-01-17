@@ -22,7 +22,7 @@ const kMiddleTitleTextStyle = TextStyle(
 const kSmallTitleTextStyle = TextStyle(
   fontSize: 20.0,
   fontWeight: FontWeight.w500,
-  color: kDarkGreenColor,
+  color: kGrey1,
 );
 
 const kLocationTextStyle = TextStyle(color: Colors.grey, fontSize: 14);

@@ -14,16 +14,7 @@ class FirebaseCloudFirestoreService {
 
   Future<void> uploadUser({@required User user}) async {
     try {
-      _fireStore.collection('users').document(user.uid).setData({
-        'username': user.username,
-        'uid': user.uid,
-        'bio': user.bio,
-        'skillHashtags': user.skillHashtags,
-        'wishHashtags': user.wishHashtags,
-        'skillRate': user.skillRate,
-        'wishRate': user.wishRate,
-        'imageFileName': user.imageFileName
-      });
+      _fireStore.collection('users').document(user.uid).setData(user.toMap());
     } catch (e) {
       print('Isaak could not upload user info');
     }

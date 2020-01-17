@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
+import 'package:float/screens/choose_signup_or_login_screen.dart';
+import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/firebase_storage_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -272,7 +274,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   )
                 ],
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -320,7 +322,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ],
                 ),
-              SizedBox(height: 60),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -367,6 +369,50 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ],
                 ),
+              SizedBox(
+                height: 20,
+              ),
+              CupertinoButton(
+                child: Text(
+                  'Delete Account',
+                  style: TextStyle(color: CupertinoColors.destructiveRed),
+                ),
+                onPressed: () {
+                  showCupertinoDialog(
+                    context: context,
+                    builder: (_) => CupertinoAlertDialog(
+                      title: Text('Are you sure?'),
+                      content:
+                          Text('Do you really want to delete all your info?'),
+                      actions: <Widget>[
+                        CupertinoDialogAction(
+                          child: Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop();
+                          },
+                        ),
+                        CupertinoDialogAction(
+                          child: Text('Delete'),
+                          onPressed: () async {
+                            final authService =
+                                Provider.of<FirebaseAuthService>(context);
+                            print('delete user called');
+                            await authService.deleteCurrentlyLoggedInUser();
+                            Navigator.of(context).push(
+                              CupertinoPageRoute<void>(
+                                builder: (context) {
+                                  return ChooseSignupOrLoginScreen();
+                                },
+                              ),
+                            );
+                          },
+                          isDestructiveAction: true,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              )
             ],
           ),
         ),

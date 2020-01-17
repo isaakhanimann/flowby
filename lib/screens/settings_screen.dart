@@ -40,9 +40,9 @@ class SettingsScreen extends StatelessWidget {
       SettingsItem(
         leading: Icon(Icons.exit_to_app),
         title: Text('Sign Out', style: kUsernameTextStyle),
-        onTap: () async {
+        onTap: () {
           final authService = Provider.of<FirebaseAuthService>(context);
-          await authService.signOut();
+          authService.signOut();
           Navigator.of(context, rootNavigator: true).push(
             CupertinoPageRoute<void>(
               builder: (context) {
@@ -75,7 +75,7 @@ class SettingsScreen extends StatelessWidget {
                         Provider.of<FirebaseAuthService>(context);
                     print('delete user called');
                     await authService.deleteCurrentlyLoggedInUser();
-                    Navigator.of(context, rootNavigator: true).push(
+                    Navigator.of(context).push(
                       CupertinoPageRoute<void>(
                         builder: (context) {
                           return ChooseSignupOrLoginScreen();
