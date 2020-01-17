@@ -117,7 +117,10 @@ class ChatScreenWithPath extends StatelessWidget {
             SizedBox(
               width: 10,
             ),
-            Text(otherUsername ?? 'Default')
+            Text(
+              otherUsername,
+              style: TextStyle(),
+            )
           ],
         ),
       ),
@@ -194,7 +197,6 @@ class MessageSendingSection extends StatefulWidget {
 
 class _MessageSendingSectionState extends State<MessageSendingSection> {
   final messageTextController = TextEditingController();
-  String messageText;
 
   @override
   Widget build(BuildContext context) {
@@ -202,32 +204,33 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     return Container(
-      decoration: kMessageContainerDecoration,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            child: CupertinoTextField(
-              controller: messageTextController,
-              onChanged: (value) {
-                //Do something with the user input.
-                messageText = value;
-              },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: CupertinoTextField(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                    border: Border.all(color: kLightGrey),
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                controller: messageTextController,
+              ),
             ),
           ),
           SendButton(
             onPress: () async {
               // prevent to send the previously typed message with an empty text field
-              if (messageText != '') {
+              if (messageTextController.text != '') {
                 //Implement send functionality.
-                messageTextController.clear();
                 Message message = Message(
                     senderUid: loggedInUid,
-                    text: messageText,
+                    text: messageTextController.text,
                     timestamp: FieldValue.serverTimestamp());
                 cloudFirestoreService.uploadMessage(
                     chatPath: widget.chatPath, message: message);
-                messageText = ''; // Reset locally the sent message
+                messageTextController.clear(); // Reset locally the sent message
               }
             },
           ),
@@ -293,18 +296,16 @@ class SendButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: Material(
-        color: kDefaultProfilePicColor,
-        borderRadius: BorderRadius.circular(30.0),
-        child: CupertinoButton(
-          onPressed: onPress,
-          child: Icon(
-            Icons.send,
-            color: Colors.white,
-            size: 20,
-          ),
+    return CupertinoButton(
+      onPressed: onPress,
+      child: Container(
+        padding: EdgeInsets.all(9),
+        decoration: ShapeDecoration(
+            color: kDefaultProfilePicColor, shape: CircleBorder()),
+        child: Icon(
+          Icons.send,
+          color: Colors.white,
+          size: 20,
         ),
       ),
     );

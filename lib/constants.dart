@@ -35,12 +35,6 @@ const kMessageTextFieldDecoration = InputDecoration(
   border: InputBorder.none,
 );
 
-const kMessageContainerDecoration = BoxDecoration(
-  border: Border(
-    top: BorderSide(color: kLoginBackgroundColor, width: 1.0),
-  ),
-);
-
 const kLoginInputFieldDecoration = InputDecoration(
   filled: true,
   fillColor: Colors.white,
