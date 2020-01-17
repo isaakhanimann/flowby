@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/helper_functions.dart';
 import 'package:float/models/user.dart';
-import 'package:float/screens/settings_tab.dart';
+import 'package:float/screens/settings_screen.dart';
 import 'package:float/screens/view_profile_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -104,7 +104,7 @@ class _HomeTabState extends State<HomeTab> {
                   Navigator.of(context, rootNavigator: true).push(
                     CupertinoPageRoute<void>(
                       builder: (context) {
-                        return SettingsTab(
+                        return SettingsScreen(
                           loggedInUser: loggedInUser,
                         );
                       },

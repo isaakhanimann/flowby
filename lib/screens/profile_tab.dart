@@ -9,9 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class UserProfileScreen extends StatelessWidget {
-  static const String id = 'user_profile_screen';
-
+class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
