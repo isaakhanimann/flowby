@@ -9,15 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SettingsTab extends StatelessWidget {
+  final FirebaseUser loggedInUser;
+
+  SettingsTab({@required this.loggedInUser});
+
   List<SettingsItem> _buildSettingsChildren(BuildContext context) {
-    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     return [
       SettingsItem(
         leading: CircleAvatar(
           radius: 20,
           backgroundColor: Colors.grey,
           backgroundImage: NetworkImage(
-              'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${loggedInUser.uid}?alt=media'),
+              'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${'default-profile-pic.jpg'}?alt=media'),
         ),
         title: Text('Edit Profile', style: kUsernameTextStyle),
         onTap: () {
@@ -90,29 +93,31 @@ class SettingsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     if (loggedInUser == null) {
       return Center(
         child: SignInButton(),
       );
     }
-    return CustomScrollView(
-      slivers: <Widget>[
-        CupertinoSliverNavigationBar(
-          backgroundColor: CupertinoColors.white,
-          border: null,
-          largeTitle: Text('Settings'),
-        ),
-        SliverSafeArea(
-          top: false,
-          sliver: SliverList(
-            delegate: SliverChildListDelegate(
-              _buildSettingsChildren(context),
-              addAutomaticKeepAlives: true,
-            ),
+    return Container(
+      color: CupertinoColors.white,
+      child: CustomScrollView(
+        slivers: <Widget>[
+          CupertinoSliverNavigationBar(
+            backgroundColor: CupertinoColors.white,
+            border: null,
+            largeTitle: Text('Settings'),
           ),
-        )
-      ],
+          SliverSafeArea(
+            top: false,
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                _buildSettingsChildren(context),
+                addAutomaticKeepAlives: true,
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

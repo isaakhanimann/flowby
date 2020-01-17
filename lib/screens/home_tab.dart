@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/helper_functions.dart';
 import 'package:float/models/user.dart';
+import 'package:float/screens/settings_tab.dart';
 import 'package:float/screens/view_profile_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,16 +45,6 @@ class _HomeTabState extends State<HomeTab> {
     setState(() {
       _searchTerm = _controller.text;
     });
-  }
-
-  Widget _buildSearchBox() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-      child: SearchBar(
-        controller: _controller,
-        focusNode: _focusNode,
-      ),
-    );
   }
 
   @override
@@ -103,6 +94,24 @@ class _HomeTabState extends State<HomeTab> {
               backgroundColor: CupertinoColors.white,
               border: null,
               largeTitle: Text('Search'),
+              trailing: CupertinoButton(
+                child: Icon(
+                  CupertinoIcons.settings,
+                  size: 35,
+                  color: CupertinoColors.black,
+                ),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).push(
+                    CupertinoPageRoute<void>(
+                      builder: (context) {
+                        return SettingsTab(
+                          loggedInUser: loggedInUser,
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
             SliverSafeArea(
               top: false,
@@ -110,7 +119,14 @@ class _HomeTabState extends State<HomeTab> {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     if (index == 0) {
-                      return _buildSearchBox();
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                        child: SearchBar(
+                          isSkillSearch: isSkillSelected,
+                          controller: _controller,
+                          focusNode: _focusNode,
+                        ),
+                      );
                     } else if (index == 1) {
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -232,10 +248,12 @@ class SearchBar extends StatelessWidget {
   const SearchBar({
     @required this.controller,
     @required this.focusNode,
+    @required this.isSkillSearch,
   });
 
   final TextEditingController controller;
   final FocusNode focusNode;
+  final isSkillSearch;
 
   @override
   Widget build(BuildContext context) {
@@ -246,13 +264,13 @@ class SearchBar extends StatelessWidget {
             color: kLightGrey2,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         padding: EdgeInsets.symmetric(vertical: 10),
-        placeholder: 'Search',
+        placeholder: isSkillSearch ? 'Search Skills' : 'Search Wishes',
         placeholderStyle: TextStyle(fontSize: 16, color: kPlaceHolderColor),
         prefix: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Icon(
             CupertinoIcons.search,
-            color: kPlaceHolderColor,
+            color: CupertinoColors.black,
           ),
         ),
         controller: controller,

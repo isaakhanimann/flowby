@@ -98,6 +98,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _getUser(context);
   }
 
+  void dispose() {
+    _usernameController.dispose();
+    _bioController.dispose();
+    _hashtagSkillController.dispose();
+    _hashtagWishController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (showSpinner) {
