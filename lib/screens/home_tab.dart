@@ -97,8 +97,7 @@ class _HomeTabState extends State<HomeTab> {
               trailing: CupertinoButton(
                 child: Icon(
                   CupertinoIcons.settings,
-                  size: 35,
-                  color: CupertinoColors.black,
+                  size: 30,
                 ),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).push(

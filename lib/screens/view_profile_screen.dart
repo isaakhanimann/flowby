@@ -25,23 +25,26 @@ class ViewProfileScreen extends StatelessWidget {
     return CupertinoPageScaffold(
       child: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: ListView(
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Stack(
                       children: <Widget>[
                         CupertinoButton(
-                          child: Icon(Icons.arrow_back_ios),
+                          child: Icon(
+                            CupertinoIcons.back,
+                            size: 30,
+                          ),
+                          padding: EdgeInsets.all(0),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                         ),
                         Center(
-                          heightFactor: 1.2,
                           child: Hero(
                             tag: heroTag,
                             child: CircleAvatar(
@@ -52,14 +55,10 @@ class ViewProfileScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Container(
-                          color: CupertinoColors.white,
-                          width: 50,
-                        )
                       ],
                     ),
                     SizedBox(
-                      height: 5,
+                      height: 20,
                     ),
                     if (user.distanceInKm != null)
                       Center(
@@ -69,27 +68,41 @@ class ViewProfileScreen extends StatelessWidget {
                           textBaseline: TextBaseline.alphabetic,
                           children: <Widget>[
                             Text('${user.distanceInKm.toString()} km'),
-                            Icon(CupertinoIcons.location)
+                            Icon(
+                              CupertinoIcons.location,
+                              color: kDefaultProfilePicColor,
+                            )
                           ],
                         ),
                       ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Center(
                       child: Text(
                         user.username,
-                        style: kBigTitleTextStyle,
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        user.bio != null ? user.bio : 'This is the description!!!',
-                        style: kSmallTitleTextStyle,
+                        style: kMiddleTitleTextStyle,
                       ),
                     ),
                     SizedBox(
+                      height: 10,
+                    ),
+                    if (user.bio != null && user.bio != '')
+                      Text(
+                        user.bio,
+                        style: kSmallTitleTextStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                    SizedBox(
                       height: 15,
                     ),
-                    showSkills
-                        ? Row(
+                    if (user.hasSkills)
+                      Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
@@ -98,11 +111,23 @@ class ViewProfileScreen extends StatelessWidget {
                               ),
                               Text(
                                 '${user.skillRate} CHF/h',
-                                style: kSmallTitleTextStyle,
                               ),
                             ],
-                          )
-                        : Row(
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            user.skillHashtags,
+                            style: kSmallTitleTextStyle,
+                          ),
+                        ],
+                      ),
+                    if (user.hasWishes)
+                      Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 40,
+                          ),
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
@@ -111,16 +136,16 @@ class ViewProfileScreen extends StatelessWidget {
                               ),
                               Text(
                                 '${user.wishRate} CHF/h',
-                                style: kSmallTitleTextStyle,
                               ),
                             ],
                           ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      showSkills ? user.skillHashtags : user.wishHashtags,
-                    ),
+                          SizedBox(height: 10),
+                          Text(
+                            user.wishHashtags,
+                            style: kSmallTitleTextStyle,
+                          ),
+                        ],
+                      ),
                     SizedBox(
                       height: 5,
                     ),
@@ -128,37 +153,43 @@ class ViewProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
-            RoundedButton(
-              text: loggedInUser == null ? 'Signin to Chat' : 'Chat',
-              color: kDarkGreenColor,
-              onPressed: () async {
-                if (loggedInUser == null) {
-                  Navigator.of(context, rootNavigator: true).push(
-                    CupertinoPageRoute<void>(
-                      builder: (context) {
-                        return ChooseSignupOrLoginScreen();
-                      },
-                    ),
-                  );
-                } else {
-                  Navigator.of(context, rootNavigator: true).push(
-                    CupertinoPageRoute<void>(
-                      builder: (context) {
-                        return ChatScreen(
-                          loggedInUid: loggedInUser.uid,
-                          otherUid: user.uid,
-                          otherUsername: user.username,
-                          otherImageFileName: user.imageFileName,
-                          heroTag: heroTag,
-                        );
-                      },
-                    ),
-                  );
-                }
-              },
-            ),
             SizedBox(
               height: 15,
+            ),
+            Center(
+              child: RoundedButton(
+                text: loggedInUser == null ? 'Signin to Chat' : 'Chat',
+                color: ffDarkBlue,
+                textColor: Colors.white,
+                onPressed: () async {
+                  if (loggedInUser == null) {
+                    Navigator.of(context, rootNavigator: true).push(
+                      CupertinoPageRoute<void>(
+                        builder: (context) {
+                          return ChooseSignupOrLoginScreen();
+                        },
+                      ),
+                    );
+                  } else {
+                    Navigator.of(context, rootNavigator: true).push(
+                      CupertinoPageRoute<void>(
+                        builder: (context) {
+                          return ChatScreen(
+                            loggedInUid: loggedInUser.uid,
+                            otherUid: user.uid,
+                            otherUsername: user.username,
+                            otherImageFileName: user.imageFileName,
+                            heroTag: heroTag,
+                          );
+                        },
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+            SizedBox(
+              height: 30,
             ),
           ],
         ),
