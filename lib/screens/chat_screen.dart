@@ -36,6 +36,7 @@ class ChatScreen extends StatelessWidget {
         value: loggedInUid,
         child: ChatScreenWithPath(
             otherUsername: otherUsername,
+            otherUid: otherUid,
             otherImageFileName: otherImageFileName,
             heroTag: heroTag,
             chatPath: chatPath),
@@ -64,6 +65,7 @@ class ChatScreen extends StatelessWidget {
           value: loggedInUid,
           child: ChatScreenWithPath(
               otherUsername: otherUsername,
+              otherUid: otherUid,
               otherImageFileName: otherImageFileName,
               heroTag: heroTag,
               chatPath: foundChatPath),
@@ -77,12 +79,14 @@ class ChatScreenWithPath extends StatelessWidget {
   const ChatScreenWithPath({
     Key key,
     @required this.otherUsername,
+    @required this.otherUid,
     @required this.otherImageFileName,
     @required this.heroTag,
     @required this.chatPath,
   }) : super(key: key);
 
   final String otherUsername;
+  final String otherUid;
   final String chatPath;
   final String otherImageFileName;
   final String heroTag;
@@ -127,7 +131,7 @@ class ChatScreenWithPath extends StatelessWidget {
               messagesStream:
                   cloudFirestoreService.getMessageStream(chatPath: chatPath),
             ),
-            MessageSendingSection(chatPath: chatPath),
+            MessageSendingSection(chatPath: chatPath, receiverUid: otherUid,),
           ],
         ),
       ),
@@ -182,8 +186,9 @@ class MessagesStream extends StatelessWidget {
 
 class MessageSendingSection extends StatefulWidget {
   final String chatPath;
+  final String receiverUid;
 
-  MessageSendingSection({@required this.chatPath});
+  MessageSendingSection({@required this.chatPath, @required this.receiverUid});
 
   @override
   _MessageSendingSectionState createState() => _MessageSendingSectionState();
@@ -220,6 +225,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
                 messageTextController.clear();
                 Message message = Message(
                     senderUid: loggedInUid,
+                    receiverUid: widget.receiverUid,
                     text: messageText,
                     timestamp: FieldValue.serverTimestamp());
                 cloudFirestoreService.uploadMessage(

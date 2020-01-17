@@ -261,6 +261,7 @@ class FirebaseCloudFirestoreService {
         {
           'text': message.text,
           'senderUid': message.senderUid,
+          'receiverUid': message.receiverUid,
           'timestamp': message.timestamp,
         },
       );

@@ -1,9 +1,9 @@
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
-const functions = require("firebase-functions");
+constfunctions = require("firebase-functions");
 
 // The Firebase Admin SDK to access the Firebase Realtime Database.
-const admin = require("firebase-admin");
-const path = require("path");
+constadmin = require("firebase-admin");
+constpath = require("path");
 
 admin.initializeApp();
 
@@ -220,3 +220,63 @@ exports.deleteUserEveryhere = functions.auth
         });
       });
   });
+
+exports.sendNotification = functions.firestore
+  .document('chats/{chatId}/messages/{messageId}')
+  .onCreate((snap, context) => {
+    console.log('----------------start function--------------------');
+
+    const doc = snap.data();
+    console.log(doc);
+
+    const senderUid = doc.senderUid;
+    const receiverUid = doc.receiverUid;
+    const contentMessage = doc.text;
+
+    // Get push token user to (receive)
+    admin
+      .firestore()
+      .collection('users')
+      .where('uid', '==', receiverUid)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(receiver => {
+          console.log(`Found user to: ${receiver.data().username}`);
+          if (receiver.data().pushToken) {
+            // Get info user from (sent)
+            admin
+              .firestore()
+              .collection('users')
+              .where('uid', '==', senderUid)
+              .get()
+              .then(querySnapshot2 => {
+                querySnapshot2.forEach(sender => {
+                  console.log(`Found user from: ${sender.data().username}`);
+                  const payload = {
+                    notification: {
+                      title: `${sender.data().username}`,
+                      body: contentMessage,
+                      badge: '1',
+                      sound: 'default'
+                    }
+                  }
+                  // Let push to the target device
+                  admin
+                    .messaging()
+                    .sendToDevice(receiver.data().pushToken, payload)
+                    .then(response => {
+                      console.log('Successfully sent message:', response);
+                    });
+                    .catch(error => {
+                      console.log('Error sending message:', error)
+                    });
+                });
+              });
+          } else {
+            console.log('Can not find pushToken target user');
+          }
+        });
+      });
+    return null;
+  });
+
