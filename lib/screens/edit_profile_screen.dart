@@ -180,38 +180,65 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: Center(
                   heightFactor: 1.2,
                   child: _profilePic == null
-                      ? CircleAvatar(
-                          radius: 60,
-                          backgroundColor: Colors.grey,
-                          backgroundImage: NetworkImage(
-                              'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+                      ? Stack(
+                          alignment: AlignmentDirectional.center,
+                          children: <Widget>[
+                            Opacity(
+                              opacity: 0.4,
+                              child: CircleAvatar(
+                                radius: 60,
+                                backgroundColor: Colors.grey,
+                                backgroundImage: NetworkImage(
+                                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+                              ),
+                            ),
+                            Icon(
+                              CupertinoIcons.photo_camera_solid,
+                              size: 50,
+                            )
+                          ],
                         )
-                      : CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          backgroundImage: FileImage(_profilePic),
-                          radius: 60,
+                      : Stack(
+                          alignment: AlignmentDirectional.center,
+                          children: <Widget>[
+                            Opacity(
+                              opacity: 0.4,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                backgroundImage: FileImage(_profilePic),
+                                radius: 60,
+                              ),
+                            ),
+                            Icon(
+                              CupertinoIcons.photo_camera_solid,
+                              size: 50,
+                            )
+                          ],
                         ),
                 ),
               ),
-              Center(
-                child: GestureDetector(
-                  onTap: changeProfilePic,
-                  child: Text('Edit'),
-                ),
-              ),
               SizedBox(
-                height: 5,
+                height: 20,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Text(
-                    'Name',
+                  SizedBox(
+                    width: 100,
+                    child: Text(
+                      'Name',
+                      style: TextStyle(fontSize: 22),
+                    ),
                   ),
                   Expanded(
                     child: CupertinoTextField(
+                      style: TextStyle(color: kGrey3, fontSize: 22),
+                      padding: EdgeInsets.only(bottom: 0),
+                      maxLength: 20,
+                      maxLines: 1,
+                      decoration: BoxDecoration(border: null),
                       controller: _usernameController,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.start,
                     ),
                   )
                 ],
@@ -220,16 +247,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 height: 15,
               ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Bio'),
+                  SizedBox(
+                    width: 100,
+                    child: Text(
+                      'Bio',
+                      style: TextStyle(fontSize: 22),
+                    ),
+                  ),
                   Expanded(
                     child: CupertinoTextField(
+                      style: TextStyle(color: kGrey3, fontSize: 20),
+                      placeholder: _bioController.text == ''
+                          ? 'Enter your description'
+                          : '',
+                      maxLength: 200,
+                      maxLines: 5,
+                      padding: EdgeInsets.only(bottom: 0),
+                      decoration: BoxDecoration(border: null),
                       controller: _bioController,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.start,
                     ),
                   )
                 ],
               ),
+              SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -249,14 +292,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               if (_localHasSkills)
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      'Add your skills in hashtags so people can find you',
+                    SizedBox(
+                      height: 20,
                     ),
                     CupertinoTextField(
+                      style: TextStyle(color: kGrey3, fontSize: 20),
+                      placeholder: _hashtagSkillController.text == ''
+                          ? 'Enter your skills'
+                          : '',
+                      maxLength: 20,
+                      maxLines: 1,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: kLightGrey),
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
                       controller: _hashtagSkillController,
                       textAlign: TextAlign.center,
-                      placeholder: user.skillHashtags,
                     ),
                     RatePicker(
                       initialValue: user.skillRate ?? 20,
@@ -287,13 +341,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               if (_localHasWishes)
                 Column(
                   children: <Widget>[
-                    Text(
-                      'Add your skills in hashtags so people can find you',
+                    SizedBox(
+                      height: 20,
                     ),
                     CupertinoTextField(
+                      style: TextStyle(color: kGrey3, fontSize: 20),
+                      placeholder: _hashtagWishController.text == ''
+                          ? 'Enter your wishes'
+                          : '',
+                      maxLength: 20,
+                      maxLines: 1,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: kLightGrey),
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
                       controller: _hashtagWishController,
                       textAlign: TextAlign.center,
-                      placeholder: user.wishHashtags,
                     ),
                     RatePicker(
                       initialValue: user.wishRate ?? 20,
@@ -319,7 +383,10 @@ class RatePicker extends StatelessWidget {
   List<Text> _getPickerItems() {
     List<Text> textList = [];
     for (int i = 0; i < 500; i++) {
-      textList.add(Text(i.toString()));
+      textList.add(Text(
+        i.toString(),
+        style: TextStyle(fontSize: 16),
+      ));
     }
     return textList;
   }
@@ -337,7 +404,7 @@ class RatePicker extends StatelessWidget {
             scrollController:
                 FixedExtentScrollController(initialItem: initialValue),
             backgroundColor: Colors.white,
-            itemExtent: 32,
+            itemExtent: 21,
             onSelectedItemChanged: onSelected,
             children: _getPickerItems(),
           ),

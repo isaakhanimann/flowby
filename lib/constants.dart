@@ -76,3 +76,10 @@ const kLightGrey2 = Color(0xFFf4f4f4);
 const ffDarkBlue = Color(0xFF294FED);
 const ffMiddleBlue = Color(0xFF2862F7);
 const ffLightBlue = Color(0xff65C4EA);
+
+const kGrey1 = Color(0xff393e46);
+const kGrey2 = Color(0xff3c4245);
+const kGrey3 = Color(0xff5f6769);
+const kGrey4 = Color(0xff979797);
+const kGrey5 = Color(0xffd7d1c9);
+const kGrey6 = Color(0xffeae9e9);
