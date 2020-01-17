@@ -38,7 +38,7 @@ class SettingsScreen extends StatelessWidget {
         },
       ),
       SettingsItem(
-        leading: Icon(Icons.exit_to_app),
+        leading: Icon(Icons.exit_to_app, color: kLoginBackgroundColor),
         title: Text('Sign Out', style: kUsernameTextStyle),
         onTap: () {
           final authService = Provider.of<FirebaseAuthService>(context);
@@ -53,7 +53,7 @@ class SettingsScreen extends StatelessWidget {
         },
       ),
       SettingsItem(
-        leading: Icon(Icons.delete),
+        leading: Icon(Icons.delete, color: kLoginBackgroundColor),
         title: Text('Delete Account', style: kUsernameTextStyle),
         onTap: () {
           showCupertinoDialog(
@@ -91,27 +91,27 @@ class SettingsScreen extends StatelessWidget {
         },
       ),
       SettingsItem(
-          leading: Icon(CupertinoIcons.conversation_bubble),
+          leading: Icon(Icons.people, color: kLoginBackgroundColor),
           title: Text('Invite a friend'),
           onTap: null),
       SettingsItem(
-          leading: Icon(CupertinoIcons.bell),
+          leading: Icon(Icons.add_to_home_screen, color: kLoginBackgroundColor),
           title: Text('Notifications'),
           onTap: null),
       SettingsItem(
-          leading: Icon(CupertinoIcons.bookmark),
+          leading: Icon(Icons.bookmark, color: kLoginBackgroundColor),
           title: Text('Support'),
           onTap: null),
       SettingsItem(
-          leading: Icon(CupertinoIcons.info),
+          leading: Icon(Icons.description, color: kLoginBackgroundColor),
           title: Text('Terms & Conditions'),
           onTap: null),
       SettingsItem(
-          leading: Icon(CupertinoIcons.info),
+          leading: Icon(Icons.info, color: kLoginBackgroundColor),
           title: Text('Privacy Policy'),
           onTap: null),
       SettingsItem(
-          leading: Icon(CupertinoIcons.person),
+          leading: Icon(Icons.person, color: kLoginBackgroundColor),
           title: Text('My Data'),
           onTap: null)
     ];
@@ -120,8 +120,15 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (loggedInUser == null) {
-      return Center(
-        child: SignInButton(),
+      return CupertinoPageScaffold(
+        backgroundColor: CupertinoColors.white,
+        navigationBar: CupertinoNavigationBar(
+          backgroundColor: CupertinoColors.white,
+          border: null,
+        ),
+        child: Center(
+          child: SignInButton(),
+        ),
       );
     }
     return Container(
