@@ -29,9 +29,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             Navigator.of(context).pop();
           },
         ),
-        middle: Text(
-          'Reset password',
-          style: TextStyle(color: CupertinoColors.white),
+        middle: Padding(
+          padding: const EdgeInsets.only(top: 13.0),
+          child: Text(
+            'Reset password',
+            style: kCupertinoScaffoldTextStyle,
+          ),
         ),
         backgroundColor: Colors.transparent,
       ),
@@ -58,8 +61,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   color: ffDarkBlue,
                   textColor: Colors.white,
                   onPressed: () async {
-                    final authService =
-                        Provider.of<FirebaseAuthService>(context, listen: false);
+                    final authService = Provider.of<FirebaseAuthService>(
+                        context,
+                        listen: false);
                     showAlert(
                         context: context,
                         title: "You've got mail",

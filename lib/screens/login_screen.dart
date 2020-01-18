@@ -46,9 +46,12 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.of(context).pop();
             },
           ),
-          middle: Text(
-            'Log In',
-            style: TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratRegular'),
+          middle: Padding(
+            padding: const EdgeInsets.only(top: 13.0),
+            child: Text(
+              'Log In',
+              style: kCupertinoScaffoldTextStyle,
+            ),
           ),
           backgroundColor: Colors.transparent,
         ),

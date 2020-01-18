@@ -56,6 +56,10 @@ const TextStyle kSearchText = TextStyle(
 //const Color kLoginBackgroundColor = Color(0xFF0D4FF7);
 const Color kLoginBackgroundColor = ffLightBlue;
 const Color kDefaultProfilePicColor = Color(0xff00ffab);
+const TextStyle kCupertinoScaffoldTextStyle = TextStyle(
+  color: CupertinoColors.white,
+  fontFamily: 'MontserratRegular',
+);
 
 const Color kSearchBackground = Color(0xffe0e0e0);
 
