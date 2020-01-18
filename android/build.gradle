@@ -20,6 +20,9 @@ buildscript {
                         && !details.requested.name.contains('androidx') ) {
                     details.useVersion "1.0.2"
                 }
+                if (details.requested.group == 'android.arch.lifecycle') {
+                    details.useVersion "1.1.1"
+                }
             }
         }
     }

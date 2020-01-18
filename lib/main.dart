@@ -1,6 +1,7 @@
 import 'package:float/screens/splash_screen.dart';
 import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:float/services/firebase_cloud_messaging.dart';
 import 'package:float/services/firebase_storage_service.dart';
 import 'package:float/services/image_picker_service.dart';
 import 'package:float/services/location_service.dart';
@@ -40,6 +41,9 @@ class Float extends StatelessWidget {
         ),
         Provider<LocationService>(
           create: (_) => LocationService(),
+        ),
+        Provider<FirebaseCloudMessaging>(
+          create: (_) => FirebaseCloudMessaging(),
         ),
       ],
       child: CupertinoApp(
