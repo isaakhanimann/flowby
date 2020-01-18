@@ -53,7 +53,8 @@ const TextStyle kSearchText = TextStyle(
   fontWeight: FontWeight.normal,
 );
 
-const Color kLoginBackgroundColor = Color(0xFF0D4FF7);
+//const Color kLoginBackgroundColor = Color(0xFF0D4FF7);
+const Color kLoginBackgroundColor = ffLightBlue;
 const Color kDefaultProfilePicColor = Color(0xff00ffab);
 
 const Color kSearchBackground = Color(0xffe0e0e0);

@@ -151,8 +151,15 @@ class _AddWishesRegistrationScreenState
                                 Provider.of<FirebaseAuthService>(context,
                                     listen: false);
 
+                            final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
                             await authService.tryToGetCurrentUserAndNavigate(
                                 context: context);
+
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              NavigationScreen.id,
+                                  (Route<dynamic> route) => false,
+                              arguments: loggedInUser,
+                            );
 
                             setState(() {
                               showSpinner = false;
@@ -163,7 +170,7 @@ class _AddWishesRegistrationScreenState
                           onTap: () {
                             final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
 
-                            Navigator.of(context, rootNavigator: true).push(
+                            Navigator.of(context, rootNavigator: false).push(
                               CupertinoPageRoute<void>(
                                 builder: (context) {
                                   return NavigationScreen(loggedInUser: loggedInUser);
