@@ -39,6 +39,9 @@ class ProfileTab extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: ListView(
                       children: <Widget>[
+                        SizedBox(
+                          height: 15.0,
+                        ),
                         Stack(
                           children: <Widget>[
                             CupertinoButton(
@@ -72,7 +75,7 @@ class ProfileTab extends StatelessWidget {
                           alignment: Alignment.topRight,
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 15.0,
                         ),
                         Center(
                           child: Text(
@@ -99,6 +102,7 @@ class ProfileTab extends StatelessWidget {
                           ),
                         if (user.hasSkills)
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               SizedBox(
                                 height: 20,
@@ -125,6 +129,7 @@ class ProfileTab extends StatelessWidget {
                           ),
                         if (user.hasWishes)
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               SizedBox(
                                 height: 40,

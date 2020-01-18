@@ -47,3 +47,6 @@ flutter:
     - family: NotoRegular
       fonts:
         - asset: assets/fonts/Noto_Sans_JP/NotoSansJP-Regular.otf
+    - family: MuliRegular
+      fonts:
+        - asset: assets/fonts/Muli/static/Muli-Regular.ttf

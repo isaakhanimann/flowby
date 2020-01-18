@@ -93,7 +93,7 @@ class _HomeTabState extends State<HomeTab> {
             CupertinoSliverNavigationBar(
               backgroundColor: CupertinoColors.white,
               border: null,
-              largeTitle: Text('Search'),
+              largeTitle: Text('Search', style: kTabsLargeTitleTextStyle,),
               trailing: CupertinoButton(
                 child: Icon(
                   CupertinoIcons.settings,

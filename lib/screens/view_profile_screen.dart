@@ -32,6 +32,9 @@ class ViewProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: ListView(
                   children: <Widget>[
+                    SizedBox(
+                      height: 15.0,
+                    ),
                     Stack(
                       children: <Widget>[
                         CupertinoButton(
@@ -98,6 +101,7 @@ class ViewProfileScreen extends StatelessWidget {
                     ),
                     if (user.hasSkills)
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           SizedBox(
                             height: 20,
@@ -123,6 +127,7 @@ class ViewProfileScreen extends StatelessWidget {
                       ),
                     if (user.hasWishes)
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           SizedBox(
                             height: 40,

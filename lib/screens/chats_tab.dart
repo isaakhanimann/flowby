@@ -50,7 +50,7 @@ class ChatsTab extends StatelessWidget {
               CupertinoSliverNavigationBar(
                 backgroundColor: CupertinoColors.white,
                 border: null,
-                largeTitle: Text('Chats'),
+                largeTitle: Text('Chats', style: kTabsLargeTitleTextStyle,),
               ),
               SliverSafeArea(
                 top: false,

@@ -8,20 +8,23 @@ const kSendButtonTextStyle = TextStyle(
 );
 
 const kBigTitleTextStyle = TextStyle(
+  fontFamily: 'MontserratRegular',
   fontSize: 45.0,
   fontWeight: FontWeight.w900,
   color: kDarkGreenColor,
 );
 
 const kMiddleTitleTextStyle = TextStyle(
+  fontFamily: 'MontserratRegular',
   fontSize: 35.0,
   fontWeight: FontWeight.w900,
   color: kLoginBackgroundColor,
 );
 
 const kSmallTitleTextStyle = TextStyle(
+  fontFamily: 'NotoRegular',
   fontSize: 20.0,
-  fontWeight: FontWeight.w500,
+  fontWeight: FontWeight.w400,
   color: kGrey1,
 );
 
@@ -54,10 +57,16 @@ const TextStyle kSearchText = TextStyle(
 );
 
 //const Color kLoginBackgroundColor = Color(0xFF0D4FF7);
-const Color kLoginBackgroundColor = ffLightBlue;
+const Color kLoginBackgroundColor = Color(0xFF0D4FF7);
 const Color kDefaultProfilePicColor = Color(0xff00ffab);
+const Color kRegistrationBackgroundColor = ffLightBlue;
+
 const TextStyle kCupertinoScaffoldTextStyle = TextStyle(
   color: CupertinoColors.white,
+  fontFamily: 'MontserratRegular',
+);
+
+const TextStyle kTabsLargeTitleTextStyle = TextStyle(
   fontFamily: 'MontserratRegular',
 );
 

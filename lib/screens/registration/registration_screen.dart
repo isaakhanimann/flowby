@@ -58,7 +58,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
           ),
           backgroundColor: Colors.transparent,
         ),
-        backgroundColor: kLoginBackgroundColor,
+        backgroundColor: kRegistrationBackgroundColor,
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
