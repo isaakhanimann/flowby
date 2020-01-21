@@ -46,12 +46,22 @@ class Float extends StatelessWidget {
           create: (_) => FirebaseCloudMessaging(),
         ),
       ],
-      child: CupertinoApp(
-        theme: CupertinoThemeData(
-            brightness: Brightness.light, primaryColor: kLoginBackgroundColor),
-        debugShowCheckedModeBanner: false,
-        initialRoute: SplashScreen.id,
-        onGenerateRoute: RouteGenerator.generateRoute,
+      child: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: CupertinoApp(
+          theme: CupertinoThemeData(
+              brightness: Brightness.light,
+              primaryColor: kLoginBackgroundColor),
+          debugShowCheckedModeBanner: false,
+          initialRoute: SplashScreen.id,
+          onGenerateRoute: RouteGenerator.generateRoute,
+        ),
       ),
     );
   }
