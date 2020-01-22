@@ -26,8 +26,10 @@ class _AddSkillsRegistrationScreenState
     extends State<AddSkillsRegistrationScreen> {
   bool showSpinner = false;
 
-  String _databaseHashtagSkills = "#default";
+  String _databaseHashtagSkills;
   int _databaseSkillRate = 20;
+  bool _localHasSkills = true;
+
   User _user;
 
   @override
@@ -36,7 +38,7 @@ class _AddSkillsRegistrationScreenState
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
 
-    //print(_user);
+    print(_user);
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -70,59 +72,82 @@ class _AddSkillsRegistrationScreenState
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         SizedBox(
-                          height: 10.0,
+                          height: 20.0,
                         ),
-                        Text(
-                          'Share what you are good at',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        TextFormField(
-                          onChanged: (value) {
-                            _databaseHashtagSkills = value;
-                          },
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          decoration: InputDecoration(
-                            hintText: 'Your skills (e.g. #guillaumetell)',
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintStyle:
-                                TextStyle(fontFamily: 'MontserratRegular'),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 30.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5.0),
-                              ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Your skills',
+                              style: kMiddleTitleTextStyle,
                             ),
-                          ),
+                            CupertinoSwitch(
+                              value: _localHasSkills,
+                              onChanged: (newBool) {
+                                setState(() {
+                                  _localHasSkills = newBool;
+                                });
+                              },
+                            ),
+                          ],
                         ),
                         SizedBox(
                           height: 20.0,
                         ),
-                        Text(
-                          'How valuable is your presence? ',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 18.0,
+                        if (_localHasSkills)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'Share what you are good at',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'MontserratRegular',
+                                  fontSize: 22.0,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              CupertinoTextField(
+                                style: TextStyle(color: kGrey3, fontSize: 20),
+                                //maxLength: 20,
+                                //maxLines: 1,
+                                placeholder: 'e.g. #piano #salsa #algebra',
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: kLightGrey),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                textAlign: TextAlign.start,
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Text(
+                                'How valuable is your presence? ',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'MontserratRegular',
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              RatePicker(
+                                initialValue: _user.skillRate ?? 20,
+                                onSelected: (selectedIndex) {
+                                  setState(() {
+                                    _databaseSkillRate = selectedIndex;
+                                  });
+                                },
+                              ),
+                            ],
                           ),
-                        ),
-                        RatePicker(
-                          initialValue: _databaseSkillRate ?? 20,
-                          onSelected: (selectedIndex) {
-                            _databaseSkillRate = selectedIndex;
-                          },
-                        ),
                         RoundedButton(
                           text: 'Next',
                           color: ffDarkBlue,
@@ -132,6 +157,7 @@ class _AddSkillsRegistrationScreenState
                               showSpinner = true;
                             });
 
+                            _user.hasSkills = _localHasSkills;
                             _user.skillHashtags = _databaseHashtagSkills;
                             _user.skillRate = _databaseSkillRate;
 
@@ -148,27 +174,6 @@ class _AddSkillsRegistrationScreenState
                               showSpinner = false;
                             });
                           },
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context, rootNavigator: true).push(
-                              CupertinoPageRoute<void>(
-                                builder: (context) {
-                                  return AddWishesRegistrationScreen(
-                                      user: _user);
-                                },
-                              ),
-                            );
-                          },
-                          child: Text(
-                            'Skip this step',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: 'MontserratRegular',
-                              fontSize: 16.0,
-                            ),
-                          ),
                         ),
                         /*
                         SizedBox(

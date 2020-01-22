@@ -4,6 +4,7 @@ import 'package:float/models/user.dart';
 import 'package:float/screens/choose_signup_or_login_screen.dart';
 import 'package:float/screens/edit_profile_screen.dart';
 import 'package:float/services/firebase_auth_service.dart';
+import 'package:float/screens/settings_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:float/widgets/sign_in_button.dart';
@@ -46,6 +47,23 @@ class ProfileTab extends StatelessWidget {
                           children: <Widget>[
                             CupertinoButton(
                               child: Icon(
+                                CupertinoIcons.settings,
+                                size: 30,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true).push(
+                                  CupertinoPageRoute<void>(
+                                    builder: (context) {
+                                      return SettingsScreen(
+                                        loggedInUser: loggedInUser,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                            /*CupertinoButton(
+                              child: Icon(
                                 Icons.exit_to_app,
                                 size: 30,
                               ),
@@ -63,6 +81,8 @@ class ProfileTab extends StatelessWidget {
                                 );
                               },
                             ),
+                            */
+
                             Center(
                               child: CircleAvatar(
                                 radius: 60,
@@ -107,20 +127,24 @@ class ProfileTab extends StatelessWidget {
                               SizedBox(
                                 height: 20,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'Skills',
-                                    style: kMiddleTitleTextStyle,
-                                  ),
-                                  Text(
-                                    '${user.skillRate} CHF/h',
-                                  ),
-                                ],
-                              ),
+                              if (user.skillHashtags != null &&
+                                  user.skillHashtags != '')
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Skills',
+                                      style: kMiddleTitleTextStyle,
+                                    ),
+                                    Text(
+                                      '${user.skillRate} CHF/h',
+                                    ),
+                                  ],
+                                ),
                               SizedBox(height: 10),
+                              if (user.skillHashtags != null &&
+                                  user.skillHashtags != '')
                               Text(
                                 user.skillHashtags,
                                 style: kSmallTitleTextStyle,
@@ -134,20 +158,24 @@ class ProfileTab extends StatelessWidget {
                               SizedBox(
                                 height: 40,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'Wishes',
-                                    style: kMiddleTitleTextStyle,
-                                  ),
-                                  Text(
-                                    '${user.wishRate} CHF/h',
-                                  ),
-                                ],
-                              ),
+                              if (user.wishHashtags != null &&
+                                  user.wishHashtags != '')
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Wishes',
+                                      style: kMiddleTitleTextStyle,
+                                    ),
+                                    Text(
+                                      '${user.wishRate} CHF/h',
+                                    ),
+                                  ],
+                                ),
                               SizedBox(height: 10),
+                              if (user.wishHashtags != null &&
+                                  user.wishHashtags != '')
                               Text(
                                 user.wishHashtags,
                                 style: kSmallTitleTextStyle,

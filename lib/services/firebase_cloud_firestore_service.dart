@@ -261,8 +261,7 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  void uploadUsersLocation(
-      {@required String uid, @required Position position}) {
+  void uploadUsersLocation({@required uid, @required Position position}) {
     try {
       _fireStore.collection('users').document(uid).updateData({
         'location': GeoPoint(position.latitude, position.longitude)
@@ -273,12 +272,12 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  void uploadPushToken(
-      {@required String uid, @required String pushToken}) {
+  void uploadPushToken({@required String uid, @required String pushToken}) {
     try {
-      _fireStore.collection('users').document(uid).updateData({
-        'pushToken': pushToken
-      });
+      _fireStore
+          .collection('users')
+          .document(uid)
+          .updateData({'pushToken': pushToken});
     } catch (e) {
       print('Isaak could not upload Push Token');
     }

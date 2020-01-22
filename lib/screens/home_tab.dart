@@ -94,23 +94,6 @@ class _HomeTabState extends State<HomeTab> {
               backgroundColor: CupertinoColors.white,
               border: null,
               largeTitle: Text('Search', style: kTabsLargeTitleTextStyle,),
-              trailing: CupertinoButton(
-                child: Icon(
-                  CupertinoIcons.settings,
-                  size: 30,
-                ),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).push(
-                    CupertinoPageRoute<void>(
-                      builder: (context) {
-                        return SettingsScreen(
-                          loggedInUser: loggedInUser,
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
             ),
             SliverSafeArea(
               top: false,
