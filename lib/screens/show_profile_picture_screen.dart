@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ProfilePictureScreen extends StatelessWidget {
+class ShowProfilePictureScreen extends StatelessWidget {
   final String profilePictureUrl;
   final String otherUsername;
   final String heroTag;
 
-  ProfilePictureScreen(
+  ShowProfilePictureScreen(
       {@required this.profilePictureUrl, @required this.otherUsername, @required this.heroTag});
 
   @override

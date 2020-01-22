@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
-import 'package:float/screens/choose_signup_or_login_screen.dart';
 import 'package:float/screens/edit_profile_screen.dart';
+import 'package:float/screens/show_profile_picture_screen.dart';
 import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/screens/settings_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
@@ -84,11 +84,27 @@ class ProfileTab extends StatelessWidget {
                             */
 
                             Center(
-                              child: CircleAvatar(
-                                radius: 60,
-                                backgroundColor: Colors.grey,
-                                backgroundImage: NetworkImage(
-                                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+                              child: Hero(
+                                tag: user.imageFileName,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context, rootNavigator: true).push(
+                                        CupertinoPageRoute(
+                                            builder: (context) =>
+                                                ShowProfilePictureScreen(
+                                                  profilePictureUrl:
+                                                      'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
+                                                  otherUsername: user.username,
+                                                  heroTag: user.imageFileName,
+                                                )));
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 60,
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage: NetworkImage(
+                                        'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -145,10 +161,10 @@ class ProfileTab extends StatelessWidget {
                               SizedBox(height: 10),
                               if (user.skillHashtags != null &&
                                   user.skillHashtags != '')
-                              Text(
-                                user.skillHashtags,
-                                style: kSmallTitleTextStyle,
-                              ),
+                                Text(
+                                  user.skillHashtags,
+                                  style: kSmallTitleTextStyle,
+                                ),
                             ],
                           ),
                         if (user.hasWishes)
@@ -176,17 +192,16 @@ class ProfileTab extends StatelessWidget {
                               SizedBox(height: 10),
                               if (user.wishHashtags != null &&
                                   user.wishHashtags != '')
-                              Text(
-                                user.wishHashtags,
-                                style: kSmallTitleTextStyle,
-                              ),
+                                Text(
+                                  user.wishHashtags,
+                                  style: kSmallTitleTextStyle,
+                                ),
                             ],
                           ),
                         SizedBox(
                           height: 5,
                         ),
                       ],
-
                     ),
                   ),
                 ),
