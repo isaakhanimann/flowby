@@ -270,32 +270,31 @@ exports.sendNotification = functions.firestore
       const senderUid: string = message.senderUid;
       const contentMessage: string = message.text;
 
-      //force unwrap the chat because I am sure it exists
-      const chatSnap: FirebaseFirestore.DocumentSnapshot = await snap?.ref?.parent?.parent?.get()!;
+      const chatId = context.params.chatId;
+      const chatSnap: FirebaseFirestore.DocumentSnapshot = await db
+        .collection("chats")
+        .doc(chatId)
+        .get();
       const chat: FirebaseFirestore.DocumentData = chatSnap.data()!;
 
       let receiverUid: string = "";
       let senderUsername: string = "";
 
-      if (senderUid === chat.user1) {
+      if (senderUid === chat.uid1) {
         //the sender is user1 of the chat
-        receiverUid = chat.user2;
+        receiverUid = chat.uid2;
         senderUsername = chat.username1;
       } else {
-        receiverUid = chat.user1;
+        receiverUid = chat.uid1;
         senderUsername = chat.username2;
       }
-      console.log(`Found sender: ${senderUsername}`);
-
       // Get the receivers token
-      const userDoc = await admin
-        .firestore()
+      const userDoc = await db
         .collection("users")
         .doc(receiverUid)
         .get();
 
       const receiver = userDoc.data();
-      console.log(`Found the receiver: ${receiver?.username}`);
 
       if (receiver?.pushToken) {
         const payload = {
