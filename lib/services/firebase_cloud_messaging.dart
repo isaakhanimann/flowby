@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
-import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class FirebaseCloudMessaging {
@@ -20,15 +22,16 @@ class FirebaseCloudMessaging {
     });
 
     _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
-        showNotification(message);
+      onMessage: (Map<String, dynamic> mapMessage) async {
+        print('on message $mapMessage');
+        CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
+        showNotification(message: message);
       },
-      onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
+      onResume: (Map<String, dynamic> mapMessage) async {
+        print('on resume $mapMessage');
       },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
+      onLaunch: (Map<String, dynamic> mapMessage) async {
+        print('on launch $mapMessage');
       },
     );
     // Flutter Local Notifications //
@@ -54,7 +57,7 @@ class FirebaseCloudMessaging {
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  void showNotification(message) async {
+  void showNotification({@required CloudMessage message}) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       Platform.isAndroid
           ? 'com.dfa.flutterchatdemo'
@@ -71,10 +74,23 @@ class FirebaseCloudMessaging {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
       0,
-      message['notification']['title'].toString(),
-      message['notification']['body'].toString(),
+      message.title,
+      message.body,
       platformChannelSpecifics,
-      payload: json.encode(message),
+      payload:
+          'put data here that will be passed back to the app when a notification is tapped',
     );
+  }
+}
+
+class CloudMessage {
+  String title;
+  String body;
+
+  CloudMessage({this.title, this.body});
+
+  CloudMessage.fromMap({Map<String, dynamic> mapMessage}) {
+    title = mapMessage['notification']['title'];
+    body = mapMessage['notification']['body'];
   }
 }
