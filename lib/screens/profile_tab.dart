@@ -11,6 +11,7 @@ import 'package:float/widgets/sign_in_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class ProfileTab extends StatelessWidget {
   @override
@@ -47,7 +48,7 @@ class ProfileTab extends StatelessWidget {
                           children: <Widget>[
                             CupertinoButton(
                               child: Icon(
-                                CupertinoIcons.settings,
+                                Feather.settings,
                                 size: 30,
                               ),
                               onPressed: () {

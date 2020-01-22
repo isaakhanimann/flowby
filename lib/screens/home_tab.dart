@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -220,7 +221,7 @@ class ProfileItem extends StatelessWidget {
               ),
             ],
           ),
-          trailing: Icon(Icons.keyboard_arrow_right),
+          trailing: Icon(Feather.chevron_right),
         ),
       ),
     );
@@ -252,7 +253,7 @@ class SearchBar extends StatelessWidget {
         prefix: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Icon(
-            CupertinoIcons.search,
+            Feather.search,
             color: CupertinoColors.black,
           ),
         ),

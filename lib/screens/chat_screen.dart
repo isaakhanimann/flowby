@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:float/screens/view_profile_screen.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
@@ -127,7 +128,7 @@ class ChatScreenWithPath extends StatelessWidget {
                       Navigator.of(context).pop();
                     },
                     child: Icon(
-                      Icons.arrow_back_ios,
+                      Feather.chevron_left,
                     ),
                   ),
                   GestureDetector(
@@ -323,9 +324,9 @@ class SendButton extends StatelessWidget {
         decoration: ShapeDecoration(
             color: kDefaultProfilePicColor, shape: CircleBorder()),
         child: Icon(
-          Icons.send,
+          Feather.send,
           color: Colors.white,
-          size: 20,
+          size: 22,
         ),
       ),
     );

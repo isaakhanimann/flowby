@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -88,20 +89,17 @@ class _NavigationScreenState extends State<NavigationScreen> {
           items: [
             BottomNavigationBarItem(
                 icon: Icon(
-                  CupertinoIcons.home,
-                ),
-                title: Text('Home')),
+                  Feather.home,
+                )),
             BottomNavigationBarItem(
               icon: Icon(
-                CupertinoIcons.conversation_bubble,
+                Feather.message_circle,
               ),
-              title: Text('Messages'),
             ),
             BottomNavigationBarItem(
               icon: Icon(
-                CupertinoIcons.person,
+                Feather.user,
               ),
-              title: Text('Profile'),
             ),
           ],
         ),

@@ -8,6 +8,7 @@ import 'package:float/widgets/sign_in_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class ChatsTab extends StatelessWidget {
   @override
@@ -146,7 +147,7 @@ class ChatItem extends StatelessWidget {
                 maybeLongString: chat.lastMessageText),
             style: TextStyle(color: Colors.black38, fontSize: 15),
           ),
-          trailing: Icon(Icons.keyboard_arrow_right),
+          trailing: Icon(Feather.chevron_right),
         ),
       ),
     );

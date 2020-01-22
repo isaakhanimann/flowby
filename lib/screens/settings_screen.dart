@@ -7,6 +7,7 @@ import 'package:float/widgets/sign_in_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const String id = 'settings_screen';
@@ -38,7 +39,7 @@ class SettingsScreen extends StatelessWidget {
         },
       ),
       SettingsItem(
-        leading: Icon(Icons.exit_to_app, color: kLoginBackgroundColor),
+        leading: Icon(Feather.log_out, color: kLoginBackgroundColor),
         title: Text('Sign Out', style: kUsernameTextStyle),
         onTap: () {
           final authService = Provider.of<FirebaseAuthService>(context);
@@ -51,7 +52,7 @@ class SettingsScreen extends StatelessWidget {
         },
       ),
       SettingsItem(
-        leading: Icon(Icons.delete, color: kLoginBackgroundColor),
+        leading: Icon(Feather.trash, color: kLoginBackgroundColor),
         title: Text('Delete Account', style: kUsernameTextStyle),
         onTap: () {
           showCupertinoDialog(
@@ -89,27 +90,27 @@ class SettingsScreen extends StatelessWidget {
         },
       ),
       SettingsItem(
-          leading: Icon(Icons.people, color: kLoginBackgroundColor),
+          leading: Icon(Feather.users, color: kLoginBackgroundColor),
           title: Text('Invite a friend'),
           onTap: null),
       SettingsItem(
-          leading: Icon(Icons.add_to_home_screen, color: kLoginBackgroundColor),
+          leading: Icon(Feather.bell, color: kLoginBackgroundColor),
           title: Text('Notifications'),
           onTap: null),
       SettingsItem(
-          leading: Icon(Icons.bookmark, color: kLoginBackgroundColor),
+          leading: Icon(Feather.help_circle, color: kLoginBackgroundColor),
           title: Text('Support'),
           onTap: null),
       SettingsItem(
-          leading: Icon(Icons.description, color: kLoginBackgroundColor),
+          leading: Icon(Feather.paperclip, color: kLoginBackgroundColor),
           title: Text('Terms & Conditions'),
           onTap: null),
       SettingsItem(
-          leading: Icon(Icons.info, color: kLoginBackgroundColor),
+          leading: Icon(Feather.info, color: kLoginBackgroundColor),
           title: Text('Privacy Policy'),
           onTap: null),
       SettingsItem(
-          leading: Icon(Icons.person, color: kLoginBackgroundColor),
+          leading: Icon(Feather.user, color: kLoginBackgroundColor),
           title: Text('My Data'),
           onTap: null)
     ];
@@ -173,7 +174,7 @@ class SettingsItem extends StatelessWidget {
         onTap: onTap,
         leading: leading,
         title: title,
-        trailing: Icon(Icons.keyboard_arrow_right),
+        trailing: Icon(Feather.chevron_right),
       ),
     );
   }

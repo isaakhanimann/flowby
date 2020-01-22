@@ -7,6 +7,7 @@ import 'package:float/screens/show_profile_picture_screen.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class ViewProfileScreen extends StatelessWidget {
   static const String id = 'view_profile_screen';
@@ -40,7 +41,7 @@ class ViewProfileScreen extends StatelessWidget {
                       children: <Widget>[
                         CupertinoButton(
                           child: Icon(
-                            CupertinoIcons.back,
+                            Feather.chevron_left,
                             size: 30,
                           ),
                           padding: EdgeInsets.all(0),
