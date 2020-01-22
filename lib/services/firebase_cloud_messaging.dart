@@ -17,9 +17,9 @@ class FirebaseCloudMessaging {
   void firebaseCloudMessagingListeners() {
     if (Platform.isIOS) iOSPermission();
 
-    _firebaseMessaging.getToken().then((token) {
-      //print('token: $token');
-    });
+//    _firebaseMessaging.getToken().then((token) {
+//      //print('token: $token');
+//    });
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> mapMessage) async {
@@ -86,11 +86,24 @@ class FirebaseCloudMessaging {
 class CloudMessage {
   String title;
   String body;
+  String priority = 'high';
+  // click_action = FLUTTER_NOTIFICATION_CLICK is needed otherwise the plugin will be unable to deliver the notification to your app when the users clicks on it in the system tray.
+  Map<String, String> data = {
+    "click_action": "FLUTTER_NOTIFICATION_CLICK",
+    "id": "1",
+    "status": "done"
+  };
+  String toToken;
 
   CloudMessage({this.title, this.body});
 
+  // {"notification": {"body": "this is a body","title": "this is a title"},
+  // "priority": "high",
+  // "data": {"click_action": "FLUTTER_NOTIFICATION_CLICK", "id": "1", "status": "done"},
+  // "to": "<FCM TOKEN>"}';
   CloudMessage.fromMap({Map<String, dynamic> mapMessage}) {
     title = mapMessage['notification']['title'];
     body = mapMessage['notification']['body'];
+    toToken = mapMessage['to'];
   }
 }
