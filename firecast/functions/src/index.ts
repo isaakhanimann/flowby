@@ -1,8 +1,9 @@
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
-const functions = require("firebase-functions");
+import functions = require("firebase-functions");
 
 // The Firebase Admin SDK to access the Firebase Realtime Database.
-const admin = require("firebase-admin");
+import admin = require("firebase-admin");
+import { EventContext } from "firebase-functions";
 const path = require("path");
 
 admin.initializeApp();
@@ -106,12 +107,13 @@ exports.updateImageUpdateUserAndChats = functions.storage
     // Get the file name, this should be the uid of the user
     const uid = path.basename(filePath);
     // Exit if the user already had a unique imageFileName
-    const doc = await db
+    const userDoc = await db
       .collection("users")
       .doc(uid)
       .get();
-    if (doc.exists) {
-      if (doc.data().imageFileName == uid) {
+
+    if (userDoc.exists) {
+      if (userDoc.data()?.imageFileName == uid) {
         console.log(
           "ImageFileName is already uid so it does not need to be changed anywhere"
         );
@@ -224,63 +226,63 @@ exports.deleteUserEveryhere = functions.auth
 
 exports.sendNotification = functions.firestore
   .document("chats/{chatId}/messages/{messageId}")
-  .onCreate(async (snap: any, context: any) => {
-    console.log("----------------start function--------------------");
+  .onCreate(
+    async (snap: FirebaseFirestore.DocumentSnapshot, context: EventContext) => {
+      console.log("----------------start function--------------------");
 
-    const message = snap.data();
+      let message: FirebaseFirestore.DocumentData = snap.data()!;
 
-    const senderUid = message.senderUid;
-    const contentMessage = message.text;
+      const senderUid: string = message.senderUid;
+      const contentMessage: string = message.text;
 
-    const chat = await message
-      .ref()
-      .parent()
-      .parent()
-      .get();
+      //force unwrap the chat because I am sure it exists
+      const chatSnap: FirebaseFirestore.DocumentSnapshot = await snap?.ref?.parent?.parent?.get()!;
+      const chat: FirebaseFirestore.DocumentData = chatSnap.data()!;
 
-    let receiverUid: String = "";
-    let senderUsername: String = "";
+      let receiverUid: string = "";
+      let senderUsername: string = "";
 
-    if (senderUid == chat.user1) {
-      //the sender is user1 of the chat
-      receiverUid = chat.user2;
-      senderUsername = chat.username1;
-    } else {
-      receiverUid = chat.user1;
-      senderUsername = chat.username2;
+      if (senderUid == chat.user1) {
+        //the sender is user1 of the chat
+        receiverUid = chat.user2;
+        senderUsername = chat.username1;
+      } else {
+        receiverUid = chat.user1;
+        senderUsername = chat.username2;
+      }
+      console.log(`Found sender: ${senderUsername}`);
+
+      // Get the receivers token
+      const userDoc = await admin
+        .firestore()
+        .collection("users")
+        .doc(receiverUid)
+        .get();
+
+      const receiver = userDoc.data();
+      console.log(`Found the receiver: ${receiver?.username}`);
+
+      if (receiver?.pushToken) {
+        const payload = {
+          notification: {
+            title: senderUsername,
+            body: contentMessage,
+            badge: "1",
+            sound: "default"
+          }
+        };
+        // send the push notification to the receivers device
+        return fcm
+          .sendToDevice(receiver.pushToken, payload)
+          .then((response: any) => {
+            console.log("Successfully sent message:", response);
+          })
+          .catch((error: any) => {
+            console.log("Error sending message:", error);
+          });
+      } else {
+        console.log("Can not find pushToken target user");
+        return null;
+      }
     }
-    console.log(`Found sender: ${senderUsername}`);
-
-    // Get the receivers token
-    const userDoc = await admin
-      .firestore()
-      .collection("users")
-      .doc(receiverUid)
-      .get();
-
-    const receiver = userDoc.data();
-    console.log(`Found the receiver: ${receiver.username}`);
-
-    if (receiver.pushToken) {
-      const payload = {
-        notification: {
-          title: senderUsername,
-          body: contentMessage,
-          badge: "1",
-          sound: "default"
-        }
-      };
-      // send the push notification to the receivers device
-      return fcm
-        .sendToDevice(receiver.pushToken, payload)
-        .then((response: any) => {
-          console.log("Successfully sent message:", response);
-        })
-        .catch((error: any) => {
-          console.log("Error sending message:", error);
-        });
-    } else {
-      console.log("Can not find pushToken target user");
-      return null;
-    }
-  });
+  );
