@@ -55,62 +55,51 @@ exports.createMessageUpdateChat = functions.firestore
 // when the username of a user is changed update all the chats that contain that username (find them with uid)
 exports.updateUsernameUpdateChat = functions.firestore
   .document("/users/{userId}")
-  .onUpdate((change: any, context: any) => {
+  .onUpdate(async (change: any, context: any) => {
     // Get an object representing the document
     const newUser = change.after.data();
     // ...or the previous value before this update
     const previousUser = change.before.data();
     // if the username changed change all the chats
     if (previousUser.username !== newUser.username) {
-      // First update all the chats where the user is user1
-      // try{
-
-      // }catch(error){
-      //   console.log("Error updating chat:", error);
-      // }
-      db.collection("chats")
-        .where("uid1", "==", newUser.uid)
-        .get()
-        .then((querySnapshot: any) => {
-          querySnapshot.forEach((documentSnapshot: any) => {
-            if (documentSnapshot.exists) {
-              db.collection("chats")
-                .doc(documentSnapshot.ref.id)
-                .update({ username1: newUser.username })
-                .then(() => {
-                  console.log(`Users username1 updated to ${newUser.username}`);
-                })
-                .catch((error: any) => {
-                  console.log("Error updating chat:", error);
-                });
-            }
-          });
-        })
-        .catch((error: any) => {
-          console.log("Error getting chat:", error);
+      try {
+        // First update all the chats where the user is user1
+        const querySnapshot = await db
+          .collection("chats")
+          .where("uid1", "==", newUser.uid)
+          .get();
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("chats")
+              .doc(documentSnapshot.ref.id)
+              .update({ username1: newUser.username })
+              .catch((error: any) => {
+                console.log("Error updating chat1:", error);
+              });
+          }
         });
-      // Then update all the chats where the user is user2
-      db.collection("chats")
-        .where("uid2", "==", newUser.uid)
-        .get()
-        .then((querySnapshot: any) => {
-          querySnapshot.forEach((documentSnapshot: any) => {
-            if (documentSnapshot.exists) {
-              db.collection("chats")
-                .doc(documentSnapshot.ref.id)
-                .update({ username2: newUser.username })
-                .then(() => {
-                  console.log(`Users username2 updated to ${newUser.username}`);
-                })
-                .catch((error: any) => {
-                  console.log("Error updating chat:", error);
-                });
-            }
-          });
-        })
-        .catch((error: any) => {
-          console.log("Error getting chat:", error);
+      } catch (error) {
+        console.log("Error getting chats1:", error);
+      }
+      try {
+        // Then update all the chats where the user is user2
+        const querySnapshot = await db
+          .collection("chats")
+          .where("uid2", "==", newUser.uid)
+          .get();
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("chats")
+              .doc(documentSnapshot.ref.id)
+              .update({ username1: newUser.username })
+              .catch((error: any) => {
+                console.log("Error updating chat2:", error);
+              });
+          }
         });
+      } catch (error) {
+        console.log("Error getting chats2:", error);
+      }
     }
   });
 
@@ -199,7 +188,12 @@ exports.deleteUserEveryhere = functions.auth
     // delete the user in the users collection
     db.collection("users")
       .doc(user.uid)
-      .delete();
+      .delete()
+      .catch(function(error: any) {
+        console.log(
+          `Error deleting user out of users collection, uid =  ${user.uid}`
+        );
+      });
 
     // delete the image with his uid as the file name
     const bucket = admin.storage().bucket();
@@ -229,6 +223,9 @@ exports.deleteUserEveryhere = functions.auth
                 console.log(
                   `Chat ${documentSnapshot.ref.id} deleted successfully`
                 );
+              })
+              .catch(function(error: any) {
+                console.log(`Error deleting chat ${documentSnapshot.ref.id}`);
               });
           }
         });
@@ -250,6 +247,9 @@ exports.deleteUserEveryhere = functions.auth
                 console.log(
                   `Chat ${documentSnapshot.ref.id} deleted successfully`
                 );
+              })
+              .catch((error: any) => {
+                console.log("Error deleting chat:", error);
               });
           }
         });
