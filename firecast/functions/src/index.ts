@@ -61,8 +61,13 @@ exports.updateUsernameUpdateChat = functions.firestore
     // ...or the previous value before this update
     const previousUser = change.before.data();
     // if the username changed change all the chats
-    if (previousUser.username != newUser.username) {
+    if (previousUser.username !== newUser.username) {
       // First update all the chats where the user is user1
+      // try{
+
+      // }catch(error){
+      //   console.log("Error updating chat:", error);
+      // }
       db.collection("chats")
         .where("uid1", "==", newUser.uid)
         .get()
@@ -74,9 +79,15 @@ exports.updateUsernameUpdateChat = functions.firestore
                 .update({ username1: newUser.username })
                 .then(() => {
                   console.log(`Users username1 updated to ${newUser.username}`);
+                })
+                .catch((error: any) => {
+                  console.log("Error updating chat:", error);
                 });
             }
           });
+        })
+        .catch((error: any) => {
+          console.log("Error getting chat:", error);
         });
       // Then update all the chats where the user is user2
       db.collection("chats")
@@ -90,9 +101,15 @@ exports.updateUsernameUpdateChat = functions.firestore
                 .update({ username2: newUser.username })
                 .then(() => {
                   console.log(`Users username2 updated to ${newUser.username}`);
+                })
+                .catch((error: any) => {
+                  console.log("Error updating chat:", error);
                 });
             }
           });
+        })
+        .catch((error: any) => {
+          console.log("Error getting chat:", error);
         });
     }
   });
@@ -113,7 +130,7 @@ exports.updateImageUpdateUserAndChats = functions.storage
       .get();
 
     if (userDoc.exists) {
-      if (userDoc.data()?.imageFileName == uid) {
+      if (userDoc.data()?.imageFileName === uid) {
         console.log(
           "ImageFileName is already uid so it does not need to be changed anywhere"
         );
@@ -126,6 +143,9 @@ exports.updateImageUpdateUserAndChats = functions.storage
       .update({ imageFileName: uid })
       .then(() => {
         console.log(`Users imageFileName updated to ${uid}`);
+      })
+      .catch((error: any) => {
+        console.log("Error updating imageFileName:", error);
       });
     // Update all the chats of this user to have the same imageFileName
     // First update all the chats where the user is user1
@@ -140,10 +160,14 @@ exports.updateImageUpdateUserAndChats = functions.storage
               .update({ user1ImageFileName: uid })
               .then(() => {
                 console.log(`Users user1ImageFileName updated to ${uid}`);
+              })
+              .catch((error: any) => {
+                console.log("Error updating chat:", error);
               });
           }
         });
-      });
+      })
+      .catch((error: any) => console.log(error));
     // Then update all the chats where the user is user2
     db.collection("chats")
       .where("uid2", "==", uid)
@@ -156,9 +180,15 @@ exports.updateImageUpdateUserAndChats = functions.storage
               .update({ user2ImageFileName: uid })
               .then(() => {
                 console.log(`Users user2ImageFileName updated to ${uid}`);
+              })
+              .catch((error: any) => {
+                console.log("Error updating chat:", error);
               });
           }
         });
+      })
+      .catch((error: any) => {
+        console.log("Error getting chat:", error);
       });
   });
 
@@ -181,7 +211,6 @@ exports.deleteUserEveryhere = functions.auth
         console.log(`Deleted image ${user.uid} successfully`);
       })
       .catch(function(error: any) {
-        // Uh-oh, an error occurred!
         console.log(`Could not delete the image ${user.uid}`);
       });
 
@@ -203,6 +232,9 @@ exports.deleteUserEveryhere = functions.auth
               });
           }
         });
+      })
+      .catch((error: any) => {
+        console.log("Error getting chat:", error);
       });
     // Then delete all the chats where the user is user2
     db.collection("chats")
@@ -221,6 +253,9 @@ exports.deleteUserEveryhere = functions.auth
               });
           }
         });
+      })
+      .catch((error: any) => {
+        console.log("Error getting chat:", error);
       });
   });
 
@@ -230,7 +265,7 @@ exports.sendNotification = functions.firestore
     async (snap: FirebaseFirestore.DocumentSnapshot, context: EventContext) => {
       console.log("----------------start function--------------------");
 
-      let message: FirebaseFirestore.DocumentData = snap.data()!;
+      const message: FirebaseFirestore.DocumentData = snap.data()!;
 
       const senderUid: string = message.senderUid;
       const contentMessage: string = message.text;
@@ -242,7 +277,7 @@ exports.sendNotification = functions.firestore
       let receiverUid: string = "";
       let senderUsername: string = "";
 
-      if (senderUid == chat.user1) {
+      if (senderUid === chat.user1) {
         //the sender is user1 of the chat
         receiverUid = chat.user2;
         senderUsername = chat.username1;
