@@ -30,8 +30,9 @@ class _AddWishesRegistrationScreenState
     extends State<AddWishesRegistrationScreen> {
   bool showSpinner = false;
 
-  int _databaseWishRate = 20;
   String _databaseHashtagWishes;
+  int _databaseWishRate = 20;
+  bool _localHasWishes = true;
 
   User _user;
 
@@ -76,59 +77,80 @@ class _AddWishesRegistrationScreenState
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         SizedBox(
-                          height: 10.0,
+                          height: 20.0,
                         ),
-                        Text(
-                          'Add what you would like to learn',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        TextFormField(
-                          onChanged: (value) {
-                            _databaseHashtagWishes = value;
-                          },
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          decoration: InputDecoration(
-                            hintText: 'Your wishes (e.g. #sushis)',
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintStyle:
-                                TextStyle(fontFamily: 'MontserratRegular'),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 30.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5.0),
-                              ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Your wishes',
+                              style: kMiddleTitleTextStyle,
                             ),
-                          ),
+                            CupertinoSwitch(
+                              value: _localHasWishes,
+                              onChanged: (newBool) {
+                                setState(() {
+                                  _localHasWishes = newBool;
+                                });
+                              },
+                            ),
+                          ],
                         ),
                         SizedBox(
                           height: 20.0,
                         ),
-                        Text(
-                          'How much would you pay?',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 18.0,
+                        if (_localHasWishes)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'Tell others what you would like to learn',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'MontserratRegular',
+                                  fontSize: 22.0,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              CupertinoTextField(
+                                style: TextStyle(color: kGrey3, fontSize: 20),
+                                //maxLength: 20,
+                                //maxLines: 1,
+                                placeholder: 'e.g. #piano #salsa #algebra',
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: kLightGrey),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                textAlign: TextAlign.start,
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Text(
+                                'How much would you pay for someone\'s presence?',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'MontserratRegular',
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              RatePicker(
+                                initialValue: _user.skillRate ?? 20,
+                                onSelected: (selectedIndex) {
+                                  _databaseWishRate = selectedIndex;
+                                },
+                              ),
+                            ],
                           ),
-                        ),
-                        RatePicker(
-                          initialValue: _databaseWishRate ?? 20,
-                          onSelected: (selectedIndex) {
-                            _databaseWishRate = selectedIndex;
-                          },
-                        ),
                         RoundedButton(
                           text: 'I am ready!',
                           color: ffDarkBlue,
@@ -138,6 +160,7 @@ class _AddWishesRegistrationScreenState
                               showSpinner = true;
                             });
 
+                            _user.hasWishes = _localHasWishes;
                             _user.wishHashtags = _databaseHashtagWishes;
                             _user.wishRate = _databaseWishRate;
 
@@ -151,35 +174,26 @@ class _AddWishesRegistrationScreenState
                                 Provider.of<FirebaseAuthService>(context,
                                     listen: false);
 
+                            /*
+                            final loggedInUser = Provider.of<FirebaseUser>(
+                                context,
+                                listen: false);
+                            */
                             await authService.tryToGetCurrentUserAndNavigate(
                                 context: context);
+
+                            authService.getCurrentUser().then((loggedInUser) {
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                NavigationScreen.id,
+                                (Route<dynamic> route) => false,
+                                arguments: loggedInUser,
+                              );
+                            });
 
                             setState(() {
                               showSpinner = false;
                             });
                           },
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
-
-                            Navigator.of(context, rootNavigator: true).push(
-                              CupertinoPageRoute<void>(
-                                builder: (context) {
-                                  return NavigationScreen(loggedInUser: loggedInUser);
-                                },
-                              ),
-                            );
-                          },
-                          child: Text(
-                            'Skip this step',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: 'MontserratRegular',
-                              fontSize: 16.0,
-                            ),
-                          ),
                         ),
                         /*
                         SizedBox(

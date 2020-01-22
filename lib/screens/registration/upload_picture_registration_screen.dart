@@ -83,6 +83,8 @@ class _UploadPictureRegistrationScreenState
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
 
+    _user.imageFileName = "default-profile-pic.jpg";
+
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(

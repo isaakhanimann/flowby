@@ -60,7 +60,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       firebaseMessaging.getToken().then((token) {
         cloudFirestoreService.uploadPushToken(
             uid: widget.loggedInUser.uid, pushToken: token);
-        //print('token: $token');
+        print('token: $token');
       });
     }
   }

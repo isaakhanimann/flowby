@@ -43,12 +43,10 @@ class SettingsScreen extends StatelessWidget {
         onTap: () {
           final authService = Provider.of<FirebaseAuthService>(context);
           authService.signOut();
-          Navigator.of(context, rootNavigator: true).push(
-            CupertinoPageRoute<void>(
-              builder: (context) {
-                return ChooseSignupOrLoginScreen();
-              },
-            ),
+          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+            CupertinoPageRoute(
+                builder: (BuildContext context) => ChooseSignupOrLoginScreen()),
+            (Route<dynamic> route) => false,
           );
         },
       ),

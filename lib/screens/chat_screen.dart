@@ -6,6 +6,7 @@ import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:float/screens/view_profile_screen.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
@@ -16,6 +17,7 @@ class ChatScreen extends StatelessWidget {
   final String heroTag;
 
   final String chatPath;
+
   //either the chatPath is supplied and we can get the messageStream directly
   //or if he isn't we can user the other user to figure out the chatpath ourselves
   ChatScreen(
@@ -96,46 +98,64 @@ class ChatScreenWithPath extends StatelessWidget {
 
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: CupertinoColors.white,
-        border: null,
-        leading: CupertinoButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Icon(Icons.arrow_back_ios),
-        ),
-        middle: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.grey,
-              backgroundImage: NetworkImage(
-                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(
-              otherUsername,
-              style: TextStyle(),
-            )
-          ],
-        ),
-      ),
       child: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            MessagesStream(
-              messagesStream:
-                  cloudFirestoreService.getMessageStream(chatPath: chatPath),
+        child: Stack(children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              MessagesStream(
+                messagesStream:
+                    cloudFirestoreService.getMessageStream(chatPath: chatPath),
+              ),
+              MessageSendingSection(chatPath: chatPath),
+            ],
+          ),
+          Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    width: 15,
+                  ),
+                  CupertinoButton(
+                    padding: EdgeInsets.all(0.0),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Row(
+                      children: <Widget>[
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.grey,
+                          backgroundImage: NetworkImage(
+                              'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          otherUsername,
+                          style: TextStyle(
+                              fontSize: 20, fontFamily: 'MuliRegular'),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-            MessageSendingSection(chatPath: chatPath),
-          ],
-        ),
+          ),
+        ]),
       ),
     );
   }

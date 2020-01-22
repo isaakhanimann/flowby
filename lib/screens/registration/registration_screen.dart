@@ -49,13 +49,16 @@ class _RegistrationScreenState extends State<RegistrationScreen>
               Navigator.of(context).pop();
             },
           ),
-          middle: Text(
-            'Sign Up',
-            style: TextStyle(color: CupertinoColors.white),
+          middle: Padding(
+            padding: const EdgeInsets.only(top: 13.0),
+            child: Text(
+              'Sign Up',
+              style: kCupertinoScaffoldTextStyle,
+            ),
           ),
           backgroundColor: Colors.transparent,
         ),
-        backgroundColor: kLoginBackgroundColor,
+        backgroundColor: kRegistrationBackgroundColor,
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),

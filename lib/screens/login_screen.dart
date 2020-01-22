@@ -46,13 +46,16 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.of(context).pop();
             },
           ),
-          middle: Text(
-            'Log In',
-            style: TextStyle(color: CupertinoColors.white),
+          middle: Padding(
+            padding: const EdgeInsets.only(top: 13.0),
+            child: Text(
+              'Log In',
+              style: kCupertinoScaffoldTextStyle,
+            ),
           ),
           backgroundColor: Colors.transparent,
         ),
-        backgroundColor: kLoginBackgroundColor,
+        backgroundColor: kRegistrationBackgroundColor,
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -128,13 +131,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             email: email, password: password);
                         final user = authResult?.user;
                         if (user != null) {
-                          Navigator.pushNamed(context, NavigationScreen.id,
-                              arguments: user);
                           //cleans the navigation stack, so we don't come back to the login page if we
                           //press the back button in Android
-                          /* Navigator.of(context).pushNamedAndRemoveUntil(
-                              NavigationScreen.id,
-                              (Route<dynamic> route) => false);*/
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            NavigationScreen.id,
+                            (Route<dynamic> route) => false,
+                            arguments: user,
+                          );
                         }
                         setState(() {
                           showSpinner = false;

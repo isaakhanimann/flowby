@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/helper_functions.dart';
 import 'package:float/models/user.dart';
+import 'package:float/screens/settings_screen.dart';
 import 'package:float/screens/view_profile_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
-import 'package:float/services/firebase_cloud_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -93,31 +93,8 @@ class _HomeTabState extends State<HomeTab> {
             CupertinoSliverNavigationBar(
               backgroundColor: CupertinoColors.white,
               border: null,
-              largeTitle: Text('Search'),
-              trailing: CupertinoButton(
-                child: Icon(
-                  CupertinoIcons.settings,
-                  size: 30,
-                ),
-                onPressed: () {
-                  final firebaseMessaging = Provider.of<FirebaseCloudMessaging>(
-                      context,
-                      listen: false);
-                  CloudMessage message = CloudMessage(
-                      title: 'Cloud message title from Isaak',
-                      body: 'Cloud message body from Isaak');
-                  firebaseMessaging.showNotification(message: message);
-//                  Navigator.of(context, rootNavigator: true).push(
-//                    CupertinoPageRoute<void>(
-//                      builder: (context) {
-//                        return SettingsScreen(
-//                          loggedInUser: loggedInUser,
-//                        );
-//                      },
-//                    ),
-//                  );
-                },
-              ),
+              middle: Image(image: AssetImage("assets/images/logo_flowby.png"), height: 40.0,),
+              largeTitle: Text('Search', style: kTabsLargeTitleTextStyle,),
             ),
             SliverSafeArea(
               top: false,

@@ -93,7 +93,7 @@ class _UserDescriptionRegistrationScreenState
                             hintStyle:
                                 TextStyle(fontFamily: 'MontserratRegular'),
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 30.0),
+                                vertical: 45.0, horizontal: 30.0),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(5.0),
