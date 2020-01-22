@@ -1,13 +1,14 @@
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
-constfunctions = require("firebase-functions");
+const functions = require("firebase-functions");
 
 // The Firebase Admin SDK to access the Firebase Realtime Database.
-constadmin = require("firebase-admin");
-constpath = require("path");
+const admin = require("firebase-admin");
+const path = require("path");
 
 admin.initializeApp();
 
 const db = admin.firestore();
+const fcm = admin.messaging();
 
 // erstelle cloud function
 // when a message is added scan it for the string "pizza" and replace it with the emoji
@@ -222,61 +223,64 @@ exports.deleteUserEveryhere = functions.auth
   });
 
 exports.sendNotification = functions.firestore
-  .document('chats/{chatId}/messages/{messageId}')
-  .onCreate((snap, context) => {
-    console.log('----------------start function--------------------');
+  .document("chats/{chatId}/messages/{messageId}")
+  .onCreate(async (snap: any, context: any) => {
+    console.log("----------------start function--------------------");
 
-    const doc = snap.data();
-    console.log(doc);
+    const message = snap.data();
 
-    const senderUid = doc.senderUid;
-    const receiverUid = doc.receiverUid;
-    const contentMessage = doc.text;
+    const senderUid = message.senderUid;
+    const contentMessage = message.text;
 
-    // Get push token user to (receive)
-    admin
+    const chat = await message
+      .ref()
+      .parent()
+      .parent()
+      .get();
+
+    let receiverUid: String = "";
+    let senderUsername: String = "";
+
+    if (senderUid == chat.user1) {
+      //the sender is user1 of the chat
+      receiverUid = chat.user2;
+      senderUsername = chat.username1;
+    } else {
+      receiverUid = chat.user1;
+      senderUsername = chat.username2;
+    }
+    console.log(`Found sender: ${senderUsername}`);
+
+    // Get the receivers token
+    const userDoc = await admin
       .firestore()
-      .collection('users')
-      .where('uid', '==', receiverUid)
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(receiver => {
-          console.log(`Found user to: ${receiver.data().username}`);
-          if (receiver.data().pushToken) {
-            // Get info user from (sent)
-            admin
-              .firestore()
-              .collection('users')
-              .where('uid', '==', senderUid)
-              .get()
-              .then(querySnapshot2 => {
-                querySnapshot2.forEach(sender => {
-                  console.log(`Found user from: ${sender.data().username}`);
-                  const payload = {
-                    notification: {
-                      title: `${sender.data().username}`,
-                      body: contentMessage,
-                      badge: '1',
-                      sound: 'default'
-                    }
-                  }
-                  // Let push to the target device
-                  admin
-                    .messaging()
-                    .sendToDevice(receiver.data().pushToken, payload)
-                    .then(response => {
-                      console.log('Successfully sent message:', response);
-                    });
-                    .catch(error => {
-                      console.log('Error sending message:', error)
-                    });
-                });
-              });
-          } else {
-            console.log('Can not find pushToken target user');
-          }
-        });
-      });
-    return null;
-  });
+      .collection("users")
+      .doc(receiverUid)
+      .get();
 
+    const receiver = userDoc.data();
+    console.log(`Found the receiver: ${receiver.username}`);
+
+    if (receiver.pushToken) {
+      const payload = {
+        notification: {
+          title: senderUsername,
+          body: contentMessage,
+          badge: "1",
+          sound: "default"
+        }
+      };
+      // send the push notification to the receivers device
+      return fcm
+        .sendToDevice(receiver.pushToken, payload)
+        .then((response: any) => {
+          console.log("Successfully sent message:", response);
+        })
+        .catch((error: any) => {
+          console.log("Error sending message:", error);
+        });
+    } else {
+      console.log("Can not find pushToken target user");
+      return null;
+    }
+  });
