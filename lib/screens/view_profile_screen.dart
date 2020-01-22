@@ -3,6 +3,7 @@ import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/chat_screen.dart';
 import 'package:float/screens/choose_signup_or_login_screen.dart';
+import 'package:float/screens/profile_picture_screen.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,11 +51,25 @@ class ViewProfileScreen extends StatelessWidget {
                         Center(
                           child: Hero(
                             tag: heroTag,
-                            child: CircleAvatar(
-                              radius: 60,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: NetworkImage(
-                                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) =>
+                                            ProfilePictureScreen(
+                                              profilePictureUrl:
+                                                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
+                                              otherUsername: user.username,
+                                              heroTag: heroTag,
+                                            )));
+                              },
+                              child: CircleAvatar(
+                                radius: 60,
+                                backgroundColor: Colors.grey,
+                                backgroundImage: NetworkImage(
+                                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+                              ),
                             ),
                           ),
                         ),

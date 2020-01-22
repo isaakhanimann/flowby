@@ -93,6 +93,7 @@ class _HomeTabState extends State<HomeTab> {
             CupertinoSliverNavigationBar(
               backgroundColor: CupertinoColors.white,
               border: null,
+              middle: Image(image: AssetImage("assets/images/logo_flowby.png"), height: 40.0,),
               largeTitle: Text('Search', style: kTabsLargeTitleTextStyle,),
             ),
             SliverSafeArea(
