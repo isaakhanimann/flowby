@@ -14,44 +14,44 @@ class ShowProfilePictureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Stack(children: [
-        Hero(
-          tag: heroTag,
-          child: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(image: NetworkImage(profilePictureUrl))),
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: CupertinoColors.white,
+        border: null,
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Feather.chevron_left,
+                color: CupertinoColors.black,
+                size: 30,
+              ),
+              SizedBox(
+                width: 16.0,
+              ),
+              Text(
+                otherUsername,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 22,
+                    fontFamily: 'MontserratRegular'),
+              ),
+            ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(14.0),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Feather.chevron_left,
-                  color: CupertinoColors.white,
-                  size: 30,
-                ),
-                SizedBox(
-                  width: 16.0,
-                ),
-                Text(
-                  otherUsername,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontFamily: 'MontserratRegular'),
-                ),
-              ],
-            ),
-          ),
+      ),
+      child: Hero(
+        tag: heroTag,
+        child: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(image: NetworkImage(profilePictureUrl))),
         ),
-      ]),
+      ),
     );
   }
 }
