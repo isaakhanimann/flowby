@@ -5,21 +5,18 @@ import 'package:float/constants.dart';
 import 'package:float/screens/chats_tab.dart';
 import 'package:float/screens/home_tab.dart';
 import 'package:float/screens/profile_tab.dart';
+import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/firebase_cloud_messaging.dart';
 import 'package:float/services/location_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
-
-  final loggedInUser;
-
-  NavigationScreen({@required this.loggedInUser});
 
   @override
   _NavigationScreenState createState() => _NavigationScreenState();
@@ -28,13 +25,13 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
+  FirebaseUser loggedInUser;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     //upload the users location whenever it changes
-    if (widget.loggedInUser != null) {
+    if (loggedInUser != null) {
       final cloudFirestoreService =
           Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
       final locationService =
@@ -43,7 +40,26 @@ class _NavigationScreenState extends State<NavigationScreen> {
       positionStream = locationService.getPositionStream().asBroadcastStream();
       positionStreamSubscription = positionStream.listen((Position position) {
         cloudFirestoreService.uploadUsersLocation(
-            uid: widget.loggedInUser.uid, position: position);
+            uid: loggedInUser.uid, position: position);
+      });
+    }
+  }
+
+  Future<void> getLoggedInUserAndInitializeLocationService() async {
+    final authService =
+        Provider.of<FirebaseAuthService>(context, listen: false);
+    loggedInUser = await authService.getCurrentUser();
+    if (loggedInUser != null) {
+      final cloudFirestoreService =
+          Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+      final firebaseMessaging =
+          Provider.of<FirebaseCloudMessaging>(context, listen: false);
+
+      firebaseMessaging.firebaseCloudMessagingListeners();
+      firebaseMessaging.getToken().then((token) {
+        cloudFirestoreService.uploadPushToken(
+            uid: loggedInUser.uid, pushToken: token);
+        print('token: $token');
       });
     }
   }
@@ -51,19 +67,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.loggedInUser != null) {
-      final cloudFirestoreService =
-      Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-      final firebaseMessaging =
-          Provider.of<FirebaseCloudMessaging>(context, listen: false);
-
-      firebaseMessaging.firebaseCloudMessagingListeners();
-      firebaseMessaging.getToken().then((token) {
-        cloudFirestoreService.uploadPushToken(
-            uid: widget.loggedInUser.uid, pushToken: token);
-        print('token: $token');
-      });
-    }
+    getLoggedInUserAndInitializeLocationService();
   }
 
   @override
@@ -80,7 +84,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           value: positionStream,
         ),
         Provider<FirebaseUser>.value(
-          value: widget.loggedInUser,
+          value: loggedInUser,
         ),
       ],
       child: CupertinoTabScaffold(
@@ -89,8 +93,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
           items: [
             BottomNavigationBarItem(
                 icon: Icon(
-                  Feather.home,
-                )),
+              Feather.home,
+            )),
             BottomNavigationBarItem(
               icon: Icon(
                 Feather.message_circle,

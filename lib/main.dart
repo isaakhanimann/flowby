@@ -1,4 +1,4 @@
-import 'package:float/screens/splash_screen.dart';
+import 'package:float/screens/navigation_screen.dart';
 import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/firebase_cloud_messaging.dart';
@@ -59,7 +59,7 @@ class Float extends StatelessWidget {
               brightness: Brightness.light,
               primaryColor: kLoginBackgroundColor),
           debugShowCheckedModeBanner: false,
-          initialRoute: SplashScreen.id,
+          initialRoute: NavigationScreen.id,
           onGenerateRoute: RouteGenerator.generateRoute,
         ),
       ),

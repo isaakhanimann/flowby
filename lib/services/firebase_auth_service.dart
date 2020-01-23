@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/screens/navigation_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -28,12 +27,6 @@ class FirebaseAuthService {
 
   Future<void> resetPassword({@required String email}) async {
     await _auth.sendPasswordResetEmail(email: email);
-  }
-
-  Future<void> tryToGetCurrentUserAndNavigate(
-      {@required BuildContext context}) async {
-    final user = await _auth.currentUser();
-    Navigator.pushNamed(context, NavigationScreen.id, arguments: user);
   }
 
   Future<AuthResult> createUser(
