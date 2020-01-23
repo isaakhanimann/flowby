@@ -1,3 +1,4 @@
+import 'package:float/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -28,7 +29,7 @@ class ShowProfilePictureScreen extends StatelessWidget {
             children: <Widget>[
               Icon(
                 Feather.chevron_left,
-                color: CupertinoColors.black,
+                color: kLoginBackgroundColor,
                 size: 30,
               ),
               SizedBox(
@@ -37,7 +38,7 @@ class ShowProfilePictureScreen extends StatelessWidget {
               Text(
                 otherUsername,
                 style: TextStyle(
-                    color: Colors.black,
+                    color: kLoginBackgroundColor,
                     fontSize: 22,
                     fontFamily: 'MontserratRegular'),
               ),
