@@ -74,12 +74,10 @@ class SettingsScreen extends StatelessWidget {
                         Provider.of<FirebaseAuthService>(context);
                     print('delete user called');
                     await authService.deleteCurrentlyLoggedInUser();
-                    Navigator.of(context).push(
-                      CupertinoPageRoute<void>(
-                        builder: (context) {
-                          return ChooseSignupOrLoginScreen();
-                        },
-                      ),
+                    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                      CupertinoPageRoute(
+                          builder: (BuildContext context) => ChooseSignupOrLoginScreen()),
+                          (Route<dynamic> route) => false,
                     );
                   },
                   isDestructiveAction: true,
