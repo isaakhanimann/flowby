@@ -90,20 +90,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _localHasWishes = user.hasWishes;
       var skills = user.skills;
       var wishes = user.wishes;
-      for (String skillKeyword in skills.keys) {
-        skillKeywordControllers.add(TextEditingController(text: skillKeyword));
-      }
-      for (String skillDescription in skills.values) {
-        skillDescriptionControllers
-            .add(TextEditingController(text: skillDescription));
-      }
-      for (String wishKeyword in wishes.keys) {
-        wishKeywordControllers.add(TextEditingController(text: wishKeyword));
-      }
-      for (String wishDescription in skills.values) {
-        wishDescriptionControllers
-            .add(TextEditingController(text: wishDescription));
-      }
+      skills?.forEach((key, value) {
+        skillKeywordControllers.add(TextEditingController(text: key));
+        skillDescriptionControllers.add(TextEditingController(text: value));
+      });
+
+      wishes?.forEach((key, value) {
+        wishKeywordControllers.add(TextEditingController(text: key));
+        wishDescriptionControllers.add(TextEditingController(text: value));
+      });
+
       _localSkillRate = user?.skillRate;
       _localWishRate = user?.wishRate;
       _profilePic = null;
@@ -143,6 +139,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     final storageService =
         Provider.of<FirebaseStorageService>(context, listen: false);
+
+
 
     if (showSpinner) {
       return CupertinoPageScaffold(
@@ -331,23 +329,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    for (TextEditingController controller
-                        in skillKeywordControllers)
-                      CupertinoTextField(
-                        style: TextStyle(color: kGrey3, fontSize: 20),
-                        placeholder:
-                            controller.text == '' ? 'Enter your skills' : '',
-                        maxLength: 20,
-                        maxLines: 1,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: kLightGrey),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        controller: controller,
-                        textAlign: TextAlign.center,
-                      ),
+//                    for (TextEditingController controller
+//                        in skillKeywordControllers)
+//                      CupertinoTextField(
+//                        style: TextStyle(color: kGrey3, fontSize: 20),
+//                        placeholder:
+//                            controller.text == '' ? 'Enter your skills' : '',
+//                        maxLength: 20,
+//                        maxLines: 1,
+//                        padding:
+//                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+//                        decoration: BoxDecoration(
+//                            border: Border.all(color: kLightGrey),
+//                            borderRadius:
+//                                BorderRadius.all(Radius.circular(20))),
+//                        controller: controller,
+//                        textAlign: TextAlign.center,
+//                      ),
                     RatePicker(
                       initialValue: user.skillRate ?? 20,
                       onSelected: (selectedIndex) {
