@@ -16,6 +16,8 @@ class User {
   GeoPoint location;
   int distanceInKm;
   String imageFileName;
+  Map<dynamic, dynamic> skills;
+  Map<dynamic, dynamic> wishes;
 
   User(
       {this.username,
@@ -28,7 +30,9 @@ class User {
       this.skillRate,
       this.wishRate,
       this.location,
-      this.imageFileName});
+      this.imageFileName,
+      this.skills,
+      this.wishes});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'];
@@ -42,6 +46,8 @@ class User {
     this.wishRate = map['wishRate'];
     this.location = map['location'];
     this.imageFileName = map['imageFileName'];
+    this.skills = map['skills'];
+    this.wishes = map['wishes'];
   }
 
   Map<String, dynamic> toMap() {
@@ -55,7 +61,9 @@ class User {
       'wishHashtags': wishHashtags,
       'skillRate': skillRate,
       'wishRate': wishRate,
-      'imageFileName': imageFileName
+      'imageFileName': imageFileName,
+      'skills': skills,
+      'wishes': wishes
     };
   }
 
@@ -83,6 +91,8 @@ class User {
     toPrint += 'skillRate: ${skillRate.toString()}, ';
     toPrint += 'location: ${location.toString()}, ';
     toPrint += 'imageFileName: ${imageFileName.toString()}, ';
+    toPrint += 'skills: ${skills.toString()}, ';
+    toPrint += 'wishes: ${wishes.toString()}, ';
     toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';
 
     return toPrint;
