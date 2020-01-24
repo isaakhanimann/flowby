@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/helper_functions.dart';
 import 'package:float/models/message.dart';
+import 'package:float/screens/show_profile_picture_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -132,7 +133,17 @@ class ChatScreenWithPath extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => ShowProfilePictureScreen(
+                                    profilePictureUrl:
+                                        'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${otherImageFileName}?alt=media',
+                                    otherUsername: otherUsername,
+                                    heroTag: heroTag,
+                                  )));
+                    },
                     child: Row(
                       children: <Widget>[
                         CachedNetworkImage(
