@@ -195,7 +195,10 @@ class ProfileItem extends StatelessWidget {
                     backgroundImage: imageProvider),
               );
             },
-            placeholder: (context, url) => CupertinoActivityIndicator(),
+            placeholder: (context, url) => CircularProgressIndicator(
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+            ),
             errorWidget: (context, url, error) => Icon(Icons.error),
           ),
           title: Row(

@@ -78,7 +78,10 @@ class ViewProfileScreen extends StatelessWidget {
                                 );
                               },
                               placeholder: (context, url) =>
-                                  CupertinoActivityIndicator(),
+                                  CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    kDefaultProfilePicColor),
+                              ),
                               errorWidget: (context, url, error) =>
                                   Icon(Icons.error),
                             ),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/helper_functions.dart';
@@ -5,9 +6,8 @@ import 'package:float/models/message.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:float/screens/view_profile_screen.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
@@ -135,11 +135,23 @@ class ChatScreenWithPath extends StatelessWidget {
                     onTap: () {},
                     child: Row(
                       children: <Widget>[
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.grey,
-                          backgroundImage: NetworkImage(
-                              'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
+                        CachedNetworkImage(
+                          imageUrl:
+                              "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media",
+                          imageBuilder: (context, imageProvider) {
+                            return Hero(
+                              transitionOnUserGestures: true,
+                              tag: heroTag,
+                              child: CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: Colors.grey,
+                                  backgroundImage: imageProvider),
+                            );
+                          },
+                          placeholder: (context, url) =>
+                              CupertinoActivityIndicator(),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
                         SizedBox(
                           width: 10,
