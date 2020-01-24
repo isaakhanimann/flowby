@@ -93,6 +93,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ],
       child: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
+          backgroundColor: CupertinoColors.white,
+          border: null,
           activeColor: kDefaultProfilePicColor,
           items: [
             BottomNavigationBarItem(
