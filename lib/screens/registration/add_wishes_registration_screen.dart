@@ -1,17 +1,14 @@
-import 'package:float/screens/navigation_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-
 import 'package:float/constants.dart';
-import 'package:float/widgets/rounded_button.dart';
-import 'package:float/widgets/rate_picker.dart';
-import 'package:float/widgets/progress_bar.dart';
 import 'package:float/models/user.dart';
-
-import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:float/screens/navigation_screen.dart';
 import 'package:float/services/firebase_auth_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:float/services/firebase_cloud_firestore_service.dart';
+import 'package:float/widgets/progress_bar.dart';
+import 'package:float/widgets/rate_picker.dart';
+import 'package:float/widgets/rounded_button.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
 class AddWishesRegistrationScreen extends StatefulWidget {
@@ -179,14 +176,11 @@ class _AddWishesRegistrationScreenState
                                 context,
                                 listen: false);
                             */
-                            await authService.tryToGetCurrentUserAndNavigate(
-                                context: context);
 
                             authService.getCurrentUser().then((loggedInUser) {
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                 NavigationScreen.id,
                                 (Route<dynamic> route) => false,
-                                arguments: loggedInUser,
                               );
                             });
 
