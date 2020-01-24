@@ -46,8 +46,8 @@ class User {
     this.wishRate = map['wishRate'];
     this.location = map['location'];
     this.imageFileName = map['imageFileName'];
-    this.skills = map['skills'];
-    this.wishes = map['wishes'];
+//    this.skills = map['skills'];
+//    this.wishes = map['wishes'];
   }
 
   Map<String, dynamic> toMap() {
