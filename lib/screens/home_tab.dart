@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/helper_functions.dart';
@@ -51,7 +52,6 @@ class _HomeTabState extends State<HomeTab> {
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     var currentPosition = Provider.of<Position>(context);
-    print(loggedInUser);
 
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
@@ -182,14 +182,21 @@ class ProfileItem extends StatelessWidget {
               ),
             );
           },
-          leading: Hero(
-            tag: heroTag,
-            child: CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.grey,
-              backgroundImage: NetworkImage(
-                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
-            ),
+          leading: CachedNetworkImage(
+            imageUrl:
+                "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+            imageBuilder: (context, imageProvider) {
+              return Hero(
+                transitionOnUserGestures: true,
+                tag: heroTag,
+                child: CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: imageProvider),
+              );
+            },
+            placeholder: (context, url) => CupertinoActivityIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
@@ -50,27 +51,36 @@ class ViewProfileScreen extends StatelessWidget {
                           },
                         ),
                         Center(
-                          child: Hero(
-                            tag: heroTag,
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                        builder: (context) =>
-                                            ShowProfilePictureScreen(
-                                              profilePictureUrl:
-                                                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
-                                              otherUsername: user.username,
-                                              heroTag: heroTag,
-                                            )));
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) =>
+                                          ShowProfilePictureScreen(
+                                            profilePictureUrl:
+                                                'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
+                                            otherUsername: user.username,
+                                            heroTag: heroTag,
+                                          )));
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+                              imageBuilder: (context, imageProvider) {
+                                return Hero(
+                                  transitionOnUserGestures: true,
+                                  tag: heroTag,
+                                  child: CircleAvatar(
+                                      radius: 60,
+                                      backgroundColor: Colors.grey,
+                                      backgroundImage: imageProvider),
+                                );
                               },
-                              child: CircleAvatar(
-                                radius: 60,
-                                backgroundColor: Colors.grey,
-                                backgroundImage: NetworkImage(
-                                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
-                              ),
+                              placeholder: (context, url) =>
+                                  CupertinoActivityIndicator(),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
                             ),
                           ),
                         ),

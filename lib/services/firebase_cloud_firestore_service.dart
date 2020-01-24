@@ -59,7 +59,6 @@ class FirebaseCloudFirestoreService {
                       (uidToExclude != null) ? user.uid != uidToExclude : true)
                   .map((user) {
                 user.updateDistanceToPositionIfPossible(position: position);
-                print('getUsersWithDistance is with user = $user');
                 return user;
               }).toList());
       return userSnapshots;
