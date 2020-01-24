@@ -1,15 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/helper_functions.dart';
 import 'package:float/models/user.dart';
-import 'package:float/screens/settings_screen.dart';
 import 'package:float/screens/view_profile_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -94,8 +94,14 @@ class _HomeTabState extends State<HomeTab> {
             CupertinoSliverNavigationBar(
               backgroundColor: CupertinoColors.white,
               border: null,
-              middle: Image(image: AssetImage("assets/images/logo_flowby.png"), height: 40.0,),
-              largeTitle: Text('Search', style: kTabsLargeTitleTextStyle,),
+              middle: Image(
+                image: AssetImage("assets/images/logo_flowby.png"),
+                height: 40.0,
+              ),
+              largeTitle: Text(
+                'Search',
+                style: kTabsLargeTitleTextStyle,
+              ),
             ),
             SliverSafeArea(
               top: false,
@@ -176,14 +182,24 @@ class ProfileItem extends StatelessWidget {
               ),
             );
           },
-          leading: Hero(
-            tag: heroTag,
-            child: CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.grey,
-              backgroundImage: NetworkImage(
-                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+          leading: CachedNetworkImage(
+            imageUrl:
+                "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+            imageBuilder: (context, imageProvider) {
+              return Hero(
+                transitionOnUserGestures: true,
+                tag: heroTag,
+                child: CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: imageProvider),
+              );
+            },
+            placeholder: (context, url) => CircularProgressIndicator(
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
             ),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

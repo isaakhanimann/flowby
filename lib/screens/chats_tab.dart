@@ -7,9 +7,8 @@ import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/widgets/sign_in_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:float/widgets/alert.dart';
+import 'package:provider/provider.dart';
 
 class ChatsTab extends StatelessWidget {
   @override
@@ -123,14 +122,24 @@ class ChatItem extends StatelessWidget {
               ),
             );
           },
-          leading: Hero(
-            tag: heroTag,
-            child: CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.grey,
-              backgroundImage: NetworkImage(
-                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media'),
+          leading: CachedNetworkImage(
+            imageUrl:
+                "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media",
+            imageBuilder: (context, imageProvider) {
+              return Hero(
+                transitionOnUserGestures: true,
+                tag: heroTag,
+                child: CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: imageProvider),
+              );
+            },
+            placeholder: (context, url) => CircularProgressIndicator(
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
             ),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

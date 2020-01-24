@@ -1,17 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/edit_profile_screen.dart';
-import 'package:float/screens/show_profile_picture_screen.dart';
-import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/screens/settings_screen.dart';
+import 'package:float/screens/show_profile_picture_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/widgets/rounded_button.dart';
 import 'package:float/widgets/sign_in_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
 
 class ProfileTab extends StatelessWidget {
   @override
@@ -89,8 +89,8 @@ class ProfileTab extends StatelessWidget {
                                 tag: user.imageFileName,
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.of(context, rootNavigator: true).push(
-                                        CupertinoPageRoute(
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(CupertinoPageRoute(
                                             builder: (context) =>
                                                 ShowProfilePictureScreen(
                                                   profilePictureUrl:
@@ -99,11 +99,22 @@ class ProfileTab extends StatelessWidget {
                                                   heroTag: user.imageFileName,
                                                 )));
                                   },
-                                  child: CircleAvatar(
-                                    radius: 60,
-                                    backgroundColor: Colors.grey,
-                                    backgroundImage: NetworkImage(
-                                        'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+                                    imageBuilder: (context, imageProvider) {
+                                      return CircleAvatar(
+                                          radius: 60,
+                                          backgroundColor: Colors.grey,
+                                          backgroundImage: imageProvider);
+                                    },
+                                    placeholder: (context, url) =>
+                                        CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          kDefaultProfilePicColor),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
                                   ),
                                 ),
                               ),

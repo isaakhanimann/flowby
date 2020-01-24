@@ -48,7 +48,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Future<void> getLoggedInUserAndInitializeLocationService() async {
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
-    loggedInUser = await authService.getCurrentUser();
+    FirebaseUser user = await authService.getCurrentUser();
+    setState(() {
+      loggedInUser = user;
+    });
     if (loggedInUser != null) {
       final cloudFirestoreService =
           Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
@@ -59,7 +62,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
       firebaseMessaging.getToken().then((token) {
         cloudFirestoreService.uploadPushToken(
             uid: loggedInUser.uid, pushToken: token);
-        //print('token: $token');
       });
     }
   }
@@ -73,7 +75,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   void dispose() {
     super.dispose();
-    positionStreamSubscription.cancel();
+    if (positionStreamSubscription != null) {
+      positionStreamSubscription.cancel();
+    }
   }
 
   @override
@@ -89,6 +93,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ],
       child: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
+          backgroundColor: Colors.white,
           activeColor: kDefaultProfilePicColor,
           items: [
             BottomNavigationBarItem(
