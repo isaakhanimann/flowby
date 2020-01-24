@@ -26,10 +26,12 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   String password;
 
   var _nameController = TextEditingController();
+
   // var _userNameController = TextEditingController();
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
   final FocusNode _nameFocus = FocusNode();
+
   //final FocusNode _userNameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
@@ -143,7 +145,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           context: context,
                           title: "Missing email or password",
                           description:
-                          'Enter an email and an password. Thank you.');
+                              'Enter an email and an password. Thank you.');
                       return;
                     }
                     try {
@@ -160,11 +162,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                       final authResult = await authService.createUser(
                           email: email, password: password);
 
+                      await authResult.user.sendEmailVerification();
+
                       if (authResult != null) {
                         User user =
-                        User(username: name, uid: authResult.user.uid);
+                            User(username: name, uid: authResult.user.uid);
 
-                        print(user);
+                        //print(user);
 
                         //await cloudFirestoreService.uploadUser(user: user);
 
@@ -198,7 +202,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                 context: context,
                                 title: "Invalid Email",
                                 description:
-                                "Please enter a valid email address");
+                                    "Please enter a valid email address");
                             break;
                           }
                         case 'ERROR_EMAIL_ALREADY_IN_USE':

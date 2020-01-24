@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:share/share.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const String id = 'settings_screen';
@@ -38,6 +39,10 @@ class SettingsScreen extends StatelessWidget {
           );
         },
       ),
+      SettingsItem(
+          leading: Icon(Feather.share_2, color: kLoginBackgroundColor),
+          title: Text('Invite your friends', style: kUsernameTextStyle),
+          onTap: () => Share.share('Flowby is the largest skill-sharing community. The more the merrier! Join us with your flow: https://flowby.app/dl/')),
       SettingsItem(
         leading: Icon(Feather.log_out, color: kLoginBackgroundColor),
         title: Text('Sign Out', style: kUsernameTextStyle),
@@ -87,10 +92,6 @@ class SettingsScreen extends StatelessWidget {
           );
         },
       ),
-      SettingsItem(
-          leading: Icon(Feather.users, color: kLoginBackgroundColor),
-          title: Text('Invite a friend'),
-          onTap: null),
       SettingsItem(
           leading: Icon(Feather.bell, color: kLoginBackgroundColor),
           title: Text('Notifications'),

@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:float/widgets/alert.dart';
 
 class ChatsTab extends StatelessWidget {
   @override
@@ -51,7 +52,10 @@ class ChatsTab extends StatelessWidget {
               CupertinoSliverNavigationBar(
                 backgroundColor: CupertinoColors.white,
                 border: null,
-                largeTitle: Text('Chats', style: kTabsLargeTitleTextStyle,),
+                largeTitle: Text(
+                  'Chats',
+                  style: kTabsLargeTitleTextStyle,
+                ),
               ),
               SliverSafeArea(
                 top: false,
@@ -90,7 +94,7 @@ class ChatItem extends StatelessWidget {
         user1IsLoggedInUser ? chat.username2 : chat.username1;
     String otherImageFileName =
         user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
-    if(otherImageFileName == null)
+    if (otherImageFileName == null)
       otherImageFileName = 'default-profile-pic.jpg';
 
     final heroTag = otherUid + 'chats';
