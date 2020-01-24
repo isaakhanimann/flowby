@@ -113,9 +113,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
-  Column _buildListOfTextFields({BuildContext context}) {
+  Column _buildListOfTextFields({bool isSkillBuild}) {
     List<Widget> skillRows = [];
-    for (int row = 0; row < skillKeywordControllers.length; row++) {
+    for (int row = 0;
+        row <
+            (isSkillBuild
+                ? skillKeywordControllers.length
+                : wishKeywordControllers.length);
+        row++) {
       skillRows.add(
         Row(
           children: <Widget>[
@@ -132,7 +137,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 textAlign: TextAlign.start,
                 placeholder: "keyword",
-                controller: skillKeywordControllers[row],
+                controller: isSkillBuild
+                    ? skillKeywordControllers[row]
+                    : wishKeywordControllers[row],
               ),
             ),
             SizedBox(width: 20),
@@ -148,7 +155,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 textAlign: TextAlign.start,
                 placeholder: "description",
-                controller: skillDescriptionControllers[row],
+                controller: isSkillBuild
+                    ? skillDescriptionControllers[row]
+                    : skillDescriptionControllers[row],
               ),
             ),
           ],
@@ -396,24 +405,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    _buildListOfTextFields(context: context),
-//                    for (TextEditingController controller
-//                        in skillKeywordControllers)
-//                      CupertinoTextField(
-//                        style: TextStyle(color: kGrey3, fontSize: 20),
-//                        placeholder:
-//                            controller.text == '' ? 'Enter your skills' : '',
-//                        maxLength: 20,
-//                        maxLines: 1,
-//                        padding:
-//                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-//                        decoration: BoxDecoration(
-//                            border: Border.all(color: kLightGrey),
-//                            borderRadius:
-//                                BorderRadius.all(Radius.circular(20))),
-//                        controller: controller,
-//                        textAlign: TextAlign.center,
-//                      ),
+                    _buildListOfTextFields(isSkillBuild: true),
                     RatePicker(
                       initialValue: user.skillRate ?? 20,
                       onSelected: (selectedIndex) {
@@ -423,52 +415,38 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                 ),
               SizedBox(height: 20),
-//              Row(
-//                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                children: <Widget>[
-//                  Text(
-//                    'Wishes',
-//                    style: kMiddleTitleTextStyle,
-//                  ),
-//                  CupertinoSwitch(
-//                    value: _localHasWishes,
-//                    onChanged: (newBool) {
-//                      setState(() {
-//                        _localHasWishes = newBool;
-//                      });
-//                    },
-//                  ),
-//                ],
-//              ),
-//              if (_localHasWishes)
-//                Column(
-//                  children: <Widget>[
-//                    SizedBox(
-//                      height: 20,
-//                    ),
-//                    CupertinoTextField(
-//                      style: TextStyle(color: kGrey3, fontSize: 20),
-//                      placeholder: _hashtagWishController.text == ''
-//                          ? 'Enter your wishes'
-//                          : '',
-//                      maxLength: 20,
-//                      maxLines: 1,
-//                      padding:
-//                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-//                      decoration: BoxDecoration(
-//                          border: Border.all(color: kLightGrey),
-//                          borderRadius: BorderRadius.all(Radius.circular(20))),
-//                      controller: _hashtagWishController,
-//                      textAlign: TextAlign.center,
-//                    ),
-//                    RatePicker(
-//                      initialValue: user.wishRate ?? 20,
-//                      onSelected: (selectedIndex) {
-//                        _localWishRate = selectedIndex;
-//                      },
-//                    ),
-//                  ],
-//                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Wishes',
+                    style: kMiddleTitleTextStyle,
+                  ),
+                  CupertinoSwitch(
+                    value: _localHasWishes,
+                    onChanged: (newBool) {
+                      setState(() {
+                        _localHasWishes = newBool;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              if (_localHasWishes)
+                Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 20,
+                    ),
+                    _buildListOfTextFields(isSkillBuild: false),
+                    RatePicker(
+                      initialValue: user.wishRate ?? 20,
+                      onSelected: (selectedIndex) {
+                        _localWishRate = selectedIndex;
+                      },
+                    ),
+                  ],
+                ),
               SizedBox(
                 height: 20,
               ),
