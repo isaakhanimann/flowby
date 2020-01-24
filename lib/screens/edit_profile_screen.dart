@@ -32,8 +32,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   var _usernameController = TextEditingController();
   var _bioController = TextEditingController();
-  var _hashtagSkillController = TextEditingController();
-  var _hashtagWishController = TextEditingController();
+
+  List<TextEditingController> skillKeywordControllers;
+  List<TextEditingController> skillDescriptionControllers;
+  List<TextEditingController> wishKeywordControllers;
+  List<TextEditingController> wishDescriptionControllers;
 
   void changeProfilePic() async {
     showCupertinoModalPopup(
@@ -79,13 +82,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     String uid = widget.loggedInUser.uid;
     user = await cloudFirestoreService.getUser(uid: uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
+
     setState(() {
       _usernameController.text = user.username;
       _bioController.text = user.bio;
       _localHasSkills = user.hasSkills;
       _localHasWishes = user.hasWishes;
-      _hashtagSkillController.text = user.skillHashtags;
-      _hashtagWishController.text = user.wishHashtags;
+      var skills = user.skills;
+      var wishes = user.wishes;
+      for (String skillKeyword in skills.keys) {
+        skillKeywordControllers.add(TextEditingController(text: skillKeyword));
+      }
+      for (String skillDescription in skills.values) {
+        skillDescriptionControllers
+            .add(TextEditingController(text: skillDescription));
+      }
+      for (String wishKeyword in wishes.keys) {
+        wishKeywordControllers.add(TextEditingController(text: wishKeyword));
+      }
+      for (String wishDescription in skills.values) {
+        wishDescriptionControllers
+            .add(TextEditingController(text: wishDescription));
+      }
       _localSkillRate = user?.skillRate;
       _localWishRate = user?.wishRate;
       _profilePic = null;
@@ -103,8 +121,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void dispose() {
     _usernameController.dispose();
     _bioController.dispose();
-    _hashtagSkillController.dispose();
-    _hashtagWishController.dispose();
+    List<TextEditingController> allControllers = skillKeywordControllers +
+        skillDescriptionControllers +
+        wishKeywordControllers +
+        wishDescriptionControllers;
+    for (TextEditingController controller in allControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -151,16 +174,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   await storageService.uploadImage(
                       fileName: widget.loggedInUser.uid, image: _profilePic);
                 }
+                Map<String, String> skills = Map.fromIterables(
+                    skillKeywordControllers.map((c) => c.text),
+                    skillDescriptionControllers.map((c) => c.text));
+                Map<String, String> wishes = Map.fromIterables(
+                    wishKeywordControllers.map((c) => c.text),
+                    wishDescriptionControllers.map((c) => c.text));
+
                 User user = User(
                     username: _usernameController.text,
                     uid: widget.loggedInUser.uid,
                     bio: _bioController.text,
                     hasSkills: _localHasSkills,
                     hasWishes: _localHasWishes,
-                    skillHashtags: _hashtagSkillController.text,
-                    wishHashtags: _hashtagWishController.text,
+                    skillHashtags: "Delete this entry",
+                    wishHashtags: "Delete this entry",
                     skillRate: _localSkillRate,
                     wishRate: _localWishRate,
+                    skills: skills,
+                    wishes: wishes,
                     imageFileName: widget.loggedInUser.uid);
                 await cloudFirestoreService.uploadUser(user: user);
                 Navigator.of(context).pop();
@@ -299,21 +331,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    CupertinoTextField(
-                      style: TextStyle(color: kGrey3, fontSize: 20),
-                      placeholder: _hashtagSkillController.text == ''
-                          ? 'Enter your skills'
-                          : '',
-                      maxLength: 20,
-                      maxLines: 1,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: kLightGrey),
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      controller: _hashtagSkillController,
-                      textAlign: TextAlign.center,
-                    ),
+                    for (TextEditingController controller
+                        in skillKeywordControllers)
+                      CupertinoTextField(
+                        style: TextStyle(color: kGrey3, fontSize: 20),
+                        placeholder:
+                            controller.text == '' ? 'Enter your skills' : '',
+                        maxLength: 20,
+                        maxLines: 1,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: kLightGrey),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        controller: controller,
+                        textAlign: TextAlign.center,
+                      ),
                     RatePicker(
                       initialValue: user.skillRate ?? 20,
                       onSelected: (selectedIndex) {
@@ -323,52 +357,52 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                 ),
               SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Wishes',
-                    style: kMiddleTitleTextStyle,
-                  ),
-                  CupertinoSwitch(
-                    value: _localHasWishes,
-                    onChanged: (newBool) {
-                      setState(() {
-                        _localHasWishes = newBool;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              if (_localHasWishes)
-                Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CupertinoTextField(
-                      style: TextStyle(color: kGrey3, fontSize: 20),
-                      placeholder: _hashtagWishController.text == ''
-                          ? 'Enter your wishes'
-                          : '',
-                      maxLength: 20,
-                      maxLines: 1,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: kLightGrey),
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      controller: _hashtagWishController,
-                      textAlign: TextAlign.center,
-                    ),
-                    RatePicker(
-                      initialValue: user.wishRate ?? 20,
-                      onSelected: (selectedIndex) {
-                        _localWishRate = selectedIndex;
-                      },
-                    ),
-                  ],
-                ),
+//              Row(
+//                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                children: <Widget>[
+//                  Text(
+//                    'Wishes',
+//                    style: kMiddleTitleTextStyle,
+//                  ),
+//                  CupertinoSwitch(
+//                    value: _localHasWishes,
+//                    onChanged: (newBool) {
+//                      setState(() {
+//                        _localHasWishes = newBool;
+//                      });
+//                    },
+//                  ),
+//                ],
+//              ),
+//              if (_localHasWishes)
+//                Column(
+//                  children: <Widget>[
+//                    SizedBox(
+//                      height: 20,
+//                    ),
+//                    CupertinoTextField(
+//                      style: TextStyle(color: kGrey3, fontSize: 20),
+//                      placeholder: _hashtagWishController.text == ''
+//                          ? 'Enter your wishes'
+//                          : '',
+//                      maxLength: 20,
+//                      maxLines: 1,
+//                      padding:
+//                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+//                      decoration: BoxDecoration(
+//                          border: Border.all(color: kLightGrey),
+//                          borderRadius: BorderRadius.all(Radius.circular(20))),
+//                      controller: _hashtagWishController,
+//                      textAlign: TextAlign.center,
+//                    ),
+//                    RatePicker(
+//                      initialValue: user.wishRate ?? 20,
+//                      onSelected: (selectedIndex) {
+//                        _localWishRate = selectedIndex;
+//                      },
+//                    ),
+//                  ],
+//                ),
               SizedBox(
                 height: 20,
               ),

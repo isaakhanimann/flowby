@@ -2,14 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/helper_functions.dart';
 import 'package:float/models/user.dart';
-import 'package:float/screens/settings_screen.dart';
 import 'package:float/screens/view_profile_screen.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -52,6 +51,7 @@ class _HomeTabState extends State<HomeTab> {
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     var currentPosition = Provider.of<Position>(context);
+    print(loggedInUser);
 
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
@@ -94,8 +94,14 @@ class _HomeTabState extends State<HomeTab> {
             CupertinoSliverNavigationBar(
               backgroundColor: CupertinoColors.white,
               border: null,
-              middle: Image(image: AssetImage("assets/images/logo_flowby.png"), height: 40.0,),
-              largeTitle: Text('Search', style: kTabsLargeTitleTextStyle,),
+              middle: Image(
+                image: AssetImage("assets/images/logo_flowby.png"),
+                height: 40.0,
+              ),
+              largeTitle: Text(
+                'Search',
+                style: kTabsLargeTitleTextStyle,
+              ),
             ),
             SliverSafeArea(
               top: false,
