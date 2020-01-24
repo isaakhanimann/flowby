@@ -7,6 +7,7 @@ import 'package:float/screens/choose_signup_or_login_screen.dart';
 import 'package:float/services/firebase_auth_service.dart';
 import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:float/services/firebase_storage_service.dart';
+import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,10 +34,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   var _usernameController = TextEditingController();
   var _bioController = TextEditingController();
 
-  List<TextEditingController> skillKeywordControllers;
-  List<TextEditingController> skillDescriptionControllers;
-  List<TextEditingController> wishKeywordControllers;
-  List<TextEditingController> wishDescriptionControllers;
+  List<TextEditingController> skillKeywordControllers = [];
+  List<TextEditingController> skillDescriptionControllers = [];
+  List<TextEditingController> wishKeywordControllers = [];
+  List<TextEditingController> wishDescriptionControllers = [];
 
   void changeProfilePic() async {
     showCupertinoModalPopup(
@@ -94,17 +95,84 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         skillKeywordControllers.add(TextEditingController(text: key));
         skillDescriptionControllers.add(TextEditingController(text: value));
       });
+      //controllers for extra skill
+      skillKeywordControllers.add(TextEditingController());
+      skillDescriptionControllers.add(TextEditingController());
 
       wishes?.forEach((key, value) {
         wishKeywordControllers.add(TextEditingController(text: key));
         wishDescriptionControllers.add(TextEditingController(text: value));
       });
+      wishKeywordControllers.add(TextEditingController());
+      wishDescriptionControllers.add(TextEditingController());
 
       _localSkillRate = user?.skillRate;
       _localWishRate = user?.wishRate;
       _profilePic = null;
       showSpinner = false;
     });
+  }
+
+  Column _buildListOfTextFields({BuildContext context}) {
+    List<Widget> skillRows = [];
+    for (int row = 0; row < skillKeywordControllers.length; row++) {
+      skillRows.add(
+        Row(
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: CupertinoTextField(
+                style: TextStyle(color: kGrey3, fontSize: 22),
+                maxLength: 20,
+                maxLines: 1,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+                textAlign: TextAlign.start,
+                placeholder: "keyword",
+                controller: skillKeywordControllers[row],
+              ),
+            ),
+            SizedBox(width: 20),
+            Expanded(
+              flex: 2,
+              child: CupertinoTextField(
+                style: TextStyle(color: kGrey3, fontSize: 22),
+                maxLength: 80,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+                textAlign: TextAlign.start,
+                placeholder: "description",
+                controller: skillDescriptionControllers[row],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    skillRows.add(
+      Center(
+        child: RoundedButton(
+            onPressed: () {
+              setState(() {
+                skillKeywordControllers.add(TextEditingController());
+                skillDescriptionControllers.add(TextEditingController());
+              });
+            },
+            text: "Add",
+            color: kLoginBackgroundColor,
+            textColor: Colors.white),
+      ),
+    );
+    return Column(
+      children: skillRows,
+    );
   }
 
   @override
@@ -130,8 +198,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     if (showSpinner) {
-      return Center(
-        child: CupertinoActivityIndicator(),
+      return CupertinoPageScaffold(
+        backgroundColor: Colors.white,
+        child: Center(
+          child: CupertinoActivityIndicator(),
+        ),
       );
     }
     final cloudFirestoreService =
@@ -289,9 +360,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Expanded(
                     child: CupertinoTextField(
                       style: TextStyle(color: kGrey3, fontSize: 20),
-                      placeholder: _bioController.text == ''
-                          ? 'Enter your description'
-                          : '',
+                      placeholder: 'Enter your description',
                       maxLength: 200,
                       maxLines: 5,
                       padding: EdgeInsets.only(bottom: 0),
@@ -327,6 +396,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: 20,
                     ),
+                    _buildListOfTextFields(context: context),
 //                    for (TextEditingController controller
 //                        in skillKeywordControllers)
 //                      CupertinoTextField(
