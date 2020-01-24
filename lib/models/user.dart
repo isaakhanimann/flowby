@@ -16,8 +16,8 @@ class User {
   GeoPoint location;
   int distanceInKm;
   String imageFileName;
-  Map<String, String> skills;
-  Map<String, String> wishes;
+  Map<dynamic, dynamic> skills;
+  Map<dynamic, dynamic> wishes;
 
   User(
       {this.username,
@@ -46,8 +46,8 @@ class User {
     this.wishRate = map['wishRate'];
     this.location = map['location'];
     this.imageFileName = map['imageFileName'];
-//    this.skills = map['skills'];
-//    this.wishes = map['wishes'];
+    this.skills = map['skills'];
+    this.wishes = map['wishes'];
   }
 
   Map<String, dynamic> toMap() {
