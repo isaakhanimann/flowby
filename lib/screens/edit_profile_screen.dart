@@ -137,7 +137,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
                 textAlign: TextAlign.start,
-                placeholder: "keyword",
+                placeholder: "#keywords",
                 controller: isSkillBuild
                     ? skillKeywordControllers[rowNumber]
                     : wishKeywordControllers[rowNumber],
