@@ -184,6 +184,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+  Map<String, String> controllersToMap(
+      {List<TextEditingController> keyControllers,
+      List<TextEditingController> descriptionControllers}) {
+    Map<String, String> map = Map();
+    for (int i = 0; i < keyControllers.length; i++) {
+      String keyword = keyControllers[i].text;
+      if (keyword != null && keyword.isNotEmpty) {
+        if (!map.containsKey(keyword)) {
+          map[keyword] = descriptionControllers[i].text ?? '';
+        }
+      }
+    }
+    return map;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -250,12 +265,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   await storageService.uploadImage(
                       fileName: widget.loggedInUser.uid, image: _profilePic);
                 }
-                Map<String, String> skills = Map.fromIterables(
-                    skillKeywordControllers.map((c) => c.text),
-                    skillDescriptionControllers.map((c) => c.text));
-                Map<String, String> wishes = Map.fromIterables(
-                    wishKeywordControllers.map((c) => c.text),
-                    wishDescriptionControllers.map((c) => c.text));
+
+                // only add a skill to the user if the keyword is not null or empty
+                Map<String, String> skills = controllersToMap(
+                    keyControllers: skillKeywordControllers,
+                    descriptionControllers: skillDescriptionControllers);
+                Map<String, String> wishes = controllersToMap(
+                    keyControllers: wishKeywordControllers,
+                    descriptionControllers: wishDescriptionControllers);
 
                 User user = User(
                     username: _usernameController.text,
