@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:float/constants.dart';
 import 'package:float/models/user.dart';
 import 'package:float/screens/choose_signup_or_login_screen.dart';
@@ -15,9 +14,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  final FirebaseUser loggedInUser;
+  final User user;
 
-  EditProfileScreen({@required this.loggedInUser});
+  EditProfileScreen({@required this.user});
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
@@ -81,7 +80,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _getUser(BuildContext context) async {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    String uid = widget.loggedInUser.uid;
+    String uid = widget.user.uid;
     user = await cloudFirestoreService.getUser(uid: uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
 
@@ -273,7 +272,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               try {
                 if (_profilePic != null) {
                   await storageService.uploadImage(
-                      fileName: widget.loggedInUser.uid, image: _profilePic);
+                      fileName: widget.user.uid, image: _profilePic);
                 }
 
                 // only add a skill to the user if the keyword is not null or empty
@@ -286,7 +285,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                 User user = User(
                     username: _usernameController.text,
-                    uid: widget.loggedInUser.uid,
+                    uid: widget.user.uid,
                     bio: _bioController.text,
                     hasSkills: _localHasSkills,
                     hasWishes: _localHasWishes,
@@ -294,7 +293,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     wishRate: _localWishRate,
                     skills: skills,
                     wishes: wishes,
-                    imageFileName: widget.loggedInUser.uid);
+                    imageFileName: widget.user.uid);
                 await cloudFirestoreService.uploadUser(user: user);
                 Navigator.of(context).pop();
               } catch (e) {

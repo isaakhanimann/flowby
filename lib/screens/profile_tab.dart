@@ -46,7 +46,7 @@ class ProfileTab extends StatelessWidget {
                     Navigator.of(context, rootNavigator: true).push(
                       CupertinoPageRoute<void>(
                         builder: (context) {
-                          return EditProfileScreen(loggedInUser: loggedInUser);
+                          return EditProfileScreen(user: user);
                         },
                       ),
                     );
@@ -66,7 +66,7 @@ class ProfileTab extends StatelessWidget {
                       CupertinoPageRoute<void>(
                         builder: (context) {
                           return SettingsScreen(
-                            loggedInUser: loggedInUser,
+                            user: user,
                           );
                         },
                       ),
