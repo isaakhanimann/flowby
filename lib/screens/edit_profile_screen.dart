@@ -114,14 +114,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Column _buildListOfTextFields({bool isSkillBuild}) {
-    List<Widget> skillRows = [];
-    for (int row = 0;
-        row <
+    List<Widget> rows = [];
+    for (int rowNumber = 0;
+        rowNumber <
             (isSkillBuild
                 ? skillKeywordControllers.length
                 : wishKeywordControllers.length);
-        row++) {
-      skillRows.add(
+        rowNumber++) {
+      rows.add(
         Row(
           children: <Widget>[
             Expanded(
@@ -138,8 +138,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 textAlign: TextAlign.start,
                 placeholder: "keyword",
                 controller: isSkillBuild
-                    ? skillKeywordControllers[row]
-                    : wishKeywordControllers[row],
+                    ? skillKeywordControllers[rowNumber]
+                    : wishKeywordControllers[rowNumber],
               ),
             ),
             SizedBox(width: 20),
@@ -147,7 +147,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               flex: 2,
               child: CupertinoTextField(
                 style: TextStyle(color: kGrey3, fontSize: 22),
-                maxLength: 80,
+                maxLength: 100,
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(width: 1, color: Colors.black),
@@ -156,8 +156,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 textAlign: TextAlign.start,
                 placeholder: "description",
                 controller: isSkillBuild
-                    ? skillDescriptionControllers[row]
-                    : skillDescriptionControllers[row],
+                    ? skillDescriptionControllers[rowNumber]
+                    : wishDescriptionControllers[rowNumber],
               ),
             ),
           ],
@@ -165,7 +165,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
     }
 
-    skillRows.add(
+    rows.add(
       Center(
         child: RoundedButton(
             onPressed: () {
@@ -180,7 +180,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
     return Column(
-      children: skillRows,
+      children: rows,
     );
   }
 

@@ -14,6 +14,42 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 
 class ProfileTab extends StatelessWidget {
+  Column _buildListOfTextFields({Map<dynamic, dynamic> skillsOrWishes}) {
+    List<Widget> rows = [];
+    for (String key in skillsOrWishes.keys) {
+      rows.add(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Text(
+                key,
+                style: kSmallTitleTextStyle,
+                textAlign: TextAlign.start,
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                skillsOrWishes[key],
+                style: kSmallTitleTextStyle,
+                textAlign: TextAlign.start,
+              ),
+            ),
+          ],
+        ),
+      );
+      rows.add(SizedBox(
+        height: 10,
+      ));
+    }
+
+    return Column(
+      children: rows,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
@@ -32,6 +68,11 @@ class ProfileTab extends StatelessWidget {
             );
           }
           User user = snapshot.data;
+          bool canShowSkills =
+              user.hasSkills && user.skills != null && user.skills.isNotEmpty;
+          bool canShowWishes =
+              user.hasWishes && user.wishes != null && user.wishes.isNotEmpty;
+
           return SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,27 +104,6 @@ class ProfileTab extends StatelessWidget {
                                 );
                               },
                             ),
-                            /*CupertinoButton(
-                              child: Icon(
-                                Icons.exit_to_app,
-                                size: 30,
-                              ),
-                              padding: EdgeInsets.all(0),
-                              onPressed: () {
-                                final authService =
-                                    Provider.of<FirebaseAuthService>(context);
-                                authService.signOut();
-                                
-                                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                                  CupertinoPageRoute(
-                                      builder: (BuildContext context) =>
-                                          ChooseSignupOrLoginScreen()),
-                                  (Route<dynamic> route) => false,
-                                );
-                              },
-                            ),
-                            */
-
                             Center(
                               child: Hero(
                                 tag: user.imageFileName,
@@ -143,71 +163,69 @@ class ProfileTab extends StatelessWidget {
                         SizedBox(
                           height: 15,
                         ),
-                        if (!user.hasSkills && !user.hasWishes)
+                        if (!canShowSkills && !canShowWishes)
                           Text(
                             '(Your profile is invisible)',
                             textAlign: TextAlign.center,
                           ),
-                        if (user.hasSkills)
+                        if (canShowSkills)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               SizedBox(
                                 height: 20,
                               ),
-                              if (user.skillHashtags != null &&
-                                  user.skillHashtags != '')
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'Skills',
-                                      style: kMiddleTitleTextStyle,
-                                    ),
-                                    Text(
-                                      '${user.skillRate} CHF/h',
-                                    ),
-                                  ],
-                                ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'Skills',
+                                    style: kMiddleTitleTextStyle,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                        '${user.skillRate} CHF/h',
+                                      ),
+                                      SizedBox(width: 15),
+                                    ],
+                                  ),
+                                ],
+                              ),
                               SizedBox(height: 10),
-                              if (user.skillHashtags != null &&
-                                  user.skillHashtags != '')
-                                Text(
-                                  user.skillHashtags,
-                                  style: kSmallTitleTextStyle,
-                                ),
+                              _buildListOfTextFields(
+                                  skillsOrWishes: user.skills)
                             ],
                           ),
-                        if (user.hasWishes)
+                        if (canShowWishes)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               SizedBox(
                                 height: 40,
                               ),
-                              if (user.wishHashtags != null &&
-                                  user.wishHashtags != '')
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'Wishes',
-                                      style: kMiddleTitleTextStyle,
-                                    ),
-                                    Text(
-                                      '${user.wishRate} CHF/h',
-                                    ),
-                                  ],
-                                ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'Wishes',
+                                    style: kMiddleTitleTextStyle,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                        '${user.wishRate} CHF/h',
+                                      ),
+                                      SizedBox(width: 15),
+                                    ],
+                                  ),
+                                ],
+                              ),
                               SizedBox(height: 10),
-                              if (user.wishHashtags != null &&
-                                  user.wishHashtags != '')
-                                Text(
-                                  user.wishHashtags,
-                                  style: kSmallTitleTextStyle,
-                                ),
+                              _buildListOfTextFields(
+                                  skillsOrWishes: user.wishes)
                             ],
                           ),
                         SizedBox(
