@@ -280,8 +280,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     bio: _bioController.text,
                     hasSkills: _localHasSkills,
                     hasWishes: _localHasWishes,
-                    skillHashtags: "Delete this entry",
-                    wishHashtags: "Delete this entry",
                     skillRate: _localSkillRate,
                     wishRate: _localWishRate,
                     skills: skills,
