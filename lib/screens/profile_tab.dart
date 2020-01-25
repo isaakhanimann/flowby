@@ -44,7 +44,6 @@ class ProfileTab extends StatelessWidget {
         height: 10,
       ));
     }
-
     return Column(
       children: rows,
     );
@@ -73,161 +72,162 @@ class ProfileTab extends StatelessWidget {
           bool canShowWishes =
               user.hasWishes && user.wishes != null && user.wishes.isNotEmpty;
 
-          return SafeArea(
-            child: Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: ListView(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    Stack(
-                      alignment: Alignment.topRight,
-                      children: <Widget>[
-                        CupertinoButton(
-                          child: Icon(
-                            Feather.settings,
-                            size: 30,
-                          ),
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true).push(
-                              CupertinoPageRoute<void>(
-                                builder: (context) {
-                                  return SettingsScreen(
-                                    loggedInUser: loggedInUser,
-                                  );
-                                },
-                              ),
-                            );
-                          },
+          return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: ListView(
+                children: <Widget>[
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Stack(
+                    alignment: Alignment.topRight,
+                    children: <Widget>[
+                      CupertinoButton(
+                        child: Icon(
+                          Feather.settings,
+                          size: 30,
                         ),
-                        Center(
-                          child: Hero(
-                            tag: user.imageFileName,
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.of(context, rootNavigator: true).push(
-                                    CupertinoPageRoute(
-                                        builder: (context) =>
-                                            ShowProfilePictureScreen(
-                                              profilePictureUrl:
-                                                  'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
-                                              otherUsername: user.username,
-                                              heroTag: user.imageFileName,
-                                            )));
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).push(
+                            CupertinoPageRoute<void>(
+                              builder: (context) {
+                                return SettingsScreen(
+                                  loggedInUser: loggedInUser,
+                                );
                               },
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
-                                imageBuilder: (context, imageProvider) {
-                                  return CircleAvatar(
-                                      radius: 60,
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: imageProvider);
-                                },
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      kDefaultProfilePicColor),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
+                            ),
+                          );
+                        },
+                      ),
+                      Center(
+                        child: Hero(
+                          tag: user.imageFileName,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true).push(
+                                  CupertinoPageRoute(
+                                      builder: (context) =>
+                                          ShowProfilePictureScreen(
+                                            profilePictureUrl:
+                                                'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
+                                            otherUsername: user.username,
+                                            heroTag: user.imageFileName,
+                                          )));
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+                              imageBuilder: (context, imageProvider) {
+                                return CircleAvatar(
+                                    radius: 60,
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage: imageProvider);
+                              },
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    kDefaultProfilePicColor),
                               ),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
                             ),
                           ),
                         ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Center(
+                    child: Text(
+                      user.username,
+                      style: kMiddleTitleTextStyle,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if (user.bio != null && user.bio != '')
+                    Text(
+                      user.bio,
+                      style: kSmallTitleTextStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  if (!canShowSkills && !canShowWishes)
+                    Text(
+                      '(Your profile is invisible)',
+                      textAlign: TextAlign.center,
+                    ),
+                  if (canShowSkills)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Skills',
+                              style: kMiddleTitleTextStyle,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  '${user.skillRate} CHF/h',
+                                ),
+                                SizedBox(width: 15),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        _buildListOfTextFields(skillsOrWishes: user.skills)
                       ],
                     ),
-                    SizedBox(
-                      height: 15.0,
+                  if (canShowWishes)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 40,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Wishes',
+                              style: kMiddleTitleTextStyle,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  '${user.wishRate} CHF/h',
+                                ),
+                                SizedBox(width: 15),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        _buildListOfTextFields(skillsOrWishes: user.wishes)
+                      ],
                     ),
-                    Center(
-                      child: Text(
-                        user.username,
-                        style: kMiddleTitleTextStyle,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    if (user.bio != null && user.bio != '')
-                      Text(
-                        user.bio,
-                        style: kSmallTitleTextStyle,
-                        textAlign: TextAlign.center,
-                      ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    if (!canShowSkills && !canShowWishes)
-                      Text(
-                        '(Your profile is invisible)',
-                        textAlign: TextAlign.center,
-                      ),
-                    if (canShowSkills)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                'Skills',
-                                style: kMiddleTitleTextStyle,
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    '${user.skillRate} CHF/h',
-                                  ),
-                                  SizedBox(width: 15),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          _buildListOfTextFields(skillsOrWishes: user.skills)
-                        ],
-                      ),
-                    if (canShowWishes)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 40,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                'Wishes',
-                                style: kMiddleTitleTextStyle,
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    '${user.wishRate} CHF/h',
-                                  ),
-                                  SizedBox(width: 15),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          _buildListOfTextFields(skillsOrWishes: user.wishes)
-                        ],
-                      ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                  ],
-                ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                ],
               ),
-              Positioned(
+            ),
+            Positioned(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
                 child: RoundedButton(
                   text: 'Edit your profile',
                   color: ffDarkBlue,
@@ -243,8 +243,8 @@ class ProfileTab extends StatelessWidget {
                   },
                 ),
               ),
-            ]),
-          );
+            ),
+          ]);
         });
   }
 }
