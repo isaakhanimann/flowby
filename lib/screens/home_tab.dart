@@ -71,16 +71,16 @@ class _HomeTabState extends State<HomeTab> {
 
         if (isSkillSelected) {
           searchResultUsers = allUsers
-              .where((u) => u.hasSkills)
-              .where((u) => u.skillHashtags
+              .where((u) => u.hasSkills && u.skillKeywords != '')
+              .where((u) => u.skillKeywords
                   .toString()
                   .toLowerCase()
                   .contains(_searchTerm.toLowerCase()))
               .toList();
         } else {
           searchResultUsers = allUsers
-              .where((u) => u.hasWishes)
-              .where((u) => u.wishHashtags
+              .where((u) => u.hasWishes && u.wishKeywords != '')
+              .where((u) => u.wishKeywords
                   .toString()
                   .toLowerCase()
                   .contains(_searchTerm.toLowerCase()))
@@ -222,8 +222,8 @@ class ProfileItem extends StatelessWidget {
                 child: Text(
                   HelperFunctions.getDotDotDotString(
                       maybeLongString: isSkillSearch
-                          ? user.skillHashtags
-                          : user.wishHashtags),
+                          ? user.skillKeywords
+                          : user.wishKeywords),
                   style: kSkillTextStyle,
                 ),
               ),

@@ -27,7 +27,7 @@ class _AddWishesRegistrationScreenState
     extends State<AddWishesRegistrationScreen> {
   bool showSpinner = false;
 
-  String _databaseHashtagWishes;
+//  String _databaseHashtagWishes;
   int _databaseWishRate = 20;
   bool _localHasWishes = true;
 
@@ -158,7 +158,7 @@ class _AddWishesRegistrationScreenState
                             });
 
                             _user.hasWishes = _localHasWishes;
-                            _user.wishHashtags = _databaseHashtagWishes;
+//                            _user.wishHashtags = _databaseHashtagWishes;
                             _user.wishRate = _databaseWishRate;
 
                             final cloudFirestoreService =

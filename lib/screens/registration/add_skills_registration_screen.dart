@@ -1,14 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-
 import 'package:float/constants.dart';
-import 'package:float/widgets/rounded_button.dart';
-import 'package:float/widgets/rate_picker.dart';
-import 'package:float/widgets/progress_bar.dart';
 import 'package:float/models/user.dart';
-
 import 'package:float/screens/registration/add_wishes_registration_screen.dart';
+import 'package:float/widgets/progress_bar.dart';
+import 'package:float/widgets/rate_picker.dart';
+import 'package:float/widgets/rounded_button.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class AddSkillsRegistrationScreen extends StatefulWidget {
   static const String id = 'add_skills_registration_screen';
@@ -26,7 +24,7 @@ class _AddSkillsRegistrationScreenState
     extends State<AddSkillsRegistrationScreen> {
   bool showSpinner = false;
 
-  String _databaseHashtagSkills;
+//  String _databaseHashtagSkills;
   int _databaseSkillRate = 20;
   bool _localHasSkills = true;
 
@@ -158,7 +156,7 @@ class _AddSkillsRegistrationScreenState
                             });
 
                             _user.hasSkills = _localHasSkills;
-                            _user.skillHashtags = _databaseHashtagSkills;
+//                            _user.skillHashtags = _databaseHashtagSkills;
                             _user.skillRate = _databaseSkillRate;
 
                             Navigator.of(context, rootNavigator: true).push(

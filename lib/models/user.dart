@@ -9,8 +9,6 @@ class User {
   String bio;
   bool hasSkills;
   bool hasWishes;
-  String skillHashtags;
-  String wishHashtags;
   int skillRate;
   int wishRate;
   GeoPoint location;
@@ -18,6 +16,8 @@ class User {
   String imageFileName;
   Map<dynamic, dynamic> skills;
   Map<dynamic, dynamic> wishes;
+  String skillKeywords;
+  String wishKeywords;
 
   User(
       {this.username,
@@ -25,8 +25,6 @@ class User {
       this.bio,
       this.hasSkills,
       this.hasWishes,
-      this.skillHashtags,
-      this.wishHashtags,
       this.skillRate,
       this.wishRate,
       this.location,
@@ -40,14 +38,14 @@ class User {
     this.bio = map['bio'];
     this.hasSkills = map['hasSkills'] ?? false;
     this.hasWishes = map['hasWishes'] ?? false;
-    this.skillHashtags = map['skillHashtags'];
-    this.wishHashtags = map['wishHashtags'];
     this.skillRate = map['skillRate'];
     this.wishRate = map['wishRate'];
     this.location = map['location'];
     this.imageFileName = map['imageFileName'];
     this.skills = map['skills'];
     this.wishes = map['wishes'];
+    this.skillKeywords = _getKeywordString(skills);
+    this.wishKeywords = _getKeywordString(wishes);
   }
 
   Map<String, dynamic> toMap() {
@@ -57,14 +55,23 @@ class User {
       'bio': bio,
       'hasSkills': hasSkills,
       'hasWishes': hasWishes,
-      'skillHashtags': skillHashtags,
-      'wishHashtags': wishHashtags,
       'skillRate': skillRate,
       'wishRate': wishRate,
       'imageFileName': imageFileName,
       'skills': skills,
-      'wishes': wishes
+      'wishes': wishes,
     };
+  }
+
+  String _getKeywordString(Map<dynamic, dynamic> map) {
+    String result = '';
+    if (map == null) {
+      return result;
+    }
+    for (String key in map.keys) {
+      result += key + ' ';
+    }
+    return result;
   }
 
   void updateDistanceToPositionIfPossible({@required Position position}) async {
@@ -86,13 +93,13 @@ class User {
     toPrint += 'bio: $bio, ';
     toPrint += 'hasSkills: $hasSkills, ';
     toPrint += 'hasWishes: $hasWishes, ';
-    toPrint += 'skillHashtags: $skillHashtags, ';
-    toPrint += 'wishHashtags: $wishHashtags, ';
     toPrint += 'skillRate: ${skillRate.toString()}, ';
     toPrint += 'location: ${location.toString()}, ';
     toPrint += 'imageFileName: ${imageFileName.toString()}, ';
     toPrint += 'skills: ${skills.toString()}, ';
     toPrint += 'wishes: ${wishes.toString()}, ';
+    toPrint += 'skillKeywords: ${skillKeywords.toString()}, ';
+    toPrint += 'wishKeywords: ${wishKeywords.toString()}, ';
     toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';
 
     return toPrint;
