@@ -154,15 +154,16 @@ class ListViewOfUserInfos extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
-              flex: 1,
+              flex: 5,
               child: Text(
                 key,
                 style: kSmallTitleTextStyle,
                 textAlign: TextAlign.start,
               ),
             ),
+            SizedBox(width: 20),
             Expanded(
-              flex: 2,
+              flex: 8,
               child: Text(
                 skillsOrWishes[key],
                 style: kSmallTitleTextStyle,
