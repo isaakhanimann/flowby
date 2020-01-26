@@ -1,5 +1,5 @@
+import 'package:Flowby/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:float/constants.dart';
 
 class HashtagBubble extends StatelessWidget {
   final String text;

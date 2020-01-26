@@ -1,9 +1,9 @@
-import 'package:float/screens/choose_signup_or_login_screen.dart';
-import 'package:float/screens/login_screen.dart';
-import 'package:float/screens/navigation_screen.dart';
-import 'package:float/screens/registration/registration_screen.dart';
-import 'package:float/screens/registration/upload_picture_registration_screen.dart';
-import 'package:float/screens/reset_password_screen.dart';
+import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
+import 'package:Flowby/screens/login_screen.dart';
+import 'package:Flowby/screens/navigation_screen.dart';
+import 'package:Flowby/screens/registration/registration_screen.dart';
+import 'package:Flowby/screens/registration/upload_picture_registration_screen.dart';
+import 'package:Flowby/screens/reset_password_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

@@ -1,13 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/edit_profile_screen.dart';
+import 'package:Flowby/screens/settings_screen.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/listview_of_user_infos.dart';
+import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:Flowby/widgets/sign_in_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
-import 'package:float/screens/edit_profile_screen.dart';
-import 'package:float/screens/settings_screen.dart';
-import 'package:float/screens/show_profile_picture_screen.dart';
-import 'package:float/services/firebase_cloud_firestore_service.dart';
-import 'package:float/widgets/rounded_button.dart';
-import 'package:float/widgets/sign_in_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -32,216 +31,50 @@ class ProfileTab extends StatelessWidget {
             );
           }
           User user = snapshot.data;
-          return SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: ListView(
-                      children: <Widget>[
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Stack(
-                          children: <Widget>[
-                            CupertinoButton(
-                              child: Icon(
-                                Feather.settings,
-                                size: 30,
-                              ),
-                              onPressed: () {
-                                Navigator.of(context, rootNavigator: true).push(
-                                  CupertinoPageRoute<void>(
-                                    builder: (context) {
-                                      return SettingsScreen(
-                                        loggedInUser: loggedInUser,
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                            ),
-                            /*CupertinoButton(
-                              child: Icon(
-                                Icons.exit_to_app,
-                                size: 30,
-                              ),
-                              padding: EdgeInsets.all(0),
-                              onPressed: () {
-                                final authService =
-                                    Provider.of<FirebaseAuthService>(context);
-                                authService.signOut();
-                                
-                                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                                  CupertinoPageRoute(
-                                      builder: (BuildContext context) =>
-                                          ChooseSignupOrLoginScreen()),
-                                  (Route<dynamic> route) => false,
-                                );
-                              },
-                            ),
-                            */
 
-                            Center(
-                              child: Hero(
-                                tag: user.imageFileName,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(CupertinoPageRoute(
-                                            builder: (context) =>
-                                                ShowProfilePictureScreen(
-                                                  profilePictureUrl:
-                                                      'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
-                                                  otherUsername: user.username,
-                                                  heroTag: user.imageFileName,
-                                                )));
-                                  },
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
-                                    imageBuilder: (context, imageProvider) {
-                                      return CircleAvatar(
-                                          radius: 60,
-                                          backgroundColor: Colors.grey,
-                                          backgroundImage: imageProvider);
-                                    },
-                                    placeholder: (context, url) =>
-                                        CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          kDefaultProfilePicColor),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                          alignment: Alignment.topRight,
-                        ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Center(
-                          child: Text(
-                            user.username,
-                            style: kMiddleTitleTextStyle,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        if (user.bio != null && user.bio != '')
-                          Text(
-                            user.bio,
-                            style: kSmallTitleTextStyle,
-                            textAlign: TextAlign.center,
-                          ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        if (!user.hasSkills && !user.hasWishes)
-                          Text(
-                            '(Your profile is invisible)',
-                            textAlign: TextAlign.center,
-                          ),
-                        if (user.hasSkills)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 20,
-                              ),
-                              if (user.skillHashtags != null &&
-                                  user.skillHashtags != '')
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'Skills',
-                                      style: kMiddleTitleTextStyle,
-                                    ),
-                                    Text(
-                                      '${user.skillRate} CHF/h',
-                                    ),
-                                  ],
-                                ),
-                              SizedBox(height: 10),
-                              if (user.skillHashtags != null &&
-                                  user.skillHashtags != '')
-                                Text(
-                                  user.skillHashtags,
-                                  style: kSmallTitleTextStyle,
-                                ),
-                            ],
-                          ),
-                        if (user.hasWishes)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 40,
-                              ),
-                              if (user.wishHashtags != null &&
-                                  user.wishHashtags != '')
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'Wishes',
-                                      style: kMiddleTitleTextStyle,
-                                    ),
-                                    Text(
-                                      '${user.wishRate} CHF/h',
-                                    ),
-                                  ],
-                                ),
-                              SizedBox(height: 10),
-                              if (user.wishHashtags != null &&
-                                  user.wishHashtags != '')
-                                Text(
-                                  user.wishHashtags,
-                                  style: kSmallTitleTextStyle,
-                                ),
-                            ],
-                          ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                      ],
-                    ),
+          return SafeArea(
+            bottom: false,
+            child: Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+              ListViewOfUserInfos(user: user),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: RoundedButton(
+                  text: 'Edit your profile',
+                  color: ffDarkBlue,
+                  textColor: Colors.white,
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      CupertinoPageRoute<void>(
+                        builder: (context) {
+                          return EditProfileScreen(user: user);
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: CupertinoButton(
+                  child: Icon(
+                    Feather.settings,
+                    size: 30,
                   ),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      CupertinoPageRoute<void>(
+                        builder: (context) {
+                          return SettingsScreen(
+                            user: user,
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
-                SizedBox(
-                  height: 15,
-                ),
-                Center(
-                  child: RoundedButton(
-                    text: 'Edit your profile',
-                    color: ffDarkBlue,
-                    textColor: Colors.white,
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).push(
-                        CupertinoPageRoute<void>(
-                          builder: (context) {
-                            return EditProfileScreen(
-                                loggedInUser: loggedInUser);
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-              ],
-            ),
+              )
+            ]),
           );
         });
   }

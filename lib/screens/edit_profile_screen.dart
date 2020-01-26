@@ -1,21 +1,22 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
-import 'package:float/screens/choose_signup_or_login_screen.dart';
-import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/services/firebase_cloud_firestore_service.dart';
-import 'package:float/services/firebase_storage_service.dart';
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
+import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/services/firebase_storage_service.dart';
+import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  final FirebaseUser loggedInUser;
+  final User user;
 
-  EditProfileScreen({@required this.loggedInUser});
+  EditProfileScreen({@required this.user});
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
@@ -33,10 +34,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   var _usernameController = TextEditingController();
   var _bioController = TextEditingController();
 
-  List<TextEditingController> skillKeywordControllers;
-  List<TextEditingController> skillDescriptionControllers;
-  List<TextEditingController> wishKeywordControllers;
-  List<TextEditingController> wishDescriptionControllers;
+  List<TextEditingController> skillKeywordControllers = [];
+  List<TextEditingController> skillDescriptionControllers = [];
+  List<TextEditingController> wishKeywordControllers = [];
+  List<TextEditingController> wishDescriptionControllers = [];
 
   void changeProfilePic() async {
     showCupertinoModalPopup(
@@ -79,7 +80,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _getUser(BuildContext context) async {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    String uid = widget.loggedInUser.uid;
+    String uid = widget.user.uid;
     user = await cloudFirestoreService.getUser(uid: uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
 
@@ -94,17 +95,117 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         skillKeywordControllers.add(TextEditingController(text: key));
         skillDescriptionControllers.add(TextEditingController(text: value));
       });
+      //controllers for extra skill
+      skillKeywordControllers.add(TextEditingController());
+      skillDescriptionControllers.add(TextEditingController());
 
       wishes?.forEach((key, value) {
         wishKeywordControllers.add(TextEditingController(text: key));
         wishDescriptionControllers.add(TextEditingController(text: value));
       });
+      wishKeywordControllers.add(TextEditingController());
+      wishDescriptionControllers.add(TextEditingController());
 
       _localSkillRate = user?.skillRate;
       _localWishRate = user?.wishRate;
       _profilePic = null;
       showSpinner = false;
     });
+  }
+
+  Column _buildListOfTextFields({bool isSkillBuild}) {
+    List<Widget> rows = [];
+    for (int rowNumber = 0;
+        rowNumber <
+            (isSkillBuild
+                ? skillKeywordControllers.length
+                : wishKeywordControllers.length);
+        rowNumber++) {
+      rows.add(
+        Row(
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: CupertinoTextField(
+                style: TextStyle(color: kGrey3, fontSize: 22),
+                maxLength: 20,
+                maxLines: 1,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+                textAlign: TextAlign.start,
+                placeholder: "#keywords",
+                controller: isSkillBuild
+                    ? skillKeywordControllers[rowNumber]
+                    : wishKeywordControllers[rowNumber],
+              ),
+            ),
+            SizedBox(width: 20),
+            Expanded(
+              flex: 2,
+              child: CupertinoTextField(
+                style: TextStyle(color: kGrey3, fontSize: 22),
+                maxLength: 100,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+                textAlign: TextAlign.start,
+                placeholder: "description",
+                controller: isSkillBuild
+                    ? skillDescriptionControllers[rowNumber]
+                    : wishDescriptionControllers[rowNumber],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    rows.add(
+      Center(
+        child: RoundedButton(
+          onPressed: () {
+            setState(() {
+              if (isSkillBuild) {
+                skillKeywordControllers.add(TextEditingController());
+                skillDescriptionControllers.add(TextEditingController());
+              } else {
+                wishKeywordControllers.add(TextEditingController());
+                wishDescriptionControllers.add(TextEditingController());
+              }
+            });
+          },
+          text: "Add",
+          color: kLoginBackgroundColor,
+          textColor: Colors.white,
+          paddingInsideHorizontal: 20,
+          paddingInsideVertical: 5,
+          elevation: 0,
+        ),
+      ),
+    );
+    return Column(
+      children: rows,
+    );
+  }
+
+  Map<String, String> controllersToMap(
+      {List<TextEditingController> keyControllers,
+      List<TextEditingController> descriptionControllers}) {
+    Map<String, String> map = Map();
+    for (int i = 0; i < keyControllers.length; i++) {
+      String keyword = keyControllers[i].text;
+      if (keyword != null && keyword.isNotEmpty) {
+        if (!map.containsKey(keyword)) {
+          map[keyword] = descriptionControllers[i].text ?? '';
+        }
+      }
+    }
+    return map;
   }
 
   @override
@@ -130,8 +231,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     if (showSpinner) {
-      return Center(
-        child: CupertinoActivityIndicator(),
+      return CupertinoPageScaffold(
+        backgroundColor: Colors.white,
+        child: Center(
+          child: CupertinoActivityIndicator(),
+        ),
       );
     }
     final cloudFirestoreService =
@@ -168,28 +272,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               try {
                 if (_profilePic != null) {
                   await storageService.uploadImage(
-                      fileName: widget.loggedInUser.uid, image: _profilePic);
+                      fileName: widget.user.uid, image: _profilePic);
                 }
-                Map<String, String> skills = Map.fromIterables(
-                    skillKeywordControllers.map((c) => c.text),
-                    skillDescriptionControllers.map((c) => c.text));
-                Map<String, String> wishes = Map.fromIterables(
-                    wishKeywordControllers.map((c) => c.text),
-                    wishDescriptionControllers.map((c) => c.text));
+
+                // only add a skill to the user if the keyword is not null or empty
+                Map<String, String> skills = controllersToMap(
+                    keyControllers: skillKeywordControllers,
+                    descriptionControllers: skillDescriptionControllers);
+                Map<String, String> wishes = controllersToMap(
+                    keyControllers: wishKeywordControllers,
+                    descriptionControllers: wishDescriptionControllers);
 
                 User user = User(
                     username: _usernameController.text,
-                    uid: widget.loggedInUser.uid,
+                    uid: widget.user.uid,
                     bio: _bioController.text,
                     hasSkills: _localHasSkills,
                     hasWishes: _localHasWishes,
-                    skillHashtags: "Delete this entry",
-                    wishHashtags: "Delete this entry",
                     skillRate: _localSkillRate,
                     wishRate: _localWishRate,
                     skills: skills,
                     wishes: wishes,
-                    imageFileName: widget.loggedInUser.uid);
+                    imageFileName: widget.user.uid);
                 await cloudFirestoreService.uploadUser(user: user);
                 Navigator.of(context).pop();
               } catch (e) {
@@ -215,11 +319,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           children: <Widget>[
                             Opacity(
                               opacity: 0.4,
-                              child: CircleAvatar(
-                                radius: 60,
-                                backgroundColor: Colors.grey,
-                                backgroundImage: NetworkImage(
-                                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media'),
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+                                imageBuilder: (context, imageProvider) {
+                                  return CircleAvatar(
+                                      radius: 60,
+                                      backgroundColor: Colors.grey,
+                                      backgroundImage: imageProvider);
+                                },
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      kDefaultProfilePicColor),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
                               ),
                             ),
                             Icon(
@@ -289,9 +404,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Expanded(
                     child: CupertinoTextField(
                       style: TextStyle(color: kGrey3, fontSize: 20),
-                      placeholder: _bioController.text == ''
-                          ? 'Enter your description'
-                          : '',
+                      placeholder: 'Enter your description',
                       maxLength: 200,
                       maxLines: 5,
                       padding: EdgeInsets.only(bottom: 0),
@@ -327,23 +440,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: 20,
                     ),
-//                    for (TextEditingController controller
-//                        in skillKeywordControllers)
-//                      CupertinoTextField(
-//                        style: TextStyle(color: kGrey3, fontSize: 20),
-//                        placeholder:
-//                            controller.text == '' ? 'Enter your skills' : '',
-//                        maxLength: 20,
-//                        maxLines: 1,
-//                        padding:
-//                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-//                        decoration: BoxDecoration(
-//                            border: Border.all(color: kLightGrey),
-//                            borderRadius:
-//                                BorderRadius.all(Radius.circular(20))),
-//                        controller: controller,
-//                        textAlign: TextAlign.center,
-//                      ),
+                    _buildListOfTextFields(isSkillBuild: true),
                     RatePicker(
                       initialValue: user.skillRate ?? 20,
                       onSelected: (selectedIndex) {
@@ -353,52 +450,38 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                 ),
               SizedBox(height: 20),
-//              Row(
-//                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                children: <Widget>[
-//                  Text(
-//                    'Wishes',
-//                    style: kMiddleTitleTextStyle,
-//                  ),
-//                  CupertinoSwitch(
-//                    value: _localHasWishes,
-//                    onChanged: (newBool) {
-//                      setState(() {
-//                        _localHasWishes = newBool;
-//                      });
-//                    },
-//                  ),
-//                ],
-//              ),
-//              if (_localHasWishes)
-//                Column(
-//                  children: <Widget>[
-//                    SizedBox(
-//                      height: 20,
-//                    ),
-//                    CupertinoTextField(
-//                      style: TextStyle(color: kGrey3, fontSize: 20),
-//                      placeholder: _hashtagWishController.text == ''
-//                          ? 'Enter your wishes'
-//                          : '',
-//                      maxLength: 20,
-//                      maxLines: 1,
-//                      padding:
-//                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-//                      decoration: BoxDecoration(
-//                          border: Border.all(color: kLightGrey),
-//                          borderRadius: BorderRadius.all(Radius.circular(20))),
-//                      controller: _hashtagWishController,
-//                      textAlign: TextAlign.center,
-//                    ),
-//                    RatePicker(
-//                      initialValue: user.wishRate ?? 20,
-//                      onSelected: (selectedIndex) {
-//                        _localWishRate = selectedIndex;
-//                      },
-//                    ),
-//                  ],
-//                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Wishes',
+                    style: kMiddleTitleTextStyle,
+                  ),
+                  CupertinoSwitch(
+                    value: _localHasWishes,
+                    onChanged: (newBool) {
+                      setState(() {
+                        _localHasWishes = newBool;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              if (_localHasWishes)
+                Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 20,
+                    ),
+                    _buildListOfTextFields(isSkillBuild: false),
+                    RatePicker(
+                      initialValue: user.wishRate ?? 20,
+                      onSelected: (selectedIndex) {
+                        _localWishRate = selectedIndex;
+                      },
+                    ),
+                  ],
+                ),
               SizedBox(
                 height: 20,
               ),

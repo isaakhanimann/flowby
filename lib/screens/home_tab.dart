@@ -1,10 +1,10 @@
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/helper_functions.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/view_profile_screen.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/constants.dart';
-import 'package:float/models/helper_functions.dart';
-import 'package:float/models/user.dart';
-import 'package:float/screens/view_profile_screen.dart';
-import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -71,16 +71,16 @@ class _HomeTabState extends State<HomeTab> {
 
         if (isSkillSelected) {
           searchResultUsers = allUsers
-              .where((u) => u.hasSkills)
-              .where((u) => u.skillHashtags
+              .where((u) => u.hasSkills && u.skillKeywords != '')
+              .where((u) => u.skillKeywords
                   .toString()
                   .toLowerCase()
                   .contains(_searchTerm.toLowerCase()))
               .toList();
         } else {
           searchResultUsers = allUsers
-              .where((u) => u.hasWishes)
-              .where((u) => u.wishHashtags
+              .where((u) => u.hasWishes && u.wishKeywords != '')
+              .where((u) => u.wishKeywords
                   .toString()
                   .toLowerCase()
                   .contains(_searchTerm.toLowerCase()))
@@ -222,8 +222,8 @@ class ProfileItem extends StatelessWidget {
                 child: Text(
                   HelperFunctions.getDotDotDotString(
                       maybeLongString: isSkillSearch
-                          ? user.skillHashtags
-                          : user.wishHashtags),
+                          ? user.skillKeywords
+                          : user.wishKeywords),
                   style: kSkillTextStyle,
                 ),
               ),

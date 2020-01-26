@@ -1,30 +1,38 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/constants.dart';
-import 'package:float/screens/choose_signup_or_login_screen.dart';
-import 'package:float/screens/edit_profile_screen.dart';
-import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/widgets/sign_in_button.dart';
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
+import 'package:Flowby/screens/edit_profile_screen.dart';
+import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/widgets/sign_in_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:share/share.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const String id = 'settings_screen';
 
-  final FirebaseUser loggedInUser;
+  final User user;
 
-  SettingsScreen({@required this.loggedInUser});
+  SettingsScreen({@required this.user});
 
   List<SettingsItem> _buildSettingsChildren(BuildContext context) {
     return [
       SettingsItem(
-        leading: CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.grey,
-          backgroundImage: NetworkImage(
-              'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${'default-profile-pic.jpg'}?alt=media'),
+        leading: CachedNetworkImage(
+          imageUrl:
+              "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+          imageBuilder: (context, imageProvider) {
+            return CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.grey,
+                backgroundImage: imageProvider);
+          },
+          placeholder: (context, url) => CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
         title: Text('Edit Profile', style: kUsernameTextStyle),
         onTap: () {
@@ -32,17 +40,13 @@ class SettingsScreen extends StatelessWidget {
             CupertinoPageRoute<void>(
               builder: (context) {
                 return EditProfileScreen(
-                  loggedInUser: loggedInUser,
+                  user: user,
                 );
               },
             ),
           );
         },
       ),
-      SettingsItem(
-          leading: Icon(Feather.share_2, color: kLoginBackgroundColor),
-          title: Text('Invite your friends', style: kUsernameTextStyle),
-          onTap: () => Share.share('Flowby is the largest skill-sharing community. The more the merrier! Join us with your flow: https://flowby.app/dl/')),
       SettingsItem(
         leading: Icon(Feather.log_out, color: kLoginBackgroundColor),
         title: Text('Sign Out', style: kUsernameTextStyle),
@@ -79,10 +83,12 @@ class SettingsScreen extends StatelessWidget {
                         Provider.of<FirebaseAuthService>(context);
                     print('delete user called');
                     await authService.deleteCurrentlyLoggedInUser();
-                    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                    Navigator.of(context, rootNavigator: true)
+                        .pushAndRemoveUntil(
                       CupertinoPageRoute(
-                          builder: (BuildContext context) => ChooseSignupOrLoginScreen()),
-                          (Route<dynamic> route) => false,
+                          builder: (BuildContext context) =>
+                              ChooseSignupOrLoginScreen()),
+                      (Route<dynamic> route) => false,
                     );
                   },
                   isDestructiveAction: true,
@@ -92,6 +98,10 @@ class SettingsScreen extends StatelessWidget {
           );
         },
       ),
+      SettingsItem(
+          leading: Icon(Feather.users, color: kLoginBackgroundColor),
+          title: Text('Invite a friend'),
+          onTap: null),
       SettingsItem(
           leading: Icon(Feather.bell, color: kLoginBackgroundColor),
           title: Text('Notifications'),
@@ -117,7 +127,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (loggedInUser == null) {
+    if (user == null) {
       return CupertinoPageScaffold(
         backgroundColor: CupertinoColors.white,
         navigationBar: CupertinoNavigationBar(
@@ -166,7 +176,7 @@ class SettingsItem extends StatelessWidget {
     return Card(
       elevation: 0,
       color: kLightGrey2,
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15))),
       child: ListTile(

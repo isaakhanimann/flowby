@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:Flowby/models/chat.dart';
+import 'package:Flowby/models/message.dart';
+import 'package:Flowby/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:float/models/chat.dart';
-import 'package:float/models/message.dart';
-import 'package:float/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';

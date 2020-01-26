@@ -1,8 +1,8 @@
-import 'package:float/constants.dart';
-import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/widgets/alert.dart';
-import 'package:float/widgets/login_input_field.dart';
-import 'package:float/widgets/rounded_button.dart';
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/widgets/alert.dart';
+import 'package:Flowby/widgets/login_input_field.dart';
+import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

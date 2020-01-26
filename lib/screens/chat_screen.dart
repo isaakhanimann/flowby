@@ -1,10 +1,10 @@
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/helper_functions.dart';
+import 'package:Flowby/models/message.dart';
+import 'package:Flowby/screens/show_profile_picture_screen.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:float/constants.dart';
-import 'package:float/models/helper_functions.dart';
-import 'package:float/models/message.dart';
-import 'package:float/screens/show_profile_picture_screen.dart';
-import 'package:float/services/firebase_cloud_firestore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
