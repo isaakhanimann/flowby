@@ -35,20 +35,6 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  Stream<List<User>> getUsersStream({@required String uid}) {
-    try {
-      var userSnapshots = _fireStore.collection('users').snapshots().map(
-          (snap) => snap.documents
-              .map((doc) => User.fromMap(map: doc.data))
-              .where((user) => user.uid != uid)
-              .toList());
-      return userSnapshots;
-    } catch (e) {
-      print('Isaak could not get stream of users');
-      return null;
-    }
-  }
-
   Stream<List<User>> getUsersStreamWithDistance(
       {@required Position position, @required String uidToExclude}) {
     try {
@@ -64,77 +50,6 @@ class FirebaseCloudFirestoreService {
       return userSnapshots;
     } catch (e) {
       print(e);
-      return null;
-    }
-  }
-
-  Stream<List<User>> getSpecifiedUsersStreamWithDistance(
-      {@required Position position, @required List<String> uids}) {
-    try {
-      List<Stream<User>> listOfStreams = [];
-      for (var uid in uids) {
-        Stream<User> streamToAdd = _fireStore
-            .collection('users')
-            .where('uid', isEqualTo: uid)
-            .snapshots()
-            .map((snap) => snap.documents
-                    .map((doc) => User.fromMap(map: doc.data))
-                    .map((user) {
-                  user.updateDistanceToPositionIfPossible(position: position);
-                  return user;
-                }).toList()[0]);
-        listOfStreams.add(streamToAdd);
-      }
-
-      Stream<List<User>> usersStream = ZipStream.list(listOfStreams);
-
-      return usersStream;
-    } catch (e) {
-      print('Isaak could not get specified stream of users');
-      print(e);
-      return null;
-    }
-  }
-
-  Stream<List<User>> getSpecifiedUsersStream({@required List<String> uids}) {
-    try {
-      List<Stream<User>> listOfStreams = [];
-      for (var uid in uids) {
-        Stream<User> streamToAdd = _fireStore
-            .collection('users')
-            .where('uid', isEqualTo: uid)
-            .snapshots()
-            .map((snap) => snap.documents
-                .map((doc) => User.fromMap(map: doc.data))
-                .toList()[0]);
-        listOfStreams.add(streamToAdd);
-      }
-
-      Stream<List<User>> usersStream = ZipStream.list(listOfStreams);
-
-      return usersStream;
-    } catch (e) {
-      print('Isaak could not get specified stream of users');
-      return null;
-    }
-  }
-
-  Stream<User> getUserStream({@required String uid}) {
-    try {
-      if (uid == null) {
-        return Stream<User>.empty();
-      }
-      Stream<User> userStream = _fireStore
-          .collection('users')
-          .where('uid', isEqualTo: uid)
-          .snapshots()
-          .map((snap) => snap.documents
-              .map((doc) => User.fromMap(map: doc.data))
-              .toList()[0]);
-
-      return userStream;
-    } catch (e) {
-      print('Isaak could not get stream of the specified user');
       return null;
     }
   }
