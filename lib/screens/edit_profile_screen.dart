@@ -431,7 +431,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: <Widget>[
                   Text(
                     'Skills',
-                    style: kMiddleTitleTextStyle,
+                    style: kSkillsTitleTextStyle,
                   ),
                   CupertinoSwitch(
                     value: _localHasSkills,
@@ -465,7 +465,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: <Widget>[
                   Text(
                     'Wishes',
-                    style: kMiddleTitleTextStyle,
+                    style: kSkillsTitleTextStyle,
                   ),
                   CupertinoSwitch(
                     value: _localHasWishes,

@@ -77,7 +77,7 @@ class _AddSkillsRegistrationScreenState
                           children: <Widget>[
                             Text(
                               'Your skills',
-                              style: kMiddleTitleTextStyle,
+                              style: kUsernameTitleTextStyle,
                             ),
                             CupertinoSwitch(
                               value: _localHasSkills,

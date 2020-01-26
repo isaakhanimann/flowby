@@ -14,9 +14,16 @@ const kBigTitleTextStyle = TextStyle(
   color: kDarkGreenColor,
 );
 
-const kMiddleTitleTextStyle = TextStyle(
+const kUsernameTitleTextStyle = TextStyle(
   fontFamily: 'MontserratRegular',
   fontSize: 35.0,
+  fontWeight: FontWeight.w900,
+  color: kLoginBackgroundColor,
+);
+
+const kSkillsTitleTextStyle = TextStyle(
+  fontFamily: 'MontserratRegular',
+  fontSize: 30.0,
   fontWeight: FontWeight.w900,
   color: kLoginBackgroundColor,
 );
@@ -47,13 +54,6 @@ const kLoginInputFieldDecoration = InputDecoration(
       Radius.circular(30.0),
     ),
   ),
-);
-
-const TextStyle kSearchText = TextStyle(
-  color: Color.fromRGBO(0, 0, 0, 1),
-  fontSize: 14,
-  fontStyle: FontStyle.normal,
-  fontWeight: FontWeight.normal,
 );
 
 //const Color kLoginBackgroundColor = Color(0xFF0D4FF7);

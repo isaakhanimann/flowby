@@ -64,7 +64,7 @@ class ListViewOfUserInfos extends StatelessWidget {
           Center(
             child: Text(
               user.username,
-              style: kMiddleTitleTextStyle,
+              style: kUsernameTitleTextStyle,
             ),
           ),
           SizedBox(
@@ -96,7 +96,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       'Skills',
-                      style: kMiddleTitleTextStyle,
+                      style: kSkillsTitleTextStyle,
                     ),
                     Row(
                       children: <Widget>[
@@ -124,7 +124,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       'Wishes',
-                      style: kMiddleTitleTextStyle,
+                      style: kSkillsTitleTextStyle,
                     ),
                     Row(
                       children: <Widget>[
