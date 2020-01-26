@@ -1,4 +1,4 @@
-import 'package:float/constants.dart';
+import 'package:Flowby/constants.dart';
 import 'package:flutter/material.dart';
 
 class ProgressBar extends StatelessWidget {

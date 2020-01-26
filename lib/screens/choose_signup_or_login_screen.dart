@@ -1,7 +1,7 @@
-import 'package:float/constants.dart';
-import 'package:float/screens/login_screen.dart';
-import 'package:float/screens/registration/registration_screen.dart';
-import 'package:float/widgets/rounded_button.dart';
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/screens/login_screen.dart';
+import 'package:Flowby/screens/registration/registration_screen.dart';
+import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';

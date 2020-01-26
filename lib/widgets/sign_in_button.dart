@@ -1,5 +1,5 @@
-import 'package:float/constants.dart';
-import 'package:float/screens/choose_signup_or_login_screen.dart';
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'rounded_button.dart';

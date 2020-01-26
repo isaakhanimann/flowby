@@ -1,20 +1,30 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {
   RoundedButton(
-      {@required this.color, this.textColor, @required this.onPressed, @required this.text});
+      {@required this.color,
+      this.textColor,
+      @required this.onPressed,
+      @required this.text,
+      this.paddingInsideHorizontal = 50,
+      this.paddingInsideVertical = 15,
+      this.elevation = 5});
 
   final Color color;
   final Color textColor;
   final Function onPressed;
   final String text;
+  final double paddingInsideHorizontal;
+  final double paddingInsideVertical;
+  final double elevation;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: Material(
-        elevation: 5.0,
+        elevation: elevation,
         color: color,
         borderRadius: BorderRadius.circular(30.0),
         child: Theme(
@@ -22,10 +32,11 @@ class RoundedButton extends StatelessWidget {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
           ),
-          child: MaterialButton(
+          child: CupertinoButton(
             onPressed: onPressed,
-            minWidth: 200.0,
-            height: 42.0,
+            padding: EdgeInsets.symmetric(
+                horizontal: paddingInsideHorizontal,
+                vertical: paddingInsideVertical),
             child: Text(
               text,
               style: TextStyle(

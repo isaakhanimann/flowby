@@ -1,11 +1,11 @@
-import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
-import 'package:float/screens/navigation_screen.dart';
-import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/services/firebase_cloud_firestore_service.dart';
-import 'package:float/widgets/progress_bar.dart';
-import 'package:float/widgets/rate_picker.dart';
-import 'package:float/widgets/rounded_button.dart';
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/navigation_screen.dart';
+import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/progress_bar.dart';
+import 'package:Flowby/widgets/rate_picker.dart';
+import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -27,7 +27,7 @@ class _AddWishesRegistrationScreenState
     extends State<AddWishesRegistrationScreen> {
   bool showSpinner = false;
 
-  String _databaseHashtagWishes;
+//  String _databaseHashtagWishes;
   int _databaseWishRate = 20;
   bool _localHasWishes = true;
 
@@ -158,7 +158,7 @@ class _AddWishesRegistrationScreenState
                             });
 
                             _user.hasWishes = _localHasWishes;
-                            _user.wishHashtags = _databaseHashtagWishes;
+//                            _user.wishHashtags = _databaseHashtagWishes;
                             _user.wishRate = _databaseWishRate;
 
                             final cloudFirestoreService =

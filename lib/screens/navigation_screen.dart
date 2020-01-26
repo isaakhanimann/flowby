@@ -1,14 +1,14 @@
 import 'dart:async';
 
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/screens/chats_tab.dart';
+import 'package:Flowby/screens/home_tab.dart';
+import 'package:Flowby/screens/profile_tab.dart';
+import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/services/firebase_cloud_messaging.dart';
+import 'package:Flowby/services/location_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:float/constants.dart';
-import 'package:float/screens/chats_tab.dart';
-import 'package:float/screens/home_tab.dart';
-import 'package:float/screens/profile_tab.dart';
-import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/services/firebase_cloud_firestore_service.dart';
-import 'package:float/services/firebase_cloud_messaging.dart';
-import 'package:float/services/location_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';

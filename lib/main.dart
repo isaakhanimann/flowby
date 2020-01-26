@@ -1,10 +1,10 @@
-import 'package:float/screens/navigation_screen.dart';
-import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/services/firebase_cloud_firestore_service.dart';
-import 'package:float/services/firebase_cloud_messaging.dart';
-import 'package:float/services/firebase_storage_service.dart';
-import 'package:float/services/image_picker_service.dart';
-import 'package:float/services/location_service.dart';
+import 'package:Flowby/screens/navigation_screen.dart';
+import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/services/firebase_cloud_messaging.dart';
+import 'package:Flowby/services/firebase_storage_service.dart';
+import 'package:Flowby/services/image_picker_service.dart';
+import 'package:Flowby/services/location_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
