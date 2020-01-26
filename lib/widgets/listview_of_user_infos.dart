@@ -6,9 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ListViewOfUserInfos extends StatelessWidget {
-  ListViewOfUserInfos({@required this.user});
+  ListViewOfUserInfos({@required this.user, this.heroTag});
 
   final User user;
+  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class ListViewOfUserInfos extends StatelessWidget {
           Center(
             child: Hero(
               transitionOnUserGestures: true,
-              tag: user.imageFileName,
+              tag: heroTag ?? user.imageFileName,
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context, rootNavigator: true)
@@ -36,7 +37,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                                 profilePictureUrl:
                                     'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
                                 otherUsername: user.username,
-                                heroTag: user.imageFileName,
+                                heroTag: heroTag ?? user.imageFileName,
                               )));
                 },
                 child: CachedNetworkImage(
