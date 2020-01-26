@@ -283,18 +283,8 @@ class SearchBar extends StatelessWidget {
         ),
         controller: controller,
         focusNode: focusNode,
-        style: kSearchText,
-        suffix: CupertinoButton(
-          onPressed: () {
-            controller.clear();
-          },
-          child: Icon(
-            Feather.x,
-            color: Colors.black,
-            size: 18,
-          ),
-        ),
-        suffixMode: OverlayVisibilityMode.editing,
+        style: TextStyle(fontSize: 16, color: Colors.black),
+        clearButtonMode: OverlayVisibilityMode.editing,
       ),
     );
   }
