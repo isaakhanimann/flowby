@@ -140,7 +140,7 @@ class ListViewOfUserInfos extends StatelessWidget {
               ],
             ),
           SizedBox(
-            height: 5,
+            height: 70,
           ),
         ],
       ),
