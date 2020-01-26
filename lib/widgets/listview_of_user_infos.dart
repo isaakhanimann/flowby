@@ -26,6 +26,7 @@ class ListViewOfUserInfos extends StatelessWidget {
           ),
           Center(
             child: Hero(
+              transitionOnUserGestures: true,
               tag: user.imageFileName,
               child: GestureDetector(
                 onTap: () {

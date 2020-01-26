@@ -47,6 +47,7 @@ class ShowProfilePictureScreen extends StatelessWidget {
         ),
       ),
       child: Hero(
+        transitionOnUserGestures: true,
         tag: heroTag,
         child: Container(
           decoration: BoxDecoration(
