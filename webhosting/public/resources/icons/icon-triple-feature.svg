@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="30px" viewBox="0 0 50 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-triple-feature</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Fixture-Copy-7" transform="translate(-509.000000, -269.000000)">
+            <g id="Cards" transform="translate(393.000000, 260.000000)">
+                <g id="icon-triple-feature" transform="translate(116.000000, 9.000000)">
+                    <rect id="Rectangle" fill-opacity="0.01" fill="#FFFFFF" x="0" y="0" width="50" height="30"></rect>
+                    <g id="icon-card" transform="translate(15.000000, 4.000000)">
+                        <rect id="Rectangle" fill="#1C4B7C" x="0" y="16" width="20" height="2"></rect>
+                        <rect id="Rectangle" fill="#1C4B7C" x="0" y="20" width="20" height="2"></rect>
+                        <g id="Group-4" transform="translate(4.000000, 0.000000)">
+                            <circle id="Oval" fill="#1C4B7C" cx="6.5" cy="6.5" r="6.5"></circle>
+                            <polygon id="Path" fill="#FFFFFF" points="4.43181818 5.61363636 5.90909091 7.39227273 7.97727273 4.72727273 10.6363636 8.27272727 2.36363636 8.27272727"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,9 @@
+<div class="site-list-item">
+    {{#each pages}}
+        {{#startsWith "page/" url}}
+        <h3>{{name}}</h3>
+        <p><small><a class="page-item" href="{{url}}">{{url}}</a></small></p>
+        <p>{{description}}</p>
+        {{/startsWith}}
+    {{/each}}
+</div>

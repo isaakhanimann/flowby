@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="30px" viewBox="0 0 50 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-3-columns</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Fixture-Copy-7" transform="translate(-510.000000, -381.000000)">
+            <g id="2-Columns" transform="translate(493.000000, 370.000000)">
+                <g id="icon-3-columns" transform="translate(17.000000, 11.000000)">
+                    <rect id="Rectangle" fill-opacity="0.01" fill="#FFFFFF" x="0" y="0" width="50" height="30"></rect>
+                    <g id="3-Columns" transform="translate(4.000000, 8.000000)" fill="#1C4B7C">
+                        <g id="one-column">
+                            <rect id="Rectangle" x="0" y="0" width="12" height="2"></rect>
+                            <rect id="Rectangle" x="0" y="4" width="12" height="2"></rect>
+                            <rect id="Rectangle" x="0" y="8" width="12" height="2"></rect>
+                            <rect id="Rectangle" x="0" y="12" width="6.24609375" height="2"></rect>
+                        </g>
+                        <g id="one-column" transform="translate(16.000000, 0.000000)">
+                            <rect id="Rectangle" x="0" y="0" width="12" height="2"></rect>
+                            <rect id="Rectangle" x="0" y="4" width="12" height="2"></rect>
+                            <rect id="Rectangle" x="0" y="8" width="12" height="2"></rect>
+                            <rect id="Rectangle" x="0" y="12" width="6.22363281" height="2"></rect>
+                        </g>
+                        <g id="one-column" transform="translate(31.000000, 0.000000)">
+                            <rect id="Rectangle" x="0" y="0" width="12" height="2"></rect>
+                            <rect id="Rectangle" x="0" y="4" width="12" height="2"></rect>
+                            <rect id="Rectangle" x="0" y="8" width="12" height="2"></rect>
+                            <rect id="Rectangle" x="0" y="12" width="6" height="2"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="115px" height="92px" viewBox="0 0 115 92" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>triangulate-logo</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="57.2940011 0 114.634146 91.4634146 0 91.4634146 45.9640309 17.9415464 52.5745968 28.6152012 19.7468827 82.2821834 96.3965688 82.2821834 51.372421 9.26239191"></polygon>
+        <linearGradient x1="5.26431075%" y1="0%" x2="109.437062%" y2="104.734959%" id="linearGradient-3">
+            <stop stop-color="#2EBF91" offset="0%"></stop>
+            <stop stop-color="#8360C3" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Branding-Copy-9" transform="translate(-600.000000, -257.000000)">
+            <g id="triangulate" transform="translate(600.000000, 251.000000)">
+                <g id="triangulate-logo" transform="translate(0.000000, 6.097561)">
+                    <g id="logo" transform="translate(0.000000, 0.110865)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <use id="Path-2" fill="#414E5F" xlink:href="#path-1"></use>
+                        <rect id="Rectangle" fill="url(#linearGradient-3)" mask="url(#mask-2)" x="-39.3569845" y="-24.6119734" width="167.627494" height="167.627494" rx="14.6341463"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

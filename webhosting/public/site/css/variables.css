@@ -1,0 +1,26 @@
+:root {
+
+    --font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+    --text-size: 15px;
+    
+    --background-color: #ffffff;
+    --alternate-background-color: #f0f0f0;
+    --headline-color: #111111;
+    --text-color: #888888;
+    --link-color: #13a4e2;
+    --highlight-color: #111111;
+    
+    --top-background-color: #111111;
+    --top-text-color: #ffffff;
+
+    --header-background-color: #ffffff;
+
+    --hero-background-color: #ffffff;
+    --hero-text-color: #111111;
+
+    --navigation-background-color: #ffffff;
+    --navigation-text-color: #111111;
+
+    --footer-background-color: #111111;
+    --footer-text-color: #ffffff;
+}

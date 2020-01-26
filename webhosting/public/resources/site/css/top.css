@@ -1,0 +1,133 @@
+/* top-section  */
+body section.top {
+  background: #111;
+  background: var(--top-background-color);
+  color: #fff;
+  color: var(--top-text-color);
+}
+
+body section.top a {
+  position: relative;
+  display: inline-block;
+  color: #fff;
+  margin: 20px 20px 20px 0;
+  padding: 0 0 0 35px;
+  text-decoration: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+body section.top a svg {
+  position: absolute;
+  ;
+    fill: #fff;
+  fill: var(--top-text-color);
+  height: 18px;
+  top: 0;
+  left: 0;
+}
+
+body section.top a svg .cart-body {
+  fill: #fff;
+  fill: var(--top-text-color);
+}
+
+body section.top a.site-search svg {
+  transform: translateY(-2px);
+}
+
+body section.top a.site-cart svg {
+  transform: translateY(-5px);
+}
+
+  /* form */
+body section.top form {
+  display: inline-block;
+  padding: 15px 0;
+}
+
+body section.top .form-group {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+body section.top label {
+  color: #fff;
+  color: var(--top-text-color);
+  display: inline-block;
+}
+
+body section.top input[type=text], body section.top input[type=email] {
+  color: #fff;
+  color: var(--top-text-color);
+  background: #111;
+  background: var(--top-background-color);
+  border: 1px solid #fff;
+  border: 1px solid var(--top-text-color);
+  padding: 7.5px 10px;
+  border-radius: 5px;
+  margin: 0 5px;
+  font-size: 0.9em;
+}
+
+body section.top input[type=text]::placeholder, body section.top input[type=email]::placeholder {
+  color: #fff;
+  color: var(--top-text-color);
+}
+
+body section.top input[type=submit] {
+  display: inline-block;
+  color: #111;
+  color: var(--top-background-color);
+  background: #fff;
+  background: var(--top-text-color);
+  padding: 7.5px 25px;
+  border-radius: 5px;
+  margin: 0 5px;
+  font-size: 0.9em;
+}
+
+  /* text */
+body section.top p {
+  padding: 10px;
+  color: #fff;
+  color: var(--top-text-color);
+}
+
+body section.top p>a {
+  display: inline-block;
+  color: #111;
+  color: var(--top-background-color);
+  background: #fff;
+  background: var(--top-text-color);
+  border-radius: 5px;
+  padding: 5px 25px;
+  font-size: 0.9em;
+  margin: 0 0 0 15px;
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (max-width: 768px) {
+
+  body section.top p {
+      text-align: center;
+  }
+
+  body section.top p>a {
+      margin: 5px 0 0 0;
+      display: block;
+  }
+
+  body section.top input[type=text], body section.top input[type=email] {
+      display: block;
+      margin: 5px 0 0 0;
+      width: calc(100% - 20px);
+  }
+
+  body section.top input[type=submit] {
+      display: block;
+      margin: 5px 0 0 0;
+      width: 100%;
+  }
+}

@@ -1,0 +1,107 @@
+/* h1,h2,h3 colors */
+body {
+    background: #fff;
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-family);
+    font-size: 15px;
+    font-size: var(--text-size);
+    overflow-x: hidden;
+}
+
+body .alternate-background {
+    background: #f0f0f0;
+    background-color: var(--alternate-background-color);
+}
+
+/* global */
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body p,
+body blockquote,
+body pre,
+body li,
+body a,
+body input,
+body select,
+body label {
+    font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-family);
+    font-size: 1.0em;
+}
+
+/* headline */
+body h1,
+body h2,
+body h3,
+body h4,
+body h5 {
+    color: #111;
+    color: var(--headline-color);
+}
+
+/* text */
+body p,
+body blockquote,
+body li,
+body label,
+body input,
+body select {
+    color: #333;
+    color: var(--text-color);
+}
+
+body a,
+body a:visited {
+    text-decoration: none;
+    color: #5091C7;
+    color: var(--link-color);
+}
+
+body a:hover {
+    color: #78909c;
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+/* relative font sizes for headlines */
+body h1 {
+    font-size: 2.5em;
+}
+
+body h2 {
+    font-size: 2.0em;
+}
+
+body h3 {
+    font-size: 1.5em;
+}
+
+body h4 {
+    font-size: 1.25em;
+}
+
+body h5 {
+    font-size: 1.15em;
+}
+
+body p {
+    line-height: 25px;
+}
+
+body blockquote {
+    border-left: 2px solid #ddd;
+    padding-left: 20px;
+    line-height: 25px;
+}
+
+body pre {
+    border: 2px solid #ddd;
+    padding: 20px;
+    line-height: 25px;
+}

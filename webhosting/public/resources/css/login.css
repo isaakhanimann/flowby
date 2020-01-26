@@ -1,0 +1,148 @@
+body {
+    margin: 0;
+    padding: 0 0 50px 0;
+    background: #f9f9fb;
+    width: 100%;
+    height: 100%;
+}
+
+body * {
+    font-family: "Open Sans", sans-serif;
+}
+
+body a, body a:visited {
+    color: #4274FF;
+}
+
+/* header */
+body header {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 100px auto 50px auto;
+    z-index: 2;
+    text-align: center;
+}
+
+body header img {
+    max-width: 300px;
+}
+
+/* header */
+body main {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    z-index: 2;
+}
+
+body main h2 {
+    text-align: center;
+}
+
+body main p {
+    margin-bottom: 50px;
+    font-size: 14px;
+    text-align: center;
+}
+
+body main label {
+    display: block;
+    font-size: 0.9em;
+    margin: 0 0 2.5px 0;
+    color: #333;
+}
+
+body main input[type=text], body main input[type=password] {
+    width: calc(100% - 30px);
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 25px;
+    border-radius: 5px;
+    font-size: 1.1em;
+}
+
+/* footer */
+main .actions {
+    text-align: right;
+}
+
+main .actions a {
+    display: inline-block;
+    margin-right: 20px;
+    font-size: 13px;
+}
+
+main input[type=submit] {
+    background-image: linear-gradient(-135deg, #2EBF91 0%, #8360C3 100%);
+    height: 40px;
+    line-height: 40px;
+    margin: 5px 0 0 0;
+    border-radius: 5px;
+    border: none;
+    padding: 0 25px;
+    font-size: 13px;
+    color: #fff;
+    box-shadow: 0 0 5px #bbb;
+    cursor: pointer;
+}
+
+main input[type=submit]:hover {
+    box-shadow: 0 0 25px #bbb;
+}
+
+/* toast */
+body .site-toast {
+    display: block;
+    box-sizing: border-box;
+    font-family: 'Helvetica', 'Arial', 'sans-serif';
+    position: fixed;
+    z-index: 1002;
+    top: 10px;
+    left: 50%;
+    width: 500px;
+    background-color: #fff;
+    margin: -300px 0 0 -250px;
+    text-align: left;
+    padding: 10px 40px;
+    line-height: 20px;
+    color: #FFF;
+    background-color: #345A6F;
+    z-index: 100005;
+    transition: all 0.25s ease;
+    border-radius: 25px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+  }
+  
+  body .site-toast .loading-icon {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 20px;
+  }
+  
+  body .site-toast[success] {
+    background-color: #2AB442;
+    border: 1px solid #2AB442;
+    color: #fff;
+  }
+  
+  body .site-toast[failure] {
+    border: 1px solid #CF4647;
+    background-color: #CF4647;
+    color: #fff;
+  }
+  
+  body .site-toast[loading] {
+    background-color: #3ea8e5;
+    border: 1px solid #3ea8e5;
+    color: #fff;
+  }
+  
+  body .site-toast[active] {
+    transition: all 0.15s ease;
+    margin-top: 0;
+  }
