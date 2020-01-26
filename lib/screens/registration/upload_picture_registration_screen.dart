@@ -1,17 +1,16 @@
 import 'dart:io';
 
-import 'package:float/constants.dart';
-import 'package:float/screens/registration/user_description_registration_screen.dart';
-import 'package:float/services/firebase_storage_service.dart';
-import 'package:float/widgets/rounded_button.dart';
-import 'package:float/widgets/progress_bar.dart';
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/registration/user_description_registration_screen.dart';
+import 'package:Flowby/services/firebase_storage_service.dart';
+import 'package:Flowby/widgets/progress_bar.dart';
+import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
-
-import 'package:float/models/user.dart';
 
 //TODO: change box border when the user doesn't enter an input
 

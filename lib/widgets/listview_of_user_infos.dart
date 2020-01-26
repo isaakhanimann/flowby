@@ -1,7 +1,7 @@
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/show_profile_picture_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
-import 'package:float/screens/show_profile_picture_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

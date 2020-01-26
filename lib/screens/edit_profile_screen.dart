@@ -1,13 +1,13 @@
 import 'dart:io';
 
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
+import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/services/firebase_storage_service.dart';
+import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
-import 'package:float/screens/choose_signup_or_login_screen.dart';
-import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/services/firebase_cloud_firestore_service.dart';
-import 'package:float/services/firebase_storage_service.dart';
-import 'package:float/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';

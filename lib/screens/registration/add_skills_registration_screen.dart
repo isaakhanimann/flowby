@@ -1,9 +1,9 @@
-import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
-import 'package:float/screens/registration/add_wishes_registration_screen.dart';
-import 'package:float/widgets/progress_bar.dart';
-import 'package:float/widgets/rate_picker.dart';
-import 'package:float/widgets/rounded_button.dart';
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/registration/add_wishes_registration_screen.dart';
+import 'package:Flowby/widgets/progress_bar.dart';
+import 'package:Flowby/widgets/rate_picker.dart';
+import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';

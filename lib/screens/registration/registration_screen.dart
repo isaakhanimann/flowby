@@ -1,10 +1,10 @@
-import 'package:float/constants.dart';
-import 'package:float/models/user.dart';
-import 'package:float/screens/registration/upload_picture_registration_screen.dart';
-import 'package:float/services/firebase_auth_service.dart';
-import 'package:float/widgets/alert.dart';
-import 'package:float/widgets/login_input_field.dart';
-import 'package:float/widgets/rounded_button.dart';
+import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/registration/upload_picture_registration_screen.dart';
+import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/widgets/alert.dart';
+import 'package:Flowby/widgets/login_input_field.dart';
+import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -143,7 +143,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           context: context,
                           title: "Missing email or password",
                           description:
-                          'Enter an email and an password. Thank you.');
+                              'Enter an email and an password. Thank you.');
                       return;
                     }
                     try {
@@ -162,7 +162,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
 
                       if (authResult != null) {
                         User user =
-                        User(username: name, uid: authResult.user.uid);
+                            User(username: name, uid: authResult.user.uid);
 
                         print(user);
 
@@ -198,7 +198,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                 context: context,
                                 title: "Invalid Email",
                                 description:
-                                "Please enter a valid email address");
+                                    "Please enter a valid email address");
                             break;
                           }
                         case 'ERROR_EMAIL_ALREADY_IN_USE':
