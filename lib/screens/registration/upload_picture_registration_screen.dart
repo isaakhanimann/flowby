@@ -8,6 +8,7 @@ import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -68,8 +69,18 @@ class _UploadPictureRegistrationScreenState
   void _setImage(ImageSource source) async {
     var selectedImage =
         await ImagePicker.pickImage(source: source, imageQuality: 25);
+    File croppedImage = await ImageCropper.cropImage(
+        sourcePath: selectedImage.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        androidUiSettings: AndroidUiSettings(
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        )
+    );
     setState(() {
-      _profilePic = selectedImage;
+      _profilePic = croppedImage;
     });
   }
 
