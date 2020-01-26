@@ -5,6 +5,7 @@ import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -33,8 +34,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return ModalProgressHUD(
       inAsyncCall: showSpinner,
-      progressIndicator: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
+      progressIndicator: SizedBox(
+        width: 200,
+        child: FlareActor(
+          'assets/animations/liquid_loader.flr',
+          alignment: Alignment.center,
+          color: Colors.white,
+          fit: BoxFit.contain,
+          animation: "Untitled",
+        ),
       ),
       child: CupertinoPageScaffold(
         resizeToAvoidBottomInset: false,

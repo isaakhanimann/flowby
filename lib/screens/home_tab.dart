@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:flare_flutter/flare_actor.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -61,8 +62,15 @@ class _HomeTabState extends State<HomeTab> {
           position: currentPosition, uidToExclude: loggedInUser?.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(
-            child: CupertinoActivityIndicator(),
+          return SizedBox(
+            width: 200,
+            child: FlareActor(
+              'assets/animations/liquid_loader.flr',
+              alignment: Alignment.center,
+              color: kDefaultProfilePicColor,
+              fit: BoxFit.contain,
+              animation: "Untitled",
+            ),
           );
         }
         List<User> allUsers =

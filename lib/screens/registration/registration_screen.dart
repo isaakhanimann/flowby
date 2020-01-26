@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:flare_flutter/flare_actor.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -38,6 +39,16 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   Widget build(BuildContext context) {
     return ModalProgressHUD(
       inAsyncCall: showSpinner,
+      progressIndicator: SizedBox(
+        width: 200,
+        child: FlareActor(
+          'assets/animations/liquid_loader.flr',
+          alignment: Alignment.center,
+          color: Colors.white,
+          fit: BoxFit.contain,
+          animation: "Untitled",
+        ),
+      ),
       child: CupertinoPageScaffold(
         resizeToAvoidBottomInset:
             false, //avoid the keyboard causing an overflow

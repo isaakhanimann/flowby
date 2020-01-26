@@ -26,6 +26,7 @@ dependencies:
   flutter_local_notifications: ^0.9.1+3
   flutter_icons: ^1.0.0+1
   cached_network_image: ^2.0.0
+  flare_flutter: any
 
   flutter_localizations:
     sdk: flutter
@@ -41,6 +42,7 @@ flutter:
   assets:
     - assets/images/
     - assets/videos/
+    - assets/animations/
 
   fonts:
     - family: MontserratRegular
