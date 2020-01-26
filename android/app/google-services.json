@@ -40,10 +40,10 @@
               "client_type": 3
             },
             {
-              "client_id": "547934201313-uh2g6lcajd2g5eon0jigtjlhgko8k83j.apps.googleusercontent.com",
+              "client_id": "547934201313-obq76rtt61mivh9nhigb4uunrol0l075.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.isaakhanimann.float"
+                "bundle_id": "co.flowby.flowby"
               }
             }
           ]
@@ -76,46 +76,10 @@
               "client_type": 3
             },
             {
-              "client_id": "547934201313-uh2g6lcajd2g5eon0jigtjlhgko8k83j.apps.googleusercontent.com",
+              "client_id": "547934201313-obq76rtt61mivh9nhigb4uunrol0l075.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.isaakhanimann.float"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:547934201313:android:49ff8acda504e03263dea0",
-        "android_client_info": {
-          "package_name": "com.isaakhanimann.float"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "547934201313-a89lbu99lvl3rrdno1lmek46j9ucl1cg.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCPIjFR3BeJ6Leg4bpZpFsXzEc6e7UpXVQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "547934201313-a89lbu99lvl3rrdno1lmek46j9ucl1cg.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "547934201313-uh2g6lcajd2g5eon0jigtjlhgko8k83j.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.isaakhanimann.float"
+                "bundle_id": "co.flowby.flowby"
               }
             }
           ]

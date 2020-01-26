@@ -27,6 +27,7 @@ dependencies:
   flutter_icons: ^1.0.0+1
   cached_network_image: ^2.0.0
   share: ^0.6.3+5
+  image_cropper: ^1.2.0
 
   flutter_localizations:
     sdk: flutter

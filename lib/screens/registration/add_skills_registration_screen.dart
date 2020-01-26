@@ -24,11 +24,128 @@ class _AddSkillsRegistrationScreenState
     extends State<AddSkillsRegistrationScreen> {
   bool showSpinner = false;
 
-//  String _databaseHashtagSkills;
   int _databaseSkillRate = 20;
   bool _localHasSkills = true;
 
   User _user;
+
+  List<TextEditingController> skillKeywordControllers = [];
+  List<TextEditingController> skillDescriptionControllers = [];
+  List<TextEditingController> wishKeywordControllers = [];
+  List<TextEditingController> wishDescriptionControllers = [];
+
+  Column _buildListOfTextFields({bool isSkillBuild}) {
+    if (isSkillBuild) {
+      if (skillKeywordControllers.length == 0) {
+        setState(() {
+          // Default controllers
+          skillKeywordControllers.add(TextEditingController());
+          skillDescriptionControllers.add(TextEditingController());
+        });
+      }
+    } else {
+      if (wishKeywordControllers.length == 0) {
+        setState(() {
+          // Default controllers
+          skillKeywordControllers.add(TextEditingController());
+          skillDescriptionControllers.add(TextEditingController());
+        });
+      }
+    }
+
+    List<Widget> rows = [];
+    for (int rowNumber = 0;
+        rowNumber <
+            (isSkillBuild
+                ? skillKeywordControllers.length
+                : wishKeywordControllers.length);
+        rowNumber++) {
+      rows.add(
+        Row(
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: CupertinoTextField(
+                style: TextStyle(color: kGrey3, fontSize: 22),
+                maxLength: 20,
+                maxLines: 1,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+                textAlign: TextAlign.start,
+                placeholder: "#keywords",
+                controller: isSkillBuild
+                    ? skillKeywordControllers[rowNumber]
+                    : wishKeywordControllers[rowNumber],
+              ),
+            ),
+            SizedBox(width: 20),
+            Expanded(
+              flex: 2,
+              child: CupertinoTextField(
+                style: TextStyle(color: kGrey3, fontSize: 22),
+                maxLength: 100,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.black),
+                  ),
+                ),
+                textAlign: TextAlign.start,
+                placeholder: "description",
+                controller: isSkillBuild
+                    ? skillDescriptionControllers[rowNumber]
+                    : wishDescriptionControllers[rowNumber],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    rows.add(
+      Center(
+        child: RoundedButton(
+          onPressed: () {
+            setState(() {
+              if (isSkillBuild) {
+                skillKeywordControllers.add(TextEditingController());
+                skillDescriptionControllers.add(TextEditingController());
+              } else {
+                wishKeywordControllers.add(TextEditingController());
+                wishDescriptionControllers.add(TextEditingController());
+              }
+            });
+          },
+          text: "Add",
+          color: kLoginBackgroundColor,
+          textColor: Colors.white,
+          paddingInsideHorizontal: 20,
+          paddingInsideVertical: 5,
+          elevation: 0,
+        ),
+      ),
+    );
+    return Column(
+      children: rows,
+    );
+  }
+
+  Map<String, String> controllersToMap(
+      {List<TextEditingController> keyControllers,
+      List<TextEditingController> descriptionControllers}) {
+    Map<String, String> map = Map();
+    for (int i = 0; i < keyControllers.length; i++) {
+      String keyword = keyControllers[i].text;
+      if (keyword != null && keyword.isNotEmpty) {
+        if (!map.containsKey(keyword)) {
+          map[keyword] = descriptionControllers[i].text ?? '';
+        }
+      }
+    }
+    return map;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,19 +225,7 @@ class _AddSkillsRegistrationScreenState
                               SizedBox(
                                 height: 10.0,
                               ),
-                              CupertinoTextField(
-                                style: TextStyle(color: kGrey3, fontSize: 20),
-                                //maxLength: 20,
-                                //maxLines: 1,
-                                placeholder: 'e.g. #piano #salsa #algebra',
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: kLightGrey),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20))),
-                                textAlign: TextAlign.start,
-                              ),
+                              _buildListOfTextFields(isSkillBuild: true),
                               SizedBox(
                                 height: 10.0,
                               ),
@@ -155,9 +260,19 @@ class _AddSkillsRegistrationScreenState
                               showSpinner = true;
                             });
 
+                            Map<String, String> skills = controllersToMap(
+                                keyControllers: skillKeywordControllers,
+                                descriptionControllers:
+                                    skillDescriptionControllers);
+                            Map<String, String> wishes = controllersToMap(
+                                keyControllers: wishKeywordControllers,
+                                descriptionControllers:
+                                    wishDescriptionControllers);
                             _user.hasSkills = _localHasSkills;
-//                            _user.skillHashtags = _databaseHashtagSkills;
+                            _user.skills = skills;
                             _user.skillRate = _databaseSkillRate;
+
+                            print(_user);
 
                             Navigator.of(context, rootNavigator: true).push(
                               CupertinoPageRoute<void>(
