@@ -29,7 +29,10 @@ class ViewProfileScreen extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: <Widget>[
-            ListViewOfUserInfos(user: user),
+            ListViewOfUserInfos(
+              user: user,
+              heroTag: heroTag,
+            ),
             RoundedButton(
               text: loggedInUser == null ? 'Signin to Chat' : 'Chat',
               color: ffDarkBlue,

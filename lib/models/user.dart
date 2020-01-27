@@ -33,15 +33,15 @@ class User {
       this.wishes});
 
   User.fromMap({Map<String, dynamic> map}) {
-    this.username = map['username'];
-    this.uid = map['uid'];
-    this.bio = map['bio'];
+    this.username = map['username'] ?? '';
+    this.uid = map['uid'] ?? '';
+    this.bio = map['bio'] ?? '';
     this.hasSkills = map['hasSkills'] ?? false;
     this.hasWishes = map['hasWishes'] ?? false;
-    this.skillRate = map['skillRate'];
-    this.wishRate = map['wishRate'];
+    this.skillRate = map['skillRate'] ?? 20;
+    this.wishRate = map['wishRate'] ?? 20;
     this.location = map['location'];
-    this.imageFileName = map['imageFileName'];
+    this.imageFileName = map['imageFileName'] ?? 'default-profile-pic.jpg';
     this.skills = map['skills'];
     this.wishes = map['wishes'];
     this.skillKeywords = _getKeywordString(skills);

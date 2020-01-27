@@ -30,7 +30,10 @@ class ChatsTab extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.connectionState == ConnectionState.none) {
             return Center(
-              child: CupertinoActivityIndicator(),
+              child: CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+              ),
             );
           }
           List<Chat> chats =

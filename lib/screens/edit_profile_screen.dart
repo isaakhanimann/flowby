@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flare_flutter/flare_actor.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -234,7 +235,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       return CupertinoPageScaffold(
         backgroundColor: Colors.white,
         child: Center(
-          child: CupertinoActivityIndicator(),
+          child: SizedBox(
+            width: 200,
+            child: FlareActor(
+              'assets/animations/liquid_loader.flr',
+              alignment: Alignment.center,
+              color: kDefaultProfilePicColor,
+              fit: BoxFit.contain,
+              animation: "Untitled",
+            ),
+          ),
         ),
       );
     }
@@ -421,7 +431,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: <Widget>[
                   Text(
                     'Skills',
-                    style: kMiddleTitleTextStyle,
+                    style: kSkillsTitleTextStyle,
                   ),
                   CupertinoSwitch(
                     value: _localHasSkills,
@@ -455,7 +465,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: <Widget>[
                   Text(
                     'Wishes',
-                    style: kMiddleTitleTextStyle,
+                    style: kSkillsTitleTextStyle,
                   ),
                   CupertinoSwitch(
                     value: _localHasWishes,
