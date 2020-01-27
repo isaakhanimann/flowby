@@ -284,9 +284,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   textColor: Colors.white,
                   onPressed: () async {
                     try {
-                      final authService = Provider.of<FirebaseAuthService>(
-                          context,
-                          listen: false);
                       signInWithGoogle().then((authResult) {
                         //print('logged in');
                         //print(authResult);

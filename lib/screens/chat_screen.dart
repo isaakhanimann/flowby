@@ -139,7 +139,7 @@ class ChatScreenWithPath extends StatelessWidget {
                           CupertinoPageRoute(
                               builder: (context) => ShowProfilePictureScreen(
                                     profilePictureUrl:
-                                        'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${otherImageFileName}?alt=media',
+                                        'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media',
                                     otherUsername: otherUsername,
                                     heroTag: heroTag,
                                   )));
