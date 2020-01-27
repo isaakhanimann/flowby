@@ -98,11 +98,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
           items: [
             BottomNavigationBarItem(
                 icon: Icon(
-              Feather.home,
+              Feather.search,
             )),
             BottomNavigationBarItem(
               icon: Icon(
-                Feather.message_circle,
+                Feather.mail,
               ),
             ),
             BottomNavigationBarItem(
