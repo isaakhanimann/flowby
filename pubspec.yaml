@@ -29,6 +29,7 @@ dependencies:
   share: ^0.6.3+5
   image_cropper: ^1.2.0
   flare_flutter: any
+  google_sign_in: ^4.1.1
 
   flutter_localizations:
     sdk: flutter

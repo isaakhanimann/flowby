@@ -264,10 +264,7 @@ class _AddSkillsRegistrationScreenState
                                 keyControllers: skillKeywordControllers,
                                 descriptionControllers:
                                     skillDescriptionControllers);
-                            Map<String, String> wishes = controllersToMap(
-                                keyControllers: wishKeywordControllers,
-                                descriptionControllers:
-                                    wishDescriptionControllers);
+
                             _user.hasSkills = _localHasSkills;
                             _user.skills = skills;
                             _user.skillRate = _databaseSkillRate;

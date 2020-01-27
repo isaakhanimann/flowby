@@ -5,11 +5,13 @@ import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -36,6 +38,31 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   //final FocusNode _userNameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Future<FirebaseUser> signInWithGoogle() async {
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    final AuthResult authResult = await _auth.signInWithCredential(credential);
+    final FirebaseUser user = authResult.user;
+
+    assert(!user.isAnonymous);
+    assert(await user.getIdToken() != null);
+
+    final FirebaseUser currentUser = await _auth.currentUser();
+    assert(user.uid == currentUser.uid);
+
+    return user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,10 +191,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                       setState(() {
                         showSpinner = true;
                       });
-
                       final authService = Provider.of<FirebaseAuthService>(
                           context,
                           listen: false);
+
                       /* final cloudFirestoreService =
                       Provider.of<FirebaseCloudFirestoreService>(context,
                           listen: false); */
@@ -255,7 +282,32 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   text: 'Sign Up with Google',
                   color: Color(0xFFDD4B39),
                   textColor: Colors.white,
-                  onPressed: null,
+                  onPressed: () async {
+                    try {
+                      final authService = Provider.of<FirebaseAuthService>(
+                          context,
+                          listen: false);
+                      signInWithGoogle().then((authResult) {
+                        //print('logged in');
+                        //print(authResult);
+                        if (authResult != null) {
+                          User user = User(username: authResult.displayName, uid: authResult.uid);
+
+                          Navigator.of(context, rootNavigator: true).push(
+                            CupertinoPageRoute<void>(
+                              builder: (context) {
+                                return UploadPictureRegistrationScreen(
+                                  user: user,
+                                );
+                              },
+                            ),
+                          );
+                        }
+                      });
+                    } catch (e) {
+                      print('ERROR: Google Sign In');
+                    }
+                  },
                 ),
               ],
             ),
