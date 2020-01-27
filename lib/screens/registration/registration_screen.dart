@@ -40,9 +40,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   Widget build(BuildContext context) {
     return ModalProgressHUD(
       inAsyncCall: showSpinner,
+      progressIndicator: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+      ),
       child: CupertinoPageScaffold(
         resizeToAvoidBottomInset:
             false, //avoid the keyboard causing an overflow
+
         navigationBar: CupertinoNavigationBar(
           border: null,
           leading: CupertinoButton(

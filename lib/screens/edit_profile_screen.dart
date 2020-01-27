@@ -10,6 +10,7 @@ import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -72,8 +73,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _setImage(ImageSource source) async {
     var selectedImage =
         await ImagePicker.pickImage(source: source, imageQuality: 25);
+
+    File croppedImage = await ImageCropper.cropImage(
+        sourcePath: selectedImage.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        androidUiSettings: AndroidUiSettings(
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
     setState(() {
-      _profilePic = selectedImage;
+      _profilePic = croppedImage;
     });
   }
 
@@ -537,6 +548,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 class RatePicker extends StatelessWidget {
   final Function onSelected;
   final int initialValue;
+
   RatePicker({@required this.onSelected, this.initialValue});
 
   List<Text> _getPickerItems() {

@@ -171,7 +171,7 @@ class _AddWishesRegistrationScreenState
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
+          valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
         child: SafeArea(
           child: Scaffold(

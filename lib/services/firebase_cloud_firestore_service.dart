@@ -221,6 +221,7 @@ class FirebaseCloudFirestoreService {
         'username2': otherUsername,
         'user2ImageFileName': otherUserImageFileName,
         'lastMessageTimestamp': FieldValue.serverTimestamp(),
+        'lastMessageText': '', //should we put a default message like 'there are no message'?
       });
       return docReference.path;
     } catch (e) {

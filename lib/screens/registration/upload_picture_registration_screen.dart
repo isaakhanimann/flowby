@@ -6,6 +6,7 @@ import 'package:Flowby/screens/registration/user_description_registration_screen
 import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -31,7 +32,6 @@ class _UploadPictureRegistrationScreenState
     extends State<UploadPictureRegistrationScreen> {
   bool showSpinner = false;
   File _profilePic;
-  String _profilePicUrl;
 
   String _username;
   User _user;
@@ -77,8 +77,7 @@ class _UploadPictureRegistrationScreenState
             lockAspectRatio: false),
         iosUiSettings: IOSUiSettings(
           minimumAspectRatio: 1.0,
-        )
-    );
+        ));
     setState(() {
       _profilePic = croppedImage;
     });
@@ -107,7 +106,7 @@ class _UploadPictureRegistrationScreenState
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
+          valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
         child: SafeArea(
           child: Scaffold(
@@ -144,23 +143,54 @@ class _UploadPictureRegistrationScreenState
                           child: Center(
                             heightFactor: 1.2,
                             child: _profilePic == null
-                                ? _profilePicUrl == null
-                                    ? CircleAvatar(
-                                        backgroundColor: Colors.grey,
-                                        backgroundImage: AssetImage(
-                                            'assets/images/default-profile-pic.jpg'),
-                                        radius: 60,
+                                ? Stack(
+                                    alignment: AlignmentDirectional.center,
+                                    children: <Widget>[
+                                      Opacity(
+                                        opacity: 0.4,
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2Fdefault-profile-pic.jpg?alt=media",
+                                          imageBuilder:
+                                              (context, imageProvider) {
+                                            return CircleAvatar(
+                                                radius: 60,
+                                                backgroundColor: Colors.grey,
+                                                backgroundImage: imageProvider);
+                                          },
+                                          placeholder: (context, url) =>
+                                              CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    kDefaultProfilePicColor),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        ),
+                                      ),
+                                      Icon(
+                                        CupertinoIcons.photo_camera_solid,
+                                        size: 50,
                                       )
-                                    : CircleAvatar(
-                                        backgroundColor: Colors.grey,
-                                        backgroundImage:
-                                            NetworkImage(_profilePicUrl),
-                                        radius: 60,
+                                    ],
+                                  )
+                                : Stack(
+                                    alignment: AlignmentDirectional.center,
+                                    children: <Widget>[
+                                      Opacity(
+                                        opacity: 0.4,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.grey,
+                                          backgroundImage:
+                                              FileImage(_profilePic),
+                                          radius: 60,
+                                        ),
+                                      ),
+                                      Icon(
+                                        CupertinoIcons.photo_camera_solid,
+                                        size: 50,
                                       )
-                                : CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    backgroundImage: FileImage(_profilePic),
-                                    radius: 60,
+                                    ],
                                   ),
                           ),
                         ),
