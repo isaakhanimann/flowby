@@ -12,6 +12,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -195,9 +196,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           context,
                           listen: false);
 
-                      /* final cloudFirestoreService =
-                      Provider.of<FirebaseCloudFirestoreService>(context,
-                          listen: false); */
+                      final cloudFirestoreService =
+                          Provider.of<FirebaseCloudFirestoreService>(context,
+                              listen: false);
                       final authResult = await authService.createUser(
                           email: email, password: password);
 
@@ -207,9 +208,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         User user =
                             User(username: name, uid: authResult.user.uid);
 
-                        //print(user);
-
-                        //await cloudFirestoreService.uploadUser(user: user);
+                        await cloudFirestoreService.uploadUser(user: user);
 
                         setState(() {
                           showSpinner = false;
@@ -288,7 +287,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         //print('logged in');
                         //print(authResult);
                         if (authResult != null) {
-                          User user = User(username: authResult.displayName, uid: authResult.uid);
+                          User user = User(
+                              username: authResult.displayName,
+                              uid: authResult.uid);
 
                           Navigator.of(context, rootNavigator: true).push(
                             CupertinoPageRoute<void>(

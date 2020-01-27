@@ -26,10 +26,10 @@ class NoResults extends StatelessWidget {
             SizedBox(height: 15.0),
             isSkillSelected
                 ? Text(
-                    'There is no user with this skill, for the moment... One day, it will be possible to find any skill.',
+                    'There is no user with this skill, for now... One day, it will be possible to find any skill.',
                     style: kSmallTitleTextStyle)
                 : Text(
-                    'There is no user with this wish, for the moment... One day, it will be possible to find any wish.',
+                    'There is no user with this wish, for now... One day, it will be possible to find any wish.',
                     style: kSmallTitleTextStyle),
             SizedBox(height: 5.0),
             RoundedButton(

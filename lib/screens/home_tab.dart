@@ -27,19 +27,16 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   TextEditingController _controller;
-  FocusNode _focusNode;
   String _searchTerm = '';
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController()..addListener(_onTextChanged);
-    _focusNode = FocusNode();
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -119,7 +116,6 @@ class _HomeTabState extends State<HomeTab> {
                         child: SearchBar(
                           isSkillSearch: isSkillSelected,
                           controller: _controller,
-                          focusNode: _focusNode,
                         ),
                       );
                     } else if (index == 1) {
@@ -259,12 +255,10 @@ class ProfileItem extends StatelessWidget {
 class SearchBar extends StatelessWidget {
   const SearchBar({
     @required this.controller,
-    @required this.focusNode,
     @required this.isSkillSearch,
   });
 
   final TextEditingController controller;
-  final FocusNode focusNode;
   final isSkillSearch;
 
   @override
@@ -286,7 +280,6 @@ class SearchBar extends StatelessWidget {
           ),
         ),
         controller: controller,
-        focusNode: focusNode,
         style: TextStyle(fontSize: 16, color: Colors.black),
         clearButtonMode: OverlayVisibilityMode.editing,
       ),
