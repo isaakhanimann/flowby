@@ -6,9 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ListViewOfUserInfos extends StatelessWidget {
-  ListViewOfUserInfos({@required this.user});
+  ListViewOfUserInfos({@required this.user, this.heroTag});
 
   final User user;
+  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,8 @@ class ListViewOfUserInfos extends StatelessWidget {
           ),
           Center(
             child: Hero(
-              tag: user.imageFileName,
+              transitionOnUserGestures: true,
+              tag: heroTag ?? user.imageFileName,
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context, rootNavigator: true)
@@ -35,7 +37,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                                 profilePictureUrl:
                                     'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
                                 otherUsername: user.username,
-                                heroTag: user.imageFileName,
+                                heroTag: heroTag ?? user.imageFileName,
                               )));
                 },
                 child: CachedNetworkImage(
@@ -62,7 +64,7 @@ class ListViewOfUserInfos extends StatelessWidget {
           Center(
             child: Text(
               user.username,
-              style: kMiddleTitleTextStyle,
+              style: kUsernameTitleTextStyle,
             ),
           ),
           SizedBox(
@@ -94,7 +96,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       'Skills',
-                      style: kMiddleTitleTextStyle,
+                      style: kSkillsTitleTextStyle,
                     ),
                     Row(
                       children: <Widget>[
@@ -122,7 +124,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       'Wishes',
-                      style: kMiddleTitleTextStyle,
+                      style: kSkillsTitleTextStyle,
                     ),
                     Row(
                       children: <Widget>[
@@ -139,7 +141,7 @@ class ListViewOfUserInfos extends StatelessWidget {
               ],
             ),
           SizedBox(
-            height: 5,
+            height: 70,
           ),
         ],
       ),

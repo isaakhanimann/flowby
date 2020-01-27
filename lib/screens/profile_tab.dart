@@ -27,7 +27,10 @@ class ProfileTab extends StatelessWidget {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
-              child: CupertinoActivityIndicator(),
+              child: CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+              ),
             );
           }
           User user = snapshot.data;

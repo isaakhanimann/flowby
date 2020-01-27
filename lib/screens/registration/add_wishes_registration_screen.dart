@@ -199,7 +199,7 @@ class _AddWishesRegistrationScreenState
                           children: <Widget>[
                             Text(
                               'Your wishes',
-                              style: kMiddleTitleTextStyle,
+                              style: kUsernameTitleTextStyle,
                             ),
                             CupertinoSwitch(
                               value: _localHasWishes,

@@ -28,6 +28,7 @@ dependencies:
   cached_network_image: ^2.0.0
   share: ^0.6.3+5
   image_cropper: ^1.2.0
+  flare_flutter: any
 
   flutter_localizations:
     sdk: flutter
@@ -43,6 +44,7 @@ flutter:
   assets:
     - assets/images/
     - assets/videos/
+    - assets/animations/
 
   fonts:
     - family: MontserratRegular

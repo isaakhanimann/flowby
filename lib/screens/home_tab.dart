@@ -64,7 +64,10 @@ class _HomeTabState extends State<HomeTab> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
-            child: CupertinoActivityIndicator(),
+            child: CircularProgressIndicator(
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+            ),
           );
         }
         List<User> allUsers =
@@ -272,7 +275,7 @@ class SearchBar extends StatelessWidget {
         decoration: BoxDecoration(
             color: kLightGrey2,
             borderRadius: BorderRadius.all(Radius.circular(10))),
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         placeholder: isSkillSearch ? 'Search Skills' : 'Search Wishes',
         placeholderStyle: TextStyle(fontSize: 16, color: kPlaceHolderColor),
         prefix: Padding(
@@ -284,7 +287,8 @@ class SearchBar extends StatelessWidget {
         ),
         controller: controller,
         focusNode: focusNode,
-        style: kSearchText,
+        style: TextStyle(fontSize: 16, color: Colors.black),
+        clearButtonMode: OverlayVisibilityMode.editing,
       ),
     );
   }
