@@ -3,6 +3,7 @@ import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/no_results.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,7 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   bool isSkillSelected = true;
+
   void switchSearch(var newIsSelected) {
     setState(() {
       isSkillSelected = !isSkillSelected;
@@ -118,18 +120,25 @@ class _HomeTabState extends State<HomeTab> {
                         ),
                       );
                     } else if (index == 1) {
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                        child: CupertinoSegmentedControl(
-                          groupValue: isSkillSelected,
-                          onValueChanged: switchSearch,
-                          children: <bool, Widget>{
-                            true:
-                                Text('Skills', style: TextStyle(fontSize: 18)),
-                            false:
-                                Text('Wishes', style: TextStyle(fontSize: 18)),
-                          },
-                        ),
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            child: CupertinoSegmentedControl(
+                              groupValue: isSkillSelected,
+                              onValueChanged: switchSearch,
+                              children: <bool, Widget>{
+                                true: Text('Skills',
+                                    style: TextStyle(fontSize: 18)),
+                                false: Text('Wishes',
+                                    style: TextStyle(fontSize: 18)),
+                              },
+                            ),
+                          ),
+                          if (searchResultUsers.length == 0)
+                            NoResults(isSkillSelected: isSkillSelected),
+                        ],
                       );
                     } else if (index < searchResultUsers.length + 2) {
                       return ProfileItem(
