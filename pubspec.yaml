@@ -3,6 +3,9 @@ description: A new Flutter application.
 
 version: 1.0.0+1
 
+module:
+  androidX: true
+
 environment:
   sdk: '>=2.3.0'
 
