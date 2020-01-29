@@ -26,18 +26,18 @@ class NoResults extends StatelessWidget {
             SizedBox(height: 15.0),
             isSkillSelected
                 ? Text(
-                    'There is no user with this skill, for now... One day, it will be possible to find any skill.',
-                    style: kSmallTitleTextStyle)
+                    'There is no user with this skill... One day, it will be possible to find any skill.',
+                    style: kAddSkillsTextStyle)
                 : Text(
-                    'There is no user with this wish, for now... One day, it will be possible to find any wish.',
-                    style: kSmallTitleTextStyle),
+                    'There is no user with this wish... One day, it will be possible to find any wish.',
+                    style: kAddSkillsTextStyle),
             SizedBox(height: 5.0),
             RoundedButton(
               text: ' Help us spread the word',
               textColor: Colors.white,
               color: ffDarkBlue,
               onPressed: () => Share.share(
-                  'Flowby is the largest skill-sharing community. The more the merrier. Join the adventure: https://flowby.apps'),
+                  'Flowby is a skill-sharing community where you meet people nearby you to learn new skills. The more, the merrier and the more skills. Join the adventure: https://flowby.app/'),
             ),
           ],
         ),
