@@ -89,25 +89,16 @@ class _HomeTabState extends State<HomeTab> {
               .toList();
         }
 
-        return CustomScrollView(
-          slivers: <Widget>[
-            CupertinoSliverNavigationBar(
-              backgroundColor: CupertinoColors.white,
-              border: null,
-              middle: Image(
+        return SafeArea(
+          child: Column(
+            children: <Widget>[
+              Image(
                 image: AssetImage("assets/images/logo_flowby.png"),
                 height: 40.0,
               ),
-              largeTitle: Text(
-                'Search',
-                style: kTabsLargeTitleTextStyle,
-              ),
-            ),
-            SliverSafeArea(
-              top: false,
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
                     if (index == 0) {
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -145,11 +136,11 @@ class _HomeTabState extends State<HomeTab> {
                     }
                     return null;
                   },
-                  childCount: searchResultUsers.length + 2,
+                  itemCount: searchResultUsers.length + 2,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
