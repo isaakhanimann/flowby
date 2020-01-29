@@ -74,7 +74,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         child: FlareActor(
           'assets/animations/liquid_loader.flr',
           alignment: Alignment.center,
-          color: Colors.white,
+          color: kDefaultProfilePicColor,
           fit: BoxFit.contain,
           animation: "Untitled",
         ),
@@ -283,6 +283,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   textColor: Colors.white,
                   onPressed: () async {
                     try {
+                      setState(() {
+                        showSpinner = true;
+                      });
                       signInWithGoogle().then((authResult) {
                         //print('logged in');
                         //print(authResult);
@@ -301,6 +304,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                             ),
                           );
                         }
+                        setState(() {
+                          showSpinner = false;
+                        });
                       });
                     } catch (e) {
                       print('ERROR: Google Sign In');

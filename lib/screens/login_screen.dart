@@ -1,15 +1,20 @@
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
+import 'package:Flowby/screens/registration/upload_picture_registration_screen.dart';
 import 'package:Flowby/screens/reset_password_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 //TODO: change box border when the user doesn't enter an input
 
@@ -29,6 +34,31 @@ class _LoginScreenState extends State<LoginScreen> {
   var _passwordController = TextEditingController();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Future<FirebaseUser> signInWithGoogle() async {
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    final AuthResult authResult = await _auth.signInWithCredential(credential);
+    final FirebaseUser user = authResult.user;
+
+    assert(!user.isAnonymous);
+    assert(await user.getIdToken() != null);
+
+    final FirebaseUser currentUser = await _auth.currentUser();
+    assert(user.uid == currentUser.uid);
+
+    return user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -232,21 +262,50 @@ class _LoginScreenState extends State<LoginScreen> {
                   text: 'Log In with Google',
                   color: Color(0xFFDD4B39),
                   textColor: Colors.white,
-                  onPressed: null,
+                  onPressed: () async {
+                    try {
+                      signInWithGoogle().then((authResult) {
+                        //print('logged in');
+                        //print(authResult);
+                        final cloudFirestoreService =
+                            Provider.of<FirebaseCloudFirestoreService>(context,
+                                listen: false);
+
+                        cloudFirestoreService
+                            .getUser(uid: authResult.uid)
+                            .then((_currentUser) {
+                          print(_currentUser);
+                          if (_currentUser == null) {
+                            User user = User(
+                                username: authResult.displayName,
+                                uid: authResult.uid);
+
+                            Navigator.of(context, rootNavigator: true).push(
+                              CupertinoPageRoute<void>(
+                                builder: (context) {
+                                  return UploadPictureRegistrationScreen(
+                                    user: user,
+                                  );
+                                },
+                              ),
+                            );
+                          } else {
+                            final user = authResult;
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              NavigationScreen.id,
+                              (Route<dynamic> route) => false,
+                              arguments: user,
+                            );
+                          }
+                        });
+
+
+                      });
+                    } catch (e) {
+                      print('ERROR: Google Sign In');
+                    }
+                  },
                 ),
-                /*GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, RegistrationScreen.id);
-                },
-                child: Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontSize: 25,
-                    color: kDarkGreenColor,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),*/
               ],
             ),
           ),

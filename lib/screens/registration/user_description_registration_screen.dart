@@ -56,7 +56,11 @@ class _UserDescriptionRegistrationScreenState
             backgroundColor: Colors.white,
             body: SingleChildScrollView(
               child: Stack(children: [
-                ProgressBar(progress: 0.5),
+                Hero(
+                  child: ProgressBar(progress: 0.5),
+                  transitionOnUserGestures: true,
+                  tag: 'progress_bar',
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.0),
                   child: Column(
@@ -133,7 +137,7 @@ class _UserDescriptionRegistrationScreenState
                             fontSize: 22.0,
                           ),
                         ),
-                        Container(
+                        /*Container(
                           height: 350.0,
                           width: 350.0,
                           decoration: BoxDecoration(
@@ -146,7 +150,7 @@ class _UserDescriptionRegistrationScreenState
                               fit: BoxFit.cover,
                             ),
                           ),
-                        ),
+                        ),*/
                       ]),
                 ),
               ]),

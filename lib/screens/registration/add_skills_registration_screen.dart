@@ -7,6 +7,7 @@ import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class AddSkillsRegistrationScreen extends StatefulWidget {
   static const String id = 'add_skills_registration_screen';
@@ -62,16 +63,19 @@ class _AddSkillsRegistrationScreenState
         rowNumber++) {
       rows.add(
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
               flex: 1,
               child: CupertinoTextField(
-                style: TextStyle(color: kGrey3, fontSize: 22),
+                expands: true,
+                minLines: null,
+                maxLines: null,
+                style: kAddSkillsTextStyle,
                 maxLength: 20,
-                maxLines: 1,
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(width: 1, color: Colors.black),
+                    bottom: BorderSide(width: 1, color: kGrey4),
                   ),
                 ),
                 textAlign: TextAlign.start,
@@ -85,11 +89,14 @@ class _AddSkillsRegistrationScreenState
             Expanded(
               flex: 2,
               child: CupertinoTextField(
-                style: TextStyle(color: kGrey3, fontSize: 22),
+                expands: true,
+                maxLines: null,
+                minLines: null,
+                style: kAddSkillsTextStyle,
                 maxLength: 100,
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(width: 1, color: Colors.black),
+                    bottom: BorderSide(width: 1, color: kGrey4),
                   ),
                 ),
                 textAlign: TextAlign.start,
@@ -97,6 +104,19 @@ class _AddSkillsRegistrationScreenState
                 controller: isSkillBuild
                     ? skillDescriptionControllers[rowNumber]
                     : wishDescriptionControllers[rowNumber],
+              ),
+            ),
+            Expanded(
+              flex: 0,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: GestureDetector(
+                  onTap: () => setState(() {
+                    skillKeywordControllers.removeAt(rowNumber);
+                    skillDescriptionControllers.removeAt(rowNumber);
+                  }),
+                  child: Icon(Feather.x),
+                ),
               ),
             ),
           ],
@@ -153,7 +173,7 @@ class _AddSkillsRegistrationScreenState
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
 
-    print(_user);
+    //print(_user);
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -179,7 +199,11 @@ class _AddSkillsRegistrationScreenState
             backgroundColor: Colors.white,
             body: SingleChildScrollView(
               child: Stack(children: [
-                ProgressBar(progress: 0.75),
+                Hero(
+                  child: ProgressBar(progress: 0.75),
+                  transitionOnUserGestures: true,
+                  tag: 'progress_bar',
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.0),
                   child: Column(
