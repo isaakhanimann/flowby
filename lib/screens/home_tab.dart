@@ -222,7 +222,6 @@ class ProfileItem extends StatelessWidget {
 
                   int distanceInKm = snapshot.data;
                   user.distanceInKm = distanceInKm;
-                  print('distance is = $distanceInKm');
                   if (distanceInKm == null) {
                     return Text('');
                   }

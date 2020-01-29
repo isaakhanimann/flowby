@@ -136,6 +136,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         rowNumber++) {
       rows.add(
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
               flex: 1,
@@ -145,7 +146,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 maxLines: null,
                 style: kAddSkillsTextStyle,
                 maxLength: 20,
-
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(width: 1, color: kGrey4),
