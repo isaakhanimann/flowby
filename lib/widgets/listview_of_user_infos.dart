@@ -4,6 +4,7 @@ import 'package:Flowby/screens/show_profile_picture_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class ListViewOfUserInfos extends StatelessWidget {
   ListViewOfUserInfos({@required this.user, this.heroTag});
@@ -58,6 +59,24 @@ class ListViewOfUserInfos extends StatelessWidget {
               ),
             ),
           ),
+          if (user.distanceInKm != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: <Widget>[
+                  Text(
+                    user.distanceInKm.toString() + ' km ',
+                  ),
+                  Icon(
+                    Feather.map_pin,
+                    size: 14,
+                  )
+                ],
+              ),
+            ),
           SizedBox(
             height: 15.0,
           ),

@@ -1,7 +1,4 @@
-import 'package:Flowby/services/location_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:geolocator/geolocator.dart';
 
 class User {
   String username;
@@ -72,18 +69,6 @@ class User {
       result += key + ' ';
     }
     return result;
-  }
-
-  void updateDistanceToPositionIfPossible({@required Position position}) async {
-    if (position == null || this.location == null) {
-      return;
-    }
-    double distanceInMeters = await LocationService.distanceBetween(
-        startLatitude: this.location.latitude,
-        startLongitude: this.location.longitude,
-        endLatitude: position.latitude,
-        endLongitude: position.longitude);
-    this.distanceInKm = (distanceInMeters / 1000).round();
   }
 
   @override

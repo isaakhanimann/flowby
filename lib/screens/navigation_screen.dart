@@ -27,37 +27,24 @@ class _NavigationScreenState extends State<NavigationScreen> {
   StreamSubscription<Position> positionStreamSubscription;
   FirebaseUser loggedInUser;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    //upload the users location whenever it changes
-    if (loggedInUser != null) {
-      final cloudFirestoreService =
-          Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-      final locationService =
-          Provider.of<LocationService>(context, listen: false);
-      //asBroadcast because the streamprovider for the homescreen also listens to it
-      positionStream = locationService.getPositionStream().asBroadcastStream();
-      positionStreamSubscription = positionStream.listen((Position position) {
-        cloudFirestoreService.uploadUsersLocation(
-            uid: loggedInUser.uid, position: position);
-      });
-    }
-  }
-
-  Future<void> getLoggedInUserAndInitializeLocationService() async {
+  Future<void> getLoggedInUserUploadLocationAndToken() async {
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
     FirebaseUser user = await authService.getCurrentUser();
     setState(() {
       loggedInUser = user;
     });
-    if (loggedInUser != null) {
-      final cloudFirestoreService =
-          Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-      final firebaseMessaging =
-          Provider.of<FirebaseCloudMessaging>(context, listen: false);
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
+    final firebaseMessaging =
+        Provider.of<FirebaseCloudMessaging>(context, listen: false);
+
+    if (loggedInUser != null) {
+      positionStreamSubscription = positionStream.listen((Position position) {
+        cloudFirestoreService.uploadUsersLocation(
+            uid: loggedInUser.uid, position: position);
+      });
       firebaseMessaging.firebaseCloudMessagingListeners();
       firebaseMessaging.getToken().then((token) {
         cloudFirestoreService.uploadPushToken(
@@ -69,7 +56,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   void initState() {
     super.initState();
-    getLoggedInUserAndInitializeLocationService();
+    final locationService =
+        Provider.of<LocationService>(context, listen: false);
+    //asBroadcast because the streamprovider for the homescreen also listens to it
+    positionStream = locationService.getPositionStream().asBroadcastStream();
+    getLoggedInUserUploadLocationAndToken();
   }
 
   @override
