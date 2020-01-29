@@ -21,9 +21,14 @@ class ShowProfilePictureScreen extends StatelessWidget {
         Hero(
           transitionOnUserGestures: true,
           tag: heroTag,
-          child: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(image: NetworkImage(profilePictureUrl))),
+          child: GestureDetector(
+            onPanUpdate: (param) {
+              Navigator.of(context).pop();
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(image: NetworkImage(profilePictureUrl))),
+            ),
           ),
         ),
         Padding(

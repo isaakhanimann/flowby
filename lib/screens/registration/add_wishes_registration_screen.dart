@@ -8,6 +8,7 @@ import 'package:Flowby/widgets/rate_picker.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
@@ -70,12 +71,14 @@ class _AddWishesRegistrationScreenState
             Expanded(
               flex: 1,
               child: CupertinoTextField(
-                style: TextStyle(color: kGrey3, fontSize: 22),
+                expands: true,
+                minLines: null,
+                maxLines: null,
+                style: kAddSkillsTextStyle,
                 maxLength: 20,
-                maxLines: 1,
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(width: 1, color: Colors.black),
+                    bottom: BorderSide(width: 1, color: kGrey4),
                   ),
                 ),
                 textAlign: TextAlign.start,
@@ -89,11 +92,14 @@ class _AddWishesRegistrationScreenState
             Expanded(
               flex: 2,
               child: CupertinoTextField(
-                style: TextStyle(color: kGrey3, fontSize: 22),
+                expands: true,
+                maxLines: null,
+                minLines: null,
+                style: kAddSkillsTextStyle,
                 maxLength: 100,
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(width: 1, color: Colors.black),
+                    bottom: BorderSide(width: 1, color: kGrey4),
                   ),
                 ),
                 textAlign: TextAlign.start,
@@ -101,6 +107,19 @@ class _AddWishesRegistrationScreenState
                 controller: isSkillBuild
                     ? skillDescriptionControllers[rowNumber]
                     : wishDescriptionControllers[rowNumber],
+              ),
+            ),
+            Expanded(
+              flex: 0,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: GestureDetector(
+                  onTap: () => setState(() {
+                    wishKeywordControllers.removeAt(rowNumber);
+                    wishDescriptionControllers.removeAt(rowNumber);
+                  }),
+                  child: Icon(Feather.x),
+                ),
               ),
             ),
           ],
@@ -184,7 +203,11 @@ class _AddWishesRegistrationScreenState
             backgroundColor: Colors.white,
             body: SingleChildScrollView(
               child: Stack(children: [
-                ProgressBar(progress: 1),
+                Hero(
+                  child: ProgressBar(progress: 1),
+                  transitionOnUserGestures: true,
+                  tag: 'progress_bar',
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.0),
                   child: Column(

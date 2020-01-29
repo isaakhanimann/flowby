@@ -10,6 +10,7 @@ import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -139,12 +140,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Expanded(
               flex: 1,
               child: CupertinoTextField(
-                style: TextStyle(color: kGrey3, fontSize: 22),
+                expands: true,
+                minLines: null,
+                maxLines: null,
+                style: kAddSkillsTextStyle,
                 maxLength: 20,
-                maxLines: 1,
+
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(width: 1, color: Colors.black),
+                    bottom: BorderSide(width: 1, color: kGrey4),
                   ),
                 ),
                 textAlign: TextAlign.start,
@@ -158,11 +162,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Expanded(
               flex: 2,
               child: CupertinoTextField(
-                style: TextStyle(color: kGrey3, fontSize: 22),
+                expands: true,
+                maxLines: null,
+                minLines: null,
+                style: kAddSkillsTextStyle,
                 maxLength: 100,
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(width: 1, color: Colors.black),
+                    bottom: BorderSide(width: 1, color: kGrey4),
                   ),
                 ),
                 textAlign: TextAlign.start,
@@ -170,6 +177,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 controller: isSkillBuild
                     ? skillDescriptionControllers[rowNumber]
                     : wishDescriptionControllers[rowNumber],
+              ),
+            ),
+            Expanded(
+              flex: 0,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: GestureDetector(
+                  onTap: () => setState(() {
+                    if (isSkillBuild) {
+                      skillKeywordControllers.removeAt(rowNumber);
+                      skillDescriptionControllers.removeAt(rowNumber);
+                    } else {
+                      wishKeywordControllers.removeAt(rowNumber);
+                      wishDescriptionControllers.removeAt(rowNumber);
+                    }
+                  }),
+                  child: Icon(Feather.x),
+                ),
               ),
             ),
           ],
@@ -424,10 +449,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   Expanded(
                     child: CupertinoTextField(
+                      expands: true,
                       style: TextStyle(color: kGrey3, fontSize: 20),
                       placeholder: 'Enter your description',
                       maxLength: 200,
-                      maxLines: 5,
+                      minLines: null,
+                      maxLines: null,
                       padding: EdgeInsets.only(bottom: 0),
                       decoration: BoxDecoration(border: null),
                       controller: _bioController,

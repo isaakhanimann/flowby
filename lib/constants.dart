@@ -35,6 +35,13 @@ const kSmallTitleTextStyle = TextStyle(
   color: kGrey1,
 );
 
+const kAddSkillsTextStyle = TextStyle(
+  fontFamily: 'NotoRegular',
+  fontSize: 18.0,
+  fontWeight: FontWeight.w400,
+  color: kGrey1,
+);
+
 const kLocationTextStyle = TextStyle(color: Colors.grey, fontSize: 14);
 const kUsernameTextStyle = TextStyle(fontWeight: FontWeight.bold);
 const kSkillTextStyle = TextStyle(color: Colors.grey, fontSize: 16);

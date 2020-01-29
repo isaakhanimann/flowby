@@ -1,6 +1,7 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/show_profile_picture_screen.dart';
+import 'package:Flowby/widgets/route_transitions/scale_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,7 @@ class ListViewOfUserInfos extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context, rootNavigator: true)
-                      .push(CupertinoPageRoute(
-                          builder: (context) => ShowProfilePictureScreen(
+                      .push(ScaleRoute(page: ShowProfilePictureScreen(
                                 profilePictureUrl:
                                     'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
                                 otherUsername: user.username,
