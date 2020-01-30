@@ -15,6 +15,7 @@ import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:Flowby/services/apple_sign_in_available.dart';
 import 'package:Flowby/widgets/google_login_button.dart';
+import 'add_username_registration_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -45,20 +46,31 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-
     await cloudFirestoreService.uploadUser(user: user);
     setState(() {
       showSpinner = false;
     });
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return UploadPictureRegistrationScreen(
-            user: user,
-          );
-        },
-      ),
-    );
+    if (user.username == null) {
+      Navigator.of(context, rootNavigator: true).push(
+        CupertinoPageRoute<void>(
+          builder: (context) {
+            return AddUsernameRegistrationScreen(
+              user: user,
+            );
+          },
+        ),
+      );
+    } else {
+      Navigator.of(context, rootNavigator: true).push(
+        CupertinoPageRoute<void>(
+          builder: (context) {
+            return UploadPictureRegistrationScreen(
+              user: user,
+            );
+          },
+        ),
+      );
+    }
   }
 
   Future<void> _signInWithEmail(BuildContext context) async {
