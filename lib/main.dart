@@ -1,4 +1,5 @@
 import 'package:Flowby/screens/navigation_screen.dart';
+import 'package:Flowby/services/apple_sign_in_available.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_cloud_messaging.dart';
@@ -9,17 +10,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
+import 'services/apple_sign_in_available.dart';
 import 'constants.dart';
 import 'route_generator.dart';
 
-void main() {
+void main() async {
   // This app is designed only to work vertically, so we limit
   // orientations to portrait up and down.
   WidgetsFlutterBinding.ensureInitialized();
+  final isAppleSignInAvailable = await AppleSignInAvailable.check();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  return runApp(Float());
+  return runApp(Provider<AppleSignInAvailable>.value(
+    value: isAppleSignInAvailable,
+    child: Float(),
+  ));
 }
 
 class Float extends StatelessWidget {

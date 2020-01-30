@@ -13,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:Flowby/services/apple_sign_in_available.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -65,8 +67,23 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     return user;
   }
 
+  Future<void> _signInWithApple(BuildContext context) async {
+    try {
+      final authService =
+          Provider.of<FirebaseAuthService>(context, listen: false);
+      final user = await authService.signInWithApple();
+      print(user.uid);
+    } catch (e) {
+      // TODO: Show alert here
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final appleSignInAvailable =
+        Provider.of<AppleSignInAvailable>(context, listen: false);
+
     return ModalProgressHUD(
       inAsyncCall: showSpinner,
       progressIndicator: SizedBox(
@@ -271,6 +288,14 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     fontSize: 18.0,
                   ),
                 ),
+                if (appleSignInAvailable.isAvailable)
+                  AppleSignInButton(
+                    style: ButtonStyle.black,
+                    type: ButtonType.continueButton,
+                    onPressed: () {
+                      _signInWithApple(context);
+                    },
+                  ),
                 RoundedButton(
                   text: 'Sign Up with Facebook',
                   color: Color(0xFF4864B3),
