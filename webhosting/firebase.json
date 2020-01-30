@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "public/site",
+    "public": "public/appy/",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -11,6 +11,10 @@
       {
         "source": "/dl/**",
         "dynamicLinks": true
+      },
+      {
+        "source": "/.well-known/apple-developer-domain-association.txt",
+        "destination": "/well-known/apple-developer-domain-association.txt"
       }
     ]
   }
