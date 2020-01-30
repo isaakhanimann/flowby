@@ -236,12 +236,12 @@ input:-webkit-autofill:focus {
 }
 
 .section-padding {
-    padding-top: 120px;
-    padding-bottom: 120px;
+    padding-top: 160px;
+    padding-bottom: 160px;
 }
 .section-padding-middle {
     padding-top: 40px;
-    padding-bottom: 160px;
+    padding-bottom: 220px;
 }
 
 .upper {
@@ -331,7 +331,7 @@ input:-webkit-autofill:focus {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgb(255, 255, 255);
+    background: rgba(255, 255, 255, 0);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#482cbf', endColorstr='#6ac6f0', GradientType=1);
     z-index: -1;
     opacity: 1;
@@ -347,6 +347,7 @@ input:-webkit-autofill:focus {
 }
 
 .mainmenu-area.affix:before {
+    background: rgba(255, 255, 255, 1);
     opacity: 1;
 }
 
@@ -399,7 +400,7 @@ input:-webkit-autofill:focus {
 
 .mainmenu-area ul.nav.navbar-nav li a:hover,
 .mainmenu-area ul.nav.navbar-nav li.active a {
-    border-bottom-color: #ffffff;
+    /* border-bottom-color: #ffffff; */
     color: #00FFAB;
 }
 
@@ -1051,6 +1052,7 @@ input:-webkit-autofill:focus {
 }
 
 .preloader {
+  display: none;
     background-color: #ffffff;
     bottom: 0;
     height: 100%;
@@ -1367,14 +1369,12 @@ input:-webkit-autofill:focus {
 /*-- Infomaniak Newsletter Form --*/
 .inf-main{
   color: #17ffb1;
-  position: absolute;
-  top: 50vh;
-  right: 20px;
   z-index: 1;
 }
 .inf-main h4{
   margin-bottom: 0px;
   font-size: 14pt;
+  display: none;
 }
 .inf-main .inf-content{
   display: flex;
