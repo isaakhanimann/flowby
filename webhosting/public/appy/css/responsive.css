@@ -157,13 +157,19 @@
         opacity: 0.9;
     }
     .mainmenu-area .navbar-toggle {
-        border: 1px solid #ffffff;
+        border: 1px solid #fff;
         border-radius: 1px;
     }
+    .mainmenu-area.affix .navbar-toggle {
+        border: 1px solid #000;
+    }
     .mainmenu-area .navbar-toggle .icon-bar {
-        background-color: #ffffff;
+        background-color: #fff;
         height: 2px;
         border-radius: 0;
+    }
+    .mainmenu-area.affix .navbar-toggle .icon-bar {
+        background-color: #000;
     }
     .mainmenu-area #primary_menu {
         overflow-y: auto;
@@ -175,6 +181,7 @@
     .mainmenu-area #primary_menu ul.nav.navbar-nav li a {
         padding: 15px;
         border: none;
+        background-color: #ffffff;
     }
     .mainmenu-area #primary_menu ul.nav.navbar-nav li.active a,
     .mainmenu-area #primary_menu ul.nav.navbar-nav li a:hover {

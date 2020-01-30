@@ -237,7 +237,7 @@ input:-webkit-autofill:focus {
 
 .section-padding {
     padding-top: 160px;
-    padding-bottom: 160px;
+    padding-bottom: 60px;
 }
 .section-padding-middle {
     padding-top: 40px;
@@ -1382,10 +1382,24 @@ input:-webkit-autofill:focus {
 .inf-main .inf-input.inf-input-text input[type=text]{
   border: none;
   padding: 5px;
+  width: 200px;
 }
 .inf-main .inf-submit input[type=submit]{
   border: none;
   background-color: #17ffb1;
   color: white;
   padding: 5px;
+}
+
+/*-- Small Hacks --*/
+
+.mainmenu-area .logo-black{
+  display:none;
+}
+.mainmenu-area.affix .logo-black{
+  display: block;
+}
+
+.mainmenu-area.affix .logo-white{
+  display: none;
 }
