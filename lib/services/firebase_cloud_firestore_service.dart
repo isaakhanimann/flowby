@@ -35,18 +35,14 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  Stream<List<User>> getUsersStreamWithDistance(
-      {@required Position position, @required String uidToExclude}) {
+  Stream<List<User>> getUsersStream({@required String uidToExclude}) {
     try {
       var userSnapshots = _fireStore.collection('users').snapshots().map(
           (snap) => snap.documents
-                  .map((doc) => User.fromMap(map: doc.data))
-                  .where((user) =>
-                      (uidToExclude != null) ? user.uid != uidToExclude : true)
-                  .map((user) {
-                user.updateDistanceToPositionIfPossible(position: position);
-                return user;
-              }).toList());
+              .map((doc) => User.fromMap(map: doc.data))
+              .where((user) =>
+                  (uidToExclude != null) ? user.uid != uidToExclude : true)
+              .toList());
       return userSnapshots;
     } catch (e) {
       print(e);
@@ -136,7 +132,8 @@ class FirebaseCloudFirestoreService {
         'username2': otherUsername,
         'user2ImageFileName': otherUserImageFileName,
         'lastMessageTimestamp': FieldValue.serverTimestamp(),
-        'lastMessageText': '', //should we put a default message like 'there are no message'?
+        'lastMessageText':
+            '', //should we put a default message like 'there are no message'?
       });
       return docReference.path;
     } catch (e) {

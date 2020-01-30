@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:Flowby/services/location_service.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -50,14 +51,13 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
-    var currentPosition = Provider.of<Position>(context);
 
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return StreamBuilder<List<User>>(
-      stream: cloudFirestoreService.getUsersStreamWithDistance(
-          position: currentPosition, uidToExclude: loggedInUser?.uid),
+      stream:
+          cloudFirestoreService.getUsersStream(uidToExclude: loggedInUser?.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
@@ -88,28 +88,17 @@ class _HomeTabState extends State<HomeTab> {
                   .contains(_searchTerm.toLowerCase()))
               .toList();
         }
-        searchResultUsers.sort((user1, user2) =>
-            (user1.distanceInKm ?? 1000).compareTo(user2.distanceInKm ?? 1000));
 
-        return CustomScrollView(
-          slivers: <Widget>[
-            CupertinoSliverNavigationBar(
-              backgroundColor: CupertinoColors.white,
-              border: null,
-              middle: Image(
+        return SafeArea(
+          child: Column(
+            children: <Widget>[
+              Image(
                 image: AssetImage("assets/images/logo_flowby.png"),
                 height: 40.0,
               ),
-              largeTitle: Text(
-                'Search',
-                style: kTabsLargeTitleTextStyle,
-              ),
-            ),
-            SliverSafeArea(
-              top: false,
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
                     if (index == 0) {
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -147,11 +136,11 @@ class _HomeTabState extends State<HomeTab> {
                     }
                     return null;
                   },
-                  childCount: searchResultUsers.length + 2,
+                  itemCount: searchResultUsers.length + 2,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -168,6 +157,9 @@ class ProfileItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
     final String heroTag = user.uid + 'home';
+    var currentPosition = Provider.of<Position>(context);
+    final locationService =
+        Provider.of<LocationService>(context, listen: false);
 
     return Card(
       elevation: 0,
@@ -216,11 +208,40 @@ class ProfileItem extends StatelessWidget {
                 user.username ?? 'Default',
                 style: kUsernameTextStyle,
               ),
-              if (user.distanceInKm != null)
-                Text(
-                  user.distanceInKm.toString() + ' km',
-                  style: kLocationTextStyle,
-                )
+              FutureBuilder(
+                future: locationService.distanceBetween(
+                    startLatitude: currentPosition?.latitude,
+                    startLongitude: currentPosition?.longitude,
+                    endLatitude: user.location?.latitude,
+                    endLongitude: user.location?.longitude),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done ||
+                      snapshot.hasError) {
+                    return Text('');
+                  }
+
+                  int distanceInKm = snapshot.data;
+                  user.distanceInKm = distanceInKm;
+                  print('distance is = $distanceInKm');
+                  if (distanceInKm == null) {
+                    return Text('');
+                  }
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: <Widget>[
+                      Text(
+                        distanceInKm.toString() + ' km ',
+                        style: kLocationTextStyle,
+                      ),
+                      Icon(
+                        Feather.map_pin,
+                        size: 12,
+                      )
+                    ],
+                  );
+                },
+              ),
             ],
           ),
           subtitle: Row(

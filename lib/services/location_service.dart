@@ -43,13 +43,20 @@ class LocationService {
     return positionStream;
   }
 
-  static Future<double> distanceBetween(
+  Future<int> distanceBetween(
       {@required double startLatitude,
       @required double startLongitude,
       @required double endLatitude,
       @required double endLongitude}) async {
+    if (startLatitude == null ||
+        startLongitude == null ||
+        endLatitude == null ||
+        endLongitude == null) {
+      return null;
+    }
     double distanceInMeters = await Geolocator().distanceBetween(
         startLatitude, startLongitude, endLatitude, endLongitude);
-    return distanceInMeters;
+    int distanceInKm = (distanceInMeters / 1000).round();
+    return distanceInKm;
   }
 }
