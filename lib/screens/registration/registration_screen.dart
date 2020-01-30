@@ -46,11 +46,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     await cloudFirestoreService.uploadUser(user: user);
-
     setState(() {
       showSpinner = false;
     });
-
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
@@ -160,10 +158,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         showSpinner = false;
       });
     } catch (e) {
-      showAlert(
-          context: context,
-          title: "Google Sign In didn't work",
-          description: "Please sign up with email");
       print(e);
       setState(() {
         showSpinner = false;
@@ -194,14 +188,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
             showAlert(
                 context: context,
                 title: "Authorization Denied",
-                description: "Please sign up with email");
-            break;
-          }
-        case 'ERROR_ABORTED_BY_USER':
-          {
-            showAlert(
-                context: context,
-                title: "Aborted Sign In",
                 description: "Please sign up with email");
             break;
           }
