@@ -165,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         final authService = Provider.of<FirebaseAuthService>(
                             context,
                             listen: false);
-                        final authResult = await authService.signIn(
+                        final authResult = await authService.signInWithEmail(
                             email: email, password: password);
                         final user = authResult?.user;
                         if (user != null) {
@@ -298,8 +298,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           }
                         });
-
-
                       });
                     } catch (e) {
                       print('ERROR: Google Sign In');

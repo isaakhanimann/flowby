@@ -68,14 +68,69 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   }
 
   Future<void> _signInWithApple(BuildContext context) async {
+    setState(() {
+      showSpinner = true;
+    });
     try {
       final authService =
           Provider.of<FirebaseAuthService>(context, listen: false);
-      final user = await authService.signInWithApple();
+      final FirebaseUser firebaseUser = await authService.signInWithApple();
+
+      User user = User(
+          username: firebaseUser.displayName,
+          uid: firebaseUser.uid,
+          imageFileName: 'default-profile-pic.jpg');
+
+      final cloudFirestoreService =
+          Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+      await cloudFirestoreService.uploadUser(user: user);
+
+      setState(() {
+        showSpinner = false;
+      });
+
+      Navigator.of(context, rootNavigator: true).push(
+        CupertinoPageRoute<void>(
+          builder: (context) {
+            return UploadPictureRegistrationScreen(
+              user: user,
+            );
+          },
+        ),
+      );
+
       print(user.uid);
     } catch (e) {
-      // TODO: Show alert here
-      print(e);
+      switch (e.code) {
+        case 'ERROR_AUTHORIZATION_DENIED':
+          {
+            showAlert(
+                context: context,
+                title: "Authorization Denied",
+                description: "Please sign up with email");
+            break;
+          }
+        case 'ERROR_ABORTED_BY_USER':
+          {
+            showAlert(
+                context: context,
+                title: "Aborted Sign In",
+                description: "Please sign up with email");
+            break;
+          }
+        default:
+          {
+            showAlert(
+                context: context,
+                title: "Apple Sign In didn't work",
+                description: "Please sign up with email");
+            print(e);
+          }
+          setState(() {
+            showSpinner = false;
+          });
+      }
     }
   }
 
@@ -144,22 +199,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 SizedBox(
                   height: 8.0,
                 ),
-                /* LoginInputField(
-                  placeholder: 'Username',
-                  controller: _userNameController,
-                  focusNode: _userNameFocus,
-                  onFieldSubmitted: (term) {
-                    FocusScope.of(context).requestFocus(_emailFocus);
-                  },
-                  isLast: false,
-                  isEmail: true,
-                  setText: (value) {
-                    userName = value;
-                  },
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),*/
                 LoginInputField(
                   placeholder: 'Email address',
                   controller: _emailController,
@@ -216,14 +255,16 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                       final cloudFirestoreService =
                           Provider.of<FirebaseCloudFirestoreService>(context,
                               listen: false);
-                      final authResult = await authService.createUser(
+                      final authResult = await authService.registerWithEmail(
                           email: email, password: password);
 
                       //await authResult.user.sendEmailVerification();
 
                       if (authResult != null) {
-                        User user =
-                            User(username: name, uid: authResult.user.uid);
+                        User user = User(
+                            username: name,
+                            uid: authResult.user.uid,
+                            imageFileName: 'default-profile-pic.jpg');
 
                         await cloudFirestoreService.uploadUser(user: user);
 
@@ -288,20 +329,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     fontSize: 18.0,
                   ),
                 ),
-                if (appleSignInAvailable.isAvailable)
-                  AppleSignInButton(
-                    style: ButtonStyle.black,
-                    type: ButtonType.continueButton,
-                    onPressed: () {
-                      _signInWithApple(context);
-                    },
-                  ),
-                RoundedButton(
-                  text: 'Sign Up with Facebook',
-                  color: Color(0xFF4864B3),
-                  textColor: Colors.white,
-                  onPressed: null,
-                ),
                 RoundedButton(
                   text: 'Sign Up with Google',
                   color: Color(0xFFDD4B39),
@@ -338,6 +365,14 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     }
                   },
                 ),
+                if (appleSignInAvailable.isAvailable)
+                  AppleSignInButton(
+                    style: ButtonStyle.black,
+                    type: ButtonType.continueButton,
+                    onPressed: () {
+                      _signInWithApple(context);
+                    },
+                  ),
               ],
             ),
           ),

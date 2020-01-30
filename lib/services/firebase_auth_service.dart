@@ -22,10 +22,6 @@ class FirebaseAuthService {
     return _auth.signOut();
   }
 
-  Future<AuthResult> signIn(
-      {@required String email, @required String password}) async {
-    return _auth.signInWithEmailAndPassword(email: email, password: password);
-  }
 
   Future<FirebaseUser> signInWithApple({List<Scope> scopes = const []}) async {
     // 1. perform the sign-in request
@@ -70,7 +66,12 @@ class FirebaseAuthService {
     await _auth.sendPasswordResetEmail(email: email);
   }
 
-  Future<AuthResult> createUser(
+  Future<AuthResult> signInWithEmail(
+      {@required String email, @required String password}) async {
+    return _auth.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  Future<AuthResult> registerWithEmail(
       {@required String email, @required String password}) async {
     return _auth.createUserWithEmailAndPassword(
         email: email, password: password);
