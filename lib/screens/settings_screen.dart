@@ -57,7 +57,8 @@ class SettingsScreen extends StatelessWidget {
         leading: Icon(Feather.log_out, color: kLoginBackgroundColor),
         title: Text('Sign Out', style: kUsernameTextStyle),
         onTap: () {
-          final authService = Provider.of<FirebaseAuthService>(context);
+          final authService =
+              Provider.of<FirebaseAuthService>(context, listen: false);
           authService.signOut();
           Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
             CupertinoPageRoute(
@@ -104,7 +105,6 @@ class SettingsScreen extends StatelessWidget {
           );
         },
       ),
-
       SettingsItem(
           leading: Icon(Feather.bell, color: kLoginBackgroundColor),
           title: Text('Notifications'),

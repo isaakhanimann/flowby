@@ -165,6 +165,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
           title: "Google Sign In didn't work",
           description: "Please sign up with email");
       print(e);
+      setState(() {
+        showSpinner = false;
+      });
     }
   }
 
@@ -207,13 +210,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
             showAlert(
                 context: context,
                 title: "Apple Sign In didn't work",
-                description: "Please sign up with email");
+                description: "Apple Sign In didn't work");
             print(e);
           }
-          setState(() {
-            showSpinner = false;
-          });
       }
+      setState(() {
+        showSpinner = false;
+      });
     }
   }
 
