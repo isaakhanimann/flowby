@@ -15,7 +15,7 @@ import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:Flowby/services/apple_sign_in_available.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
-
+import 'package:Flowby/widgets/google_login_button.dart';
 //TODO: change box border when the user doesn't enter an input
 
 class LoginScreen extends StatefulWidget {
@@ -319,7 +319,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontSize: 18.0,
                   ),
                 ),
-                RoundedButton(
+                GoogleLoginButton(
                   text: 'Log In with Google',
                   color: Color(0xFFDD4B39),
                   textColor: Colors.white,

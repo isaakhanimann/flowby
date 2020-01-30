@@ -14,6 +14,7 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:Flowby/services/apple_sign_in_available.dart';
+import 'package:Flowby/widgets/google_login_button.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -320,7 +321,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     fontSize: 18.0,
                   ),
                 ),
-                RoundedButton(
+                GoogleLoginButton(
                   text: 'Sign Up with Google',
                   color: Color(0xFFDD4B39),
                   textColor: Colors.white,
