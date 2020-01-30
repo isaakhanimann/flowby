@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:flare_flutter/flare_actor.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:Flowby/services/apple_sign_in_available.dart';
@@ -42,29 +41,131 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-  Future<FirebaseUser> signInWithGoogle() async {
-    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+    await cloudFirestoreService.uploadUser(user: user);
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
+    setState(() {
+      showSpinner = false;
+    });
+
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return UploadPictureRegistrationScreen(
+            user: user,
+          );
+        },
+      ),
     );
+  }
 
-    final AuthResult authResult = await _auth.signInWithCredential(credential);
-    final FirebaseUser user = authResult.user;
+  Future<void> _signInWithEmail(BuildContext context) async {
+    if (email == null || password == null) {
+      showAlert(
+          context: context,
+          title: "Missing email or password",
+          description: 'Enter an email and an password. Thank you.');
+      return;
+    }
+    try {
+      setState(() {
+        showSpinner = true;
+      });
+      final authService =
+          Provider.of<FirebaseAuthService>(context, listen: false);
 
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
+      final cloudFirestoreService =
+          Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+      final authResult =
+          await authService.registerWithEmail(email: email, password: password);
 
-    final FirebaseUser currentUser = await _auth.currentUser();
-    assert(user.uid == currentUser.uid);
+      //await authResult.user.sendEmailVerification();
 
-    return user;
+      if (authResult != null) {
+        User user = User(
+            username: name,
+            uid: authResult.user.uid,
+            imageFileName: 'default-profile-pic.jpg');
+
+        await cloudFirestoreService.uploadUser(user: user);
+
+        setState(() {
+          showSpinner = false;
+        });
+
+        Navigator.of(context, rootNavigator: true).push(
+          CupertinoPageRoute<void>(
+            builder: (context) {
+              return UploadPictureRegistrationScreen(
+                user: user,
+              );
+            },
+          ),
+        );
+      }
+    } catch (e) {
+      switch (e.code) {
+        case 'ERROR_WEAK_PASSWORD':
+          {
+            showAlert(
+                context: context,
+                title: "Weak Password",
+                description: e.message);
+            break;
+          }
+        case 'ERROR_INVALID_EMAIL':
+          {
+            showAlert(
+                context: context,
+                title: "Invalid Email",
+                description: "Please enter a valid email address");
+            break;
+          }
+        case 'ERROR_EMAIL_ALREADY_IN_USE':
+          {
+            showAlert(
+                context: context,
+                title: "Email Already in Use",
+                description: e.message);
+            break;
+          }
+        default:
+          {
+            print(e);
+          }
+      }
+      setState(() {
+        showSpinner = false;
+      });
+    }
+  }
+
+  Future<void> _signInWithGoogle(BuildContext context) async {
+    try {
+      setState(() {
+        showSpinner = true;
+      });
+      final authService =
+          Provider.of<FirebaseAuthService>(context, listen: false);
+      final FirebaseUser firebaseUser = await authService.signInWithGoogle();
+      User user = User(
+          username: firebaseUser.displayName,
+          uid: firebaseUser.uid,
+          imageFileName: 'default-profile_pic.jpg');
+      _uploadUserAndNavigate(context: context, user: user);
+      setState(() {
+        showSpinner = false;
+      });
+    } catch (e) {
+      showAlert(
+          context: context,
+          title: "Google Sign In didn't work",
+          description: "Please sign up with email");
+      print(e);
+    }
   }
 
   Future<void> _signInWithApple(BuildContext context) async {
@@ -75,32 +176,14 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       final authService =
           Provider.of<FirebaseAuthService>(context, listen: false);
       final FirebaseUser firebaseUser = await authService.signInWithApple();
-
       User user = User(
           username: firebaseUser.displayName,
           uid: firebaseUser.uid,
           imageFileName: 'default-profile-pic.jpg');
-
-      final cloudFirestoreService =
-          Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-
-      await cloudFirestoreService.uploadUser(user: user);
-
+      _uploadUserAndNavigate(context: context, user: user);
       setState(() {
         showSpinner = false;
       });
-
-      Navigator.of(context, rootNavigator: true).push(
-        CupertinoPageRoute<void>(
-          builder: (context) {
-            return UploadPictureRegistrationScreen(
-              user: user,
-            );
-          },
-        ),
-      );
-
-      print(user.uid);
     } catch (e) {
       switch (e.code) {
         case 'ERROR_AUTHORIZATION_DENIED':
@@ -235,89 +318,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   textColor: Colors.white,
                   color: ffDarkBlue,
                   text: 'Sign Up with Email',
-                  onPressed: () async {
-                    if (email == null || password == null) {
-                      showAlert(
-                          context: context,
-                          title: "Missing email or password",
-                          description:
-                              'Enter an email and an password. Thank you.');
-                      return;
-                    }
-                    try {
-                      setState(() {
-                        showSpinner = true;
-                      });
-                      final authService = Provider.of<FirebaseAuthService>(
-                          context,
-                          listen: false);
-
-                      final cloudFirestoreService =
-                          Provider.of<FirebaseCloudFirestoreService>(context,
-                              listen: false);
-                      final authResult = await authService.registerWithEmail(
-                          email: email, password: password);
-
-                      //await authResult.user.sendEmailVerification();
-
-                      if (authResult != null) {
-                        User user = User(
-                            username: name,
-                            uid: authResult.user.uid,
-                            imageFileName: 'default-profile-pic.jpg');
-
-                        await cloudFirestoreService.uploadUser(user: user);
-
-                        setState(() {
-                          showSpinner = false;
-                        });
-
-                        Navigator.of(context, rootNavigator: true).push(
-                          CupertinoPageRoute<void>(
-                            builder: (context) {
-                              return UploadPictureRegistrationScreen(
-                                user: user,
-                              );
-                            },
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      switch (e.code) {
-                        case 'ERROR_WEAK_PASSWORD':
-                          {
-                            showAlert(
-                                context: context,
-                                title: "Weak Password",
-                                description: e.message);
-                            break;
-                          }
-                        case 'ERROR_INVALID_EMAIL':
-                          {
-                            showAlert(
-                                context: context,
-                                title: "Invalid Email",
-                                description:
-                                    "Please enter a valid email address");
-                            break;
-                          }
-                        case 'ERROR_EMAIL_ALREADY_IN_USE':
-                          {
-                            showAlert(
-                                context: context,
-                                title: "Email Already in Use",
-                                description: e.message);
-                            break;
-                          }
-                        default:
-                          {
-                            print(e);
-                          }
-                      }
-                      setState(() {
-                        showSpinner = false;
-                      });
-                    }
+                  onPressed: () {
+                    _signInWithEmail(context);
                   },
                 ),
                 Text(
@@ -333,36 +335,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   text: 'Sign Up with Google',
                   color: Color(0xFFDD4B39),
                   textColor: Colors.white,
-                  onPressed: () async {
-                    try {
-                      setState(() {
-                        showSpinner = true;
-                      });
-                      signInWithGoogle().then((authResult) {
-                        //print('logged in');
-                        //print(authResult);
-                        if (authResult != null) {
-                          User user = User(
-                              username: authResult.displayName,
-                              uid: authResult.uid);
-
-                          Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute<void>(
-                              builder: (context) {
-                                return UploadPictureRegistrationScreen(
-                                  user: user,
-                                );
-                              },
-                            ),
-                          );
-                        }
-                        setState(() {
-                          showSpinner = false;
-                        });
-                      });
-                    } catch (e) {
-                      print('ERROR: Google Sign In');
-                    }
+                  onPressed: () {
+                    _signInWithGoogle(context);
                   },
                 ),
                 if (appleSignInAvailable.isAvailable)

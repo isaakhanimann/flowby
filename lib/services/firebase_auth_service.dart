@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/services.dart';
 
 class FirebaseAuthService {
@@ -22,15 +23,30 @@ class FirebaseAuthService {
     return _auth.signOut();
   }
 
+  Future<FirebaseUser> signInWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+    final AuthResult authResult = await _auth.signInWithCredential(credential);
+    final FirebaseUser user = authResult.user;
+    return user;
+  }
 
   Future<FirebaseUser> signInWithApple({List<Scope> scopes = const []}) async {
     // 1. perform the sign-in request
-    final result = await AppleSignIn.performRequests(
-        [AppleIdRequest(requestedScopes: scopes)]);
+    final AuthorizationResult authorizationResult =
+        await AppleSignIn.performRequests(
+            [AppleIdRequest(requestedScopes: scopes)]);
     // 2. check the result
-    switch (result.status) {
+    switch (authorizationResult.status) {
       case AuthorizationStatus.authorized:
-        final appleIdCredential = result.credential;
+        final appleIdCredential = authorizationResult.credential;
         final oAuthProvider = OAuthProvider(providerId: 'apple.com');
         final credential = oAuthProvider.getCredential(
           idToken: String.fromCharCodes(appleIdCredential.identityToken),
@@ -47,10 +63,10 @@ class FirebaseAuthService {
         }
         return firebaseUser;
       case AuthorizationStatus.error:
-        print(result.error.toString());
+        print(authorizationResult.error.toString());
         throw PlatformException(
           code: 'ERROR_AUTHORIZATION_DENIED',
-          message: result.error.toString(),
+          message: authorizationResult.error.toString(),
         );
 
       case AuthorizationStatus.cancelled:
