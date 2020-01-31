@@ -118,62 +118,72 @@ class ChatScreenWithPath extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  SizedBox(
-                    width: 15,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 15,
+                      ),
+                      CupertinoButton(
+                        padding: EdgeInsets.all(0.0),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Icon(
+                          Feather.chevron_left,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) =>
+                                      ShowProfilePictureScreen(
+                                        profilePictureUrl:
+                                            'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media',
+                                        otherUsername: otherUsername,
+                                        heroTag: heroTag,
+                                      )));
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            CachedNetworkImage(
+                              imageUrl:
+                                  "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media",
+                              imageBuilder: (context, imageProvider) {
+                                return Hero(
+                                  transitionOnUserGestures: true,
+                                  tag: heroTag,
+                                  child: CircleAvatar(
+                                      radius: 30,
+                                      backgroundColor: Colors.grey,
+                                      backgroundImage: imageProvider),
+                                );
+                              },
+                              placeholder: (context, url) =>
+                                  CupertinoActivityIndicator(),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              otherUsername,
+                              style: TextStyle(
+                                  fontSize: 20, fontFamily: 'MuliRegular'),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                   CupertinoButton(
-                    padding: EdgeInsets.all(0.0),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Icon(
-                      Feather.chevron_left,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => ShowProfilePictureScreen(
-                                    profilePictureUrl:
-                                        'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media',
-                                    otherUsername: otherUsername,
-                                    heroTag: heroTag,
-                                  )));
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        CachedNetworkImage(
-                          imageUrl:
-                              "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media",
-                          imageBuilder: (context, imageProvider) {
-                            return Hero(
-                              transitionOnUserGestures: true,
-                              tag: heroTag,
-                              child: CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: Colors.grey,
-                                  backgroundImage: imageProvider),
-                            );
-                          },
-                          placeholder: (context, url) =>
-                              CupertinoActivityIndicator(),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          otherUsername,
-                          style: TextStyle(
-                              fontSize: 20, fontFamily: 'MuliRegular'),
-                        )
-                      ],
-                    ),
+                    child: Icon(Feather.user_x),
+                    onPressed: () {},
                   )
                 ],
               ),
