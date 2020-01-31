@@ -97,8 +97,7 @@ class ChatItem extends StatelessWidget {
         user1IsLoggedInUser ? chat.username2 : chat.username1;
     String otherImageFileName =
         user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
-    if (otherImageFileName == null)
-      otherImageFileName = 'default-profile-pic.jpg';
+    if (otherImageFileName == null) otherImageFileName = kDefaultProfilePicName;
 
     final heroTag = otherUid + 'chats';
 

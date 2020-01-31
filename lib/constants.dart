@@ -79,6 +79,8 @@ const TextStyle kTabsLargeTitleTextStyle = TextStyle(
 
 const Color kSearchBackground = Color(0xffe0e0e0);
 
+const String kDefaultProfilePicName = 'default-profile-pic.jpg';
+
 const Color kPlaceHolderColor = Color(0xff979797);
 
 const kBeigeColor = Color(0xFFFCF9EC);

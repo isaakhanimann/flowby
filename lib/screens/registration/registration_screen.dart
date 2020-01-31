@@ -99,7 +99,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         User user = User(
             username: name,
             uid: authResult.user.uid,
-            imageFileName: 'default-profile-pic.jpg');
+            imageFileName: kDefaultProfilePicName);
 
         await cloudFirestoreService.uploadUser(user: user);
 
@@ -189,7 +189,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       User user = User(
           username: firebaseUser.displayName,
           uid: firebaseUser.uid,
-          imageFileName: 'default-profile-pic.jpg');
+          imageFileName: kDefaultProfilePicName);
       _uploadUserAndNavigate(context: context, user: user);
       setState(() {
         showSpinner = false;

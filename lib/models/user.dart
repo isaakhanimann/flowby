@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:Flowby/constants.dart';
 
 class User {
   String username;
@@ -38,7 +39,7 @@ class User {
     this.skillRate = map['skillRate'] ?? 20;
     this.wishRate = map['wishRate'] ?? 20;
     this.location = map['location'];
-    this.imageFileName = map['imageFileName'] ?? 'default-profile-pic.jpg';
+    this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
     this.skills = map['skills'];
     this.wishes = map['wishes'];
     this.skillKeywords = _getKeywordString(skills);

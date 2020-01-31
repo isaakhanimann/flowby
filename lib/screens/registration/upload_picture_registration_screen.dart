@@ -39,37 +39,36 @@ class _UploadPictureRegistrationScreenState
   void changeProfilePic() async {
     showCupertinoModalPopup(
       context: context,
-      builder: (BuildContext context) =>
-          CupertinoActionSheet(
-              actions: <Widget>[
-                CupertinoActionSheetAction(
-                  child: const Text('Take Photo'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _setImage(ImageSource.camera);
-                  },
-                ),
-                CupertinoActionSheetAction(
-                  child: const Text('Choose Photo'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _setImage(ImageSource.gallery);
-                  },
-                )
-              ],
-              cancelButton: CupertinoActionSheetAction(
-                child: const Text('Cancel'),
-                isDefaultAction: true,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )),
+      builder: (BuildContext context) => CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: const Text('Take Photo'),
+              onPressed: () {
+                Navigator.pop(context);
+                _setImage(ImageSource.camera);
+              },
+            ),
+            CupertinoActionSheetAction(
+              child: const Text('Choose Photo'),
+              onPressed: () {
+                Navigator.pop(context);
+                _setImage(ImageSource.gallery);
+              },
+            )
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text('Cancel'),
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )),
     );
   }
 
   void _setImage(ImageSource source) async {
     var selectedImage =
-    await ImagePicker.pickImage(source: source, imageQuality: 25);
+        await ImagePicker.pickImage(source: source, imageQuality: 25);
     File croppedImage = await ImageCropper.cropImage(
         sourcePath: selectedImage.path,
         aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
@@ -92,8 +91,6 @@ class _UploadPictureRegistrationScreenState
     widget.user != null
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
-
-    //_user.imageFileName = "default-profile-pic.jpg";
 
     return Container(
       decoration: BoxDecoration(
@@ -124,7 +121,6 @@ class _UploadPictureRegistrationScreenState
                   child: ProgressBar(progress: 0.25),
                   transitionOnUserGestures: true,
                   tag: 'progress_bar',
-
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -150,54 +146,54 @@ class _UploadPictureRegistrationScreenState
                             heightFactor: 1.2,
                             child: _profilePic == null
                                 ? Stack(
-                              alignment: AlignmentDirectional.center,
-                              children: <Widget>[
-                                Opacity(
-                                  opacity: 0.4,
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2Fdefault-profile-pic.jpg?alt=media",
-                                    imageBuilder:
-                                        (context, imageProvider) {
-                                      return CircleAvatar(
-                                          radius: 60,
-                                          backgroundColor: Colors.grey,
-                                          backgroundImage: imageProvider);
-                                    },
-                                    placeholder: (context, url) =>
-                                        CircularProgressIndicator(
-                                          valueColor:
-                                          AlwaysStoppedAnimation<Color>(
-                                              kDefaultProfilePicColor),
+                                    alignment: AlignmentDirectional.center,
+                                    children: <Widget>[
+                                      Opacity(
+                                        opacity: 0.4,
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$kDefaultProfilePicName?alt=media",
+                                          imageBuilder:
+                                              (context, imageProvider) {
+                                            return CircleAvatar(
+                                                radius: 60,
+                                                backgroundColor: Colors.grey,
+                                                backgroundImage: imageProvider);
+                                          },
+                                          placeholder: (context, url) =>
+                                              CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    kDefaultProfilePicColor),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
                                         ),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                  ),
-                                ),
-                                Icon(
-                                  CupertinoIcons.photo_camera_solid,
-                                  size: 50,
-                                )
-                              ],
-                            )
+                                      ),
+                                      Icon(
+                                        CupertinoIcons.photo_camera_solid,
+                                        size: 50,
+                                      )
+                                    ],
+                                  )
                                 : Stack(
-                              alignment: AlignmentDirectional.center,
-                              children: <Widget>[
-                                Opacity(
-                                  opacity: 0.4,
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    backgroundImage:
-                                    FileImage(_profilePic),
-                                    radius: 60,
+                                    alignment: AlignmentDirectional.center,
+                                    children: <Widget>[
+                                      Opacity(
+                                        opacity: 0.4,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.grey,
+                                          backgroundImage:
+                                              FileImage(_profilePic),
+                                          radius: 60,
+                                        ),
+                                      ),
+                                      Icon(
+                                        CupertinoIcons.photo_camera_solid,
+                                        size: 50,
+                                      )
+                                    ],
                                   ),
-                                ),
-                                Icon(
-                                  CupertinoIcons.photo_camera_solid,
-                                  size: 50,
-                                )
-                              ],
-                            ),
                           ),
                         ),
                         Center(
@@ -221,8 +217,8 @@ class _UploadPictureRegistrationScreenState
                             try {
                               if (_profilePic != null) {
                                 final storageService =
-                                Provider.of<FirebaseStorageService>(context,
-                                    listen: false);
+                                    Provider.of<FirebaseStorageService>(context,
+                                        listen: false);
                                 await storageService.uploadImage(
                                     fileName: _user.uid, image: _profilePic);
 
