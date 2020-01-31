@@ -146,11 +146,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 maxLines: null,
                 style: kAddSkillsTextStyle,
                 maxLength: 20,
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(width: 1, color: kGrey4),
-                  ),
-                ),
+                decoration: null,
                 textAlign: TextAlign.start,
                 placeholder: "#keywords",
                 controller: isSkillBuild
@@ -167,11 +163,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 minLines: null,
                 style: kAddSkillsTextStyle,
                 maxLength: 100,
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(width: 1, color: kGrey4),
-                  ),
-                ),
+                decoration: null,
                 textAlign: TextAlign.start,
                 placeholder: "description",
                 controller: isSkillBuild
@@ -594,7 +586,7 @@ class RatePicker extends StatelessWidget {
     for (int i = 0; i < 500; i++) {
       textList.add(Text(
         i.toString(),
-        style: TextStyle(fontSize: 16),
+        style: kAddSkillsTextStyle,
       ));
     }
     return textList;
@@ -613,14 +605,14 @@ class RatePicker extends StatelessWidget {
             scrollController:
                 FixedExtentScrollController(initialItem: initialValue),
             backgroundColor: Colors.white,
-            itemExtent: 21,
+            itemExtent: 27,
             onSelectedItemChanged: onSelected,
             children: _getPickerItems(),
           ),
         ),
         Text(
           'CHF/h',
-          style: TextStyle(fontSize: 16),
+          style: kAddSkillsTextStyle,
         ),
       ],
     );
