@@ -389,13 +389,16 @@ input:-webkit-autofill:focus {
 
 .mainmenu-area ul.nav.navbar-nav li a {
     font-family: 'Montserrat', sans-serif;
-    color: #000;
+    color: #fff;
     padding: 10px 2px;
     text-transform: capitalize;
     background: transparent;
     font-weight: 600;
     border-bottom: 2px solid transparent;
     margin: 0 15px;
+}
+.mainmenu-area.affix ul.nav.navbar-nav li a {
+    color: #000;
 }
 
 .mainmenu-area ul.nav.navbar-nav li a:hover,
