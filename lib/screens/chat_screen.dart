@@ -411,6 +411,9 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
             child: Padding(
               padding: const EdgeInsets.only(left: 10.0),
               child: CupertinoTextField(
+                expands: true,
+                maxLines: null,
+                minLines: null,
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                     border: Border.all(color: kChatScreenBorderTextFieldColor),

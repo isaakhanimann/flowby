@@ -165,7 +165,7 @@ class ChatItem extends StatelessWidget {
               Text(
                 HelperFunctions.getTimestampAsString(
                     timestamp: chat.lastMessageTimestamp),
-                style: TextStyle(color: Colors.black38, fontSize: 12),
+                style: kChatTabTimestampTextStyle,
               ),
             ],
           ),
@@ -175,7 +175,7 @@ class ChatItem extends StatelessWidget {
               Text(
                 HelperFunctions.getDotDotDotString(
                     maybeLongString: chat.lastMessageText),
-                style: TextStyle(color: Colors.black38, fontSize: 15),
+                style: kChatLastMessageTextStyle,
               ),
               if (haveIBlocked || hasOtherBlocked)
                 Text(

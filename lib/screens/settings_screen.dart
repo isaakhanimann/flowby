@@ -87,7 +87,7 @@ class SettingsScreen extends StatelessWidget {
                   child: Text('Delete'),
                   onPressed: () async {
                     final authService =
-                        Provider.of<FirebaseAuthService>(context);
+                        Provider.of<FirebaseAuthService>(context, listen: false);
                     print('delete user called');
                     await authService.deleteCurrentlyLoggedInUser();
                     Navigator.of(context, rootNavigator: true)

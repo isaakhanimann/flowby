@@ -36,7 +36,7 @@ class _UploadPictureRegistrationScreenState
   String _username;
   User _user;
 
-  void changeProfilePic() async {
+  void _changeProfilePic() async {
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
@@ -68,7 +68,7 @@ class _UploadPictureRegistrationScreenState
 
   void _setImage(ImageSource source) async {
     var selectedImage =
-        await ImagePicker.pickImage(source: source, imageQuality: 25);
+        await ImagePicker.pickImage(source: source, imageQuality: 15);
     File croppedImage = await ImageCropper.cropImage(
         sourcePath: selectedImage.path,
         aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
@@ -118,7 +118,7 @@ class _UploadPictureRegistrationScreenState
             body: SingleChildScrollView(
               child: Stack(children: [
                 Hero(
-                  child: ProgressBar(progress: 0.25),
+                  child: ProgressBar(progress: 0.2),
                   transitionOnUserGestures: true,
                   tag: 'progress_bar',
                 ),
@@ -132,6 +132,18 @@ class _UploadPictureRegistrationScreenState
                           height: 10.0,
                         ),
                         Text(
+                          'Welcome $_username!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'MontserratRegular',
+                            fontSize: 22.0,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
                           'Choose a picture',
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -141,7 +153,7 @@ class _UploadPictureRegistrationScreenState
                           ),
                         ),
                         GestureDetector(
-                          onTap: changeProfilePic,
+                          onTap: _changeProfilePic,
                           child: Center(
                             heightFactor: 1.2,
                             child: _profilePic == null
@@ -198,7 +210,7 @@ class _UploadPictureRegistrationScreenState
                         ),
                         Center(
                           child: GestureDetector(
-                            onTap: changeProfilePic,
+                            onTap: _changeProfilePic,
                             child: Text('Edit',
                                 style: TextStyle(
                                   color: Colors.black,
@@ -241,29 +253,7 @@ class _UploadPictureRegistrationScreenState
                             });
                           },
                         ),
-                        Text(
-                          'Welcome $_username!',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
-                        ),
-                        Container(
-                          height: 350.0,
-                          width: 350.0,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              colorFilter: ColorFilter.mode(
-                                  Colors.white, BlendMode.colorBurn),
-                              image: AssetImage(
-                                  "assets/images/Freeflowter_Stony.png"),
-                              alignment: Alignment(0.0, 0.0),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+
                       ]),
                 ),
               ]),
