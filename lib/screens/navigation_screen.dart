@@ -45,7 +45,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         cloudFirestoreService.uploadUsersLocation(
             uid: loggedInUser.uid, position: position);
       });
-      firebaseMessaging.firebaseCloudMessagingListeners();
+      firebaseMessaging.firebaseCloudMessagingListeners(context);
       firebaseMessaging.getToken().then((token) {
         cloudFirestoreService.uploadPushToken(
             uid: loggedInUser.uid, pushToken: token);

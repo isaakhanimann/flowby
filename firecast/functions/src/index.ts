@@ -189,7 +189,7 @@ exports.deleteUserEveryhere = functions.auth
     db.collection("users")
       .doc(user.uid)
       .delete()
-      .catch(function(error: any) {
+      .catch(function (error: any) {
         console.log(
           `Error deleting user out of users collection, uid =  ${user.uid}`
         );
@@ -200,11 +200,11 @@ exports.deleteUserEveryhere = functions.auth
     bucket
       .file(`images/${user.uid}`)
       .delete()
-      .then(function() {
+      .then(function () {
         // File deleted successfully
         console.log(`Deleted image ${user.uid} successfully`);
       })
-      .catch(function(error: any) {
+      .catch(function (error: any) {
         console.log(`Could not delete the image ${user.uid}`);
       });
 
@@ -224,7 +224,7 @@ exports.deleteUserEveryhere = functions.auth
                   `Chat ${documentSnapshot.ref.id} deleted successfully`
                 );
               })
-              .catch(function(error: any) {
+              .catch(function (error: any) {
                 console.log(`Error deleting chat ${documentSnapshot.ref.id}`);
               });
           }
@@ -288,13 +288,21 @@ exports.sendNotification = functions.firestore
         receiverUid = chat.uid1;
         senderUsername = chat.username2;
       }
-      // Get the receivers token
-      const userDoc = await db
+      // Get the sender's imageFileName
+      const senderDoc = await db
+        .collection("users")
+        .doc(senderUid)
+        .get();
+
+      const sender = senderDoc.data();
+
+      // Get the receiver's token
+      const receiverDoc = await db
         .collection("users")
         .doc(receiverUid)
         .get();
 
-      const receiver = userDoc.data();
+      const receiver = receiverDoc.data();
 
       if (receiver?.pushToken) {
         const payload = {
@@ -303,7 +311,18 @@ exports.sendNotification = functions.firestore
             body: contentMessage,
             badge: "1",
             sound: "default"
-          }
+          },
+          data: {
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
+            sound: "default",
+            status: "done",
+            screen: "ChatScreen",
+            loggedInUid: receiverUid,
+            otherUid: senderUid,
+            otherUsername: senderUsername,
+            otherImageFileName: sender?.imageFileName,
+            chatPath: "chats/" + chatId,
+          },
         };
         // send the push notification to the receivers device
         return fcm
