@@ -16,6 +16,19 @@ class User {
   Map<dynamic, dynamic> wishes;
   String skillKeywords;
   String wishKeywords;
+  List<SkillOrWish> skillz;
+  List<SkillOrWish> wishez;
+
+  List<SkillOrWish> _convertFirebaseToDart({List<dynamic> skillzOrWishez}) {
+    if (skillzOrWishez == null) {
+      return [];
+    }
+    List<SkillOrWish> list = [];
+    for (var skillOrWish in skillzOrWishez) {
+      list.add(SkillOrWish.fromDynamic(skillOrWish));
+    }
+    return list;
+  }
 
   User(
       {this.username,
@@ -40,10 +53,10 @@ class User {
     this.wishRate = map['wishRate'] ?? 20;
     this.location = map['location'];
     this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
-    this.skills = map['skills'];
-    this.wishes = map['wishes'];
-    this.skillKeywords = _getKeywordString(skills);
-    this.wishKeywords = _getKeywordString(wishes);
+    this.skillz = _convertFirebaseToDart(skillzOrWishez: map['skillz']);
+    this.wishez = _convertFirebaseToDart(skillzOrWishez: map['wishez']);
+    this.skillKeywords = _getKeywordString(skillz);
+    this.wishKeywords = _getKeywordString(wishez);
   }
 
   Map<String, dynamic> toMap() {
@@ -61,13 +74,13 @@ class User {
     };
   }
 
-  String _getKeywordString(Map<dynamic, dynamic> map) {
+  String _getKeywordString(List<SkillOrWish> skillsOrWishes) {
     String result = '';
-    if (map == null) {
+    if (skillsOrWishes == null || skillsOrWishes.isEmpty) {
       return result;
     }
-    for (String key in map.keys) {
-      result += key + ' ';
+    for (SkillOrWish skillOrWish in skillsOrWishes) {
+      result += skillOrWish.keywords + ' ';
     }
     return result;
   }
@@ -88,6 +101,29 @@ class User {
     toPrint += 'wishKeywords: ${wishKeywords.toString()}, ';
     toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';
 
+    return toPrint;
+  }
+}
+
+class SkillOrWish {
+  String keywords;
+  String description;
+  String price;
+
+  SkillOrWish({this.keywords, this.description, this.price});
+
+  SkillOrWish.fromDynamic(dynamic skillOrWish) {
+    this.keywords = skillOrWish['keywords'];
+    this.description = skillOrWish['description'];
+    this.price = skillOrWish['price'];
+  }
+
+  @override
+  String toString() {
+    String toPrint = '\n{';
+    toPrint += 'keywords: $keywords, ';
+    toPrint += 'description: $description, ';
+    toPrint += 'price: $price }\n';
     return toPrint;
   }
 }

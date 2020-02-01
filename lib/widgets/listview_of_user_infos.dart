@@ -33,13 +33,13 @@ class ListViewOfUserInfos extends StatelessWidget {
               tag: heroTag ?? user.imageFileName,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .push(ScaleRoute(page: ShowProfilePictureScreen(
-                                profilePictureUrl:
-                                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
-                                otherUsername: user.username,
-                                heroTag: heroTag ?? user.imageFileName,
-                              )));
+                  Navigator.of(context, rootNavigator: true).push(ScaleRoute(
+                      page: ShowProfilePictureScreen(
+                    profilePictureUrl:
+                        'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
+                    otherUsername: user.username,
+                    heroTag: heroTag ?? user.imageFileName,
+                  )));
                 },
                 child: CachedNetworkImage(
                   imageUrl:
@@ -127,6 +127,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (user.skillz != null) Text(user.skillz.toString()),
                 SizedBox(height: 10),
                 _buildListOfTextFields(skillsOrWishes: user.skills)
               ],
