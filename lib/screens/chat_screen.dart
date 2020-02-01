@@ -57,9 +57,11 @@ class ChatScreen extends StatelessWidget {
         if (snapshot.connectionState != ConnectionState.done) {
           return CupertinoPageScaffold(
             backgroundColor: CupertinoColors.white,
-            child: CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+            child: Center(
+              child: CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+              ),
             ),
           );
         }
@@ -127,7 +129,6 @@ class ChatScreenWithPath extends StatelessWidget {
                   otherImageFileName: otherImageFileName,
                   otherUsername: otherUsername,
                   heroTag: heroTag,
-                  isButtonLoading: true,
                 ),
               ]);
             }
@@ -150,7 +151,6 @@ class ChatScreenWithPath extends StatelessWidget {
                   otherImageFileName: otherImageFileName,
                   otherUsername: otherUsername,
                   heroTag: heroTag,
-                  isButtonLoading: false,
                   chat: chat),
             ]);
           },
@@ -177,14 +177,12 @@ class Header extends StatelessWidget {
       @required this.otherImageFileName,
       @required this.otherUsername,
       @required this.heroTag,
-      @required this.isButtonLoading,
       this.chat})
       : super(key: key);
 
   final String otherImageFileName;
   final String otherUsername;
   final String heroTag;
-  final bool isButtonLoading;
   final Chat chat;
 
   @override
@@ -192,15 +190,18 @@ class Header extends StatelessWidget {
     final loggedInUid = Provider.of<String>(context);
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    bool amIUser1 = (chat.uid1 == loggedInUid);
+    bool amIUser1;
     bool haveIBlocked;
     bool hasOtherBlocked;
-    if (amIUser1) {
-      haveIBlocked = chat.hasUser1Blocked;
-      hasOtherBlocked = chat.hasUser2Blocked;
-    } else {
-      haveIBlocked = chat.hasUser2Blocked;
-      hasOtherBlocked = chat.hasUser1Blocked;
+    if (chat != null) {
+      amIUser1 = (chat.uid1 == loggedInUid);
+      if (amIUser1) {
+        haveIBlocked = chat.hasUser1Blocked;
+        hasOtherBlocked = chat.hasUser2Blocked;
+      } else {
+        haveIBlocked = chat.hasUser2Blocked;
+        hasOtherBlocked = chat.hasUser1Blocked;
+      }
     }
     return Container(
       color: Colors.white,
@@ -268,12 +269,12 @@ class Header extends StatelessWidget {
                 ),
               ],
             ),
-            if (isButtonLoading)
+            if (chat == null)
               CircularProgressIndicator(
                 valueColor:
                     AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
               ),
-            if (!isButtonLoading)
+            if (chat != null)
               CupertinoButton(
                 child: Icon(
                   Feather.user_x,
