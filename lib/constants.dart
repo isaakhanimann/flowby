@@ -27,18 +27,24 @@ const kAddSkillsTextStyle = TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.w400,
     color: kSmallTitlesTextColor);
-
 const kNavigationBarTextStyle = TextStyle(fontFamily: 'MontserratRegular');
-const kLocationTextStyle = TextStyle(color: Colors.grey, fontSize: 14, fontFamily: 'NotoRegular');
-const kUsernameTextStyle = TextStyle(fontWeight: FontWeight.bold, fontFamily: 'MontserratRegular');
-const kChatTabTimestampTextStyle = TextStyle(color: Colors.black38, fontSize: 12, fontFamily: 'NotoRegular');
-const kChatLastMessageTextStyle = TextStyle(color: Colors.black38, fontSize: 15, fontFamily: 'NotoRegular');
-const kSkillTextStyle = TextStyle(color: Colors.grey, fontSize: 16, fontFamily: 'NotoRegular');
+const kLocationTextStyle =
+    TextStyle(color: Colors.grey, fontSize: 14, fontFamily: 'NotoRegular');
+const kUsernameTextStyle =
+    TextStyle(fontWeight: FontWeight.bold, fontFamily: 'MontserratRegular');
+const kChatTabTimestampTextStyle =
+    TextStyle(color: Colors.black38, fontSize: 12, fontFamily: 'NotoRegular');
+const kChatLastMessageTextStyle =
+    TextStyle(color: Colors.black38, fontSize: 15, fontFamily: 'NotoRegular');
+const kSkillTextStyle =
+    TextStyle(color: Colors.grey, fontSize: 16, fontFamily: 'NotoRegular');
 const kCupertinoScaffoldTextStyle =
     TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratRegular');
 const kTabsLargeTitleTextStyle = TextStyle(fontFamily: 'MontserratRegular');
 const kBlockedTextStyle =
     TextStyle(color: Colors.red, fontFamily: 'MontserratRegular');
+const kSmallBlockedTextStyle =
+    TextStyle(color: Colors.red, fontSize: 12, fontFamily: 'MontserratRegular');
 
 // Colors
 const kLoginBackgroundColor = Color(0xFF0D4FF7);

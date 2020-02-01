@@ -146,28 +146,6 @@ class _AddLanguagesRegistrationScreenState
     );
   }
 
-  Widget _addButtonRowAlt(isSkillBuild) {
-    return RoundedButton(
-      onPressed: () {
-        setState(() {
-          if (isSkillBuild) {
-            skillKeywordControllers.add(TextEditingController());
-            skillDescriptionControllers.add(TextEditingController());
-          } else {
-            wishKeywordControllers.add(TextEditingController());
-            wishDescriptionControllers.add(TextEditingController());
-          }
-        });
-      },
-      text: "Add",
-      color: kLoginBackgroundColor,
-      textColor: Colors.white,
-      paddingInsideHorizontal: 20,
-      paddingInsideVertical: 5,
-      elevation: 0,
-    );
-  }
-
   Map<String, String> controllersToMap(
       {List<TextEditingController> keyControllers,
       List<TextEditingController> descriptionControllers}) {
@@ -189,7 +167,6 @@ class _AddLanguagesRegistrationScreenState
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
 
-    //print(_user);
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(

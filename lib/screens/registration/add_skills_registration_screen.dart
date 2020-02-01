@@ -2,7 +2,6 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_wishes_registration_screen.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
-import 'package:Flowby/widgets/rate_picker.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -136,16 +135,14 @@ class _AddSkillsRegistrationScreenState
     }
 
     rows.add(
-      _addButtonRow(isSkillBuild),
-      // I personally prefer the above widget. The old version is under so you can test it.
-      // _addButtonRowAlt(isSkillBuild),
+      _addRowButton(isSkillBuild),
     );
     return Column(
       children: rows,
     );
   }
 
-  Widget _addButtonRow(isSkillBuild) {
+  Widget _addRowButton(isSkillBuild) {
     return Container(
       alignment: Alignment.bottomLeft,
       child: GestureDetector(
@@ -162,28 +159,6 @@ class _AddSkillsRegistrationScreenState
           });
         },
       ),
-    );
-  }
-
-  Widget _addButtonRowAlt(isSkillBuild) {
-    return RoundedButton(
-      onPressed: () {
-        setState(() {
-          if (isSkillBuild) {
-            skillKeywordControllers.add(TextEditingController());
-            skillDescriptionControllers.add(TextEditingController());
-          } else {
-            wishKeywordControllers.add(TextEditingController());
-            wishDescriptionControllers.add(TextEditingController());
-          }
-        });
-      },
-      text: "Add",
-      color: kLoginBackgroundColor,
-      textColor: Colors.white,
-      paddingInsideHorizontal: 20,
-      paddingInsideVertical: 5,
-      elevation: 0,
     );
   }
 

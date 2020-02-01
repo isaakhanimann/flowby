@@ -180,7 +180,7 @@ class ChatItem extends StatelessWidget {
               if (haveIBlocked || hasOtherBlocked)
                 Text(
                   'blocked',
-                  style: TextStyle(color: Colors.red, fontSize: 12),
+                  style: kSmallBlockedTextStyle,
                 )
             ],
           ),

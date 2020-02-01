@@ -6,7 +6,6 @@ import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
-import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -132,6 +131,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
+  Widget _addRowButton(isSkillBuild) {
+    return Container(
+      alignment: Alignment.bottomLeft,
+      child: GestureDetector(
+        child: Icon(Feather.plus),
+        onTap: () {
+          setState(() {
+            if (isSkillBuild) {
+              skillKeywordControllers.add(TextEditingController());
+              skillDescriptionControllers.add(TextEditingController());
+              skillPriceControllers.add(TextEditingController());
+            } else {
+              wishKeywordControllers.add(TextEditingController());
+              wishDescriptionControllers.add(TextEditingController());
+              wishPriceControllers.add(TextEditingController());
+            }
+          });
+        },
+      ),
+    );
+  }
+
   Column _buildListOfRows({bool isSkillBuild}) {
     List<Widget> rows = [];
     for (int rowNumber = 0;
@@ -142,56 +163,57 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         rowNumber++) {
       rows.add(
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: CupertinoTextField(
-                expands: true,
-                minLines: null,
-                maxLines: null,
-                style: kAddSkillsTextStyle,
-                maxLength: 20,
-                decoration: null,
-                textAlign: TextAlign.start,
-                placeholder: "#keywords",
-                controller: isSkillBuild
-                    ? skillKeywordControllers[rowNumber]
-                    : wishKeywordControllers[rowNumber],
-              ),
-            ),
-            SizedBox(width: 20),
-            Expanded(
-              flex: 2,
-              child: CupertinoTextField(
-                expands: true,
-                maxLines: null,
-                minLines: null,
-                style: kAddSkillsTextStyle,
-                maxLength: 100,
-                decoration: null,
-                textAlign: TextAlign.start,
-                placeholder: "description",
-                controller: isSkillBuild
-                    ? skillDescriptionControllers[rowNumber]
-                    : wishDescriptionControllers[rowNumber],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: CupertinoTextField(
-                expands: true,
-                maxLines: null,
-                minLines: null,
-                style: kAddSkillsTextStyle,
-                maxLength: 10,
-                decoration: null,
-                textAlign: TextAlign.start,
-                placeholder: "price",
-                controller: isSkillBuild
-                    ? skillPriceControllers[rowNumber]
-                    : wishPriceControllers[rowNumber],
-              ),
+            Column(
+              children: <Widget>[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    CupertinoTextField(
+                      expands: true,
+                      minLines: null,
+                      maxLines: null,
+                      style: kAddSkillsTextStyle,
+                      maxLength: 20,
+                      decoration: null,
+                      textAlign: TextAlign.start,
+                      placeholder: "#keywords",
+                      controller: isSkillBuild
+                          ? skillKeywordControllers[rowNumber]
+                          : wishKeywordControllers[rowNumber],
+                    ),
+                    SizedBox(width: 20),
+                    CupertinoTextField(
+                      expands: true,
+                      maxLines: null,
+                      minLines: null,
+                      style: kAddSkillsTextStyle,
+                      maxLength: 10,
+                      decoration: null,
+                      textAlign: TextAlign.start,
+                      placeholder: "price",
+                      controller: isSkillBuild
+                          ? skillPriceControllers[rowNumber]
+                          : wishPriceControllers[rowNumber],
+                    ),
+                  ],
+                ),
+                CupertinoTextField(
+                  expands: true,
+                  maxLines: null,
+                  minLines: null,
+                  style: kAddSkillsTextStyle,
+                  maxLength: 100,
+                  decoration: null,
+                  textAlign: TextAlign.start,
+                  placeholder: "description",
+                  controller: isSkillBuild
+                      ? skillDescriptionControllers[rowNumber]
+                      : wishDescriptionControllers[rowNumber],
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.only(top: 15.0),
@@ -215,29 +237,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
     }
 
-    rows.add(
-      Center(
-        child: RoundedButton(
-          onPressed: () {
-            setState(() {
-              if (isSkillBuild) {
-                skillKeywordControllers.add(TextEditingController());
-                skillDescriptionControllers.add(TextEditingController());
-              } else {
-                wishKeywordControllers.add(TextEditingController());
-                wishDescriptionControllers.add(TextEditingController());
-              }
-            });
-          },
-          text: "Add",
-          color: kLoginBackgroundColor,
-          textColor: Colors.white,
-          paddingInsideHorizontal: 20,
-          paddingInsideVertical: 5,
-          elevation: 0,
-        ),
-      ),
-    );
+    rows.add(_addRowButton(isSkillBuild));
     return Column(
       children: rows,
     );
@@ -280,6 +280,123 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (true) {
+      return CupertinoPageScaffold(
+        backgroundColor: Colors.white,
+        child: SafeArea(
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Container(
+                    width: MediaQuery.of(context).size.width * 2 / 3,
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              height: 50,
+                              width: 50,
+                              color: Colors.blue,
+                            ),
+                            Container(
+                              height: 50,
+                              width: 50,
+                              color: Colors.green,
+                            )
+                          ],
+                        ),
+                        Container(
+                          height: 50,
+                          width: 100,
+                          color: Colors.yellow,
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 50,
+                    color: Colors.red,
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.blue,
+                          ),
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.green,
+                          )
+                        ],
+                      ),
+                      Container(
+                        height: 50,
+                        width: 100,
+                        color: Colors.yellow,
+                      )
+                    ],
+                  ),
+                  Container(
+                    height: 50,
+                    width: 50,
+                    color: Colors.red,
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.blue,
+                          ),
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.green,
+                          )
+                        ],
+                      ),
+                      Container(
+                        height: 50,
+                        width: 100,
+                        color: Colors.yellow,
+                      )
+                    ],
+                  ),
+                  Container(
+                    height: 50,
+                    width: 50,
+                    color: Colors.red,
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     if (showSpinner) {
       return CupertinoPageScaffold(
         backgroundColor: Colors.white,
@@ -440,7 +557,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   Expanded(
                     child: CupertinoTextField(
-                      style:kEditProfileTextFieldTextStyle,
+                      style: kEditProfileTextFieldTextStyle,
                       placeholder: 'Enter your name',
                       padding: EdgeInsets.only(bottom: 0),
                       maxLength: 20,
@@ -468,7 +585,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Expanded(
                     child: CupertinoTextField(
                       expands: true,
-                      style:kEditProfileTextFieldTextStyle,
+                      style: kEditProfileTextFieldTextStyle,
                       placeholder: 'Enter your description',
                       maxLength: 200,
                       minLines: null,
