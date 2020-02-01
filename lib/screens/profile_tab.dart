@@ -26,6 +26,7 @@ class ProfileTab extends StatelessWidget {
         future: cloudFirestoreService.getUser(uid: loggedInUser.uid),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
+            print('has no data');
             return Center(
               child: CircularProgressIndicator(
                 valueColor:

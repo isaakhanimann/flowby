@@ -39,8 +39,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   List<TextEditingController> skillKeywordControllers = [];
   List<TextEditingController> skillDescriptionControllers = [];
+  List<TextEditingController> skillPriceControllers = [];
   List<TextEditingController> wishKeywordControllers = [];
   List<TextEditingController> wishDescriptionControllers = [];
+  List<TextEditingController> wishPriceControllers = [];
 
   void changeProfilePic() async {
     showCupertinoModalPopup(
@@ -107,17 +109,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       skills?.forEach((key, value) {
         skillKeywordControllers.add(TextEditingController(text: key));
         skillDescriptionControllers.add(TextEditingController(text: value));
+        skillPriceControllers.add(TextEditingController(text: '20 CHF/h'));
       });
       //controllers for extra skill
       skillKeywordControllers.add(TextEditingController());
       skillDescriptionControllers.add(TextEditingController());
+      skillPriceControllers.add(TextEditingController());
 
       wishes?.forEach((key, value) {
         wishKeywordControllers.add(TextEditingController(text: key));
         wishDescriptionControllers.add(TextEditingController(text: value));
+        wishPriceControllers.add(TextEditingController(text: '20 CHF/h'));
       });
       wishKeywordControllers.add(TextEditingController());
       wishDescriptionControllers.add(TextEditingController());
+      wishPriceControllers.add(TextEditingController());
 
       _localSkillRate = user?.skillRate;
       _localWishRate = user?.wishRate;
@@ -126,7 +132,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
-  Column _buildListOfTextFields({bool isSkillBuild}) {
+  Column _buildListOfRows({bool isSkillBuild}) {
     List<Widget> rows = [];
     for (int rowNumber = 0;
         rowNumber <
@@ -172,21 +178,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ),
             Expanded(
-              flex: 0,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 15.0),
-                child: GestureDetector(
-                  onTap: () => setState(() {
-                    if (isSkillBuild) {
-                      skillKeywordControllers.removeAt(rowNumber);
-                      skillDescriptionControllers.removeAt(rowNumber);
-                    } else {
-                      wishKeywordControllers.removeAt(rowNumber);
-                      wishDescriptionControllers.removeAt(rowNumber);
-                    }
-                  }),
-                  child: Icon(Feather.x),
-                ),
+              flex: 1,
+              child: CupertinoTextField(
+                expands: true,
+                maxLines: null,
+                minLines: null,
+                style: kAddSkillsTextStyle,
+                maxLength: 10,
+                decoration: null,
+                textAlign: TextAlign.start,
+                placeholder: "price",
+                controller: isSkillBuild
+                    ? skillPriceControllers[rowNumber]
+                    : wishPriceControllers[rowNumber],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: GestureDetector(
+                onTap: () => setState(() {
+                  if (isSkillBuild) {
+                    skillKeywordControllers.removeAt(rowNumber);
+                    skillDescriptionControllers.removeAt(rowNumber);
+                    skillPriceControllers.removeAt(rowNumber);
+                  } else {
+                    wishKeywordControllers.removeAt(rowNumber);
+                    wishDescriptionControllers.removeAt(rowNumber);
+                    wishPriceControllers.removeAt(rowNumber);
+                  }
+                }),
+                child: Icon(Feather.x),
               ),
             ),
           ],
@@ -487,7 +508,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    _buildListOfTextFields(isSkillBuild: true),
+                    _buildListOfRows(isSkillBuild: true),
                     RatePicker(
                       initialValue: user.skillRate ?? 20,
                       onSelected: (selectedIndex) {
@@ -520,7 +541,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    _buildListOfTextFields(isSkillBuild: false),
+                    _buildListOfRows(isSkillBuild: false),
                     RatePicker(
                       initialValue: user.wishRate ?? 20,
                       onSelected: (selectedIndex) {
