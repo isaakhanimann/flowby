@@ -35,7 +35,7 @@ class NoResults extends StatelessWidget {
             RoundedButton(
               text: ' Help us spread the word',
               textColor: Colors.white,
-              color: ffDarkBlue,
+              color: kBlueButtonColor,
               onPressed: () => Share.share(
                   'Flowby is a skill-sharing community where you meet people nearby you to learn new skills. The more, the merrier and the more skills. Join the adventure: https://flowby.app/'),
             ),

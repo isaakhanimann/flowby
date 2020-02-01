@@ -38,7 +38,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         ),
         backgroundColor: Colors.transparent,
       ),
-      backgroundColor: kRegistrationBackgroundColor,
+      backgroundColor: kLoginScreenBackgroundColor,
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -58,7 +58,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 },
               ),
               RoundedButton(
-                  color: ffDarkBlue,
+                  color: kBlueButtonColor,
                   textColor: Colors.white,
                   onPressed: () async {
                     final authService = Provider.of<FirebaseAuthService>(

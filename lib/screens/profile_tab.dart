@@ -43,7 +43,7 @@ class ProfileTab extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: RoundedButton(
                   text: 'Edit your profile',
-                  color: ffDarkBlue,
+                  color: kBlueButtonColor,
                   textColor: Colors.white,
                   onPressed: () {
                     Navigator.of(context, rootNavigator: true).push(

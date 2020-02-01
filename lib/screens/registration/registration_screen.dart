@@ -257,7 +257,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
           ),
           backgroundColor: Colors.transparent,
         ),
-        backgroundColor: kRegistrationBackgroundColor,
+        backgroundColor: kLoginScreenBackgroundColor,
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -318,7 +318,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 ),
                 RoundedButton(
                   textColor: Colors.white,
-                  color: ffDarkBlue,
+                  color: kBlueButtonColor,
                   text: 'Sign Up with Email',
                   onPressed: () {
                     _signInWithEmail(context);

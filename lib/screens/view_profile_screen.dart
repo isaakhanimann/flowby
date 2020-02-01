@@ -35,7 +35,7 @@ class ViewProfileScreen extends StatelessWidget {
             ),
             RoundedButton(
               text: loggedInUser == null ? 'Signin to Chat' : 'Chat',
-              color: ffDarkBlue,
+              color: kBlueButtonColor,
               textColor: Colors.white,
               onPressed: () async {
                 if (loggedInUser == null) {

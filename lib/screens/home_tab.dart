@@ -163,7 +163,7 @@ class ProfileItem extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: kLightGrey2,
+      color: kCardBackgroundColor,
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -287,7 +287,7 @@ class SearchBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
       child: CupertinoTextField(
         decoration: BoxDecoration(
-            color: kLightGrey2,
+            color: kCardBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         placeholder: isSkillSearch ? 'Search Skills' : 'Search Wishes',

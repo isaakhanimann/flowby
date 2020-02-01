@@ -11,7 +11,7 @@ class ProgressBar extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width * progress,
       decoration: BoxDecoration(
-          border: Border(top: BorderSide(width: 5.0, color: ffDarkBlue))),
+          border: Border(top: BorderSide(width: 5.0, color: kBlueButtonColor))),
     );
   }
 }

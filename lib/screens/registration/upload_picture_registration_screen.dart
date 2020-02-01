@@ -208,7 +208,7 @@ class _UploadPictureRegistrationScreenState
                         ),
                         RoundedButton(
                           text: 'Next',
-                          color: ffDarkBlue,
+                          color: kBlueButtonColor,
                           textColor: Colors.white,
                           onPressed: () async {
                             setState(() {

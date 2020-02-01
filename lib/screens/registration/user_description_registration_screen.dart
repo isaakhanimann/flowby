@@ -43,7 +43,7 @@ class _UserDescriptionRegistrationScreenState
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
+          valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
         child: SafeArea(
           child: Scaffold(
@@ -105,7 +105,7 @@ class _UserDescriptionRegistrationScreenState
                         ),
                         RoundedButton(
                           text: 'Next',
-                          color: ffDarkBlue,
+                          color: kBlueButtonColor,
                           textColor: Colors.white,
                           onPressed: () async {
                             setState(() {

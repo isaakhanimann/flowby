@@ -419,7 +419,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   Expanded(
                     child: CupertinoTextField(
-                      style: TextStyle(color: kGrey3, fontSize: 22),
+                      style:
+                          TextStyle(color: kTextFieldTextColor, fontSize: 22),
                       placeholder: 'Enter your name',
                       padding: EdgeInsets.only(bottom: 0),
                       maxLength: 20,
@@ -447,7 +448,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Expanded(
                     child: CupertinoTextField(
                       expands: true,
-                      style: TextStyle(color: kGrey3, fontSize: 20),
+                      style:
+                          TextStyle(color: kTextFieldTextColor, fontSize: 20),
                       placeholder: 'Enter your description',
                       maxLength: 200,
                       minLines: null,

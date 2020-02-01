@@ -413,7 +413,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
               child: CupertinoTextField(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                    border: Border.all(color: kLightGrey),
+                    border: Border.all(color: kChatScreenBorderTextFieldColor),
                     borderRadius: BorderRadius.all(Radius.circular(20))),
                 controller: messageTextController,
               ),
@@ -470,7 +470,7 @@ class MessageBubble extends StatelessWidget {
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30)),
             elevation: 3.0,
-            color: isMe ? ffMiddleBlue : Colors.white,
+            color: isMe ? kMessageBubbleColor : Colors.white,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),

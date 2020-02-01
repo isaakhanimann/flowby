@@ -52,7 +52,8 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
           body: ModalProgressHUD(
             inAsyncCall: showSpinner,
             progressIndicator: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(kDarkGreenColor),
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -67,7 +68,7 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
                   ),
                   RoundedButton(
                     text: 'Sign Up',
-                    color: ffDarkBlue,
+                    color: kBlueButtonColor,
                     textColor: Colors.white,
                     onPressed: () {
                       //Navigator.pushNamed(context, RegistrationScreen.id);
@@ -80,7 +81,7 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
                   RoundedButton(
                     text: 'I already have an account',
                     color: Colors.white,
-                    textColor: ffDarkBlue,
+                    textColor: kBlueButtonColor,
                     onPressed: () {
                       //Navigator.pushNamed(context, LoginScreen.id);
                       Navigator.push(

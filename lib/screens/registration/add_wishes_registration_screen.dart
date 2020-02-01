@@ -78,7 +78,7 @@ class _AddWishesRegistrationScreenState
                 maxLength: 20,
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(width: 1, color: kGrey4),
+                    bottom: BorderSide(width: 1, color: kBoxBorderColor),
                   ),
                 ),
                 textAlign: TextAlign.start,
@@ -99,7 +99,7 @@ class _AddWishesRegistrationScreenState
                 maxLength: 100,
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(width: 1, color: kGrey4),
+                    bottom: BorderSide(width: 1, color: kBoxBorderColor),
                   ),
                 ),
                 textAlign: TextAlign.start,
@@ -279,7 +279,7 @@ class _AddWishesRegistrationScreenState
                           ),
                         RoundedButton(
                           text: 'I am ready!',
-                          color: ffDarkBlue,
+                          color: kBlueButtonColor,
                           textColor: Colors.white,
                           onPressed: () async {
                             setState(() {
