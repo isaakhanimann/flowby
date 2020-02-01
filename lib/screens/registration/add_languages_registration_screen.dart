@@ -73,7 +73,7 @@ class _AddLanguagesRegistrationScreenState
                   border: null,
                 ),
                 textAlign: TextAlign.start,
-                placeholder: "#keywords",
+                placeholder: "#language",
                 controller: isSkillBuild
                     ? skillKeywordControllers[rowNumber]
                     : wishKeywordControllers[rowNumber],
@@ -92,7 +92,7 @@ class _AddLanguagesRegistrationScreenState
                   border: null,
                 ),
                 textAlign: TextAlign.start,
-                placeholder: "description",
+                placeholder: "level",
                 controller: isSkillBuild
                     ? skillDescriptionControllers[rowNumber]
                     : wishDescriptionControllers[rowNumber],

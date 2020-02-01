@@ -29,9 +29,11 @@ const kAddSkillsTextStyle = TextStyle(
     color: kSmallTitlesTextColor);
 
 const kNavigationBarTextStyle = TextStyle(fontFamily: 'MontserratRegular');
-const kLocationTextStyle = TextStyle(color: Colors.grey, fontSize: 14);
-const kUsernameTextStyle = TextStyle(fontWeight: FontWeight.bold);
-const kSkillTextStyle = TextStyle(color: Colors.grey, fontSize: 16);
+const kLocationTextStyle = TextStyle(color: Colors.grey, fontSize: 14, fontFamily: 'NotoRegular');
+const kUsernameTextStyle = TextStyle(fontWeight: FontWeight.bold, fontFamily: 'MontserratRegular');
+const kChatTabTimestampTextStyle = TextStyle(color: Colors.black38, fontSize: 12, fontFamily: 'NotoRegular');
+const kChatLastMessageTextStyle = TextStyle(color: Colors.black38, fontSize: 15, fontFamily: 'NotoRegular');
+const kSkillTextStyle = TextStyle(color: Colors.grey, fontSize: 16, fontFamily: 'NotoRegular');
 const kCupertinoScaffoldTextStyle =
     TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratRegular');
 const kTabsLargeTitleTextStyle = TextStyle(fontFamily: 'MontserratRegular');
@@ -50,6 +52,7 @@ const kPlaceHolderColor = Color(0xff979797);
 const kBoxBorderColor = Color(0xff979797);
 const kChatScreenBorderTextFieldColor = Color(0xFFdadada);
 const kCardBackgroundColor = Color(0xFFf4f4f4);
+//const kCardBackgroundColor = Color(0x2Ffdd66d);
 
 // Other
 const String kDefaultProfilePicName = 'default-profile-pic.jpg';
