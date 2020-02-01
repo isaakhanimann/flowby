@@ -164,12 +164,13 @@ input:-webkit-autofill:focus {
 
 .bttn-white.active,
 .bttn-white:hover {
-    color: #ffffff;
+    color: #0527ce;
 }
 
 .bttn-white.active:before,
 .bttn-white:hover:before {
-    opacity: 0;
+    opacity: 1;
+    background-color: #00F2AC;
 }
 
 .bttn-default,
@@ -177,7 +178,7 @@ input:-webkit-autofill:focus {
     padding: 12px 30px;
     background-color: #ffffff;
     display: inline-block;
-    color: #768ede;
+    color: #0527ce;
     text-transform: uppercase;
     border-radius: 50px;
     letter-spacing: 1.5px;
@@ -225,7 +226,7 @@ input:-webkit-autofill:focus {
 }
 
 .sq {
-    border-radius: 3px !important;
+    border-radius: 5px !important;
 }
 
 
@@ -428,16 +429,21 @@ input:-webkit-autofill:focus {
 }
 
 .text-center.page-title .title:before,
-.page-title .title:after {
+.page-title .title:after, .page-title .title:before {
     content: '';
     width: 50px;
-    height: 1px;
+    height: 2px;
     display: inline-block;
-    background-color: #e1e1e1;
+    background-color: #fff;
     margin: 0 15px;
     -webkit-transform: translateY(-4px);
     -ms-transform: translateY(-4px);
     transform: translateY(-4px);
+}
+
+.footer-area .text-center.page-title .title:before,
+.footer-area .page-title .title:after, .footer-area .page-title .title:before {
+  background-color: #000052;
 }
 
 /*-- 7. Home-Area --*/
@@ -931,7 +937,8 @@ input:-webkit-autofill:focus {
 /*-- 17. Subscribe-Form --*/
 
 .subscribe-area {
-    background: url('images/subscribe-bg.jpg') no-repeat scroll center center / cover;
+    /* background: url('images/subscribe-bg.jpg') no-repeat scroll center center / cover; */
+    background-color: #294FED;
 }
 
 .subscribe-form {
@@ -1385,13 +1392,21 @@ input:-webkit-autofill:focus {
 .inf-main .inf-input.inf-input-text input[type=text]{
   border: none;
   padding: 5px;
-  width: 200px;
+  padding-left: 15px;
+  width: 260px;
+  border-radius: 15px 0px 0px 15px;
 }
 .inf-main .inf-submit input[type=submit]{
   border: none;
-  background-color: #17ffb1;
+  background-color: #00FFAA;
   color: white;
   padding: 5px;
+  padding-right: 15px;
+  border-radius: 0px 15px 15px 0px;
+}
+
+.inf-main .inf-submit input[type=submit]:hover{
+  color: #294FED;
 }
 
 /*-- Small Hacks --*/
@@ -1405,4 +1420,8 @@ input:-webkit-autofill:focus {
 
 .mainmenu-area.affix .logo-white{
   display: none;
+}
+
+.page-title .title{
+  color: #294FED;
 }

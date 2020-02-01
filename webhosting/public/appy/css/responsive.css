@@ -181,12 +181,15 @@
     .mainmenu-area #primary_menu ul.nav.navbar-nav li a {
         padding: 15px;
         border: none;
-        background-color: #ffffff;
+        background-color: #0527CE;
+    }
+    .mainmenu-area.affix #primary_menu ul.nav.navbar-nav li a {
+        background-color: #fff;
     }
     .mainmenu-area #primary_menu ul.nav.navbar-nav li.active a,
     .mainmenu-area #primary_menu ul.nav.navbar-nav li a:hover {
         background-color: #ffffff;
-        color: #5e88fc;
+        color: #00FFAA;
     }
     /*-- Home-Area --*/
     .home-area {
