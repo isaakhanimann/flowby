@@ -34,7 +34,7 @@ class Chat {
     this.username2 = map['username2'] ?? 'Default username2';
     this.user2ImageFileName = map['user2ImageFileName'];
     this.hasUser2Blocked = map['hasUser2Blocked'] ?? false;
-    this.lastMessageText = map['lastMessageText'] ?? 'Default lastMessageText';
+    this.lastMessageText = map['lastMessageText'] ?? 'No messages';
     this.lastMessageTimestamp =
         map['lastMessageTimestamp']?.toDate() ?? DateTime.now();
   }

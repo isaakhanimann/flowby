@@ -101,6 +101,17 @@ class ChatItem extends StatelessWidget {
 
     final heroTag = otherUid + 'chats';
 
+    bool amIUser1 = chat.uid1 == loggedInUser.uid;
+    bool haveIBlocked;
+    bool hasOtherBlocked;
+    if (amIUser1) {
+      haveIBlocked = chat.hasUser1Blocked;
+      hasOtherBlocked = chat.hasUser2Blocked;
+    } else {
+      haveIBlocked = chat.hasUser2Blocked;
+      hasOtherBlocked = chat.hasUser1Blocked;
+    }
+
     return Card(
       elevation: 0,
       color: kLightGrey2,
@@ -158,10 +169,20 @@ class ChatItem extends StatelessWidget {
               ),
             ],
           ),
-          subtitle: Text(
-            HelperFunctions.getDotDotDotString(
-                maybeLongString: chat.lastMessageText),
-            style: TextStyle(color: Colors.black38, fontSize: 15),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                HelperFunctions.getDotDotDotString(
+                    maybeLongString: chat.lastMessageText),
+                style: TextStyle(color: Colors.black38, fontSize: 15),
+              ),
+              if (haveIBlocked || hasOtherBlocked)
+                Icon(
+                  Feather.x,
+                  color: Colors.red,
+                ),
+            ],
           ),
           trailing: Icon(Feather.chevron_right),
         ),
