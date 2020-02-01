@@ -178,10 +178,10 @@ class ChatItem extends StatelessWidget {
                 style: TextStyle(color: Colors.black38, fontSize: 15),
               ),
               if (haveIBlocked || hasOtherBlocked)
-                Icon(
-                  Feather.x,
-                  color: Colors.red,
-                ),
+                Text(
+                  'blocked',
+                  style: TextStyle(color: Colors.red, fontSize: 12),
+                )
             ],
           ),
           trailing: Icon(Feather.chevron_right),
