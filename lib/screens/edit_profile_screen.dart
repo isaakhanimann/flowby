@@ -285,7 +285,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (showSpinner) {
       return CupertinoPageScaffold(
         backgroundColor: CupertinoColors.white,
-        child: CupertinoActivityIndicator(),
+        child: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+          ),
+        ),
       );
     }
     return CupertinoPageScaffold(

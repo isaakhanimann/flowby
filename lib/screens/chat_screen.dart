@@ -253,7 +253,10 @@ class Header extends StatelessWidget {
                           );
                         },
                         placeholder: (context, url) =>
-                            CupertinoActivityIndicator(),
+                            CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              kDefaultProfilePicColor),
+                        ),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                       SizedBox(
@@ -317,7 +320,10 @@ class MessagesStream extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting ||
             snapshot.connectionState == ConnectionState.none) {
           return Expanded(
-            child: CupertinoActivityIndicator(),
+            child: CircularProgressIndicator(
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+            ),
           );
         }
 
@@ -463,7 +469,7 @@ class MessageBubble extends StatelessWidget {
                     topRight: Radius.circular(30),
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30)),
-            elevation: 5.0,
+            elevation: 3.0,
             color: isMe ? ffMiddleBlue : Colors.white,
             child: Padding(
               padding:
