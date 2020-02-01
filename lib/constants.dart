@@ -79,6 +79,9 @@ const TextStyle kTabsLargeTitleTextStyle = TextStyle(
 
 const Color kSearchBackground = Color(0xffe0e0e0);
 
+const TextStyle kBlockedTextStyle =
+    TextStyle(color: Colors.red, fontFamily: 'MontserratRegular');
+
 const String kDefaultProfilePicName = 'default-profile-pic.jpg';
 
 const Color kPlaceHolderColor = Color(0xff979797);

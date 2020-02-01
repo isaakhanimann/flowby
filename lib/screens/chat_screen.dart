@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:Flowby/models/chat.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
@@ -55,8 +56,12 @@ class ChatScreen extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return CupertinoPageScaffold(
-              backgroundColor: CupertinoColors.white,
-              child: CupertinoActivityIndicator());
+            backgroundColor: CupertinoColors.white,
+            child: CircularProgressIndicator(
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+            ),
+          );
         }
         if (snapshot.hasError) {
           return Container(
@@ -101,95 +106,197 @@ class ChatScreenWithPath extends StatelessWidget {
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: SafeArea(
-        child: Stack(children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              MessagesStream(
-                messagesStream:
-                    cloudFirestoreService.getMessageStream(chatPath: chatPath),
-              ),
-              MessageSendingSection(chatPath: chatPath),
-            ],
-          ),
-          Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
-              child: Row(
+        child: StreamBuilder(
+          stream: cloudFirestoreService.getChatStream(chatPath: chatPath),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.none) {
+              return Stack(children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    MessagesStream(
+                      messagesStream: cloudFirestoreService.getMessageStream(
+                          chatPath: chatPath),
+                    ),
+                    MessageSendingSectionLoading(),
+                  ],
+                ),
+                Header(
+                  otherImageFileName: otherImageFileName,
+                  otherUsername: otherUsername,
+                  heroTag: heroTag,
+                  isButtonLoading: true,
+                ),
+              ]);
+            }
+
+            final Chat chat = snapshot.data;
+
+            return Stack(children: [
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                        width: 15,
-                      ),
-                      CupertinoButton(
-                        padding: EdgeInsets.all(0.0),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Icon(
-                          Feather.chevron_left,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) =>
-                                      ShowProfilePictureScreen(
-                                        profilePictureUrl:
-                                            'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media',
-                                        otherUsername: otherUsername,
-                                        heroTag: heroTag,
-                                      )));
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            CachedNetworkImage(
-                              imageUrl:
-                                  "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media",
-                              imageBuilder: (context, imageProvider) {
-                                return Hero(
-                                  transitionOnUserGestures: true,
-                                  tag: heroTag,
-                                  child: CircleAvatar(
-                                      radius: 30,
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: imageProvider),
-                                );
-                              },
-                              placeholder: (context, url) =>
-                                  CupertinoActivityIndicator(),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              otherUsername,
-                              style: TextStyle(
-                                  fontSize: 20, fontFamily: 'MuliRegular'),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
+                  MessagesStream(
+                    messagesStream: cloudFirestoreService.getMessageStream(
+                        chatPath: chatPath),
                   ),
-                  CupertinoButton(
-                    child: Icon(Feather.user_x),
-                    onPressed: () {},
-                  )
+                  MessageSendingSection(chat: chat),
                 ],
               ),
+              Header(
+                  otherImageFileName: otherImageFileName,
+                  otherUsername: otherUsername,
+                  heroTag: heroTag,
+                  isButtonLoading: false,
+                  chat: chat),
+            ]);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class MessageSendingSectionLoading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+      ),
+    );
+  }
+}
+
+class Header extends StatelessWidget {
+  const Header(
+      {Key key,
+      @required this.otherImageFileName,
+      @required this.otherUsername,
+      @required this.heroTag,
+      @required this.isButtonLoading,
+      this.chat})
+      : super(key: key);
+
+  final String otherImageFileName;
+  final String otherUsername;
+  final String heroTag;
+  final bool isButtonLoading;
+  final Chat chat;
+
+  @override
+  Widget build(BuildContext context) {
+    final loggedInUid = Provider.of<String>(context);
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    bool amIUser1 = (chat.uid1 == loggedInUid);
+    bool haveIBlocked;
+    bool hasOtherBlocked;
+    if (amIUser1) {
+      haveIBlocked = chat.hasUser1Blocked;
+      hasOtherBlocked = chat.hasUser2Blocked;
+    } else {
+      haveIBlocked = chat.hasUser2Blocked;
+      hasOtherBlocked = chat.hasUser1Blocked;
+    }
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  width: 15,
+                ),
+                CupertinoButton(
+                  padding: EdgeInsets.all(0.0),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(
+                    Feather.chevron_left,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => ShowProfilePictureScreen(
+                                  profilePictureUrl:
+                                      'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media',
+                                  otherUsername: otherUsername,
+                                  heroTag: heroTag,
+                                )));
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      CachedNetworkImage(
+                        imageUrl:
+                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media",
+                        imageBuilder: (context, imageProvider) {
+                          return Hero(
+                            transitionOnUserGestures: true,
+                            tag: heroTag,
+                            child: CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Colors.grey,
+                                backgroundImage: imageProvider),
+                          );
+                        },
+                        placeholder: (context, url) =>
+                            CupertinoActivityIndicator(),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        otherUsername,
+                        style:
+                            TextStyle(fontSize: 20, fontFamily: 'MuliRegular'),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
-        ]),
+            if (isButtonLoading)
+              CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+              ),
+            if (!isButtonLoading)
+              CupertinoButton(
+                child: Icon(
+                  Feather.user_x,
+                  color: hasOtherBlocked
+                      ? Colors.grey
+                      : (haveIBlocked ? Colors.red : kLoginBackgroundColor),
+                ),
+                onPressed: () {
+                  if (!hasOtherBlocked) {
+                    if (amIUser1) {
+                      cloudFirestoreService.uploadChatBlocked(
+                          chatpath: chat.chatpath,
+                          hasUser1Blocked: !haveIBlocked);
+                    } else {
+                      cloudFirestoreService.uploadChatBlocked(
+                          chatpath: chat.chatpath,
+                          hasUser2Blocked: !haveIBlocked);
+                    }
+                  }
+                },
+              )
+          ],
+        ),
       ),
     );
   }
@@ -241,9 +348,9 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageSendingSection extends StatefulWidget {
-  final String chatPath;
+  final Chat chat;
 
-  MessageSendingSection({@required this.chatPath});
+  MessageSendingSection({@required this.chat});
 
   @override
   _MessageSendingSectionState createState() => _MessageSendingSectionState();
@@ -255,6 +362,38 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
   @override
   Widget build(BuildContext context) {
     String loggedInUid = Provider.of<String>(context);
+
+    bool amIUser1 = widget.chat.uid1 == loggedInUid;
+    bool haveIBlocked;
+    bool hasOtherBlocked;
+    if (amIUser1) {
+      haveIBlocked = widget.chat.hasUser1Blocked;
+      hasOtherBlocked = widget.chat.hasUser2Blocked;
+    } else {
+      haveIBlocked = widget.chat.hasUser2Blocked;
+      hasOtherBlocked = widget.chat.hasUser1Blocked;
+    }
+    if (haveIBlocked) {
+      return Container(
+        height: 80,
+        child: Center(
+          child: Text(
+              'You have blocked ${amIUser1 ? widget.chat.username2 : widget.chat.username1}',
+              style: kBlockedTextStyle),
+        ),
+      );
+    }
+    if (hasOtherBlocked) {
+      return Container(
+        height: 80,
+        child: Center(
+          child: Text(
+            '${amIUser1 ? widget.chat.username2 : widget.chat.username1} has blocked you',
+            style: kBlockedTextStyle,
+          ),
+        ),
+      );
+    }
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     return Container(
@@ -283,7 +422,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
                     text: messageTextController.text,
                     timestamp: FieldValue.serverTimestamp());
                 cloudFirestoreService.uploadMessage(
-                    chatPath: widget.chatPath, message: message);
+                    chatPath: widget.chat.chatpath, message: message);
                 messageTextController.clear(); // Reset locally the sent message
               }
             },

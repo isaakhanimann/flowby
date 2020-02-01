@@ -50,7 +50,37 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  Stream<List<Chat>> getChatStream({@required String loggedInUid}) {
+  Stream<Chat> getChatStream({@required String chatPath}) {
+    try {
+      var chatStream = _fireStore.document(chatPath).snapshots().map((doc) {
+        Chat chat = Chat.fromMap(map: doc.data);
+        chat.setChatpath(chatpath: doc.reference.path);
+        return chat;
+      });
+      return chatStream;
+    } catch (e) {
+      print('Isaak could not get the chat stream');
+    }
+    return Stream.empty();
+  }
+
+  Future<void> uploadChatBlocked(
+      {@required String chatpath,
+      bool hasUser1Blocked,
+      bool hasUser2Blocked}) async {
+    if (hasUser1Blocked != null) {
+      await _fireStore
+          .document(chatpath)
+          .updateData({'hasUser1Blocked': hasUser1Blocked});
+    } else if (hasUser2Blocked != null) {
+      await _fireStore
+          .document(chatpath)
+          .updateData({'hasUser2Blocked': hasUser2Blocked});
+    }
+    return null;
+  }
+
+  Stream<List<Chat>> getChatsStream({@required String loggedInUid}) {
     Stream<List<Chat>> stream1 = _fireStore
         .collection('chats')
         .where('uid1', isEqualTo: loggedInUid)
@@ -124,17 +154,18 @@ class FirebaseCloudFirestoreService {
       @required String otherUserImageFileName}) async {
     try {
       User loggedInUser = await getUser(uid: loggedInUid);
-      var docReference = await _fireStore.collection('chats').add({
-        'uid1': loggedInUser.uid,
-        'username1': loggedInUser.username,
-        'user1ImageFileName': loggedInUser.imageFileName,
-        'uid2': otherUserUid,
-        'username2': otherUsername,
-        'user2ImageFileName': otherUserImageFileName,
-        'lastMessageTimestamp': FieldValue.serverTimestamp(),
-        'lastMessageText':
-            '', //should we put a default message like 'there are no message'?
-      });
+      Chat chat = Chat(
+          uid1: loggedInUser.uid,
+          username1: loggedInUser.username,
+          user1ImageFileName: loggedInUser.imageFileName,
+          hasUser1Blocked: false,
+          uid2: otherUserUid,
+          username2: otherUsername,
+          user2ImageFileName: otherUserImageFileName,
+          hasUser2Blocked: false,
+          lastMessageText: 'No message yet',
+          lastMessageTimestamp: FieldValue.serverTimestamp());
+      var docReference = await _fireStore.collection('chats').add(chat.toMap());
       return docReference.path;
     } catch (e) {
       print('Isaak could not createChat');

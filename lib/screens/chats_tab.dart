@@ -25,7 +25,7 @@ class ChatsTab extends StatelessWidget {
 
     return StreamBuilder(
         stream:
-            cloudFirestoreService.getChatStream(loggedInUid: loggedInUser.uid),
+            cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.connectionState == ConnectionState.none) {
