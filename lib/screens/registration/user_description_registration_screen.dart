@@ -1,5 +1,6 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/registration/add_languages_registration_screen.dart';
 import 'package:Flowby/screens/registration/add_skills_registration_screen.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
@@ -57,7 +58,7 @@ class _UserDescriptionRegistrationScreenState
             body: SingleChildScrollView(
               child: Stack(children: [
                 Hero(
-                  child: ProgressBar(progress: 0.5),
+                  child: ProgressBar(progress: 0.4),
                   transitionOnUserGestures: true,
                   tag: 'progress_bar',
                 ),
@@ -117,7 +118,7 @@ class _UserDescriptionRegistrationScreenState
                             Navigator.of(context, rootNavigator: true).push(
                               CupertinoPageRoute<void>(
                                 builder: (context) {
-                                  return AddSkillsRegistrationScreen(
+                                  return AddLanguagesRegistrationScreen(
                                       user: _user);
                                 },
                               ),

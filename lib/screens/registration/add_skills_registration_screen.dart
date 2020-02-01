@@ -35,6 +35,21 @@ class _AddSkillsRegistrationScreenState
   List<TextEditingController> wishKeywordControllers = [];
   List<TextEditingController> wishDescriptionControllers = [];
 
+  void _setLanguagesInSkills(User user) async {
+    setState(() {
+      var _skills = user.skills;
+      _skills?.forEach((key, value) {
+        skillKeywordControllers.add(TextEditingController(text: key));
+        skillDescriptionControllers.add(TextEditingController(text: value));
+      });
+      //controllers for extra skill
+      skillKeywordControllers.add(TextEditingController());
+      skillDescriptionControllers.add(TextEditingController());
+
+      showSpinner = false;
+    });
+  }
+
   Column _buildListOfTextFields({bool isSkillBuild}) {
     if (isSkillBuild) {
       if (skillKeywordControllers.length == 0) {
@@ -74,9 +89,7 @@ class _AddSkillsRegistrationScreenState
                 style: kAddSkillsTextStyle,
                 maxLength: 20,
                 decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(width: 1, color: kBoxBorderColor),
-                  ),
+                  border: null,
                 ),
                 textAlign: TextAlign.start,
                 placeholder: "#keywords",
@@ -95,9 +108,7 @@ class _AddSkillsRegistrationScreenState
                 style: kAddSkillsTextStyle,
                 maxLength: 100,
                 decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(width: 1, color: kBoxBorderColor),
-                  ),
+                  border: null,
                 ),
                 textAlign: TextAlign.start,
                 placeholder: "description",
@@ -109,7 +120,7 @@ class _AddSkillsRegistrationScreenState
             Expanded(
               flex: 0,
               child: Padding(
-                padding: const EdgeInsets.only(top: 15.0),
+                padding: const EdgeInsets.only(top: 7.5),
                 child: GestureDetector(
                   onTap: () => setState(() {
                     skillKeywordControllers.removeAt(rowNumber);
@@ -125,30 +136,54 @@ class _AddSkillsRegistrationScreenState
     }
 
     rows.add(
-      Center(
-        child: RoundedButton(
-          onPressed: () {
-            setState(() {
-              if (isSkillBuild) {
-                skillKeywordControllers.add(TextEditingController());
-                skillDescriptionControllers.add(TextEditingController());
-              } else {
-                wishKeywordControllers.add(TextEditingController());
-                wishDescriptionControllers.add(TextEditingController());
-              }
-            });
-          },
-          text: "Add",
-          color: kLoginBackgroundColor,
-          textColor: Colors.white,
-          paddingInsideHorizontal: 20,
-          paddingInsideVertical: 5,
-          elevation: 0,
-        ),
-      ),
+      _addButtonRow(isSkillBuild),
+      // I personally prefer the above widget. The old version is under so you can test it.
+      // _addButtonRowAlt(isSkillBuild),
     );
     return Column(
       children: rows,
+    );
+  }
+
+  Widget _addButtonRow(isSkillBuild) {
+    return Container(
+      alignment: Alignment.bottomLeft,
+      child: GestureDetector(
+        child: Icon(Feather.plus),
+        onTap: () {
+          setState(() {
+            if (isSkillBuild) {
+              skillKeywordControllers.add(TextEditingController());
+              skillDescriptionControllers.add(TextEditingController());
+            } else {
+              wishKeywordControllers.add(TextEditingController());
+              wishDescriptionControllers.add(TextEditingController());
+            }
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _addButtonRowAlt(isSkillBuild) {
+    return RoundedButton(
+      onPressed: () {
+        setState(() {
+          if (isSkillBuild) {
+            skillKeywordControllers.add(TextEditingController());
+            skillDescriptionControllers.add(TextEditingController());
+          } else {
+            wishKeywordControllers.add(TextEditingController());
+            wishDescriptionControllers.add(TextEditingController());
+          }
+        });
+      },
+      text: "Add",
+      color: kLoginBackgroundColor,
+      textColor: Colors.white,
+      paddingInsideHorizontal: 20,
+      paddingInsideVertical: 5,
+      elevation: 0,
     );
   }
 
@@ -168,11 +203,17 @@ class _AddSkillsRegistrationScreenState
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    //this is an asynchronous method
     widget.user != null
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
+    _setLanguagesInSkills(_user);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     //print(_user);
     return Container(
       decoration: BoxDecoration(
@@ -200,7 +241,7 @@ class _AddSkillsRegistrationScreenState
             body: SingleChildScrollView(
               child: Stack(children: [
                 Hero(
-                  child: ProgressBar(progress: 0.75),
+                  child: ProgressBar(progress: 0.8),
                   transitionOnUserGestures: true,
                   tag: 'progress_bar',
                 ),
@@ -253,26 +294,6 @@ class _AddSkillsRegistrationScreenState
                               SizedBox(
                                 height: 10.0,
                               ),
-                              Text(
-                                'How valuable is your presence? ',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'MontserratRegular',
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              RatePicker(
-                                initialValue: _user.skillRate ?? 20,
-                                onSelected: (selectedIndex) {
-                                  setState(() {
-                                    _databaseSkillRate = selectedIndex;
-                                  });
-                                },
-                              ),
                             ],
                           ),
                         RoundedButton(
@@ -321,20 +342,20 @@ class _AddSkillsRegistrationScreenState
                             fontFamily: 'MontserratRegular',
                             fontSize: 22.0,
                           ),
-                        ),
+                        ),*/
                         Container(
-                          height: 350.0,
-                          width: 350.0,
+                          height: MediaQuery.of(context).size.width * 0.75,
+                          width: MediaQuery.of(context).size.width * 0.75,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               colorFilter: ColorFilter.mode(
                                   Colors.white, BlendMode.colorBurn),
-                              image: AssetImage("images/Freeflowter_Stony.png"),
+                              image: AssetImage("assets/images/flowby.png"),
                               alignment: Alignment(0.0, 0.0),
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
                             ),
                           ),
-                        ),*/
+                        ),
                       ]),
                 ),
               ]),

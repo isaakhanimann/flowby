@@ -17,11 +17,18 @@ const kSmallTitleTextStyle = TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.w400,
     color: kSmallTitlesTextColor);
+const kEditProfileTextFieldTextStyle = TextStyle(
+    fontFamily: 'NotoRegular',
+    fontSize: 20.0,
+    fontWeight: FontWeight.w400,
+    color: kTextFieldTextColor);
 const kAddSkillsTextStyle = TextStyle(
     fontFamily: 'NotoRegular',
-    fontSize: 18.0,
+    fontSize: 16.0,
     fontWeight: FontWeight.w400,
     color: kSmallTitlesTextColor);
+
+const kNavigationBarTextStyle = TextStyle(fontFamily: 'MontserratRegular');
 const kLocationTextStyle = TextStyle(color: Colors.grey, fontSize: 14);
 const kUsernameTextStyle = TextStyle(fontWeight: FontWeight.bold);
 const kSkillTextStyle = TextStyle(color: Colors.grey, fontSize: 16);

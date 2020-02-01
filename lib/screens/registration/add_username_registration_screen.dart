@@ -65,7 +65,7 @@ class _AddUsernameRegistrationScreenState
             body: SingleChildScrollView(
               child: Stack(children: [
                 Hero(
-                  child: ProgressBar(progress: 0.5),
+                  child: ProgressBar(progress: 0),
                   transitionOnUserGestures: true,
                   tag: 'progress_bar',
                 ),

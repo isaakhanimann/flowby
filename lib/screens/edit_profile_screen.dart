@@ -42,7 +42,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   List<TextEditingController> wishKeywordControllers = [];
   List<TextEditingController> wishDescriptionControllers = [];
 
-  void changeProfilePic() async {
+  void _changeProfilePic() async {
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
@@ -74,7 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   void _setImage(ImageSource source) async {
     var selectedImage =
-        await ImagePicker.pickImage(source: source, imageQuality: 25);
+        await ImagePicker.pickImage(source: source, imageQuality: 20);
 
     File croppedImage = await ImageCropper.cropImage(
         sourcePath: selectedImage.path,
@@ -298,15 +298,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: Colors.transparent,
         leading: CupertinoButton(
           padding: EdgeInsets.all(10),
-          child: Text('Cancel'),
+          child: Text('Cancel', style: kNavigationBarTextStyle),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        middle: Text('Edit Profile'),
+        middle: Text('Edit Profile', style: kNavigationBarTextStyle),
         trailing: CupertinoButton(
             padding: EdgeInsets.all(10),
-            child: Text('Done'),
+            child: Text('Done', style: kNavigationBarTextStyle),
             onPressed: () async {
               setState(() {
                 showSpinner = true;
@@ -352,7 +352,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: ListView(
             children: <Widget>[
               GestureDetector(
-                onTap: changeProfilePic,
+                onTap: _changeProfilePic,
                 child: Center(
                   heightFactor: 1.2,
                   child: _profilePic == null
@@ -414,13 +414,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     width: 100,
                     child: Text(
                       'Name',
-                      style: TextStyle(fontSize: 22),
+                      style: kEditProfileTextFieldTextStyle,
                     ),
                   ),
                   Expanded(
                     child: CupertinoTextField(
-                      style:
-                          TextStyle(color: kTextFieldTextColor, fontSize: 22),
+                      style:kEditProfileTextFieldTextStyle,
                       placeholder: 'Enter your name',
                       padding: EdgeInsets.only(bottom: 0),
                       maxLength: 20,
@@ -442,14 +441,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     width: 100,
                     child: Text(
                       'Bio',
-                      style: TextStyle(fontSize: 22),
+                      style: kEditProfileTextFieldTextStyle,
                     ),
                   ),
                   Expanded(
                     child: CupertinoTextField(
                       expands: true,
-                      style:
-                          TextStyle(color: kTextFieldTextColor, fontSize: 20),
+                      style:kEditProfileTextFieldTextStyle,
                       placeholder: 'Enter your description',
                       maxLength: 200,
                       minLines: null,

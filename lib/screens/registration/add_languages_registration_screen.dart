@@ -1,36 +1,28 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/navigation_screen.dart';
-import 'package:Flowby/services/firebase_auth_service.dart';
-import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/screens/registration/add_skills_registration_screen.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
-import 'package:Flowby/widgets/rate_picker.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
-class AddWishesRegistrationScreen extends StatefulWidget {
-  static const String id = 'add_whishes_registration_screen';
+class AddLanguagesRegistrationScreen extends StatefulWidget {
+  static const String id = 'add_skills_registration_screen';
 
   final User user;
 
-  AddWishesRegistrationScreen({this.user});
+  AddLanguagesRegistrationScreen({this.user});
 
   @override
-  _AddWishesRegistrationScreenState createState() =>
-      _AddWishesRegistrationScreenState();
+  _AddLanguagesRegistrationScreenState createState() =>
+      _AddLanguagesRegistrationScreenState();
 }
 
-class _AddWishesRegistrationScreenState
-    extends State<AddWishesRegistrationScreen> {
+class _AddLanguagesRegistrationScreenState
+    extends State<AddLanguagesRegistrationScreen> {
   bool showSpinner = false;
-
-//  String _databaseHashtagWishes;
-  int _databaseWishRate = 20;
-  bool _localHasWishes = true;
 
   User _user;
 
@@ -52,8 +44,8 @@ class _AddWishesRegistrationScreenState
       if (wishKeywordControllers.length == 0) {
         setState(() {
           // Default controllers
-          wishKeywordControllers.add(TextEditingController());
-          wishDescriptionControllers.add(TextEditingController());
+          skillKeywordControllers.add(TextEditingController());
+          skillDescriptionControllers.add(TextEditingController());
         });
       }
     }
@@ -67,6 +59,7 @@ class _AddWishesRegistrationScreenState
         rowNumber++) {
       rows.add(
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
               flex: 1,
@@ -111,8 +104,8 @@ class _AddWishesRegistrationScreenState
                 padding: const EdgeInsets.only(top: 15.0),
                 child: GestureDetector(
                   onTap: () => setState(() {
-                    wishKeywordControllers.removeAt(rowNumber);
-                    wishDescriptionControllers.removeAt(rowNumber);
+                    skillKeywordControllers.removeAt(rowNumber);
+                    skillDescriptionControllers.removeAt(rowNumber);
                   }),
                   child: Icon(Feather.x),
                 ),
@@ -197,7 +190,6 @@ class _AddWishesRegistrationScreenState
         : print('Why da fuck is User == NULL?!');
 
     //print(_user);
-
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -214,17 +206,11 @@ class _AddWishesRegistrationScreenState
         ),
         child: SafeArea(
           child: Scaffold(
-            /*appBar: AppBar(
-              title: Text('Upload a picture'),
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-            ),*/
             backgroundColor: Colors.white,
             body: SingleChildScrollView(
               child: Stack(children: [
                 Hero(
-                  child: ProgressBar(progress: 1),
+                  child: ProgressBar(progress: 0.6),
                   transitionOnUserGestures: true,
                   tag: 'progress_bar',
                 ),
@@ -237,50 +223,36 @@ class _AddWishesRegistrationScreenState
                         SizedBox(
                           height: 20.0,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              'Your wishes',
-                              style: kUsernameTitleTextStyle,
-                            ),
-                            CupertinoSwitch(
-                              value: _localHasWishes,
-                              onChanged: (newBool) {
-                                setState(() {
-                                  _localHasWishes = newBool;
-                                });
-                              },
-                            ),
-                          ],
+                        Text(
+                          'Your languages',
+                          style: kUsernameTitleTextStyle,
                         ),
                         SizedBox(
                           height: 20.0,
                         ),
-                        if (_localHasWishes)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                'Tell others what you would like to learn',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'MontserratRegular',
-                                  fontSize: 22.0,
-                                ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Share your culture or meet for a tandem',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'MontserratRegular',
+                                fontSize: 22.0,
                               ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              _buildListOfTextFields(isSkillBuild: false),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            _buildListOfTextFields(isSkillBuild: true),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                          ],
+                        ),
                         RoundedButton(
-                          text: 'I am ready!',
+                          text: 'Next',
                           color: kBlueButtonColor,
                           textColor: Colors.white,
                           onPressed: () async {
@@ -288,37 +260,23 @@ class _AddWishesRegistrationScreenState
                               showSpinner = true;
                             });
 
-                            Map<String, String> wishes = controllersToMap(
-                                keyControllers: wishKeywordControllers,
+                            Map<String, String> skills = controllersToMap(
+                                keyControllers: skillKeywordControllers,
                                 descriptionControllers:
-                                    wishDescriptionControllers);
+                                    skillDescriptionControllers);
 
-                            _user.hasWishes = _localHasWishes;
-                            _user.wishRate = _databaseWishRate;
-                            _user.wishes = wishes;
+                            _user.skills = skills;
 
-                            final cloudFirestoreService =
-                                Provider.of<FirebaseCloudFirestoreService>(
-                                    context,
-                                    listen: false);
+                            print(_user);
 
-                            await cloudFirestoreService.uploadUser(user: _user);
-                            final authService =
-                                Provider.of<FirebaseAuthService>(context,
-                                    listen: false);
-
-                            /*
-                            final loggedInUser = Provider.of<FirebaseUser>(
-                                context,
-                                listen: false);
-                            */
-
-                            authService.getCurrentUser().then((loggedInUser) {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                NavigationScreen.id,
-                                (Route<dynamic> route) => false,
-                              );
-                            });
+                            Navigator.of(context, rootNavigator: true).push(
+                              CupertinoPageRoute<void>(
+                                builder: (context) {
+                                  return AddSkillsRegistrationScreen(
+                                      user: _user);
+                                },
+                              ),
+                            );
 
                             setState(() {
                               showSpinner = false;
@@ -337,23 +295,20 @@ class _AddWishesRegistrationScreenState
                             fontFamily: 'MontserratRegular',
                             fontSize: 22.0,
                           ),
-                        ), */
-                        SizedBox(
-                          height: 10.0,
                         ),
                         Container(
-                          height: MediaQuery.of(context).size.width * 0.75,
-                          width: MediaQuery.of(context).size.width * 0.75,
+                          height: 350.0,
+                          width: 350.0,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               colorFilter: ColorFilter.mode(
                                   Colors.white, BlendMode.colorBurn),
-                              image: AssetImage("assets/images/stony.png"),
+                              image: AssetImage("images/Freeflowter_Stony.png"),
                               alignment: Alignment(0.0, 0.0),
-                              fit: BoxFit.contain,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                        ),
+                        ),*/
                       ]),
                 ),
               ]),
