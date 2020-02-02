@@ -97,50 +97,33 @@ class FirebaseCloudMessaging {
     );
   }
 
-  void navigateToChat(
-      {BuildContext context,
-      CloudMessage message,
-      Map onTapMessage,
-      bool onTap = false}) {
-    if (onTap) {
-      Navigator.of(context, rootNavigator: true).push(
-        CupertinoPageRoute<void>(
-          builder: (context) {
-            return ChatScreen(
-              loggedInUid: onTapMessage['data']['loggedInUser'],
-              otherUid: onTapMessage['data']['otherUid'],
-              otherUsername: onTapMessage['data']['otherUsername'],
-              heroTag: onTapMessage['data']['otherUid'] + 'chats',
-              otherImageFileName: onTapMessage['data']['otherImageFileName'],
-              chatPath: onTapMessage['data']['chatPath'],
-            );
-          },
-        ),
-      );
-    } else {
-      Navigator.of(context, rootNavigator: true).push(
-        CupertinoPageRoute<void>(
-          builder: (context) {
-            return ChatScreen(
-              loggedInUid: message.data['loggedInUser'],
-              otherUid: message.data['otherUid'],
-              otherUsername: message.data['otherUsername'],
-              heroTag: message.data['otherUid'] + 'chats',
-              otherImageFileName: message.data['otherImageFileName'],
-              chatPath: message.data['chatPath'],
-            );
-          },
-        ),
-      );
-    }
+  void navigateToChat({
+    BuildContext context,
+    CloudMessage message,
+  }) {
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return ChatScreen(
+            loggedInUid: message.data['loggedInUser'],
+            otherUid: message.data['otherUid'],
+            otherUsername: message.data['otherUsername'],
+            heroTag: message.data['otherUid'] + 'chats',
+            otherImageFileName: message.data['otherImageFileName'],
+            chatPath: message.data['chatPath'],
+          );
+        },
+      ),
+    );
   }
 
   Future onSelectNotification(String payload) async {
     if (payload != null) {
       //debugPrint('notification payload: ' + payload);
     }
-    Map message = json.decode(payload);
-    navigateToChat(context: _context, onTapMessage: message, onTap: true);
+    CloudMessage message =
+        CloudMessage.fromMap(mapMessage: json.decode(payload));
+    navigateToChat(context: _context, message: message);
   }
 }
 
@@ -166,6 +149,7 @@ class CloudMessage {
   // "data": {"click_action": "FLUTTER_NOTIFICATION_CLICK", "id": "1", "status": "done"},
   // "to": "<FCM TOKEN>"}';
   CloudMessage.fromMap({Map<String, dynamic> mapMessage}) {
+    string = JsonEncoder.withIndent("    ").convert(mapMessage);
     title = mapMessage['notification']['title'];
     body = mapMessage['notification']['body'];
     toToken = mapMessage['to'];
@@ -175,7 +159,5 @@ class CloudMessage {
     data['otherUsername'] = mapMessage['data']['otherUsername'];
     data['otherImageFileName'] = mapMessage['data']['otherImageFileName'];
     data['chatPath'] = mapMessage['data']['chatPath'];
-
-    string = JsonEncoder.withIndent("    ").convert(mapMessage);
   }
 }
