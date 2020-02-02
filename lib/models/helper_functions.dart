@@ -2,14 +2,16 @@ import 'package:flutter/cupertino.dart';
 
 class HelperFunctions {
   static String getTimestampAsString({@required DateTime timestamp}) {
-    int today = DateTime.now().day;
-    if (today == timestamp.day) {
+    DateTime now = DateTime.now();
+    if (now.difference(timestamp) < Duration(days: 1) &&
+        now.day == timestamp.day) {
+      //its today
       return _makeInt2Digits(timestamp.hour) +
           ':' +
           _makeInt2Digits(timestamp.minute);
-    } else if (today - 1 == timestamp.day) {
+    } else if (now.difference(timestamp) < Duration(days: 2)) {
       return 'Yesterday';
-    } else if (today - 7 < timestamp.day) {
+    } else if (now.difference(timestamp) < Duration(days: 7)) {
       return _getWeekdayString(timestamp.weekday);
     } else {
       return _makeInt2Digits(timestamp.day) +
