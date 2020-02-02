@@ -62,73 +62,98 @@ class _AddLanguagesRegistrationScreenState
                 : wishKeywordControllers.length);
         rowNumber++) {
       rows.add(
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Column(
           children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: CupertinoTextField(
-                expands: true,
-                minLines: null,
-                maxLines: null,
-                style: kAddSkillsTextStyle,
-                maxLength: 20,
-                decoration: BoxDecoration(
-                  border: null,
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: CupertinoTextField(
+                    expands: true,
+                    minLines: null,
+                    maxLines: null,
+                    style: kAddSkillsTextStyle,
+                    maxLength: 20,
+                    decoration: null,
+                    textAlign: TextAlign.start,
+                    placeholder: "#keywords",
+                    controller: isSkillBuild
+                        ? skillKeywordControllers[rowNumber]
+                        : wishKeywordControllers[rowNumber],
+                  ),
                 ),
-                textAlign: TextAlign.start,
-                placeholder: "#language",
-                controller: isSkillBuild
-                    ? skillKeywordControllers[rowNumber]
-                    : wishKeywordControllers[rowNumber],
-              ),
-            ),
-            SizedBox(width: 20),
-            Expanded(
-              flex: 2,
-              child: CupertinoTextField(
-                expands: true,
-                maxLines: null,
-                minLines: null,
-                style: kAddSkillsTextStyle,
-                maxLength: 100,
-                decoration: BoxDecoration(
-                  border: null,
+                SizedBox(width: 20),
+                Expanded(
+                  child: CupertinoTextField(
+                    expands: true,
+                    maxLines: null,
+                    minLines: null,
+                    style: kAddSkillsTextStyle,
+                    maxLength: 10,
+                    decoration: null,
+                    textAlign: TextAlign.start,
+                    placeholder: "price",
+                    controller: isSkillBuild
+                        ? skillPriceControllers[rowNumber]
+                        : wishPriceControllers[rowNumber],
+                  ),
                 ),
-                textAlign: TextAlign.start,
-                placeholder: "level",
-                controller: isSkillBuild
-                    ? skillDescriptionControllers[rowNumber]
-                    : wishDescriptionControllers[rowNumber],
-              ),
-            ),
-            Expanded(
-              flex: 0,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 15.0),
-                child: GestureDetector(
-                  onTap: () => setState(() {
-                    skillKeywordControllers.removeAt(rowNumber);
-                    skillDescriptionControllers.removeAt(rowNumber);
-                  }),
-                  child: Icon(Feather.x),
+                Padding(
+                  padding: const EdgeInsets.only(top: 0.0),
+                  child: GestureDetector(
+                    onTap: () => setState(() {
+                      if (isSkillBuild) {
+                        skillKeywordControllers.removeAt(rowNumber);
+                        skillDescriptionControllers.removeAt(rowNumber);
+                        skillPriceControllers.removeAt(rowNumber);
+                      } else {
+                        wishKeywordControllers.removeAt(rowNumber);
+                        wishDescriptionControllers.removeAt(rowNumber);
+                        wishPriceControllers.removeAt(rowNumber);
+                      }
+                    }),
+                    child: Icon(Feather.x),
+                  ),
                 ),
-              ),
+              ],
             ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: CupertinoTextField(
+                    expands: true,
+                    maxLines: null,
+                    minLines: null,
+                    style: kAddSkillsTextStyle,
+                    maxLength: 100,
+                    decoration: null,
+                    textAlign: TextAlign.start,
+                    placeholder: "description",
+                    controller: isSkillBuild
+                        ? skillDescriptionControllers[rowNumber]
+                        : wishDescriptionControllers[rowNumber],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15.0),
           ],
         ),
       );
     }
 
     rows.add(
-      _addButtonRow(isSkillBuild),
+      _addRowButton(isSkillBuild),
     );
     return Column(
       children: rows,
     );
   }
 
-  Widget _addButtonRow(isSkillBuild) {
+  Widget _addRowButton(isSkillBuild) {
     return Container(
       alignment: Alignment.bottomLeft,
       child: GestureDetector(
@@ -138,9 +163,11 @@ class _AddLanguagesRegistrationScreenState
             if (isSkillBuild) {
               skillKeywordControllers.add(TextEditingController());
               skillDescriptionControllers.add(TextEditingController());
+              skillPriceControllers.add(TextEditingController());
             } else {
               wishKeywordControllers.add(TextEditingController());
               wishDescriptionControllers.add(TextEditingController());
+              wishPriceControllers.add(TextEditingController());
             }
           });
         },

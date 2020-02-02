@@ -18,10 +18,10 @@ const kSmallTitleTextStyle = TextStyle(
     fontWeight: FontWeight.w400,
     color: kSmallTitlesTextColor);
 const kKeywordHeaderTextStyle = TextStyle(
-    fontFamily: 'NotoRegular',
+    fontFamily: 'NotoMedium',
     fontSize: 18.0,
-    fontWeight: FontWeight.w600,
-    color: Color(0xFF08D491));
+    fontWeight: FontWeight.w400,
+    color: kDefaultProfilePicColor);
 const kEditProfileTextFieldTextStyle = TextStyle(
     fontFamily: 'NotoRegular',
     fontSize: 20.0,

@@ -150,7 +150,7 @@ class ListViewOfUserInfos extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Expanded(
-                  flex: 6,
+                  flex: 5,
                   child: Text(
                     skillOrWish.keywords,
                     style: kKeywordHeaderTextStyle,
@@ -159,7 +159,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                 ),
                 SizedBox(width: 20),
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Text(
                     skillOrWish.price,
                     style: kKeywordHeaderTextStyle,
