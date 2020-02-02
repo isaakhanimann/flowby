@@ -188,13 +188,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 maxLines: null,
                 minLines: null,
                 style: kAddSkillsTextStyle,
-                maxLength: 10,
+                maxLength: 100,
                 decoration: null,
                 textAlign: TextAlign.start,
-                placeholder: "price",
+                placeholder: "description",
                 controller: isSkillBuild
-                    ? skillPriceControllers[rowNumber]
-                    : wishPriceControllers[rowNumber],
+                    ? skillDescriptionControllers[rowNumber]
+                    : wishDescriptionControllers[rowNumber],
               ),
             ),
             Expanded(
@@ -203,13 +203,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 maxLines: null,
                 minLines: null,
                 style: kAddSkillsTextStyle,
-                maxLength: 100,
+                maxLength: 10,
                 decoration: null,
                 textAlign: TextAlign.start,
-                placeholder: "description",
+                placeholder: "price",
                 controller: isSkillBuild
-                    ? skillDescriptionControllers[rowNumber]
-                    : wishDescriptionControllers[rowNumber],
+                    ? skillPriceControllers[rowNumber]
+                    : wishPriceControllers[rowNumber],
               ),
             ),
             Padding(
@@ -371,24 +371,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ],
               ),
             ],
-          ),
-        ),
-      );
-    }
-
-    if (showSpinner) {
-      return CupertinoPageScaffold(
-        backgroundColor: Colors.white,
-        child: Center(
-          child: SizedBox(
-            width: 200,
-            child: FlareActor(
-              'assets/animations/liquid_loader.flr',
-              alignment: Alignment.center,
-              color: kDefaultProfilePicColor,
-              fit: BoxFit.contain,
-              animation: "Untitled",
-            ),
           ),
         ),
       );
