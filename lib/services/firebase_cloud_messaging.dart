@@ -14,10 +14,6 @@ class FirebaseCloudMessaging {
 
   BuildContext _context;
 
-  void getContext(BuildContext context) {
-    _context = context;
-  }
-
   Future<String> getToken() {
     return _firebaseMessaging.getToken();
   }
@@ -37,7 +33,7 @@ class FirebaseCloudMessaging {
             .getNotificationAppLaunchDetails()
             .then((notificationAppLaunchDetails) {
           if (notificationAppLaunchDetails.didNotificationLaunchApp)
-            navigateToChat(context: context, message: message);
+            navigateToChat(context, message);
         });
         _context = context;
         showNotification(message: message);
@@ -45,12 +41,12 @@ class FirebaseCloudMessaging {
       onResume: (Map<String, dynamic> mapMessage) async {
         print('on resume $mapMessage');
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-        navigateToChat(context: context, message: message);
+        navigateToChat(context, message);
       },
       onLaunch: (Map<String, dynamic> mapMessage) async {
         print('on launch $mapMessage');
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-        navigateToChat(context: context, message: message);
+        navigateToChat(context, message);
       },
     );
     // Flutter Local Notifications //
@@ -75,11 +71,9 @@ class FirebaseCloudMessaging {
 
   void showNotification({@required CloudMessage message}) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      Platform.isAndroid
-          ? 'com.dfa.flutterchatdemo'
-          : 'com.duytq.flutterchatdemo',
-      'Flutter chat demo',
-      'your channel description',
+      Platform.isAndroid ? 'co.flowby' : 'co.flowby',
+      'Flowby',
+      'Flowby is a close by community of people that share their skills in person.',
       playSound: true,
       enableVibration: true,
       importance: Importance.Max,
@@ -97,10 +91,10 @@ class FirebaseCloudMessaging {
     );
   }
 
-  void navigateToChat({
+  void navigateToChat(
     BuildContext context,
     CloudMessage message,
-  }) {
+  ) {
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
@@ -123,7 +117,7 @@ class FirebaseCloudMessaging {
     }
     CloudMessage message =
         CloudMessage.fromMap(mapMessage: json.decode(payload));
-    navigateToChat(context: _context, message: message);
+    navigateToChat(_context, message);
   }
 }
 
