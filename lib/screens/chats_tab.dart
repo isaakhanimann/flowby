@@ -45,7 +45,8 @@ class ChatsTab extends StatelessWidget {
             // Scaffold damit text nicht gelb unterstrichen ist
             return CupertinoPageScaffold(
               child: Center(
-                child: Text('You have no open chats', style: kSkillTextStyle),
+                child: Text('You have no open chats',
+                    style: kCardSubtitleTextStyle),
               ),
             );
           }
@@ -178,10 +179,10 @@ class ChatItem extends StatelessWidget {
                 style: kChatLastMessageTextStyle,
               ),
               if (haveIBlocked || hasOtherBlocked)
-                Icon(
-                  Feather.x,
-                  color: Colors.red,
-                ),
+                Text(
+                  'blocked',
+                  style: kSmallBlockedTextStyle,
+                )
             ],
           ),
           trailing: Icon(Feather.chevron_right),

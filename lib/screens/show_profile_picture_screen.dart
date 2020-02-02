@@ -2,14 +2,15 @@ import 'package:Flowby/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ShowProfilePictureScreen extends StatelessWidget {
-  final String profilePictureUrl;
+  final String imageFileName;
   final String otherUsername;
   final String heroTag;
 
   ShowProfilePictureScreen(
-      {@required this.profilePictureUrl,
+      {@required this.imageFileName,
       @required this.otherUsername,
       @required this.heroTag});
 
@@ -18,16 +19,29 @@ class ShowProfilePictureScreen extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: Stack(children: [
-        Hero(
-          transitionOnUserGestures: true,
-          tag: heroTag,
+        Center(
           child: GestureDetector(
             onPanUpdate: (param) {
               Navigator.of(context).pop();
             },
-            child: Container(
-              decoration: BoxDecoration(
-                  image: DecorationImage(image: NetworkImage(profilePictureUrl))),
+            child: CachedNetworkImage(
+              imageUrl:
+                  "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$imageFileName?alt=media",
+              imageBuilder: (context, imageProvider) {
+                return Hero(
+                  transitionOnUserGestures: true,
+                  tag: heroTag,
+                  child: CircleAvatar(
+                      radius: MediaQuery.of(context).size.width / 2,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: imageProvider),
+                );
+              },
+              placeholder: (context, url) => CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           ),
         ),
@@ -42,7 +56,7 @@ class ShowProfilePictureScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Icon(
-                  Feather.chevron_left,
+                  Feather.chevron_up,
                   color: kLoginBackgroundColor,
                   size: 30,
                 ),

@@ -16,9 +16,9 @@ class ListViewOfUserInfos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool canShowSkills =
-        user.hasSkills && user.skills != null && user.skills.isNotEmpty;
+        user.hasSkills && user.skillz != null && user.skillz.isNotEmpty;
     bool canShowWishes =
-        user.hasWishes && user.wishes != null && user.wishes.isNotEmpty;
+        user.hasWishes && user.wishez != null && user.wishez.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -28,34 +28,33 @@ class ListViewOfUserInfos extends StatelessWidget {
             height: 15.0,
           ),
           Center(
-            child: Hero(
-              transitionOnUserGestures: true,
-              tag: heroTag ?? user.imageFileName,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .push(ScaleRoute(page: ShowProfilePictureScreen(
-                                profilePictureUrl:
-                                    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
-                                otherUsername: user.username,
-                                heroTag: heroTag ?? user.imageFileName,
-                              )));
-                },
-                child: CachedNetworkImage(
-                  imageUrl:
-                      "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
-                  imageBuilder: (context, imageProvider) {
-                    return CircleAvatar(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context, rootNavigator: true).push(ScaleRoute(
+                    page: ShowProfilePictureScreen(
+                  imageFileName: user.imageFileName,
+                  otherUsername: user.username,
+                  heroTag: heroTag ?? user.imageFileName,
+                )));
+              },
+              child: CachedNetworkImage(
+                imageUrl:
+                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+                imageBuilder: (context, imageProvider) {
+                  return Hero(
+                    transitionOnUserGestures: true,
+                    tag: heroTag ?? user.imageFileName,
+                    child: CircleAvatar(
                         radius: 60,
                         backgroundColor: Colors.grey,
-                        backgroundImage: imageProvider);
-                  },
-                  placeholder: (context, url) => CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-                  ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                        backgroundImage: imageProvider),
+                  );
+                },
+                placeholder: (context, url) => CircularProgressIndicator(
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
                 ),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
             ),
           ),
@@ -110,25 +109,12 @@ class ListViewOfUserInfos extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      'Skills',
-                      style: kSkillsTitleTextStyle,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          '${user.skillRate} CHF/h',
-                        ),
-                        SizedBox(width: 15),
-                      ],
-                    ),
-                  ],
+                Text(
+                  'Skills',
+                  style: kSkillsTitleTextStyle,
                 ),
                 SizedBox(height: 10),
-                _buildListOfTextFields(skillsOrWishes: user.skills)
+                _buildListOfTextFields(skillsOrWishes: user.skillz)
               ],
             ),
           if (canShowWishes)
@@ -138,25 +124,12 @@ class ListViewOfUserInfos extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      'Wishes',
-                      style: kSkillsTitleTextStyle,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          '${user.wishRate} CHF/h',
-                        ),
-                        SizedBox(width: 15),
-                      ],
-                    ),
-                  ],
+                Text(
+                  'Wishes',
+                  style: kSkillsTitleTextStyle,
                 ),
                 SizedBox(height: 10),
-                _buildListOfTextFields(skillsOrWishes: user.wishes)
+                _buildListOfTextFields(skillsOrWishes: user.wishez)
               ],
             ),
           SizedBox(
@@ -167,9 +140,9 @@ class ListViewOfUserInfos extends StatelessWidget {
     );
   }
 
-  Column _buildListOfTextFields({Map<dynamic, dynamic> skillsOrWishes}) {
+  Column _buildListOfTextFields({List<SkillOrWish> skillsOrWishes}) {
     List<Widget> rows = [];
-    for (String key in skillsOrWishes.keys) {
+    for (SkillOrWish skillOrWish in skillsOrWishes) {
       rows.add(
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,7 +150,7 @@ class ListViewOfUserInfos extends StatelessWidget {
             Expanded(
               flex: 5,
               child: Text(
-                key,
+                skillOrWish.keywords,
                 style: kSmallTitleTextStyle,
                 textAlign: TextAlign.start,
               ),
@@ -186,7 +159,16 @@ class ListViewOfUserInfos extends StatelessWidget {
             Expanded(
               flex: 8,
               child: Text(
-                skillsOrWishes[key],
+                skillOrWish.description,
+                style: kSmallTitleTextStyle,
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(width: 20),
+            Expanded(
+              flex: 3,
+              child: Text(
+                skillOrWish.price,
                 style: kSmallTitleTextStyle,
                 textAlign: TextAlign.start,
               ),

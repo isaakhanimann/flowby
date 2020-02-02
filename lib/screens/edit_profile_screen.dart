@@ -6,7 +6,6 @@ import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
-import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +29,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool _localHasSkills;
   bool _localHasWishes;
   File _profilePic;
-  int _localSkillRate;
-  int _localWishRate;
   bool showSpinner = true;
 
   var _usernameController = TextEditingController();
@@ -39,8 +36,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   List<TextEditingController> skillKeywordControllers = [];
   List<TextEditingController> skillDescriptionControllers = [];
+  List<TextEditingController> skillPriceControllers = [];
   List<TextEditingController> wishKeywordControllers = [];
   List<TextEditingController> wishDescriptionControllers = [];
+  List<TextEditingController> wishPriceControllers = [];
 
   void _changeProfilePic() async {
     showCupertinoModalPopup(
@@ -102,31 +101,59 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _bioController.text = user.bio;
       _localHasSkills = user.hasSkills;
       _localHasWishes = user.hasWishes;
-      var skills = user.skills;
-      var wishes = user.wishes;
-      skills?.forEach((key, value) {
-        skillKeywordControllers.add(TextEditingController(text: key));
-        skillDescriptionControllers.add(TextEditingController(text: value));
+      user.skillz?.forEach((SkillOrWish skillOrWish) {
+        skillKeywordControllers
+            .add(TextEditingController(text: skillOrWish.keywords));
+        skillDescriptionControllers
+            .add(TextEditingController(text: skillOrWish.description));
+        skillPriceControllers
+            .add(TextEditingController(text: skillOrWish.price));
       });
       //controllers for extra skill
       skillKeywordControllers.add(TextEditingController());
       skillDescriptionControllers.add(TextEditingController());
+      skillPriceControllers.add(TextEditingController());
 
-      wishes?.forEach((key, value) {
-        wishKeywordControllers.add(TextEditingController(text: key));
-        wishDescriptionControllers.add(TextEditingController(text: value));
+      user.wishez?.forEach((SkillOrWish skillOrWish) {
+        wishKeywordControllers
+            .add(TextEditingController(text: skillOrWish.keywords));
+        wishDescriptionControllers
+            .add(TextEditingController(text: skillOrWish.description));
+        wishPriceControllers
+            .add(TextEditingController(text: skillOrWish.price));
       });
       wishKeywordControllers.add(TextEditingController());
       wishDescriptionControllers.add(TextEditingController());
+      wishPriceControllers.add(TextEditingController());
 
-      _localSkillRate = user?.skillRate;
-      _localWishRate = user?.wishRate;
       _profilePic = null;
       showSpinner = false;
     });
   }
 
-  Column _buildListOfTextFields({bool isSkillBuild}) {
+  Widget _addRowButton(isSkillBuild) {
+    return Container(
+      alignment: Alignment.bottomLeft,
+      child: GestureDetector(
+        child: Icon(Feather.plus),
+        onTap: () {
+          setState(() {
+            if (isSkillBuild) {
+              skillKeywordControllers.add(TextEditingController());
+              skillDescriptionControllers.add(TextEditingController());
+              skillPriceControllers.add(TextEditingController());
+            } else {
+              wishKeywordControllers.add(TextEditingController());
+              wishDescriptionControllers.add(TextEditingController());
+              wishPriceControllers.add(TextEditingController());
+            }
+          });
+        },
+      ),
+    );
+  }
+
+  Column _buildListOfRows({bool isSkillBuild}) {
     List<Widget> rows = [];
     for (int rowNumber = 0;
         rowNumber <
@@ -136,10 +163,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         rowNumber++) {
       rows.add(
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Expanded(
-              flex: 1,
               child: CupertinoTextField(
                 expands: true,
                 minLines: null,
@@ -156,7 +183,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             SizedBox(width: 20),
             Expanded(
-              flex: 2,
               child: CupertinoTextField(
                 expands: true,
                 maxLines: null,
@@ -172,21 +198,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ),
             Expanded(
-              flex: 0,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 15.0),
-                child: GestureDetector(
-                  onTap: () => setState(() {
-                    if (isSkillBuild) {
-                      skillKeywordControllers.removeAt(rowNumber);
-                      skillDescriptionControllers.removeAt(rowNumber);
-                    } else {
-                      wishKeywordControllers.removeAt(rowNumber);
-                      wishDescriptionControllers.removeAt(rowNumber);
-                    }
-                  }),
-                  child: Icon(Feather.x),
-                ),
+              child: CupertinoTextField(
+                expands: true,
+                maxLines: null,
+                minLines: null,
+                style: kAddSkillsTextStyle,
+                maxLength: 10,
+                decoration: null,
+                textAlign: TextAlign.start,
+                placeholder: "price",
+                controller: isSkillBuild
+                    ? skillPriceControllers[rowNumber]
+                    : wishPriceControllers[rowNumber],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: GestureDetector(
+                onTap: () => setState(() {
+                  if (isSkillBuild) {
+                    skillKeywordControllers.removeAt(rowNumber);
+                    skillDescriptionControllers.removeAt(rowNumber);
+                    skillPriceControllers.removeAt(rowNumber);
+                  } else {
+                    wishKeywordControllers.removeAt(rowNumber);
+                    wishDescriptionControllers.removeAt(rowNumber);
+                    wishPriceControllers.removeAt(rowNumber);
+                  }
+                }),
+                child: Icon(Feather.x),
               ),
             ),
           ],
@@ -194,47 +234,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
     }
 
-    rows.add(
-      Center(
-        child: RoundedButton(
-          onPressed: () {
-            setState(() {
-              if (isSkillBuild) {
-                skillKeywordControllers.add(TextEditingController());
-                skillDescriptionControllers.add(TextEditingController());
-              } else {
-                wishKeywordControllers.add(TextEditingController());
-                wishDescriptionControllers.add(TextEditingController());
-              }
-            });
-          },
-          text: "Add",
-          color: kLoginBackgroundColor,
-          textColor: Colors.white,
-          paddingInsideHorizontal: 20,
-          paddingInsideVertical: 5,
-          elevation: 0,
-        ),
-      ),
-    );
+    rows.add(_addRowButton(isSkillBuild));
     return Column(
       children: rows,
     );
-  }
-
-  Map<String, String> controllersToMap(
-      {List<TextEditingController> keyControllers,
-      List<TextEditingController> descriptionControllers}) {
-    Map<String, String> map = Map();
-    for (int i = 0; i < keyControllers.length; i++) {
-      String keyword = keyControllers[i].text;
-      if (keyword != null && keyword.isNotEmpty) {
-        if (!map.containsKey(keyword)) {
-          map[keyword] = descriptionControllers[i].text ?? '';
-        }
-      }
-    }
-    return map;
   }
 
   @override
@@ -259,19 +262,115 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (showSpinner) {
+    if (false) {
       return CupertinoPageScaffold(
         backgroundColor: Colors.white,
-        child: Center(
-          child: SizedBox(
-            width: 200,
-            child: FlareActor(
-              'assets/animations/liquid_loader.flr',
-              alignment: Alignment.center,
-              color: kDefaultProfilePicColor,
-              fit: BoxFit.contain,
-              animation: "Untitled",
-            ),
+        child: SafeArea(
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.blue,
+                          ),
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.green,
+                          )
+                        ],
+                      ),
+                      Container(
+                        height: 50,
+                        width: 100,
+                        color: Colors.yellow,
+                      )
+                    ],
+                  ),
+                  Container(
+                    height: 50,
+                    width: 50,
+                    color: Colors.red,
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.blue,
+                          ),
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.green,
+                          )
+                        ],
+                      ),
+                      Container(
+                        height: 50,
+                        width: 100,
+                        color: Colors.yellow,
+                      )
+                    ],
+                  ),
+                  Container(
+                    height: 50,
+                    width: 50,
+                    color: Colors.red,
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.blue,
+                          ),
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.green,
+                          )
+                        ],
+                      ),
+                      Container(
+                        height: 50,
+                        width: 100,
+                        color: Colors.yellow,
+                      )
+                    ],
+                  ),
+                  Container(
+                    height: 50,
+                    width: 50,
+                    color: Colors.red,
+                  )
+                ],
+              ),
+            ],
           ),
         ),
       );
@@ -317,13 +416,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       fileName: widget.user.uid, image: _profilePic);
                 }
 
-                // only add a skill to the user if the keyword is not null or empty
-                Map<String, String> skills = controllersToMap(
-                    keyControllers: skillKeywordControllers,
-                    descriptionControllers: skillDescriptionControllers);
-                Map<String, String> wishes = controllersToMap(
-                    keyControllers: wishKeywordControllers,
-                    descriptionControllers: wishDescriptionControllers);
+                // only add a skill to the user if the keywords are not null or empty
+                List<SkillOrWish> skillz =
+                    User.controllersToListOfSkillsOrWishes(
+                        keywordsControllers: skillKeywordControllers,
+                        descriptionControllers: skillDescriptionControllers,
+                        priceControllers: skillPriceControllers);
+                List<SkillOrWish> wishez =
+                    User.controllersToListOfSkillsOrWishes(
+                        keywordsControllers: wishKeywordControllers,
+                        descriptionControllers: wishDescriptionControllers,
+                        priceControllers: wishPriceControllers);
 
                 User user = User(
                     username: _usernameController.text,
@@ -331,10 +434,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     bio: _bioController.text,
                     hasSkills: _localHasSkills,
                     hasWishes: _localHasWishes,
-                    skillRate: _localSkillRate,
-                    wishRate: _localWishRate,
-                    skills: skills,
-                    wishes: wishes,
+                    skillz: skillz,
+                    wishez: wishez,
                     imageFileName: widget.user.uid);
                 await cloudFirestoreService.uploadUser(user: user);
                 Navigator.of(context).pop();
@@ -419,7 +520,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   Expanded(
                     child: CupertinoTextField(
-                      style:kEditProfileTextFieldTextStyle,
+                      style: kEditProfileTextFieldTextStyle,
                       placeholder: 'Enter your name',
                       padding: EdgeInsets.only(bottom: 0),
                       maxLength: 20,
@@ -447,7 +548,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Expanded(
                     child: CupertinoTextField(
                       expands: true,
-                      style:kEditProfileTextFieldTextStyle,
+                      style: kEditProfileTextFieldTextStyle,
                       placeholder: 'Enter your description',
                       maxLength: 200,
                       minLines: null,
@@ -478,22 +579,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ],
               ),
-              if (_localHasSkills)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _buildListOfTextFields(isSkillBuild: true),
-                    RatePicker(
-                      initialValue: user.skillRate ?? 20,
-                      onSelected: (selectedIndex) {
-                        _localSkillRate = selectedIndex;
-                      },
-                    ),
-                  ],
-                ),
+              SizedBox(
+                height: 20,
+              ),
+              if (_localHasSkills) _buildListOfRows(isSkillBuild: true),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -512,21 +601,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ],
               ),
-              if (_localHasWishes)
-                Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _buildListOfTextFields(isSkillBuild: false),
-                    RatePicker(
-                      initialValue: user.wishRate ?? 20,
-                      onSelected: (selectedIndex) {
-                        _localWishRate = selectedIndex;
-                      },
-                    ),
-                  ],
-                ),
+              SizedBox(
+                height: 20,
+              ),
+              if (_localHasWishes) _buildListOfRows(isSkillBuild: false),
               SizedBox(
                 height: 20,
               ),

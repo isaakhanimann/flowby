@@ -2,7 +2,6 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_wishes_registration_screen.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
-import 'package:Flowby/widgets/rate_picker.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,26 +24,31 @@ class _AddSkillsRegistrationScreenState
     extends State<AddSkillsRegistrationScreen> {
   bool showSpinner = false;
 
-  int _databaseSkillRate = 20;
   bool _localHasSkills = true;
 
   User _user;
 
   List<TextEditingController> skillKeywordControllers = [];
   List<TextEditingController> skillDescriptionControllers = [];
+  List<TextEditingController> skillPriceControllers = [];
+
   List<TextEditingController> wishKeywordControllers = [];
   List<TextEditingController> wishDescriptionControllers = [];
 
   void _setLanguagesInSkills(User user) async {
     setState(() {
-      var _skills = user.skills;
-      _skills?.forEach((key, value) {
-        skillKeywordControllers.add(TextEditingController(text: key));
-        skillDescriptionControllers.add(TextEditingController(text: value));
+      user.skillz?.forEach((SkillOrWish skillOrWish) {
+        skillKeywordControllers
+            .add(TextEditingController(text: skillOrWish.keywords));
+        skillDescriptionControllers
+            .add(TextEditingController(text: skillOrWish.description));
+        skillPriceControllers
+            .add(TextEditingController(text: skillOrWish.price));
       });
       //controllers for extra skill
       skillKeywordControllers.add(TextEditingController());
       skillDescriptionControllers.add(TextEditingController());
+      skillPriceControllers.add(TextEditingController());
 
       showSpinner = false;
     });
@@ -57,6 +61,7 @@ class _AddSkillsRegistrationScreenState
           // Default controllers
           skillKeywordControllers.add(TextEditingController());
           skillDescriptionControllers.add(TextEditingController());
+          skillPriceControllers.add(TextEditingController());
         });
       }
     } else {
@@ -65,6 +70,7 @@ class _AddSkillsRegistrationScreenState
           // Default controllers
           skillKeywordControllers.add(TextEditingController());
           skillDescriptionControllers.add(TextEditingController());
+          skillPriceControllers.add(TextEditingController());
         });
       }
     }
@@ -136,16 +142,14 @@ class _AddSkillsRegistrationScreenState
     }
 
     rows.add(
-      _addButtonRow(isSkillBuild),
-      // I personally prefer the above widget. The old version is under so you can test it.
-      // _addButtonRowAlt(isSkillBuild),
+      _addRowButton(isSkillBuild),
     );
     return Column(
       children: rows,
     );
   }
 
-  Widget _addButtonRow(isSkillBuild) {
+  Widget _addRowButton(isSkillBuild) {
     return Container(
       alignment: Alignment.bottomLeft,
       child: GestureDetector(
@@ -163,43 +167,6 @@ class _AddSkillsRegistrationScreenState
         },
       ),
     );
-  }
-
-  Widget _addButtonRowAlt(isSkillBuild) {
-    return RoundedButton(
-      onPressed: () {
-        setState(() {
-          if (isSkillBuild) {
-            skillKeywordControllers.add(TextEditingController());
-            skillDescriptionControllers.add(TextEditingController());
-          } else {
-            wishKeywordControllers.add(TextEditingController());
-            wishDescriptionControllers.add(TextEditingController());
-          }
-        });
-      },
-      text: "Add",
-      color: kLoginBackgroundColor,
-      textColor: Colors.white,
-      paddingInsideHorizontal: 20,
-      paddingInsideVertical: 5,
-      elevation: 0,
-    );
-  }
-
-  Map<String, String> controllersToMap(
-      {List<TextEditingController> keyControllers,
-      List<TextEditingController> descriptionControllers}) {
-    Map<String, String> map = Map();
-    for (int i = 0; i < keyControllers.length; i++) {
-      String keyword = keyControllers[i].text;
-      if (keyword != null && keyword.isNotEmpty) {
-        if (!map.containsKey(keyword)) {
-          map[keyword] = descriptionControllers[i].text ?? '';
-        }
-      }
-    }
-    return map;
   }
 
   @override
@@ -305,14 +272,16 @@ class _AddSkillsRegistrationScreenState
                               showSpinner = true;
                             });
 
-                            Map<String, String> skills = controllersToMap(
-                                keyControllers: skillKeywordControllers,
-                                descriptionControllers:
-                                    skillDescriptionControllers);
+                            List<SkillOrWish> skillz =
+                                User.controllersToListOfSkillsOrWishes(
+                                    keywordsControllers:
+                                        skillKeywordControllers,
+                                    descriptionControllers:
+                                        skillDescriptionControllers,
+                                    priceControllers: skillPriceControllers);
 
                             _user.hasSkills = _localHasSkills;
-                            _user.skills = skills;
-                            _user.skillRate = _databaseSkillRate;
+                            _user.skillz = skillz;
 
                             print(_user);
 

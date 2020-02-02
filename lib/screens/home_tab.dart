@@ -243,27 +243,12 @@ class ProfileItem extends StatelessWidget {
               ),
             ],
           ),
-          subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Flexible(
-                child: Text(
-                  HelperFunctions.getDotDotDotString(
-                      maybeLongString: isSkillSearch
-                          ? user.skillKeywords
-                          : user.wishKeywords),
-                  style: kSkillTextStyle,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Text(
-                  (isSkillSearch ? user.skillRate : user.wishRate).toString() +
-                      ' CHF/h',
-                  style: kLocationTextStyle,
-                ),
-              ),
-            ],
+          subtitle: Text(
+            HelperFunctions.getDotDotDotString(
+                maybeLongString:
+                    isSkillSearch ? user.skillKeywords : user.wishKeywords),
+            maxLines: 1,
+            style: kCardSubtitleTextStyle,
           ),
           trailing: Icon(Feather.chevron_right),
         ),

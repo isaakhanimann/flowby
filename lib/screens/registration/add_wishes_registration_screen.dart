@@ -4,7 +4,6 @@ import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
-import 'package:Flowby/widgets/rate_picker.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,15 +28,16 @@ class _AddWishesRegistrationScreenState
   bool showSpinner = false;
 
 //  String _databaseHashtagWishes;
-  int _databaseWishRate = 20;
   bool _localHasWishes = true;
 
   User _user;
 
   List<TextEditingController> skillKeywordControllers = [];
   List<TextEditingController> skillDescriptionControllers = [];
+  List<TextEditingController> skillPriceControllers = [];
   List<TextEditingController> wishKeywordControllers = [];
   List<TextEditingController> wishDescriptionControllers = [];
+  List<TextEditingController> wishPriceControllers = [];
 
   Column _buildListOfTextFields({bool isSkillBuild}) {
     if (isSkillBuild) {
@@ -46,6 +46,7 @@ class _AddWishesRegistrationScreenState
           // Default controllers
           skillKeywordControllers.add(TextEditingController());
           skillDescriptionControllers.add(TextEditingController());
+          skillPriceControllers.add(TextEditingController());
         });
       }
     } else {
@@ -54,6 +55,7 @@ class _AddWishesRegistrationScreenState
           // Default controllers
           wishKeywordControllers.add(TextEditingController());
           wishDescriptionControllers.add(TextEditingController());
+          wishPriceControllers.add(TextEditingController());
         });
       }
     }
@@ -105,6 +107,25 @@ class _AddWishesRegistrationScreenState
                     : wishDescriptionControllers[rowNumber],
               ),
             ),
+            SizedBox(width: 20),
+            Expanded(
+              flex: 2,
+              child: CupertinoTextField(
+                expands: true,
+                maxLines: null,
+                minLines: null,
+                style: kAddSkillsTextStyle,
+                maxLength: 100,
+                decoration: BoxDecoration(
+                  border: null,
+                ),
+                textAlign: TextAlign.start,
+                placeholder: "description",
+                controller: isSkillBuild
+                    ? skillPriceControllers[rowNumber]
+                    : wishPriceControllers[rowNumber],
+              ),
+            ),
             Expanded(
               flex: 0,
               child: Padding(
@@ -143,35 +164,15 @@ class _AddWishesRegistrationScreenState
             if (isSkillBuild) {
               skillKeywordControllers.add(TextEditingController());
               skillDescriptionControllers.add(TextEditingController());
+              skillPriceControllers.add(TextEditingController());
             } else {
               wishKeywordControllers.add(TextEditingController());
               wishDescriptionControllers.add(TextEditingController());
+              wishPriceControllers.add(TextEditingController());
             }
           });
         },
       ),
-    );
-  }
-
-  Widget _addButtonRowAlt(isSkillBuild) {
-    return RoundedButton(
-      onPressed: () {
-        setState(() {
-          if (isSkillBuild) {
-            skillKeywordControllers.add(TextEditingController());
-            skillDescriptionControllers.add(TextEditingController());
-          } else {
-            wishKeywordControllers.add(TextEditingController());
-            wishDescriptionControllers.add(TextEditingController());
-          }
-        });
-      },
-      text: "Add",
-      color: kLoginBackgroundColor,
-      textColor: Colors.white,
-      paddingInsideHorizontal: 20,
-      paddingInsideVertical: 5,
-      elevation: 0,
     );
   }
 
@@ -288,14 +289,15 @@ class _AddWishesRegistrationScreenState
                               showSpinner = true;
                             });
 
-                            Map<String, String> wishes = controllersToMap(
-                                keyControllers: wishKeywordControllers,
-                                descriptionControllers:
-                                    wishDescriptionControllers);
+                            List<SkillOrWish> wishez =
+                                User.controllersToListOfSkillsOrWishes(
+                                    keywordsControllers: wishKeywordControllers,
+                                    descriptionControllers:
+                                        wishDescriptionControllers,
+                                    priceControllers: wishPriceControllers);
 
                             _user.hasWishes = _localHasWishes;
-                            _user.wishRate = _databaseWishRate;
-                            _user.wishes = wishes;
+                            _user.wishez = wishez;
 
                             final cloudFirestoreService =
                                 Provider.of<FirebaseCloudFirestoreService>(
