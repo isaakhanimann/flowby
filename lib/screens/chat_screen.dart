@@ -412,6 +412,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
             child: Padding(
               padding: const EdgeInsets.only(left: 10.0),
               child: CupertinoTextField(
+                textCapitalization: TextCapitalization.sentences,
                 expands: true,
                 maxLines: null,
                 minLines: null,

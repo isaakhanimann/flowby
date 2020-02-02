@@ -221,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: FlareActor(
           'assets/animations/liquid_loader.flr',
           alignment: Alignment.center,
-          color: Colors.white,
+          color: kDefaultProfilePicColor,
           fit: BoxFit.contain,
           animation: "Untitled",
         ),
@@ -330,7 +330,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (appleSignInAvailable.isAvailable)
                   AppleSignInButton(
                     style: ButtonStyle.black,
-                    type: ButtonType.continueButton,
+                    type: ButtonType.signIn,
                     onPressed: () {
                       _signInWithApple(context);
                     },
