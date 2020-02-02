@@ -82,6 +82,7 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
                     text: 'I already have an account',
                     color: Colors.white,
                     textColor: kBlueButtonColor,
+                    paddingInsideHorizontal: 25,
                     onPressed: () {
                       //Navigator.pushNamed(context, LoginScreen.id);
                       Navigator.push(

@@ -68,7 +68,7 @@ class ChatScreen extends StatelessWidget {
         if (snapshot.hasError) {
           return Container(
             color: Colors.red,
-            child: Text('Something went wrong'),
+            child: const Text('Something went wrong'),
           );
         }
         String foundChatPath = snapshot.data;
@@ -140,6 +140,7 @@ class ChatScreenWithPath extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
+                  SizedBox(height: 60),
                   MessagesStream(
                     messagesStream: cloudFirestoreService.getMessageStream(
                         chatPath: chatPath),

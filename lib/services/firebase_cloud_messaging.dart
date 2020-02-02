@@ -28,25 +28,25 @@ class FirebaseCloudMessaging {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> mapMessage) async {
         print('on message $mapMessage');
+        _context = context;
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-        flutterLocalNotificationsPlugin
+        /*flutterLocalNotificationsPlugin
             .getNotificationAppLaunchDetails()
             .then((notificationAppLaunchDetails) {
           if (notificationAppLaunchDetails.didNotificationLaunchApp)
             navigateToChat(context, message);
-        });
-        _context = context;
+        });*/
         showNotification(message: message);
       },
       onResume: (Map<String, dynamic> mapMessage) async {
         print('on resume $mapMessage');
-        CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-        navigateToChat(context, message);
+        //CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
+        //navigateToChat(context, message);
       },
       onLaunch: (Map<String, dynamic> mapMessage) async {
         print('on launch $mapMessage');
-        CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-        navigateToChat(context, message);
+        //CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
+        //navigateToChat(context, message);
       },
     );
     // Flutter Local Notifications //
@@ -95,6 +95,20 @@ class FirebaseCloudMessaging {
     BuildContext context,
     CloudMessage message,
   ) {
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return ChatScreen(
+            loggedInUid: message.data['loggedInUser'],
+            otherUid: message.data['otherUid'],
+            otherUsername: message.data['otherUsername'],
+            heroTag: message.data['otherUid'] + 'chats',
+            otherImageFileName: message.data['otherImageFileName'],
+            chatPath: message.data['chatPath'],
+          );
+        },
+      ),
+    );
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {

@@ -23,11 +23,11 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   return runApp(Provider<AppleSignInAvailable>.value(
     value: isAppleSignInAvailable,
-    child: Float(),
+    child: Flowby(),
   ));
 }
 
-class Float extends StatelessWidget {
+class Flowby extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
