@@ -231,7 +231,7 @@ class Header extends StatelessWidget {
                         context,
                         CupertinoPageRoute(
                             builder: (context) => ShowProfilePictureScreen(
-                                  profilePictureUrl:
+                                  imageFileName:
                                       'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media',
                                   otherUsername: otherUsername,
                                   heroTag: heroTag,

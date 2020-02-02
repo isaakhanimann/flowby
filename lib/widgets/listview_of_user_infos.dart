@@ -28,34 +28,33 @@ class ListViewOfUserInfos extends StatelessWidget {
             height: 15.0,
           ),
           Center(
-            child: Hero(
-              transitionOnUserGestures: true,
-              tag: heroTag ?? user.imageFileName,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context, rootNavigator: true).push(ScaleRoute(
-                      page: ShowProfilePictureScreen(
-                    profilePictureUrl:
-                        'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media',
-                    otherUsername: user.username,
-                    heroTag: heroTag ?? user.imageFileName,
-                  )));
-                },
-                child: CachedNetworkImage(
-                  imageUrl:
-                      "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
-                  imageBuilder: (context, imageProvider) {
-                    return CircleAvatar(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context, rootNavigator: true).push(ScaleRoute(
+                    page: ShowProfilePictureScreen(
+                  imageFileName: user.imageFileName,
+                  otherUsername: user.username,
+                  heroTag: heroTag ?? user.imageFileName,
+                )));
+              },
+              child: CachedNetworkImage(
+                imageUrl:
+                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+                imageBuilder: (context, imageProvider) {
+                  return Hero(
+                    transitionOnUserGestures: true,
+                    tag: heroTag ?? user.imageFileName,
+                    child: CircleAvatar(
                         radius: 60,
                         backgroundColor: Colors.grey,
-                        backgroundImage: imageProvider);
-                  },
-                  placeholder: (context, url) => CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-                  ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                        backgroundImage: imageProvider),
+                  );
+                },
+                placeholder: (context, url) => CircularProgressIndicator(
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
                 ),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
             ),
           ),
