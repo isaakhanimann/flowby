@@ -45,7 +45,8 @@ class ChatsTab extends StatelessWidget {
             // Scaffold damit text nicht gelb unterstrichen ist
             return CupertinoPageScaffold(
               child: Center(
-                child: Text('You have no open chats', style: kSkillTextStyle),
+                child: Text('You have no open chats',
+                    style: kCardSubtitleTextStyle),
               ),
             );
           }

@@ -8,8 +8,6 @@ class User {
   String bio;
   bool hasSkills;
   bool hasWishes;
-  int skillRate;
-  int wishRate;
   GeoPoint location;
   int distanceInKm;
   String imageFileName;
@@ -37,8 +35,6 @@ class User {
       this.hasWishes,
       this.skillz,
       this.wishez,
-      this.skillRate,
-      this.wishRate,
       this.location,
       this.imageFileName});
 
@@ -48,8 +44,6 @@ class User {
     this.bio = map['bio'] ?? '';
     this.hasSkills = map['hasSkills'] ?? false;
     this.hasWishes = map['hasWishes'] ?? false;
-    this.skillRate = map['skillRate'] ?? 20;
-    this.wishRate = map['wishRate'] ?? 20;
     this.location = map['location'];
     this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
     this.skillz = _convertFirebaseToDart(skillzOrWishez: map['skillz']);
@@ -65,8 +59,6 @@ class User {
       'bio': bio,
       'hasSkills': hasSkills,
       'hasWishes': hasWishes,
-      'skillRate': skillRate,
-      'wishRate': wishRate,
       'imageFileName': imageFileName,
       'skillz': skillz.map((SkillOrWish s) => s.toMap()).toList(),
       'wishez': wishez.map((SkillOrWish w) => w.toMap()).toList()
@@ -108,7 +100,6 @@ class User {
     toPrint += 'bio: $bio, ';
     toPrint += 'hasSkills: $hasSkills, ';
     toPrint += 'hasWishes: $hasWishes, ';
-    toPrint += 'skillRate: ${skillRate.toString()}, ';
     toPrint += 'location: ${location.toString()}, ';
     toPrint += 'imageFileName: ${imageFileName.toString()}, ';
     toPrint += 'skillz: ${skillz.toString()}, ';

@@ -27,10 +27,13 @@ class NoResults extends StatelessWidget {
             isSkillSelected
                 ? Text(
                     'There is no user with this skill... One day, it will be possible to find any skill.',
-                    style: kAddSkillsTextStyle)
+                    style: kAddSkillsTextStyle,
+                    textAlign: TextAlign.center,
+                  )
                 : Text(
                     'There is no user with this wish... One day, it will be possible to find any wish.',
-                    style: kAddSkillsTextStyle),
+                    style: kAddSkillsTextStyle,
+                    textAlign: TextAlign.center),
             SizedBox(height: 5.0),
             RoundedButton(
               text: ' Help us spread the word',

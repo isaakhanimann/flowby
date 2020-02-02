@@ -24,7 +24,6 @@ class _AddSkillsRegistrationScreenState
     extends State<AddSkillsRegistrationScreen> {
   bool showSpinner = false;
 
-  int _databaseSkillRate = 20;
   bool _localHasSkills = true;
 
   User _user;
@@ -283,7 +282,6 @@ class _AddSkillsRegistrationScreenState
 
                             _user.hasSkills = _localHasSkills;
                             _user.skillz = skillz;
-                            _user.skillRate = _databaseSkillRate;
 
                             print(_user);
 

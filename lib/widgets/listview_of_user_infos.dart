@@ -110,22 +110,9 @@ class ListViewOfUserInfos extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      'Skills',
-                      style: kSkillsTitleTextStyle,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          '${user.skillRate} CHF/h',
-                        ),
-                        SizedBox(width: 15),
-                      ],
-                    ),
-                  ],
+                Text(
+                  'Skills',
+                  style: kSkillsTitleTextStyle,
                 ),
                 SizedBox(height: 10),
                 _buildListOfTextFields(skillsOrWishes: user.skillz)
@@ -138,22 +125,9 @@ class ListViewOfUserInfos extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      'Wishes',
-                      style: kSkillsTitleTextStyle,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          '${user.wishRate} CHF/h',
-                        ),
-                        SizedBox(width: 15),
-                      ],
-                    ),
-                  ],
+                Text(
+                  'Wishes',
+                  style: kSkillsTitleTextStyle,
                 ),
                 SizedBox(height: 10),
                 _buildListOfTextFields(skillsOrWishes: user.wishez)

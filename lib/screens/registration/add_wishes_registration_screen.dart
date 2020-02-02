@@ -28,7 +28,6 @@ class _AddWishesRegistrationScreenState
   bool showSpinner = false;
 
 //  String _databaseHashtagWishes;
-  int _databaseWishRate = 20;
   bool _localHasWishes = true;
 
   User _user;
@@ -298,7 +297,6 @@ class _AddWishesRegistrationScreenState
                                     priceControllers: wishPriceControllers);
 
                             _user.hasWishes = _localHasWishes;
-                            _user.wishRate = _databaseWishRate;
                             _user.wishez = wishez;
 
                             final cloudFirestoreService =

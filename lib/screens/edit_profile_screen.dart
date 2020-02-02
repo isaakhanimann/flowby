@@ -29,8 +29,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool _localHasSkills;
   bool _localHasWishes;
   File _profilePic;
-  int _localSkillRate;
-  int _localWishRate;
   bool showSpinner = true;
 
   var _usernameController = TextEditingController();
@@ -128,8 +126,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       wishDescriptionControllers.add(TextEditingController());
       wishPriceControllers.add(TextEditingController());
 
-      _localSkillRate = user?.skillRate;
-      _localWishRate = user?.wishRate;
       _profilePic = null;
       showSpinner = false;
     });
@@ -456,8 +452,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     bio: _bioController.text,
                     hasSkills: _localHasSkills,
                     hasWishes: _localHasWishes,
-                    skillRate: _localSkillRate,
-                    wishRate: _localWishRate,
                     skillz: skillz,
                     wishez: wishez,
                     imageFileName: widget.user.uid);
