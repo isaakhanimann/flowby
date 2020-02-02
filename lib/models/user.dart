@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Flowby/constants.dart';
+import 'package:flutter/cupertino.dart';
 
 class User {
   String username;
@@ -12,8 +13,6 @@ class User {
   GeoPoint location;
   int distanceInKm;
   String imageFileName;
-  Map<dynamic, dynamic> skills;
-  Map<dynamic, dynamic> wishes;
   String skillKeywords;
   String wishKeywords;
   List<SkillOrWish> skillz;
@@ -36,12 +35,12 @@ class User {
       this.bio,
       this.hasSkills,
       this.hasWishes,
+      this.skillz,
+      this.wishez,
       this.skillRate,
       this.wishRate,
       this.location,
-      this.imageFileName,
-      this.skills,
-      this.wishes});
+      this.imageFileName});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'] ?? '';
@@ -69,8 +68,8 @@ class User {
       'skillRate': skillRate,
       'wishRate': wishRate,
       'imageFileName': imageFileName,
-      'skills': skills,
-      'wishes': wishes,
+      'skillz': skillz,
+      'wishez': wishez,
     };
   }
 
@@ -85,6 +84,23 @@ class User {
     return result;
   }
 
+  static List<SkillOrWish> controllersToListOfSkillsOrWishes(
+      {List<TextEditingController> keywordsControllers,
+      List<TextEditingController> descriptionControllers,
+      List<TextEditingController> priceControllers}) {
+    List<SkillOrWish> list = [];
+    for (int i = 0; i < keywordsControllers.length; i++) {
+      String keywords = keywordsControllers[i].text;
+      String description = descriptionControllers[i].text;
+      String price = priceControllers[i].text;
+      if (keywords != null && keywords.isNotEmpty) {
+        list.add(SkillOrWish(
+            keywords: keywords, description: description, price: price));
+      }
+    }
+    return list;
+  }
+
   @override
   String toString() {
     String toPrint = '\n{ username: $username, ';
@@ -95,8 +111,8 @@ class User {
     toPrint += 'skillRate: ${skillRate.toString()}, ';
     toPrint += 'location: ${location.toString()}, ';
     toPrint += 'imageFileName: ${imageFileName.toString()}, ';
-    toPrint += 'skills: ${skills.toString()}, ';
-    toPrint += 'wishes: ${wishes.toString()}, ';
+    toPrint += 'skillz: ${skillz.toString()}, ';
+    toPrint += 'wishez: ${wishez.toString()}, ';
     toPrint += 'skillKeywords: ${skillKeywords.toString()}, ';
     toPrint += 'wishKeywords: ${wishKeywords.toString()}, ';
     toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';

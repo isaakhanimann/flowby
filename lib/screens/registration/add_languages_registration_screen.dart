@@ -28,8 +28,10 @@ class _AddLanguagesRegistrationScreenState
 
   List<TextEditingController> skillKeywordControllers = [];
   List<TextEditingController> skillDescriptionControllers = [];
+  List<TextEditingController> skillPriceControllers = [];
   List<TextEditingController> wishKeywordControllers = [];
   List<TextEditingController> wishDescriptionControllers = [];
+  List<TextEditingController> wishPriceControllers = [];
 
   Column _buildListOfTextFields({bool isSkillBuild}) {
     if (isSkillBuild) {
@@ -38,6 +40,7 @@ class _AddLanguagesRegistrationScreenState
           // Default controllers
           skillKeywordControllers.add(TextEditingController());
           skillDescriptionControllers.add(TextEditingController());
+          skillPriceControllers.add(TextEditingController());
         });
       }
     } else {
@@ -46,6 +49,7 @@ class _AddLanguagesRegistrationScreenState
           // Default controllers
           skillKeywordControllers.add(TextEditingController());
           skillDescriptionControllers.add(TextEditingController());
+          skillPriceControllers.add(TextEditingController());
         });
       }
     }
@@ -118,8 +122,6 @@ class _AddLanguagesRegistrationScreenState
 
     rows.add(
       _addButtonRow(isSkillBuild),
-      // I personally prefer the above widget. The old version is under so you can test it.
-      // _addButtonRowAlt(isSkillBuild),
     );
     return Column(
       children: rows,
@@ -237,12 +239,15 @@ class _AddLanguagesRegistrationScreenState
                               showSpinner = true;
                             });
 
-                            Map<String, String> skills = controllersToMap(
-                                keyControllers: skillKeywordControllers,
-                                descriptionControllers:
-                                    skillDescriptionControllers);
+                            List<SkillOrWish> skillz =
+                                User.controllersToListOfSkillsOrWishes(
+                                    keywordsControllers:
+                                        skillKeywordControllers,
+                                    descriptionControllers:
+                                        skillDescriptionControllers,
+                                    priceControllers: skillPriceControllers);
 
-                            _user.skills = skills;
+                            _user.skillz = skillz;
 
                             print(_user);
 

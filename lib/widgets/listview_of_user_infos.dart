@@ -16,9 +16,9 @@ class ListViewOfUserInfos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool canShowSkills =
-        user.hasSkills && user.skills != null && user.skills.isNotEmpty;
+        user.hasSkills && user.skillz != null && user.skillz.isNotEmpty;
     bool canShowWishes =
-        user.hasWishes && user.wishes != null && user.wishes.isNotEmpty;
+        user.hasWishes && user.wishez != null && user.wishez.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -129,7 +129,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                 ),
                 if (user.skillz != null) Text(user.skillz.toString()),
                 SizedBox(height: 10),
-                _buildListOfTextFields(skillsOrWishes: user.skills)
+                _buildListOfTextFields(skillsOrWishes: user.skillz)
               ],
             ),
           if (canShowWishes)
@@ -157,7 +157,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 10),
-                _buildListOfTextFields(skillsOrWishes: user.wishes)
+                _buildListOfTextFields(skillsOrWishes: user.wishez)
               ],
             ),
           SizedBox(
@@ -168,9 +168,9 @@ class ListViewOfUserInfos extends StatelessWidget {
     );
   }
 
-  Column _buildListOfTextFields({Map<dynamic, dynamic> skillsOrWishes}) {
+  Column _buildListOfTextFields({List<SkillOrWish> skillsOrWishes}) {
     List<Widget> rows = [];
-    for (String key in skillsOrWishes.keys) {
+    for (SkillOrWish skillOrWish in skillsOrWishes) {
       rows.add(
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,7 +178,7 @@ class ListViewOfUserInfos extends StatelessWidget {
             Expanded(
               flex: 5,
               child: Text(
-                key,
+                skillOrWish.keywords,
                 style: kSmallTitleTextStyle,
                 textAlign: TextAlign.start,
               ),
@@ -187,7 +187,16 @@ class ListViewOfUserInfos extends StatelessWidget {
             Expanded(
               flex: 8,
               child: Text(
-                skillsOrWishes[key],
+                skillOrWish.description,
+                style: kSmallTitleTextStyle,
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(width: 20),
+            Expanded(
+              flex: 3,
+              child: Text(
+                skillOrWish.price,
                 style: kSmallTitleTextStyle,
                 textAlign: TextAlign.start,
               ),

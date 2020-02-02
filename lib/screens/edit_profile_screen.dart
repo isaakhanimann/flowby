@@ -103,22 +103,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _bioController.text = user.bio;
       _localHasSkills = user.hasSkills;
       _localHasWishes = user.hasWishes;
-      var skills = user.skills;
-      var wishes = user.wishes;
-      skills?.forEach((key, value) {
-        skillKeywordControllers.add(TextEditingController(text: key));
-        skillDescriptionControllers.add(TextEditingController(text: value));
-        skillPriceControllers.add(TextEditingController(text: '20 CHF/h'));
+      user.skillz?.forEach((SkillOrWish skillOrWish) {
+        skillKeywordControllers
+            .add(TextEditingController(text: skillOrWish.keywords));
+        skillDescriptionControllers
+            .add(TextEditingController(text: skillOrWish.description));
+        skillPriceControllers
+            .add(TextEditingController(text: skillOrWish.price));
       });
       //controllers for extra skill
       skillKeywordControllers.add(TextEditingController());
       skillDescriptionControllers.add(TextEditingController());
       skillPriceControllers.add(TextEditingController());
 
-      wishes?.forEach((key, value) {
-        wishKeywordControllers.add(TextEditingController(text: key));
-        wishDescriptionControllers.add(TextEditingController(text: value));
-        wishPriceControllers.add(TextEditingController(text: '20 CHF/h'));
+      user.wishez?.forEach((SkillOrWish skillOrWish) {
+        wishKeywordControllers
+            .add(TextEditingController(text: skillOrWish.keywords));
+        wishDescriptionControllers
+            .add(TextEditingController(text: skillOrWish.description));
+        wishPriceControllers
+            .add(TextEditingController(text: skillOrWish.price));
       });
       wishKeywordControllers.add(TextEditingController());
       wishDescriptionControllers.add(TextEditingController());
@@ -243,21 +247,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Map<String, String> controllersToMap(
-      {List<TextEditingController> keyControllers,
-      List<TextEditingController> descriptionControllers}) {
-    Map<String, String> map = Map();
-    for (int i = 0; i < keyControllers.length; i++) {
-      String keyword = keyControllers[i].text;
-      if (keyword != null && keyword.isNotEmpty) {
-        if (!map.containsKey(keyword)) {
-          map[keyword] = descriptionControllers[i].text ?? '';
-        }
-      }
-    }
-    return map;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -288,31 +277,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width * 2 / 3,
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              height: 50,
-                              width: 50,
-                              color: Colors.blue,
-                            ),
-                            Container(
-                              height: 50,
-                              width: 50,
-                              color: Colors.green,
-                            )
-                          ],
-                        ),
-                        Container(
-                          height: 50,
-                          width: 100,
-                          color: Colors.yellow,
-                        )
-                      ],
-                    ),
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.blue,
+                          ),
+                          Container(
+                            height: 50,
+                            width: 50,
+                            color: Colors.green,
+                          )
+                        ],
+                      ),
+                      Container(
+                        height: 50,
+                        width: 100,
+                        color: Colors.yellow,
+                      )
+                    ],
                   ),
                   Container(
                     height: 50,
@@ -455,13 +441,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       fileName: widget.user.uid, image: _profilePic);
                 }
 
-                // only add a skill to the user if the keyword is not null or empty
-                Map<String, String> skills = controllersToMap(
-                    keyControllers: skillKeywordControllers,
-                    descriptionControllers: skillDescriptionControllers);
-                Map<String, String> wishes = controllersToMap(
-                    keyControllers: wishKeywordControllers,
-                    descriptionControllers: wishDescriptionControllers);
+                // only add a skill to the user if the keywords are not null or empty
+                List<SkillOrWish> skillz =
+                    User.controllersToListOfSkillsOrWishes(
+                        keywordsControllers: skillKeywordControllers,
+                        descriptionControllers: skillDescriptionControllers,
+                        priceControllers: skillPriceControllers);
+                List<SkillOrWish> wishez =
+                    User.controllersToListOfSkillsOrWishes(
+                        keywordsControllers: wishKeywordControllers,
+                        descriptionControllers: wishDescriptionControllers,
+                        priceControllers: wishPriceControllers);
 
                 User user = User(
                     username: _usernameController.text,
@@ -471,8 +461,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     hasWishes: _localHasWishes,
                     skillRate: _localSkillRate,
                     wishRate: _localWishRate,
-                    skills: skills,
-                    wishes: wishes,
+                    skillz: skillz,
+                    wishez: wishez,
                     imageFileName: widget.user.uid);
                 await cloudFirestoreService.uploadUser(user: user);
                 Navigator.of(context).pop();

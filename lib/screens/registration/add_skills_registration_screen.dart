@@ -31,19 +31,25 @@ class _AddSkillsRegistrationScreenState
 
   List<TextEditingController> skillKeywordControllers = [];
   List<TextEditingController> skillDescriptionControllers = [];
+  List<TextEditingController> skillPriceControllers = [];
+
   List<TextEditingController> wishKeywordControllers = [];
   List<TextEditingController> wishDescriptionControllers = [];
 
   void _setLanguagesInSkills(User user) async {
     setState(() {
-      var _skills = user.skills;
-      _skills?.forEach((key, value) {
-        skillKeywordControllers.add(TextEditingController(text: key));
-        skillDescriptionControllers.add(TextEditingController(text: value));
+      user.skillz?.forEach((SkillOrWish skillOrWish) {
+        skillKeywordControllers
+            .add(TextEditingController(text: skillOrWish.keywords));
+        skillDescriptionControllers
+            .add(TextEditingController(text: skillOrWish.description));
+        skillPriceControllers
+            .add(TextEditingController(text: skillOrWish.price));
       });
       //controllers for extra skill
       skillKeywordControllers.add(TextEditingController());
       skillDescriptionControllers.add(TextEditingController());
+      skillPriceControllers.add(TextEditingController());
 
       showSpinner = false;
     });
@@ -56,6 +62,7 @@ class _AddSkillsRegistrationScreenState
           // Default controllers
           skillKeywordControllers.add(TextEditingController());
           skillDescriptionControllers.add(TextEditingController());
+          skillPriceControllers.add(TextEditingController());
         });
       }
     } else {
@@ -64,6 +71,7 @@ class _AddSkillsRegistrationScreenState
           // Default controllers
           skillKeywordControllers.add(TextEditingController());
           skillDescriptionControllers.add(TextEditingController());
+          skillPriceControllers.add(TextEditingController());
         });
       }
     }
@@ -160,21 +168,6 @@ class _AddSkillsRegistrationScreenState
         },
       ),
     );
-  }
-
-  Map<String, String> controllersToMap(
-      {List<TextEditingController> keyControllers,
-      List<TextEditingController> descriptionControllers}) {
-    Map<String, String> map = Map();
-    for (int i = 0; i < keyControllers.length; i++) {
-      String keyword = keyControllers[i].text;
-      if (keyword != null && keyword.isNotEmpty) {
-        if (!map.containsKey(keyword)) {
-          map[keyword] = descriptionControllers[i].text ?? '';
-        }
-      }
-    }
-    return map;
   }
 
   @override
@@ -280,13 +273,16 @@ class _AddSkillsRegistrationScreenState
                               showSpinner = true;
                             });
 
-                            Map<String, String> skills = controllersToMap(
-                                keyControllers: skillKeywordControllers,
-                                descriptionControllers:
-                                    skillDescriptionControllers);
+                            List<SkillOrWish> skillz =
+                                User.controllersToListOfSkillsOrWishes(
+                                    keywordsControllers:
+                                        skillKeywordControllers,
+                                    descriptionControllers:
+                                        skillDescriptionControllers,
+                                    priceControllers: skillPriceControllers);
 
                             _user.hasSkills = _localHasSkills;
-                            _user.skills = skills;
+                            _user.skillz = skillz;
                             _user.skillRate = _databaseSkillRate;
 
                             print(_user);
