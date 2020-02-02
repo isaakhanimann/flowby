@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:Flowby/screens/chat_screen.dart';
@@ -10,6 +11,12 @@ class FirebaseCloudMessaging {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
+  BuildContext _context;
+
+  void getContext(BuildContext context) {
+    _context = context;
+  }
 
   Future<String> getToken() {
     return _firebaseMessaging.getToken();
@@ -29,21 +36,21 @@ class FirebaseCloudMessaging {
         flutterLocalNotificationsPlugin
             .getNotificationAppLaunchDetails()
             .then((notificationAppLaunchDetails) {
-          print(notificationAppLaunchDetails.didNotificationLaunchApp);
           if (notificationAppLaunchDetails.didNotificationLaunchApp)
-            navigateToChat(context, message);
+            navigateToChat(context: context, message: message);
         });
+        _context = context;
         showNotification(message: message);
       },
       onResume: (Map<String, dynamic> mapMessage) async {
         print('on resume $mapMessage');
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-        navigateToChat(context, message);
+        navigateToChat(context: context, message: message);
       },
       onLaunch: (Map<String, dynamic> mapMessage) async {
         print('on launch $mapMessage');
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-        navigateToChat(context, message);
+        navigateToChat(context: context, message: message);
       },
     );
     // Flutter Local Notifications //
@@ -62,7 +69,8 @@ class FirebaseCloudMessaging {
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
   }
 
   void showNotification({@required CloudMessage message}) async {
@@ -85,26 +93,54 @@ class FirebaseCloudMessaging {
       message.title,
       message.body,
       platformChannelSpecifics,
-      payload:
-          'put data here that will be passed back to the app when a notification is tapped',
+      payload: message.string,
     );
   }
 
-  void navigateToChat(BuildContext context, CloudMessage message) {
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return ChatScreen(
-            loggedInUid: message.data['loggedInUser'],
-            otherUid: message.data['otherUid'],
-            otherUsername: message.data['otherUsername'],
-            heroTag: message.data['otherUid'] + 'chats',
-            otherImageFileName: message.data['otherImageFileName'],
-            chatPath: message.data['chatPath'],
-          );
-        },
-      ),
-    );
+  void navigateToChat(
+      {BuildContext context,
+      CloudMessage message,
+      Map onTapMessage,
+      bool onTap = false}) {
+    if (onTap) {
+      Navigator.of(context, rootNavigator: true).push(
+        CupertinoPageRoute<void>(
+          builder: (context) {
+            return ChatScreen(
+              loggedInUid: onTapMessage['data']['loggedInUser'],
+              otherUid: onTapMessage['data']['otherUid'],
+              otherUsername: onTapMessage['data']['otherUsername'],
+              heroTag: onTapMessage['data']['otherUid'] + 'chats',
+              otherImageFileName: onTapMessage['data']['otherImageFileName'],
+              chatPath: onTapMessage['data']['chatPath'],
+            );
+          },
+        ),
+      );
+    } else {
+      Navigator.of(context, rootNavigator: true).push(
+        CupertinoPageRoute<void>(
+          builder: (context) {
+            return ChatScreen(
+              loggedInUid: message.data['loggedInUser'],
+              otherUid: message.data['otherUid'],
+              otherUsername: message.data['otherUsername'],
+              heroTag: message.data['otherUid'] + 'chats',
+              otherImageFileName: message.data['otherImageFileName'],
+              chatPath: message.data['chatPath'],
+            );
+          },
+        ),
+      );
+    }
+  }
+
+  Future onSelectNotification(String payload) async {
+    if (payload != null) {
+      //debugPrint('notification payload: ' + payload);
+    }
+    Map message = json.decode(payload);
+    navigateToChat(context: _context, onTapMessage: message, onTap: true);
   }
 }
 
@@ -112,6 +148,8 @@ class CloudMessage {
   String title;
   String body;
   String priority = 'high';
+
+  String string;
 
   // click_action = FLUTTER_NOTIFICATION_CLICK is needed otherwise the plugin will be unable to deliver the notification to your app when the users clicks on it in the system tray.
   Map<String, String> data = {
@@ -137,5 +175,7 @@ class CloudMessage {
     data['otherUsername'] = mapMessage['data']['otherUsername'];
     data['otherImageFileName'] = mapMessage['data']['otherImageFileName'];
     data['chatPath'] = mapMessage['data']['chatPath'];
+
+    string = JsonEncoder.withIndent("    ").convert(mapMessage);
   }
 }
