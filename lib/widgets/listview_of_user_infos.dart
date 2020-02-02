@@ -127,7 +127,6 @@ class ListViewOfUserInfos extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (user.skillz != null) Text(user.skillz.toString()),
                 SizedBox(height: 10),
                 _buildListOfTextFields(skillsOrWishes: user.skillz)
               ],

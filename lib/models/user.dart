@@ -68,8 +68,8 @@ class User {
       'skillRate': skillRate,
       'wishRate': wishRate,
       'imageFileName': imageFileName,
-      'skillz': skillz,
-      'wishez': wishez,
+      'skillz': skillz.map((SkillOrWish s) => s.toMap()).toList(),
+      'wishez': wishez.map((SkillOrWish w) => w.toMap()).toList()
     };
   }
 
@@ -132,6 +132,14 @@ class SkillOrWish {
     this.keywords = skillOrWish['keywords'];
     this.description = skillOrWish['description'];
     this.price = skillOrWish['price'];
+  }
+
+  Map<String, String> toMap() {
+    Map<String, String> map = Map();
+    map['keywords'] = keywords;
+    map['description'] = description;
+    map['price'] = price;
+    return map;
   }
 
   @override

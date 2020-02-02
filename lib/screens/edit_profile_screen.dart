@@ -170,54 +170,51 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Column(
-              children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    CupertinoTextField(
-                      expands: true,
-                      minLines: null,
-                      maxLines: null,
-                      style: kAddSkillsTextStyle,
-                      maxLength: 20,
-                      decoration: null,
-                      textAlign: TextAlign.start,
-                      placeholder: "#keywords",
-                      controller: isSkillBuild
-                          ? skillKeywordControllers[rowNumber]
-                          : wishKeywordControllers[rowNumber],
-                    ),
-                    SizedBox(width: 20),
-                    CupertinoTextField(
-                      expands: true,
-                      maxLines: null,
-                      minLines: null,
-                      style: kAddSkillsTextStyle,
-                      maxLength: 10,
-                      decoration: null,
-                      textAlign: TextAlign.start,
-                      placeholder: "price",
-                      controller: isSkillBuild
-                          ? skillPriceControllers[rowNumber]
-                          : wishPriceControllers[rowNumber],
-                    ),
-                  ],
-                ),
-                CupertinoTextField(
-                  expands: true,
-                  maxLines: null,
-                  minLines: null,
-                  style: kAddSkillsTextStyle,
-                  maxLength: 100,
-                  decoration: null,
-                  textAlign: TextAlign.start,
-                  placeholder: "description",
-                  controller: isSkillBuild
-                      ? skillDescriptionControllers[rowNumber]
-                      : wishDescriptionControllers[rowNumber],
-                ),
-              ],
+            Expanded(
+              child: CupertinoTextField(
+                expands: true,
+                minLines: null,
+                maxLines: null,
+                style: kAddSkillsTextStyle,
+                maxLength: 20,
+                decoration: null,
+                textAlign: TextAlign.start,
+                placeholder: "#keywords",
+                controller: isSkillBuild
+                    ? skillKeywordControllers[rowNumber]
+                    : wishKeywordControllers[rowNumber],
+              ),
+            ),
+            SizedBox(width: 20),
+            Expanded(
+              child: CupertinoTextField(
+                expands: true,
+                maxLines: null,
+                minLines: null,
+                style: kAddSkillsTextStyle,
+                maxLength: 10,
+                decoration: null,
+                textAlign: TextAlign.start,
+                placeholder: "price",
+                controller: isSkillBuild
+                    ? skillPriceControllers[rowNumber]
+                    : wishPriceControllers[rowNumber],
+              ),
+            ),
+            Expanded(
+              child: CupertinoTextField(
+                expands: true,
+                maxLines: null,
+                minLines: null,
+                style: kAddSkillsTextStyle,
+                maxLength: 100,
+                decoration: null,
+                textAlign: TextAlign.start,
+                placeholder: "description",
+                controller: isSkillBuild
+                    ? skillDescriptionControllers[rowNumber]
+                    : wishDescriptionControllers[rowNumber],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 15.0),
@@ -269,7 +266,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (true) {
+    if (false) {
       return CupertinoPageScaffold(
         backgroundColor: Colors.white,
         child: SafeArea(
@@ -606,22 +603,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ],
               ),
-              if (_localHasSkills)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _buildListOfRows(isSkillBuild: true),
-                    RatePicker(
-                      initialValue: user.skillRate ?? 20,
-                      onSelected: (selectedIndex) {
-                        _localSkillRate = selectedIndex;
-                      },
-                    ),
-                  ],
-                ),
+              SizedBox(
+                height: 20,
+              ),
+              if (_localHasSkills) _buildListOfRows(isSkillBuild: true),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -640,21 +625,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ],
               ),
-              if (_localHasWishes)
-                Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _buildListOfRows(isSkillBuild: false),
-                    RatePicker(
-                      initialValue: user.wishRate ?? 20,
-                      onSelected: (selectedIndex) {
-                        _localWishRate = selectedIndex;
-                      },
-                    ),
-                  ],
-                ),
+              SizedBox(
+                height: 20,
+              ),
+              if (_localHasWishes) _buildListOfRows(isSkillBuild: false),
               SizedBox(
                 height: 20,
               ),
