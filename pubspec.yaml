@@ -62,3 +62,6 @@ flutter:
     - family: MuliRegular
       fonts:
         - asset: assets/fonts/Muli/static/Muli-Regular.ttf
+    - family: MontserratSemiBold
+      fonts:
+        - asset: assets/fonts/Montserrat/Montserrat-SemiBold.ttf

@@ -104,7 +104,7 @@ class ListViewOfUserInfos extends StatelessWidget {
             ),
           if (canShowSkills)
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
                   height: 20,
@@ -119,7 +119,7 @@ class ListViewOfUserInfos extends StatelessWidget {
             ),
           if (canShowWishes)
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
                   height: 10,
@@ -144,35 +144,44 @@ class ListViewOfUserInfos extends StatelessWidget {
     List<Widget> rows = [];
     for (SkillOrWish skillOrWish in skillsOrWishes) {
       rows.add(
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Column(
           children: <Widget>[
-            Expanded(
-              flex: 5,
-              child: Text(
-                skillOrWish.keywords,
-                style: kSmallTitleTextStyle,
-                textAlign: TextAlign.start,
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  flex: 6,
+                  child: Text(
+                    skillOrWish.keywords,
+                    style: kKeywordHeaderTextStyle,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                SizedBox(width: 20),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    skillOrWish.price,
+                    style: kKeywordHeaderTextStyle,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(width: 20),
-            Expanded(
-              flex: 8,
-              child: Text(
-                skillOrWish.description,
-                style: kSmallTitleTextStyle,
-                textAlign: TextAlign.start,
-              ),
+            SizedBox(height: 5.0),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Flexible(
+                  child: Text(
+                    skillOrWish.description,
+                    style: kSmallTitleTextStyle,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(width: 20),
-            Expanded(
-              flex: 3,
-              child: Text(
-                skillOrWish.price,
-                style: kSmallTitleTextStyle,
-                textAlign: TextAlign.start,
-              ),
-            ),
+            SizedBox(height: 15.0),
           ],
         ),
       );

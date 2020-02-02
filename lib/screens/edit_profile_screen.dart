@@ -162,73 +162,84 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 : wishKeywordControllers.length);
         rowNumber++) {
       rows.add(
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Column(
           children: <Widget>[
-            Expanded(
-              child: CupertinoTextField(
-                expands: true,
-                minLines: null,
-                maxLines: null,
-                style: kAddSkillsTextStyle,
-                maxLength: 20,
-                decoration: null,
-                textAlign: TextAlign.start,
-                placeholder: "#keywords",
-                controller: isSkillBuild
-                    ? skillKeywordControllers[rowNumber]
-                    : wishKeywordControllers[rowNumber],
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: CupertinoTextField(
+                    expands: true,
+                    minLines: null,
+                    maxLines: null,
+                    style: kAddSkillsTextStyle,
+                    maxLength: 20,
+                    decoration: null,
+                    textAlign: TextAlign.start,
+                    placeholder: "#keywords",
+                    controller: isSkillBuild
+                        ? skillKeywordControllers[rowNumber]
+                        : wishKeywordControllers[rowNumber],
+                  ),
+                ),
+                SizedBox(width: 20),
+                Expanded(
+                  child: CupertinoTextField(
+                    expands: true,
+                    maxLines: null,
+                    minLines: null,
+                    style: kAddSkillsTextStyle,
+                    maxLength: 10,
+                    decoration: null,
+                    textAlign: TextAlign.start,
+                    placeholder: "price",
+                    controller: isSkillBuild
+                        ? skillPriceControllers[rowNumber]
+                        : wishPriceControllers[rowNumber],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 0.0),
+                  child: GestureDetector(
+                    onTap: () => setState(() {
+                      if (isSkillBuild) {
+                        skillKeywordControllers.removeAt(rowNumber);
+                        skillDescriptionControllers.removeAt(rowNumber);
+                        skillPriceControllers.removeAt(rowNumber);
+                      } else {
+                        wishKeywordControllers.removeAt(rowNumber);
+                        wishDescriptionControllers.removeAt(rowNumber);
+                        wishPriceControllers.removeAt(rowNumber);
+                      }
+                    }),
+                    child: Icon(Feather.x),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(width: 20),
-            Expanded(
-              child: CupertinoTextField(
-                expands: true,
-                maxLines: null,
-                minLines: null,
-                style: kAddSkillsTextStyle,
-                maxLength: 100,
-                decoration: null,
-                textAlign: TextAlign.start,
-                placeholder: "description",
-                controller: isSkillBuild
-                    ? skillDescriptionControllers[rowNumber]
-                    : wishDescriptionControllers[rowNumber],
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: CupertinoTextField(
+                    expands: true,
+                    maxLines: null,
+                    minLines: null,
+                    style: kAddSkillsTextStyle,
+                    maxLength: 100,
+                    decoration: null,
+                    textAlign: TextAlign.start,
+                    placeholder: "description",
+                    controller: isSkillBuild
+                        ? skillDescriptionControllers[rowNumber]
+                        : wishDescriptionControllers[rowNumber],
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: CupertinoTextField(
-                expands: true,
-                maxLines: null,
-                minLines: null,
-                style: kAddSkillsTextStyle,
-                maxLength: 10,
-                decoration: null,
-                textAlign: TextAlign.start,
-                placeholder: "price",
-                controller: isSkillBuild
-                    ? skillPriceControllers[rowNumber]
-                    : wishPriceControllers[rowNumber],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: GestureDetector(
-                onTap: () => setState(() {
-                  if (isSkillBuild) {
-                    skillKeywordControllers.removeAt(rowNumber);
-                    skillDescriptionControllers.removeAt(rowNumber);
-                    skillPriceControllers.removeAt(rowNumber);
-                  } else {
-                    wishKeywordControllers.removeAt(rowNumber);
-                    wishDescriptionControllers.removeAt(rowNumber);
-                    wishPriceControllers.removeAt(rowNumber);
-                  }
-                }),
-                child: Icon(Feather.x),
-              ),
-            ),
+            SizedBox(height: 15.0),
           ],
         ),
       );

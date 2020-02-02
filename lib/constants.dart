@@ -5,18 +5,23 @@ import 'package:flutter/material.dart';
 const kUsernameTitleTextStyle = TextStyle(
     fontFamily: 'MontserratRegular',
     fontSize: 35.0,
-    fontWeight: FontWeight.w900,
+    fontWeight: FontWeight.w500,
     color: kLoginBackgroundColor);
 const kSkillsTitleTextStyle = TextStyle(
     fontFamily: 'MontserratRegular',
     fontSize: 30.0,
-    fontWeight: FontWeight.w900,
+    fontWeight: FontWeight.w500,
     color: kLoginBackgroundColor);
 const kSmallTitleTextStyle = TextStyle(
     fontFamily: 'NotoRegular',
-    fontSize: 20.0,
+    fontSize: 18.0,
     fontWeight: FontWeight.w400,
     color: kSmallTitlesTextColor);
+const kKeywordHeaderTextStyle = TextStyle(
+    fontFamily: 'NotoRegular',
+    fontSize: 18.0,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFF08D491));
 const kEditProfileTextFieldTextStyle = TextStyle(
     fontFamily: 'NotoRegular',
     fontSize: 20.0,

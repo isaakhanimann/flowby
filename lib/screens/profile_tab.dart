@@ -40,7 +40,7 @@ class ProfileTab extends StatelessWidget {
             child: Stack(alignment: Alignment.bottomCenter, children: <Widget>[
               ListViewOfUserInfos(user: user),
               Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
+                padding: const EdgeInsets.only(bottom: 0.0),
                 child: RoundedButton(
                   text: 'Edit your profile',
                   color: kBlueButtonColor,
