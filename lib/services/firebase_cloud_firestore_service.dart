@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:Flowby/models/chat_without_last_message.dart';
 
 class FirebaseCloudFirestoreService {
   final _fireStore = Firestore.instance;
@@ -50,13 +51,15 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  Stream<Chat> getChatStream({@required String chatPath}) {
+  Stream<ChatWithoutLastMessage> getChatStreamWithoutLastMessageField(
+      {@required String chatPath}) {
     try {
       var chatStream = _fireStore.document(chatPath).snapshots().map((doc) {
-        Chat chat = Chat.fromMap(map: doc.data);
+        ChatWithoutLastMessage chat =
+            ChatWithoutLastMessage.fromMap(map: doc.data);
         chat.setChatpath(chatpath: doc.reference.path);
         return chat;
-      });
+      }).distinct(); //use distinct to avoid unnecessary rebuilds
       return chatStream;
     } catch (e) {
       print('Isaak could not get the chat stream');

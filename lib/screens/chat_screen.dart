@@ -9,7 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:Flowby/models/chat.dart';
+import 'package:Flowby/models/chat_without_last_message.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
@@ -109,31 +109,31 @@ class ChatScreenWithPath extends StatelessWidget {
       backgroundColor: CupertinoColors.white,
       child: SafeArea(
         child: StreamBuilder(
-          stream: cloudFirestoreService.getChatStream(chatPath: chatPath),
+          stream: cloudFirestoreService.getChatStreamWithoutLastMessageField(
+              chatPath: chatPath),
           builder: (context, snapshot) {
+            print('chatscreen chat streambuilder executed');
             if (snapshot.connectionState == ConnectionState.waiting ||
                 snapshot.connectionState == ConnectionState.none) {
-              return Stack(children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    MessagesStream(
-                      messagesStream: cloudFirestoreService.getMessageStream(
-                          chatPath: chatPath),
-                    ),
-                    MessageSendingSectionLoading(),
-                  ],
-                ),
-                Header(
-                  otherImageFileName: otherImageFileName,
-                  otherUsername: otherUsername,
-                  heroTag: heroTag,
-                ),
-              ]);
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Header(
+                    otherImageFileName: otherImageFileName,
+                    otherUsername: otherUsername,
+                    heroTag: heroTag,
+                  ),
+                  MessagesStream(
+                    messagesStream: cloudFirestoreService.getMessageStream(
+                        chatPath: chatPath),
+                  ),
+                  MessageSendingSectionLoading(),
+                ],
+              );
             }
 
-            final Chat chat = snapshot.data;
+            final ChatWithoutLastMessage chat = snapshot.data;
 
             return Stack(children: [
               Column(
@@ -184,7 +184,7 @@ class Header extends StatelessWidget {
   final String otherImageFileName;
   final String otherUsername;
   final String heroTag;
-  final Chat chat;
+  final ChatWithoutLastMessage chat;
 
   @override
   Widget build(BuildContext context) {
@@ -356,7 +356,7 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageSendingSection extends StatefulWidget {
-  final Chat chat;
+  final ChatWithoutLastMessage chat;
 
   MessageSendingSection({@required this.chat});
 

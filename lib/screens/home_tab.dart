@@ -245,9 +245,11 @@ class ProfileItem extends StatelessWidget {
           ),
           subtitle: Text(
             HelperFunctions.getDotDotDotString(
+                numLettersToKeep: 25,
                 maybeLongString:
                     isSkillSearch ? user.skillKeywords : user.wishKeywords),
             maxLines: 1,
+            overflow: TextOverflow.fade,
             style: kCardSubtitleTextStyle,
           ),
           trailing: Icon(Feather.chevron_right),

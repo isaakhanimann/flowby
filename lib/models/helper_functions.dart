@@ -79,8 +79,8 @@ class HelperFunctions {
     }
   }
 
-  static String getDotDotDotString({@required String maybeLongString}) {
-    int numLettersToKeep = 16;
+  static String getDotDotDotString(
+      {@required String maybeLongString, int numLettersToKeep = 16}) {
     if (maybeLongString.length < numLettersToKeep) {
       return maybeLongString;
     } else {
