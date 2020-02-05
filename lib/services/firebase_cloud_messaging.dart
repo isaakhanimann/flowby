@@ -12,7 +12,7 @@ class FirebaseCloudMessaging {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  BuildContext _context;
+  BuildContext context;
 
   Future<String> getToken() {
     return _firebaseMessaging.getToken();
@@ -21,32 +21,22 @@ class FirebaseCloudMessaging {
   void firebaseCloudMessagingListeners(BuildContext context) {
     if (Platform.isIOS) iOSPermission();
 
-//    _firebaseMessaging.getToken().then((token) {
-//      //print('token: $token');
-//    });
-
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> mapMessage) async {
         print('on message $mapMessage');
-        _context = context;
+        this.context = context;
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-        /*flutterLocalNotificationsPlugin
-            .getNotificationAppLaunchDetails()
-            .then((notificationAppLaunchDetails) {
-          if (notificationAppLaunchDetails.didNotificationLaunchApp)
-            navigateToChat(context, message);
-        });*/
         showNotification(message: message);
       },
       onResume: (Map<String, dynamic> mapMessage) async {
         print('on resume $mapMessage');
-        //CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-        //navigateToChat(context, message);
+        CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
+        navigateToChat(context, message);
       },
       onLaunch: (Map<String, dynamic> mapMessage) async {
         print('on launch $mapMessage');
-        //CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-        //navigateToChat(context, message);
+        CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
+        navigateToChat(context, message);
       },
     );
     // Flutter Local Notifications //
@@ -91,6 +81,17 @@ class FirebaseCloudMessaging {
     );
   }
 
+  Future onSelectNotification(String payload) async {
+    if (payload != null) {
+      //debugPrint('notification payload: ' + payload);
+    }
+    debugPrint('context messaging: $context');
+    CloudMessage message =
+        CloudMessage.fromMap(mapMessage: json.decode(payload));
+    navigateToChat(context, message);
+
+  }
+
   void navigateToChat(
     BuildContext context,
     CloudMessage message,
@@ -99,7 +100,7 @@ class FirebaseCloudMessaging {
       CupertinoPageRoute<void>(
         builder: (context) {
           return ChatScreen(
-            loggedInUid: message.data['loggedInUser'],
+            loggedInUid: message.data['loggedInUid'],
             otherUid: message.data['otherUid'],
             otherUsername: message.data['otherUsername'],
             heroTag: message.data['otherUid'] + 'chats',
@@ -109,29 +110,6 @@ class FirebaseCloudMessaging {
         },
       ),
     );
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return ChatScreen(
-            loggedInUid: message.data['loggedInUser'],
-            otherUid: message.data['otherUid'],
-            otherUsername: message.data['otherUsername'],
-            heroTag: message.data['otherUid'] + 'chats',
-            otherImageFileName: message.data['otherImageFileName'],
-            chatPath: message.data['chatPath'],
-          );
-        },
-      ),
-    );
-  }
-
-  Future onSelectNotification(String payload) async {
-    if (payload != null) {
-      //debugPrint('notification payload: ' + payload);
-    }
-    CloudMessage message =
-        CloudMessage.fromMap(mapMessage: json.decode(payload));
-    navigateToChat(_context, message);
   }
 }
 
@@ -139,8 +117,10 @@ class CloudMessage {
   String title;
   String body;
   String priority = 'high';
-
   String string;
+  String toToken;
+
+  CloudMessage({this.title, this.body});
 
   // click_action = FLUTTER_NOTIFICATION_CLICK is needed otherwise the plugin will be unable to deliver the notification to your app when the users clicks on it in the system tray.
   Map<String, String> data = {
@@ -148,9 +128,6 @@ class CloudMessage {
     "id": "1",
     "status": "done"
   };
-  String toToken;
-
-  CloudMessage({this.title, this.body});
 
   // {"notification": {"body": "this is a body","title": "this is a title"},
   // "priority": "high",
