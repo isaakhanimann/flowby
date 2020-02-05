@@ -196,15 +196,12 @@ class Header extends StatelessWidget {
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     bool amIUser1;
     bool haveIBlocked;
-    bool hasOtherBlocked;
     if (chat != null) {
       amIUser1 = (chat.uid1 == loggedInUid);
       if (amIUser1) {
         haveIBlocked = chat.hasUser1Blocked;
-        hasOtherBlocked = chat.hasUser2Blocked;
       } else {
         haveIBlocked = chat.hasUser2Blocked;
-        hasOtherBlocked = chat.hasUser1Blocked;
       }
     }
     return Container(
@@ -285,21 +282,17 @@ class Header extends StatelessWidget {
               CupertinoButton(
                 child: Icon(
                   Feather.user_x,
-                  color: hasOtherBlocked
-                      ? Colors.grey
-                      : (haveIBlocked ? Colors.red : kLoginBackgroundColor),
+                  color: haveIBlocked ? Colors.red : kLoginBackgroundColor,
                 ),
                 onPressed: () {
-                  if (!hasOtherBlocked) {
-                    if (amIUser1) {
-                      cloudFirestoreService.uploadChatBlocked(
-                          chatpath: chat.chatpath,
-                          hasUser1Blocked: !haveIBlocked);
-                    } else {
-                      cloudFirestoreService.uploadChatBlocked(
-                          chatpath: chat.chatpath,
-                          hasUser2Blocked: !haveIBlocked);
-                    }
+                  if (amIUser1) {
+                    cloudFirestoreService.uploadChatBlocked(
+                        chatpath: chat.chatpath,
+                        hasUser1Blocked: !haveIBlocked);
+                  } else {
+                    cloudFirestoreService.uploadChatBlocked(
+                        chatpath: chat.chatpath,
+                        hasUser2Blocked: !haveIBlocked);
                   }
                 },
               )
@@ -410,6 +403,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
             padding: const EdgeInsets.only(left: 10.0),
             child: CupertinoTextField(
               textCapitalization: TextCapitalization.sentences,
+              maxLength: 500,
               expands: true,
               maxLines: null,
               minLines: null,
