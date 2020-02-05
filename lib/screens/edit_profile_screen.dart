@@ -6,6 +6,7 @@ import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
+import 'package:Flowby/widgets/build_list_of_text_fields.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   var _usernameController = TextEditingController();
   var _bioController = TextEditingController();
+  BuildListOfTextFields skillsListOfTextFields = BuildListOfTextFields(user: null, isSkillBuild: null,);
 
   List<TextEditingController> skillKeywordControllers = [];
   List<TextEditingController> skillDescriptionControllers = [];
@@ -273,119 +275,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (false) {
-      return CupertinoPageScaffold(
-        backgroundColor: Colors.white,
-        child: SafeArea(
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.blue,
-                          ),
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.green,
-                          )
-                        ],
-                      ),
-                      Container(
-                        height: 50,
-                        width: 100,
-                        color: Colors.yellow,
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    color: Colors.red,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.blue,
-                          ),
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.green,
-                          )
-                        ],
-                      ),
-                      Container(
-                        height: 50,
-                        width: 100,
-                        color: Colors.yellow,
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    color: Colors.red,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.blue,
-                          ),
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.green,
-                          )
-                        ],
-                      ),
-                      Container(
-                        height: 50,
-                        width: 100,
-                        color: Colors.yellow,
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    color: Colors.red,
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    }
+    skillsListOfTextFields = BuildListOfTextFields(user: user,isSkillBuild: true);
+
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
@@ -593,7 +484,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              if (_localHasSkills) _buildListOfRows(isSkillBuild: true),
+              //if (_localHasSkills) _buildListOfRows(isSkillBuild: true),
+              if (_localHasSkills) skillsListOfTextFields,
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -615,7 +507,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              if (_localHasWishes) _buildListOfRows(isSkillBuild: false),
+              //if (_localHasWishes) _buildListOfRows(isSkillBuild: false),
+              if (_localHasWishes) BuildListOfTextFields(user: user, isSkillBuild: false),
               SizedBox(
                 height: 20,
               ),
