@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/chat_without_last_message.dart';
+import 'package:Flowby/widgets/route_transitions/scale_route.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
@@ -228,15 +229,12 @@ class Header extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => ShowProfilePictureScreen(
-                                  imageFileName:
-                                      'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media',
-                                  otherUsername: otherUsername,
-                                  heroTag: heroTag,
-                                )));
+                    Navigator.of(context, rootNavigator: true).push(ScaleRoute(
+                        page: ShowProfilePictureScreen(
+                      imageFileName: otherImageFileName,
+                      otherUsername: otherUsername,
+                      heroTag: heroTag,
+                    )));
                   },
                   child: Row(
                     children: <Widget>[
