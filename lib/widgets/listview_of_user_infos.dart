@@ -104,7 +104,7 @@ class ListViewOfUserInfos extends StatelessWidget {
             ),
           if (canShowSkills)
             Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SizedBox(
                   height: 20,
@@ -119,7 +119,7 @@ class ListViewOfUserInfos extends StatelessWidget {
             ),
           if (canShowWishes)
             Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SizedBox(
                   height: 10,
@@ -145,6 +145,7 @@ class ListViewOfUserInfos extends StatelessWidget {
     for (SkillOrWish skillOrWish in skillsOrWishes) {
       rows.add(
         Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,27 +160,20 @@ class ListViewOfUserInfos extends StatelessWidget {
                 ),
                 SizedBox(width: 20),
                 Expanded(
-                  flex: 3,
+                  flex: 2,
                   child: Text(
                     skillOrWish.price,
                     style: kKeywordHeaderTextStyle,
-                    textAlign: TextAlign.start,
+                    textAlign: TextAlign.end,
                   ),
                 ),
               ],
             ),
             SizedBox(height: 5.0),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Flexible(
-                  child: Text(
-                    skillOrWish.description,
-                    style: kSmallTitleTextStyle,
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-              ],
+            Text(
+              skillOrWish.description,
+              style: kSmallTitleTextStyle,
+              textAlign: TextAlign.start,
             ),
             SizedBox(height: 15.0),
           ],

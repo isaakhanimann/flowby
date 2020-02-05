@@ -112,7 +112,6 @@ class ChatScreenWithPath extends StatelessWidget {
           stream: cloudFirestoreService.getChatStreamWithoutLastMessageField(
               chatPath: chatPath),
           builder: (context, snapshot) {
-            print('chatscreen chat streambuilder executed');
             if (snapshot.connectionState == ConnectionState.waiting ||
                 snapshot.connectionState == ConnectionState.none) {
               return Column(
