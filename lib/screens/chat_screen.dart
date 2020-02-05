@@ -23,20 +23,18 @@ class ChatScreen extends StatelessWidget {
 
   //either the chatPath is supplied and we can get the messageStream directly
   //or if he isn't we can user the other user to figure out the chatpath ourselves
-  ChatScreen({
-    @required this.loggedInUid,
-    @required this.otherUid,
-    @required this.otherUsername,
-    @required this.heroTag,
-    @required this.otherImageFileName,
-    this.chatPath,
-  });
+  ChatScreen(
+      {@required this.loggedInUid,
+      @required this.otherUid,
+      @required this.otherUsername,
+      @required this.heroTag,
+      @required this.otherImageFileName,
+      this.chatPath});
 
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-
 
     if (chatPath != null) {
       return Provider<String>.value(
@@ -114,7 +112,6 @@ class ChatScreenWithPath extends StatelessWidget {
           stream: cloudFirestoreService.getChatStreamWithoutLastMessageField(
               chatPath: chatPath),
           builder: (context, snapshot) {
-            //debugPrint('chatscreen chat streambuilder executed');
             if (snapshot.connectionState == ConnectionState.waiting ||
                 snapshot.connectionState == ConnectionState.none) {
               return Column(

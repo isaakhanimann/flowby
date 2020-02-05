@@ -21,7 +21,7 @@ const kKeywordHeaderTextStyle = TextStyle(
     fontFamily: 'NotoMedium',
     fontSize: 18.0,
     fontWeight: FontWeight.w400,
-    color: kDefaultProfilePicColor);
+    color: kKeywordHeaderColor);
 const kEditProfileTextFieldTextStyle = TextStyle(
     fontFamily: 'NotoRegular',
     fontSize: 20.0,
@@ -54,6 +54,7 @@ const kSmallBlockedTextStyle =
 // Colors
 const kLoginBackgroundColor = Color(0xFF0D4FF7);
 const kDefaultProfilePicColor = Color(0xff00ffab);
+const kKeywordHeaderColor = Color(0xff110133);
 const kBlueButtonColor = Color(0xFF294FED);
 const kMessageBubbleColor = Color(0xFF2862F7);
 const kLoginScreenBackgroundColor = Color(0xff65C4EA);
