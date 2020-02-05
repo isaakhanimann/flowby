@@ -123,9 +123,11 @@ class ChatScreenWithPath extends StatelessWidget {
                     otherUsername: otherUsername,
                     heroTag: heroTag,
                   ),
-                  MessagesStream(
-                    messagesStream: cloudFirestoreService.getMessageStream(
-                        chatPath: chatPath),
+                  Expanded(
+                    child: MessagesStream(
+                      messagesStream: cloudFirestoreService.getMessageStream(
+                          chatPath: chatPath),
+                    ),
                   ),
                   MessageSendingSectionLoading(),
                 ],
@@ -140,9 +142,11 @@ class ChatScreenWithPath extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   SizedBox(height: 60),
-                  MessagesStream(
-                    messagesStream: cloudFirestoreService.getMessageStream(
-                        chatPath: chatPath),
+                  Expanded(
+                    child: MessagesStream(
+                      messagesStream: cloudFirestoreService.getMessageStream(
+                          chatPath: chatPath),
+                    ),
                   ),
                   MessageSendingSection(chat: chat),
                 ],
@@ -319,11 +323,8 @@ class MessagesStream extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting ||
             snapshot.connectionState == ConnectionState.none) {
-          return Expanded(
-            child: CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-            ),
+          return CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
           );
         }
 
@@ -332,22 +333,20 @@ class MessagesStream extends StatelessWidget {
         if (messages == null) {
           return Container(color: Colors.white);
         }
-        return Expanded(
-          child: ListView.builder(
-            itemCount: messages.length,
-            itemBuilder: (context, index) {
-              Message message = messages[index];
-              var messageTimestamp = message.timestamp;
-              return MessageBubble(
-                text: message.text,
-                timestamp: HelperFunctions.getTimestampAsString(
-                    timestamp: messageTimestamp),
-                isMe: loggedInUid == message.senderUid,
-              );
-            },
-            reverse: true,
-            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 20.0),
-          ),
+        return ListView.builder(
+          itemCount: messages.length,
+          itemBuilder: (context, index) {
+            Message message = messages[index];
+            var messageTimestamp = message.timestamp;
+            return MessageBubble(
+              text: message.text,
+              timestamp: HelperFunctions.getTimestampAsString(
+                  timestamp: messageTimestamp),
+              isMe: loggedInUid == message.senderUid,
+            );
+          },
+          reverse: true,
+          padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 20.0),
         );
       },
     );
@@ -403,43 +402,41 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
     }
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: CupertinoTextField(
-                textCapitalization: TextCapitalization.sentences,
-                expands: true,
-                maxLines: null,
-                minLines: null,
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                    border: Border.all(color: kChatScreenBorderTextFieldColor),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                controller: messageTextController,
-              ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: CupertinoTextField(
+              textCapitalization: TextCapitalization.sentences,
+              expands: true,
+              maxLines: null,
+              minLines: null,
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                  border: Border.all(color: kChatScreenBorderTextFieldColor),
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              controller: messageTextController,
             ),
           ),
-          SendButton(
-            onPress: () async {
-              // prevent to send the previously typed message with an empty text field
-              if (messageTextController.text != '') {
-                //Implement send functionality.
-                Message message = Message(
-                    senderUid: loggedInUid,
-                    text: messageTextController.text,
-                    timestamp: FieldValue.serverTimestamp());
-                cloudFirestoreService.uploadMessage(
-                    chatPath: widget.chat.chatpath, message: message);
-                messageTextController.clear(); // Reset locally the sent message
-              }
-            },
-          ),
-        ],
-      ),
+        ),
+        SendButton(
+          onPress: () async {
+            // prevent to send the previously typed message with an empty text field
+            if (messageTextController.text != '') {
+              //Implement send functionality.
+              Message message = Message(
+                  senderUid: loggedInUid,
+                  text: messageTextController.text,
+                  timestamp: FieldValue.serverTimestamp());
+              cloudFirestoreService.uploadMessage(
+                  chatPath: widget.chat.chatpath, message: message);
+              messageTextController.clear(); // Reset locally the sent message
+            }
+          },
+        ),
+      ],
     );
   }
 }
