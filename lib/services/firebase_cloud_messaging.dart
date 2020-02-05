@@ -89,7 +89,6 @@ class FirebaseCloudMessaging {
     CloudMessage message =
         CloudMessage.fromMap(mapMessage: json.decode(payload));
     navigateToChat(context, message);
-
   }
 
   void navigateToChat(
