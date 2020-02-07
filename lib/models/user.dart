@@ -60,8 +60,8 @@ class User {
       'hasSkills': hasSkills,
       'hasWishes': hasWishes,
       'imageFileName': imageFileName,
-      'skillz': skillz.map((SkillOrWish s) => s.toMap()).toList(),
-      'wishez': wishez.map((SkillOrWish w) => w.toMap()).toList()
+      'skillz': skillz?.map((SkillOrWish s) => s.toMap())?.toList(),
+      'wishez': wishez?.map((SkillOrWish w) => w.toMap())?.toList()
     };
   }
 

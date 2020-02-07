@@ -27,19 +27,16 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen>
     with SingleTickerProviderStateMixin {
   bool showSpinner = false;
-  String userName;
   String name;
   String email;
   String password;
 
   var _nameController = TextEditingController();
 
-  // var _userNameController = TextEditingController();
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
   final FocusNode _nameFocus = FocusNode();
 
-  //final FocusNode _userNameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
@@ -85,9 +82,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       setState(() {
         showSpinner = true;
       });
+
       final authService =
           Provider.of<FirebaseAuthService>(context, listen: false);
-
       final cloudFirestoreService =
           Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
       final authResult =
@@ -97,12 +94,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
 
       if (authResult != null) {
         User user = User(
-            username: name,
-            uid: authResult.user.uid,
-            imageFileName: kDefaultProfilePicName);
-
+          username: name,
+          uid: authResult.user.uid,
+          imageFileName: kDefaultProfilePicName,
+        );
         await cloudFirestoreService.uploadUser(user: user);
-
         setState(() {
           showSpinner = false;
         });
