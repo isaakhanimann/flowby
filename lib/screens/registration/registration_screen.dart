@@ -96,7 +96,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         User user = User(
           username: name,
           uid: authResult.user.uid,
-          imageFileName: kDefaultProfilePicName,
         );
         await cloudFirestoreService.uploadUser(user: user);
         setState(() {
