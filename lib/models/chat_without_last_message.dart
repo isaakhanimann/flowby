@@ -13,13 +13,13 @@ class ChatWithoutLastMessage extends Equatable {
 
   ChatWithoutLastMessage(
       {this.uid1,
-      this.username1,
+      this.username1 = 'Default username1',
       this.user1ImageFileName,
-      this.hasUser1Blocked,
+      this.hasUser1Blocked = false,
       this.uid2,
       this.username2,
       this.user2ImageFileName,
-      this.hasUser2Blocked,
+      this.hasUser2Blocked = false,
       this.chatpath});
 
   //needed to override equals operator
