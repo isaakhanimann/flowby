@@ -16,6 +16,9 @@ class BuildListOfTextFields extends StatefulWidget {
 
   BuildListOfTextFields({@required this.user, @required this.isSkillBuild});
 
+  of(BuildContext context, {bool root = false}) =>
+      context.findAncestorStateOfType<_BuildListOfTextFieldsState>();
+
   @override
   _BuildListOfTextFieldsState createState() => _BuildListOfTextFieldsState();
 }
@@ -31,7 +34,7 @@ class _BuildListOfTextFieldsState extends State<BuildListOfTextFields> {
 
   void _getUser(BuildContext context) async {
     final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     String uid = widget.user.uid;
     User user = await cloudFirestoreService.getUser(uid: uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
@@ -89,11 +92,11 @@ class _BuildListOfTextFieldsState extends State<BuildListOfTextFields> {
   Column _buildListOfRows({bool isSkillBuild}) {
     List<Widget> rows = [];
     for (int rowNumber = 0;
-        rowNumber <
-            (isSkillBuild
-                ? skillKeywordControllers.length
-                : wishKeywordControllers.length);
-        rowNumber++) {
+    rowNumber <
+        (isSkillBuild
+            ? skillKeywordControllers.length
+            : wishKeywordControllers.length);
+    rowNumber++) {
       rows.add(
         Column(
           children: <Widget>[
@@ -135,17 +138,18 @@ class _BuildListOfTextFieldsState extends State<BuildListOfTextFields> {
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: GestureDetector(
-                    onTap: () => setState(() {
-                      if (isSkillBuild) {
-                        skillKeywordControllers.removeAt(rowNumber);
-                        skillDescriptionControllers.removeAt(rowNumber);
-                        skillPriceControllers.removeAt(rowNumber);
-                      } else {
-                        wishKeywordControllers.removeAt(rowNumber);
-                        wishDescriptionControllers.removeAt(rowNumber);
-                        wishPriceControllers.removeAt(rowNumber);
-                      }
-                    }),
+                    onTap: () =>
+                        setState(() {
+                          if (isSkillBuild) {
+                            skillKeywordControllers.removeAt(rowNumber);
+                            skillDescriptionControllers.removeAt(rowNumber);
+                            skillPriceControllers.removeAt(rowNumber);
+                          } else {
+                            wishKeywordControllers.removeAt(rowNumber);
+                            wishDescriptionControllers.removeAt(rowNumber);
+                            wishPriceControllers.removeAt(rowNumber);
+                          }
+                        }),
                     child: Icon(Feather.x),
                   ),
                 ),
@@ -184,15 +188,11 @@ class _BuildListOfTextFieldsState extends State<BuildListOfTextFields> {
     );
   }
 
-
-
-
   @override
   void initState() {
     super.initState();
     //this is an asynchronous method
     _getUser(context);
-
   }
 
   void dispose() {

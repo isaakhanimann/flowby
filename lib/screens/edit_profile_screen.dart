@@ -6,7 +6,6 @@ import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
-import 'package:Flowby/widgets/build_list_of_text_fields.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,6 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:flare_flutter/flare_actor.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -34,7 +32,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   var _usernameController = TextEditingController();
   var _bioController = TextEditingController();
-  BuildListOfTextFields skillsListOfTextFields = BuildListOfTextFields(user: null, isSkillBuild: null,);
 
   List<TextEditingController> skillKeywordControllers = [];
   List<TextEditingController> skillDescriptionControllers = [];
@@ -75,7 +72,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   void _setImage(ImageSource source) async {
     var selectedImage =
-        await ImagePicker.pickImage(source: source, imageQuality: 20);
+    await ImagePicker.pickImage(source: source, imageQuality: 20);
 
     File croppedImage = await ImageCropper.cropImage(
         sourcePath: selectedImage.path,
@@ -93,7 +90,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   void _getUser(BuildContext context) async {
     final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     String uid = widget.user.uid;
     user = await cloudFirestoreService.getUser(uid: uid);
     //also fill the temps in case the user presses save and the messageboxes are filled
@@ -158,11 +155,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Column _buildListOfRows({bool isSkillBuild}) {
     List<Widget> rows = [];
     for (int rowNumber = 0;
-        rowNumber <
-            (isSkillBuild
-                ? skillKeywordControllers.length
-                : wishKeywordControllers.length);
-        rowNumber++) {
+    rowNumber <
+        (isSkillBuild
+            ? skillKeywordControllers.length
+            : wishKeywordControllers.length);
+    rowNumber++) {
       rows.add(
         Column(
           children: <Widget>[
@@ -275,13 +272,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    skillsListOfTextFields = BuildListOfTextFields(user: user,isSkillBuild: true);
-
     final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     final storageService =
-        Provider.of<FirebaseStorageService>(context, listen: false);
+    Provider.of<FirebaseStorageService>(context, listen: false);
 
     if (showSpinner) {
       return CupertinoPageScaffold(
@@ -320,15 +315,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                 // only add a skill to the user if the keywords are not null or empty
                 List<SkillOrWish> skillz =
-                    User.controllersToListOfSkillsOrWishes(
-                        keywordsControllers: skillKeywordControllers,
-                        descriptionControllers: skillDescriptionControllers,
-                        priceControllers: skillPriceControllers);
+                User.controllersToListOfSkillsOrWishes(
+                    keywordsControllers: skillKeywordControllers,
+                    descriptionControllers: skillDescriptionControllers,
+                    priceControllers: skillPriceControllers);
                 List<SkillOrWish> wishez =
-                    User.controllersToListOfSkillsOrWishes(
-                        keywordsControllers: wishKeywordControllers,
-                        descriptionControllers: wishDescriptionControllers,
-                        priceControllers: wishPriceControllers);
+                User.controllersToListOfSkillsOrWishes(
+                    keywordsControllers: wishKeywordControllers,
+                    descriptionControllers: wishDescriptionControllers,
+                    priceControllers: wishPriceControllers);
 
                 User user = User(
                     username: _usernameController.text,
@@ -360,51 +355,51 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   heightFactor: 1.2,
                   child: _profilePic == null
                       ? Stack(
-                          alignment: AlignmentDirectional.center,
-                          children: <Widget>[
-                            Opacity(
-                              opacity: 0.4,
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
-                                imageBuilder: (context, imageProvider) {
-                                  return CircleAvatar(
-                                      radius: 60,
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: imageProvider);
-                                },
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      kDefaultProfilePicColor),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ),
-                            ),
-                            Icon(
-                              CupertinoIcons.photo_camera_solid,
-                              size: 50,
-                            )
-                          ],
-                        )
-                      : Stack(
-                          alignment: AlignmentDirectional.center,
-                          children: <Widget>[
-                            Opacity(
-                              opacity: 0.4,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                backgroundImage: FileImage(_profilePic),
+                    alignment: AlignmentDirectional.center,
+                    children: <Widget>[
+                      Opacity(
+                        opacity: 0.4,
+                        child: CachedNetworkImage(
+                          imageUrl:
+                          "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+                          imageBuilder: (context, imageProvider) {
+                            return CircleAvatar(
                                 radius: 60,
+                                backgroundColor: Colors.grey,
+                                backgroundImage: imageProvider);
+                          },
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    kDefaultProfilePicColor),
                               ),
-                            ),
-                            Icon(
-                              CupertinoIcons.photo_camera_solid,
-                              size: 50,
-                            )
-                          ],
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
+                      ),
+                      Icon(
+                        CupertinoIcons.photo_camera_solid,
+                        size: 50,
+                      )
+                    ],
+                  )
+                      : Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: <Widget>[
+                      Opacity(
+                        opacity: 0.4,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          backgroundImage: FileImage(_profilePic),
+                          radius: 60,
+                        ),
+                      ),
+                      Icon(
+                        CupertinoIcons.photo_camera_solid,
+                        size: 50,
+                      )
+                    ],
+                  ),
                 ),
               ),
               SizedBox(
@@ -484,8 +479,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              //if (_localHasSkills) _buildListOfRows(isSkillBuild: true),
-              if (_localHasSkills) skillsListOfTextFields,
+              if (_localHasSkills) _buildListOfRows(isSkillBuild: true),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -507,8 +501,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              //if (_localHasWishes) _buildListOfRows(isSkillBuild: false),
-              if (_localHasWishes) BuildListOfTextFields(user: user, isSkillBuild: false),
+              if (_localHasWishes) _buildListOfRows(isSkillBuild: false),
               SizedBox(
                 height: 20,
               ),
@@ -523,7 +516,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     builder: (_) => CupertinoAlertDialog(
                       title: Text('Are you sure?'),
                       content:
-                          Text('Do you really want to delete all your info?'),
+                      Text('Do you really want to delete all your info?'),
                       actions: <Widget>[
                         CupertinoDialogAction(
                           child: Text('Cancel'),
@@ -535,7 +528,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: Text('Delete'),
                           onPressed: () async {
                             final authService =
-                                Provider.of<FirebaseAuthService>(context);
+                            Provider.of<FirebaseAuthService>(context);
                             print('delete user called');
                             await authService.deleteCurrentlyLoggedInUser();
                             Navigator.of(context).push(
@@ -589,7 +582,7 @@ class RatePicker extends StatelessWidget {
           alignment: Alignment.center,
           child: CupertinoPicker(
             scrollController:
-                FixedExtentScrollController(initialItem: initialValue),
+            FixedExtentScrollController(initialItem: initialValue),
             backgroundColor: Colors.white,
             itemExtent: 27,
             onSelectedItemChanged: onSelected,
