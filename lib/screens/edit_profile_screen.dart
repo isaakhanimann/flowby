@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
+import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
@@ -13,7 +13,6 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:flare_flutter/flare_actor.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -273,119 +272,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (false) {
-      return CupertinoPageScaffold(
-        backgroundColor: Colors.white,
-        child: SafeArea(
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.blue,
-                          ),
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.green,
-                          )
-                        ],
-                      ),
-                      Container(
-                        height: 50,
-                        width: 100,
-                        color: Colors.yellow,
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    color: Colors.red,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.blue,
-                          ),
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.green,
-                          )
-                        ],
-                      ),
-                      Container(
-                        height: 50,
-                        width: 100,
-                        color: Colors.yellow,
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    color: Colors.red,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.blue,
-                          ),
-                          Container(
-                            height: 50,
-                            width: 50,
-                            color: Colors.green,
-                          )
-                        ],
-                      ),
-                      Container(
-                        height: 50,
-                        width: 100,
-                        color: Colors.yellow,
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    color: Colors.red,
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    }
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
@@ -648,7 +534,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             Navigator.of(context).push(
                               CupertinoPageRoute<void>(
                                 builder: (context) {
-                                  return ChooseSignupOrLoginScreen();
+                                  return ChooseSigninScreen();
                                 },
                               ),
                             );
