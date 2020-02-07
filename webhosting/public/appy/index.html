@@ -47,10 +47,6 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'UA-157968118-1');
-
-
-
-
     </script>
 </head>
 
@@ -73,12 +69,18 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"
-            ><img class="logo-black" src="images/logo.webp" alt="Logo"/><img
-                    class="logo-white"
-                    src="images/logo_w.webp"
-                    alt="Logo"
-            /></a>
+            <a class="navbar-brand" href="#">
+                <picture class="logo-black">
+                    <source type="image/webp" srcset="images/logo.webp">
+                    <source type="image/png" srcset="images/logo.png">
+                    <img src="images/logo.webp" alt="Logo Flowby black">
+                </picture>
+                <picture class="logo-white">
+                    <source type="image/webp" srcset="images/logo_w.webp">
+                    <source type="image/png" srcset="images/logo_w.png">
+                    <img src="images/logo_w.webp" alt="Logo Flowby white">
+                </picture>
+            </a>
         </div>
         <div class="collapse navbar-collapse" id="primary_menu">
             <ul class="nav navbar-nav mainmenu">
@@ -99,7 +101,11 @@
         <div class="row">
             <div class="col-xs-12 hidden-sm col-md-5">
                 <figure class="mobile-image wow fadeInUp" data-wow-delay="0.2s">
-                    <img src="images/header-mobile.webp" alt=""/>
+                    <picture>
+                        <source type="image/webp" srcset="images/header-mobile.webp">
+                        <source type="image/png" srcset="images/header-mobile.png">
+                        <img src="images/header-mobile.webp" alt="Header Mobile Screen">
+                    </picture>
                 </figure>
             </div>
             <div class="col-xs-12 col-md-7">
@@ -109,7 +115,7 @@
                         Find skills. <br/>
                         Share yours.
                         </span><br/>
-                        Nearby. <br/>
+                    Nearby. <br/>
                     <span class="green-color">
                         Flowby.
                     </span>
@@ -144,7 +150,11 @@
             <div class="col-xs-12 col-md-6">
                 <div class="space-30"></div>
                 <div class="video-photo">
-                    <img src="images/video-image.webp" alt=""/>
+                    <picture>
+                        <source type="image/webp" srcset="images/video-image.webp">
+                        <source type="image/jpeg" srcset="images/video-image.jpg">
+                        <img src="images/header-mobile.webp" alt="Video placeholder image">
+                    </picture>
                     <!--
                     <a href="" class="popup video-button">
                         <img src="images/play-button.png" alt=""/>
@@ -302,7 +312,11 @@
         <div class="row">
             <div class="col-xs-12 col-sm-6 hidden-sm">
                 <figure class="mobile-image">
-                    <img src="images/download-image.webp" alt=""/>
+                    <picture>
+                        <source type="image/webp" srcset="images/download-image.webp">
+                        <source type="image/png" srcset="images/download-image.png">
+                        <img src="images/download-image.webp" alt="Download Image Screen">
+                    </picture>
                 </figure>
             </div>
             <div class="col-xs-12 col-md-6 section-padding">
@@ -372,6 +386,14 @@
 
 
 
+
+
+
+
+
+
+
+
                         </script>
                         <noscript>put image of email address here</noscript>
                     </div>
@@ -425,6 +447,14 @@ scpt.parentNode.insertBefore(elem, scpt);
 _qevents.push({
 qacct:"p-BFX38YefhuZbu"
 });
+
+
+
+
+
+
+
+
 
 
 

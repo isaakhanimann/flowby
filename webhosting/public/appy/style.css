@@ -68,7 +68,7 @@ a:hover {
     color: #768ede;
 }
 
-img {
+img, picture {
     max-width: 100%;
     height: auto;
 }
