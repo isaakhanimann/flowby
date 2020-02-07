@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:Flowby/screens/choose_signin_screen.dart';
 
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -73,6 +75,44 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (loggedInUser == null) {
+      return MultiProvider(
+        providers: [
+          StreamProvider<Position>.value(
+            value: positionStream,
+          ),
+          Provider<FirebaseUser>.value(
+            value: loggedInUser,
+          ),
+        ],
+        child: CupertinoPageScaffold(
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: <Widget>[
+              HomeTab(),
+              Positioned(
+                bottom: 50,
+                child: RoundedButton(
+                  text: 'Sign In',
+                  color: kDefaultProfilePicColor,
+                  textColor: kBlueButtonColor,
+                  onPressed: () async {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute<void>(
+                        builder: (context) {
+                          return ChooseSigninScreen();
+                        },
+                      ),
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
     return MultiProvider(
       providers: [
         StreamProvider<Position>.value(

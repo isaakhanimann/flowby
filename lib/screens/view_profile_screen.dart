@@ -1,7 +1,7 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/chat_screen.dart';
-import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
+import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/widgets/listview_of_user_infos.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,20 +34,20 @@ class ViewProfileScreen extends StatelessWidget {
               heroTag: heroTag,
             ),
             RoundedButton(
-              text: loggedInUser == null ? 'Signin to Chat' : 'Chat',
-              color: kBlueButtonColor,
-              textColor: Colors.white,
+              text: loggedInUser == null ? 'Sign In to Chat' : 'Chat',
+              color: kDefaultProfilePicColor,
+              textColor: kBlueButtonColor,
               onPressed: () async {
                 if (loggedInUser == null) {
-                  Navigator.of(context, rootNavigator: true).push(
+                  Navigator.of(context).push(
                     CupertinoPageRoute<void>(
                       builder: (context) {
-                        return ChooseSignupOrLoginScreen();
+                        return ChooseSigninScreen();
                       },
                     ),
                   );
                 } else {
-                  Navigator.of(context, rootNavigator: true).push(
+                  Navigator.of(context).push(
                     CupertinoPageRoute<void>(
                       builder: (context) {
                         return ChatScreen(

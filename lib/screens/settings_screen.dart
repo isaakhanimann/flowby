@@ -1,9 +1,8 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
+import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/screens/edit_profile_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
-import 'package:Flowby/widgets/sign_in_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +61,7 @@ class SettingsScreen extends StatelessWidget {
           authService.signOut();
           Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
             CupertinoPageRoute(
-                builder: (BuildContext context) => ChooseSignupOrLoginScreen()),
+                builder: (BuildContext context) => ChooseSigninScreen()),
             (Route<dynamic> route) => false,
           );
         },
@@ -86,15 +85,16 @@ class SettingsScreen extends StatelessWidget {
                 CupertinoDialogAction(
                   child: Text('Delete'),
                   onPressed: () async {
-                    final authService =
-                        Provider.of<FirebaseAuthService>(context, listen: false);
+                    final authService = Provider.of<FirebaseAuthService>(
+                        context,
+                        listen: false);
                     print('delete user called');
                     await authService.deleteCurrentlyLoggedInUser();
                     Navigator.of(context, rootNavigator: true)
                         .pushAndRemoveUntil(
                       CupertinoPageRoute(
                           builder: (BuildContext context) =>
-                              ChooseSignupOrLoginScreen()),
+                              ChooseSigninScreen()),
                       (Route<dynamic> route) => false,
                     );
                   },
@@ -130,18 +130,6 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (user == null) {
-      return CupertinoPageScaffold(
-        backgroundColor: CupertinoColors.white,
-        navigationBar: CupertinoNavigationBar(
-          backgroundColor: CupertinoColors.white,
-          border: null,
-        ),
-        child: Center(
-          child: SignInButton(),
-        ),
-      );
-    }
     return Container(
       color: CupertinoColors.white,
       child: CustomScrollView(

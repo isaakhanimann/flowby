@@ -1,4 +1,4 @@
-import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
+import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/screens/login_screen.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/screens/registration/registration_screen.dart';
@@ -9,18 +9,9 @@ import 'package:flutter/material.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-//    //getting arguments passed in while calling Navigator.pushNamed
     switch (settings.name) {
-//      case ChatScreen.id:
-//        if (args is User) {
-//          return CupertinoPageRoute(
-//              builder: (_) => ChatScreen(
-//                    otherUser: args,
-//                  ));
-//        }
-//        return _errorRoute();
-      case ChooseSignupOrLoginScreen.id:
-        return CupertinoPageRoute(builder: (_) => ChooseSignupOrLoginScreen());
+      case ChooseSigninScreen.id:
+        return CupertinoPageRoute(builder: (_) => ChooseSigninScreen());
       case NavigationScreen.id:
         return CupertinoPageRoute(builder: (_) => NavigationScreen());
       case LoginScreen.id:

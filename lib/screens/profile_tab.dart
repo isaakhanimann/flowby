@@ -5,7 +5,6 @@ import 'package:Flowby/screens/settings_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/listview_of_user_infos.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
-import 'package:Flowby/widgets/sign_in_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +15,7 @@ class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
-    if (loggedInUser == null) {
-      return Center(child: SignInButton());
-    }
+
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
@@ -43,8 +40,8 @@ class ProfileTab extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 0.0),
                 child: RoundedButton(
                   text: 'Edit your profile',
-                  color: kBlueButtonColor,
-                  textColor: Colors.white,
+                  color: kDefaultProfilePicColor,
+                  textColor: kBlueButtonColor,
                   onPressed: () {
                     Navigator.of(context, rootNavigator: true).push(
                       CupertinoPageRoute<void>(

@@ -3,7 +3,6 @@ import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
-import 'package:Flowby/widgets/sign_in_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,9 +18,6 @@ class ChatsTab extends StatelessWidget {
 
     //listening to loggedInUser (so it rebuilds) is not necessary as the navigationscreen provides it and always has the up to date value because it is rebuilt whenever we navigate to it
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
-    if (loggedInUser == null) {
-      return Center(child: SignInButton());
-    }
 
     return StreamBuilder(
         stream:

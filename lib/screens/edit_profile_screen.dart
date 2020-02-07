@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/choose_signup_or_login_screen.dart';
+import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
@@ -534,7 +534,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             Navigator.of(context).push(
                               CupertinoPageRoute<void>(
                                 builder: (context) {
-                                  return ChooseSignupOrLoginScreen();
+                                  return ChooseSigninScreen();
                                 },
                               ),
                             );
