@@ -107,7 +107,7 @@ class _AddLanguagesRegistrationScreenState
                     maxLength: 100,
                     decoration: null,
                     textAlign: TextAlign.start,
-                    placeholder: "fluent",
+                    placeholder: "e.g. native",
                     controller: skillDescriptionControllers[rowNumber],
                   ),
                 ),
