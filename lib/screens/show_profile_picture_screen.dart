@@ -16,65 +16,67 @@ class ShowProfilePictureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Stack(children: [
-        Center(
-          child: GestureDetector(
-            onPanUpdate: (param) {
-              Navigator.of(context).pop();
-            },
-            child: CachedNetworkImage(
-              imageUrl:
-                  "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$imageFileName?alt=media",
-              imageBuilder: (context, imageProvider) {
-                return Hero(
-                  transitionOnUserGestures: true,
-                  tag: heroTag,
-                  child: CircleAvatar(
-                      radius: MediaQuery.of(context).size.width / 2,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: imageProvider),
-                );
-              },
-              placeholder: (context, url) => CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+    return GestureDetector(
+      onPanUpdate: (param) {
+        Navigator.of(context).pop();
+      },
+      child: CupertinoPageScaffold(
+        backgroundColor: Colors.white,
+        child: SafeArea(
+          child: Stack(children: [
+            Center(
+              child: CachedNetworkImage(
+                imageUrl:
+                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$imageFileName?alt=media",
+                imageBuilder: (context, imageProvider) {
+                  return Hero(
+                    transitionOnUserGestures: true,
+                    tag: heroTag,
+                    child: CircleAvatar(
+                        radius: MediaQuery.of(context).size.width / 2,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: imageProvider),
+                  );
+                },
+                placeholder: (context, url) => CircularProgressIndicator(
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+                ),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
-              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 15.0, top: 35.0),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Icon(
-                  Feather.chevron_up,
-                  color: kLoginBackgroundColor,
-                  size: 30,
-                ),
-                SizedBox(
-                  width: 16.0,
-                ),
-                Text(
-                  otherUsername,
-                  style: TextStyle(
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0, top: 10),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                      Feather.chevron_up,
                       color: kLoginBackgroundColor,
-                      fontSize: 22,
-                      fontFamily: 'MontserratRegular'),
+                      size: 30,
+                    ),
+                    SizedBox(
+                      width: 16.0,
+                    ),
+                    Text(
+                      otherUsername,
+                      style: TextStyle(
+                          color: kLoginBackgroundColor,
+                          fontSize: 22,
+                          fontFamily: 'MontserratRegular'),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ]),
         ),
-      ]),
+      ),
     );
   }
 }

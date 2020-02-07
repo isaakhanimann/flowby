@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/chat_without_last_message.dart';
+import 'package:Flowby/widgets/route_transitions/scale_route.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
@@ -123,9 +124,11 @@ class ChatScreenWithPath extends StatelessWidget {
                     otherUsername: otherUsername,
                     heroTag: heroTag,
                   ),
-                  MessagesStream(
-                    messagesStream: cloudFirestoreService.getMessageStream(
-                        chatPath: chatPath),
+                  Expanded(
+                    child: MessagesStream(
+                      messagesStream: cloudFirestoreService.getMessageStream(
+                          chatPath: chatPath),
+                    ),
                   ),
                   MessageSendingSectionLoading(),
                 ],
@@ -140,9 +143,11 @@ class ChatScreenWithPath extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   SizedBox(height: 60),
-                  MessagesStream(
-                    messagesStream: cloudFirestoreService.getMessageStream(
-                        chatPath: chatPath),
+                  Expanded(
+                    child: MessagesStream(
+                      messagesStream: cloudFirestoreService.getMessageStream(
+                          chatPath: chatPath),
+                    ),
                   ),
                   MessageSendingSection(chat: chat),
                 ],
@@ -192,15 +197,12 @@ class Header extends StatelessWidget {
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     bool amIUser1;
     bool haveIBlocked;
-    bool hasOtherBlocked;
     if (chat != null) {
       amIUser1 = (chat.uid1 == loggedInUid);
       if (amIUser1) {
         haveIBlocked = chat.hasUser1Blocked;
-        hasOtherBlocked = chat.hasUser2Blocked;
       } else {
         haveIBlocked = chat.hasUser2Blocked;
-        hasOtherBlocked = chat.hasUser1Blocked;
       }
     }
     return Container(
@@ -227,15 +229,12 @@ class Header extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => ShowProfilePictureScreen(
-                                  imageFileName:
-                                      'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media',
-                                  otherUsername: otherUsername,
-                                  heroTag: heroTag,
-                                )));
+                    Navigator.of(context, rootNavigator: true).push(ScaleRoute(
+                        page: ShowProfilePictureScreen(
+                      imageFileName: otherImageFileName,
+                      otherUsername: otherUsername,
+                      heroTag: heroTag,
+                    )));
                   },
                   child: Row(
                     children: <Widget>[
@@ -281,21 +280,17 @@ class Header extends StatelessWidget {
               CupertinoButton(
                 child: Icon(
                   Feather.user_x,
-                  color: hasOtherBlocked
-                      ? Colors.grey
-                      : (haveIBlocked ? Colors.red : kLoginBackgroundColor),
+                  color: haveIBlocked ? Colors.red : kLoginBackgroundColor,
                 ),
                 onPressed: () {
-                  if (!hasOtherBlocked) {
-                    if (amIUser1) {
-                      cloudFirestoreService.uploadChatBlocked(
-                          chatpath: chat.chatpath,
-                          hasUser1Blocked: !haveIBlocked);
-                    } else {
-                      cloudFirestoreService.uploadChatBlocked(
-                          chatpath: chat.chatpath,
-                          hasUser2Blocked: !haveIBlocked);
-                    }
+                  if (amIUser1) {
+                    cloudFirestoreService.uploadChatBlocked(
+                        chatpath: chat.chatpath,
+                        hasUser1Blocked: !haveIBlocked);
+                  } else {
+                    cloudFirestoreService.uploadChatBlocked(
+                        chatpath: chat.chatpath,
+                        hasUser2Blocked: !haveIBlocked);
                   }
                 },
               )
@@ -319,11 +314,8 @@ class MessagesStream extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting ||
             snapshot.connectionState == ConnectionState.none) {
-          return Expanded(
-            child: CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-            ),
+          return CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
           );
         }
 
@@ -332,22 +324,20 @@ class MessagesStream extends StatelessWidget {
         if (messages == null) {
           return Container(color: Colors.white);
         }
-        return Expanded(
-          child: ListView.builder(
-            itemCount: messages.length,
-            itemBuilder: (context, index) {
-              Message message = messages[index];
-              var messageTimestamp = message.timestamp;
-              return MessageBubble(
-                text: message.text,
-                timestamp: HelperFunctions.getTimestampAsString(
-                    timestamp: messageTimestamp),
-                isMe: loggedInUid == message.senderUid,
-              );
-            },
-            reverse: true,
-            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 20.0),
-          ),
+        return ListView.builder(
+          itemCount: messages.length,
+          itemBuilder: (context, index) {
+            Message message = messages[index];
+            var messageTimestamp = message.timestamp;
+            return MessageBubble(
+              text: message.text,
+              timestamp: HelperFunctions.getTimestampAsString(
+                  timestamp: messageTimestamp),
+              isMe: loggedInUid == message.senderUid,
+            );
+          },
+          reverse: true,
+          padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 20.0),
         );
       },
     );
@@ -403,43 +393,42 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
     }
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: CupertinoTextField(
-                textCapitalization: TextCapitalization.sentences,
-                expands: true,
-                maxLines: null,
-                minLines: null,
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                    border: Border.all(color: kChatScreenBorderTextFieldColor),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                controller: messageTextController,
-              ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: CupertinoTextField(
+              textCapitalization: TextCapitalization.sentences,
+              maxLength: 500,
+              expands: true,
+              maxLines: null,
+              minLines: null,
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                  border: Border.all(color: kChatScreenBorderTextFieldColor),
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              controller: messageTextController,
             ),
           ),
-          SendButton(
-            onPress: () async {
-              // prevent to send the previously typed message with an empty text field
-              if (messageTextController.text != '') {
-                //Implement send functionality.
-                Message message = Message(
-                    senderUid: loggedInUid,
-                    text: messageTextController.text,
-                    timestamp: FieldValue.serverTimestamp());
-                cloudFirestoreService.uploadMessage(
-                    chatPath: widget.chat.chatpath, message: message);
-                messageTextController.clear(); // Reset locally the sent message
-              }
-            },
-          ),
-        ],
-      ),
+        ),
+        SendButton(
+          onPress: () async {
+            // prevent to send the previously typed message with an empty text field
+            if (messageTextController.text != '') {
+              //Implement send functionality.
+              Message message = Message(
+                  senderUid: loggedInUid,
+                  text: messageTextController.text,
+                  timestamp: FieldValue.serverTimestamp());
+              cloudFirestoreService.uploadMessage(
+                  chatPath: widget.chat.chatpath, message: message);
+              messageTextController.clear(); // Reset locally the sent message
+            }
+          },
+        ),
+      ],
     );
   }
 }

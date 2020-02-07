@@ -91,6 +91,7 @@ class _AddUsernameRegistrationScreenState
                           height: 10.0,
                         ),
                         LoginInputField(
+                          isCapitalized: true,
                           placeholder: 'Full name',
                           isLast: false,
                           isEmail: true,

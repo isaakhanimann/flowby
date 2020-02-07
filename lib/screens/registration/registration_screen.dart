@@ -269,6 +269,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   height: 48.0,
                 ),
                 LoginInputField(
+                  isCapitalized: true,
                   placeholder: 'Full name',
                   controller: _nameController,
                   focusNode: _nameFocus,
