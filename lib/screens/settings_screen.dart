@@ -1,9 +1,7 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/choose_signin_screen.dart';
-import 'package:Flowby/screens/edit_profile_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -19,34 +17,6 @@ class SettingsScreen extends StatelessWidget {
 
   List<SettingsItem> _buildSettingsChildren(BuildContext context) {
     return [
-      SettingsItem(
-        leading: CachedNetworkImage(
-          imageUrl:
-              "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
-          imageBuilder: (context, imageProvider) {
-            return CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.grey,
-                backgroundImage: imageProvider);
-          },
-          placeholder: (context, url) => CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-          ),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        ),
-        title: Text('Edit Profile', style: kUsernameTextStyle),
-        onTap: () {
-          Navigator.of(context, rootNavigator: true).push(
-            CupertinoPageRoute<void>(
-              builder: (context) {
-                return EditProfileScreen(
-                  user: user,
-                );
-              },
-            ),
-          );
-        },
-      ),
       SettingsItem(
           leading: Icon(Feather.share_2, color: kLoginBackgroundColor),
           title: Text('Invite a friend', style: kUsernameTextStyle),
