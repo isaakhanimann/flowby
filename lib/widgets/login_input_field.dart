@@ -25,6 +25,7 @@ class LoginInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoTextField(
+      maxLength: 35,
       textCapitalization:
           isCapitalized ? TextCapitalization.words : TextCapitalization.none,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
