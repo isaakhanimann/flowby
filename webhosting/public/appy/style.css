@@ -1432,3 +1432,9 @@ input:-webkit-autofill:focus {
 .page-title .title{
   color: #294FED;
 }
+
+.slogan{
+font-family: "Montserrat", sans-serif;
+line-height: 75px;
+font-size:60px;
+}
