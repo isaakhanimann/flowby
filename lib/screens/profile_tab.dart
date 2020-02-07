@@ -36,12 +36,12 @@ class ProfileTab extends StatelessWidget {
             bottom: false,
             child: Stack(alignment: Alignment.bottomCenter, children: <Widget>[
               ListViewOfUserInfos(user: user),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 0.0),
+              Positioned(
+                bottom: 20,
                 child: RoundedButton(
                   text: 'Edit your profile',
-                  color: kDefaultProfilePicColor,
-                  textColor: kBlueButtonColor,
+                  color: kBlueButtonColor,
+                  textColor: Colors.white,
                   onPressed: () {
                     Navigator.of(context, rootNavigator: true).push(
                       CupertinoPageRoute<void>(
