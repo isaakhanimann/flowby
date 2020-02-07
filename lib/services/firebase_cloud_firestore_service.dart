@@ -56,9 +56,17 @@ class FirebaseCloudFirestoreService {
       {@required String chatPath}) {
     try {
       var chatStream = _fireStore.document(chatPath).snapshots().map((doc) {
-        ChatWithoutLastMessage chat =
-            ChatWithoutLastMessage.fromMap(map: doc.data);
-        chat.setChatpath(chatpath: doc.reference.path);
+        Map<dynamic, dynamic> map = doc.data;
+        ChatWithoutLastMessage chat = ChatWithoutLastMessage(
+            uid1: map['uid1'],
+            username1: map['username1'] ?? 'Default username1',
+            user1ImageFileName: map['user1ImageFileName'],
+            hasUser1Blocked: map['hasUser1Blocked'] ?? false,
+            uid2: map['uid2'],
+            username2: map['username2'] ?? 'Default username2',
+            user2ImageFileName: map['user2ImageFileName'],
+            hasUser2Blocked: map['hasUser2Blocked'] ?? false,
+            chatpath: doc.reference.path);
         return chat;
       }).distinct(); //use distinct to avoid unnecessary rebuilds
       return chatStream;

@@ -1,56 +1,40 @@
-import 'package:flutter/cupertino.dart';
+import 'package:equatable/equatable.dart';
 
-class ChatWithoutLastMessage {
-  String uid1;
-  String username1;
-  String user1ImageFileName;
-  bool hasUser1Blocked;
-  String uid2;
-  String username2;
-  String user2ImageFileName;
-  bool hasUser2Blocked;
-  String chatpath;
+class ChatWithoutLastMessage extends Equatable {
+  final String uid1;
+  final String username1;
+  final String user1ImageFileName;
+  final bool hasUser1Blocked;
+  final String uid2;
+  final String username2;
+  final String user2ImageFileName;
+  final bool hasUser2Blocked;
+  final String chatpath;
 
-  ChatWithoutLastMessage({
-    this.uid1,
-    this.username1,
-    this.user1ImageFileName,
-    this.hasUser1Blocked,
-    this.uid2,
-    this.username2,
-    this.user2ImageFileName,
-    this.hasUser2Blocked,
-  });
+  ChatWithoutLastMessage(
+      {this.uid1,
+      this.username1,
+      this.user1ImageFileName,
+      this.hasUser1Blocked,
+      this.uid2,
+      this.username2,
+      this.user2ImageFileName,
+      this.hasUser2Blocked,
+      this.chatpath});
 
-  ChatWithoutLastMessage.fromMap({Map<String, dynamic> map}) {
-    this.uid1 = map['uid1'];
-    this.username1 = map['username1'] ?? 'Default username1';
-    this.user1ImageFileName = map['user1ImageFileName'];
-    this.hasUser1Blocked = map['hasUser1Blocked'] ?? false;
-    this.uid2 = map['uid2'];
-    this.username2 = map['username2'] ?? 'Default username2';
-    this.user2ImageFileName = map['user2ImageFileName'];
-    this.hasUser2Blocked = map['hasUser2Blocked'] ?? false;
-  }
-
-  void setChatpath({@required String chatpath}) {
-    this.chatpath = chatpath;
-  }
-
+  //needed to override equals operator
   @override
-  bool operator ==(other) {
-    if (this.uid1 == other?.uid1 &&
-        this.username1 == other?.username1 &&
-        this.user1ImageFileName == other?.user1ImageFileName &&
-        this.hasUser1Blocked == other?.hasUser1Blocked &&
-        this.username2 == other?.username2 &&
-        this.user2ImageFileName == other?.user2ImageFileName &&
-        this.hasUser2Blocked == other?.hasUser2Blocked) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  List<Object> get props => [
+        uid1,
+        username1,
+        user1ImageFileName,
+        hasUser1Blocked,
+        uid2,
+        username2,
+        user2ImageFileName,
+        hasUser2Blocked,
+        chatpath
+      ];
 
   @override
   String toString() {

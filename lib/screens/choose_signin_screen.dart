@@ -7,15 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:video_player/video_player.dart';
 
-class ChooseSignupOrLoginScreen extends StatefulWidget {
-  static const String id = 'ChooseSignupOrLoginScreen';
+class ChooseSigninScreen extends StatefulWidget {
+  static const String id = 'ChooseSigninScreen';
 
   @override
-  _ChooseSignupOrLoginScreenState createState() =>
-      _ChooseSignupOrLoginScreenState();
+  _ChooseSigninScreenState createState() => _ChooseSigninScreenState();
 }
 
-class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
+class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
   bool showSpinner = false;
 
   VideoPlayerController _controller;
@@ -35,21 +34,21 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SizedBox.expand(
-          child: FittedBox(
-            fit: BoxFit.cover,
-            child: SizedBox(
-              width: _controller.value.size?.width ?? 0,
-              height: _controller.value.size?.height ?? 0,
-              child: VideoPlayer(_controller),
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
+      child: Stack(
+        children: [
+          SizedBox.expand(
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                width: _controller.value.size?.width ?? 0,
+                height: _controller.value.size?.height ?? 0,
+                child: VideoPlayer(_controller),
+              ),
             ),
           ),
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: ModalProgressHUD(
+          ModalProgressHUD(
             inAsyncCall: showSpinner,
             progressIndicator: CircularProgressIndicator(
               valueColor:
@@ -98,8 +97,8 @@ class _ChooseSignupOrLoginScreenState extends State<ChooseSignupOrLoginScreen> {
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
