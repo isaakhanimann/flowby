@@ -280,7 +280,7 @@ class Header extends StatelessWidget {
               CupertinoButton(
                 child: Icon(
                   Feather.user_x,
-                  color: haveIBlocked ? Colors.red : kLoginBackgroundColor,
+                  color: haveIBlocked ? kTextFieldTextColor : Colors.red,
                 ),
                 onPressed: () {
                   if (amIUser1) {
