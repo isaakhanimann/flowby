@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://flowby.co/sitemap.xml
