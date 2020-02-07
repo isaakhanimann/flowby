@@ -132,6 +132,7 @@
 @media only screen and (max-width: 767px) {
     body {
         font-size: 14px;
+        font-family: 'Noto Sans TC', sans-serif;
     }
     h1 {
         font-size: 40px;
