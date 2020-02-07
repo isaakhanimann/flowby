@@ -33,35 +33,38 @@ class ViewProfileScreen extends StatelessWidget {
               user: user,
               heroTag: heroTag,
             ),
-            RoundedButton(
-              text: loggedInUser == null ? 'Sign In to Chat' : 'Chat',
-              color: kDefaultProfilePicColor,
-              textColor: kBlueButtonColor,
-              onPressed: () async {
-                if (loggedInUser == null) {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute<void>(
-                      builder: (context) {
-                        return ChooseSigninScreen();
-                      },
-                    ),
-                  );
-                } else {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute<void>(
-                      builder: (context) {
-                        return ChatScreen(
-                          loggedInUid: loggedInUser.uid,
-                          otherUid: user.uid,
-                          otherUsername: user.username,
-                          otherImageFileName: user.imageFileName,
-                          heroTag: heroTag,
-                        );
-                      },
-                    ),
-                  );
-                }
-              },
+            Positioned(
+              bottom: 20,
+              child: RoundedButton(
+                text: loggedInUser == null ? 'Sign In to Chat' : 'Chat',
+                color: kDefaultProfilePicColor,
+                textColor: kBlueButtonColor,
+                onPressed: () async {
+                  if (loggedInUser == null) {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute<void>(
+                        builder: (context) {
+                          return ChooseSigninScreen();
+                        },
+                      ),
+                    );
+                  } else {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute<void>(
+                        builder: (context) {
+                          return ChatScreen(
+                            loggedInUid: loggedInUser.uid,
+                            otherUid: user.uid,
+                            otherUsername: user.username,
+                            otherImageFileName: user.imageFileName,
+                            heroTag: heroTag,
+                          );
+                        },
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
             Positioned(
               top: 0,

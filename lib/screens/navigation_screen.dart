@@ -91,7 +91,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
             children: <Widget>[
               HomeTab(),
               Positioned(
-                bottom: 50,
+                bottom: 120,
                 child: RoundedButton(
                   text: 'Sign In',
                   color: kDefaultProfilePicColor,
