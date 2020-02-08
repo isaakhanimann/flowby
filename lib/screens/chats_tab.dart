@@ -170,8 +170,9 @@ class ChatItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                HelperFunctions.getDotDotDotString(
-                    maybeLongString: chat.lastMessageText),
+                chat.lastMessageText,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: kChatLastMessageTextStyle,
               ),
               if (haveIBlocked || hasOtherBlocked)

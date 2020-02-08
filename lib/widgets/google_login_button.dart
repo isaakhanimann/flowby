@@ -7,7 +7,7 @@ class GoogleLoginButton extends StatelessWidget {
       this.textColor,
       @required this.onPressed,
       @required this.text,
-      this.paddingInsideHorizontal = 50,
+      this.paddingInsideHorizontal = 40,
       this.paddingInsideVertical = 15});
 
   final Color color;

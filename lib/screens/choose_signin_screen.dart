@@ -67,11 +67,6 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      SizedBox(
-                        width: 700.0,
-                        height: 400.0,
-                        child: null,
-                      ),
                       RoundedButton(
                         text: 'Sign Up',
                         color: kBlueButtonColor,
