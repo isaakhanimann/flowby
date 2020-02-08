@@ -86,6 +86,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           ),
         ],
         child: CupertinoPageScaffold(
+          backgroundColor: CupertinoColors.white,
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: <Widget>[
@@ -100,7 +101,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     Navigator.of(context).push(
                       CupertinoPageRoute<void>(
                         builder: (context) {
-                          return ChooseSigninScreen();
+                          return ChooseSigninScreen(
+                            canGoBack: true,
+                          );
                         },
                       ),
                     );

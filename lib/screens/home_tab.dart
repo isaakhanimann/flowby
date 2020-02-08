@@ -124,8 +124,12 @@ class _HomeTabState extends State<HomeTab> {
                               },
                             ),
                           ),
-                          if (searchResultUsers.length == 0)
-                            NoResults(isSkillSelected: isSkillSelected),
+                          if (searchResultUsers.length == 0 &&
+                              loggedInUser != null)
+                            NoResults(
+                              isSkillSelected: isSkillSelected,
+                              uidOfLoggedInUser: loggedInUser.uid,
+                            ),
                         ],
                       );
                     } else if (index < searchResultUsers.length + 2) {

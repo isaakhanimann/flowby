@@ -86,6 +86,7 @@ class _UserDescriptionRegistrationScreenState
                           onChanged: (value) {
                             _bio = value;
                           },
+                          maxLength: 100,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
                           decoration: InputDecoration(
