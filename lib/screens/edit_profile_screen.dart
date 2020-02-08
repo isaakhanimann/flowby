@@ -409,15 +409,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   SizedBox(
-                    width: 100,
+                    width: 60,
                     child: Text(
                       'Name',
-                      style: kEditProfileTextFieldTextStyle,
+                      style: kAddSkillsTextStyle,
                     ),
                   ),
                   Expanded(
                     child: CupertinoTextField(
-                      style: kEditProfileTextFieldTextStyle,
+                      style: kAddSkillsTextStyle,
                       placeholder: 'Enter your name',
                       padding: EdgeInsets.only(bottom: 0),
                       maxLength: 20,
@@ -436,16 +436,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(
-                    width: 100,
+                    width: 60,
                     child: Text(
                       'Bio',
-                      style: kEditProfileTextFieldTextStyle,
+                      style: kAddSkillsTextStyle,
                     ),
                   ),
                   Expanded(
                     child: CupertinoTextField(
                       expands: true,
-                      style: kEditProfileTextFieldTextStyle,
+                      style: kAddSkillsTextStyle,
                       placeholder: 'Enter your description',
                       maxLength: 200,
                       minLines: null,

@@ -142,10 +142,8 @@ class ChatScreenWithPath extends StatelessWidget {
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                  image: AssetImage('assets/images/ff-story-3-bg.jpeg'),
-                  fit: BoxFit.cover,
-                )),
+                    color: Colors.white,
+                ),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -215,7 +213,7 @@ class Header extends StatelessWidget {
       }
     }
     return Container(
-      color: Color(0xCFFFFFFF),
+      color: Color(0xFFFFFFFF),
       child: Padding(
         padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
         child: Row(
@@ -420,7 +418,6 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
               maxLines: null,
               minLines: null,
               placeholder: 'Type a message',
-              autofocus: true,
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                   color: Colors.white,

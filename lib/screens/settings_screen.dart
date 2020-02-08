@@ -18,10 +18,11 @@ class SettingsScreen extends StatelessWidget {
   List<SettingsItem> _buildSettingsChildren(BuildContext context) {
     return [
       SettingsItem(
-          leading: Icon(Feather.share_2, color: kLoginBackgroundColor),
-          title: Text('Invite a friend', style: kUsernameTextStyle),
-          onTap: () => Share.share(
-              'Flowby is the largest skill-sharing community. The more the merrier. Join the adventure: https://flowby.apps')),
+        leading: Icon(Feather.share_2, color: kLoginBackgroundColor),
+        title: Text('Invite a friend', style: kUsernameTextStyle),
+        onTap: () => Share.share(
+            'Flowby is a close by community of people that share their skills in person. Join the adventure: https://flowby.app. Tell your friends about it, the more the merrier.'),
+      ),
       SettingsItem(
         leading: Icon(Feather.log_out, color: kLoginBackgroundColor),
         title: Text('Sign Out', style: kUsernameTextStyle),
