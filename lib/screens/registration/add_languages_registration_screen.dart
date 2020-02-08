@@ -33,33 +33,19 @@ class _AddLanguagesRegistrationScreenState
   List<TextEditingController> wishDescriptionControllers = [];
   List<TextEditingController> wishPriceControllers = [];
 
-  Column _buildListOfTextFields({bool isSkillBuild}) {
-    if (isSkillBuild) {
-      if (skillKeywordControllers.length == 0) {
-        setState(() {
-          // Default controllers
-          skillKeywordControllers.add(TextEditingController());
-          skillDescriptionControllers.add(TextEditingController());
-          skillPriceControllers.add(TextEditingController());
-        });
-      }
-    } else {
-      if (wishKeywordControllers.length == 0) {
-        setState(() {
-          // Default controllers
-          skillKeywordControllers.add(TextEditingController());
-          skillDescriptionControllers.add(TextEditingController());
-          skillPriceControllers.add(TextEditingController());
-        });
-      }
+  Column _buildListOfTextFields() {
+    if (skillKeywordControllers.length == 0) {
+      setState(() {
+        // Default controllers
+        skillKeywordControllers.add(TextEditingController());
+        skillDescriptionControllers.add(TextEditingController());
+        skillPriceControllers.add(TextEditingController());
+      });
     }
 
     List<Widget> rows = [];
     for (int rowNumber = 0;
-        rowNumber <
-            (isSkillBuild
-                ? skillKeywordControllers.length
-                : wishKeywordControllers.length);
+        rowNumber < skillKeywordControllers.length;
         rowNumber++) {
       rows.add(
         Column(
@@ -77,10 +63,8 @@ class _AddLanguagesRegistrationScreenState
                     maxLength: 20,
                     decoration: null,
                     textAlign: TextAlign.start,
-                    placeholder: "#keywords",
-                    controller: isSkillBuild
-                        ? skillKeywordControllers[rowNumber]
-                        : wishKeywordControllers[rowNumber],
+                    placeholder: "e.g. #english",
+                    controller: skillKeywordControllers[rowNumber],
                   ),
                 ),
                 SizedBox(width: 20),
@@ -93,25 +77,17 @@ class _AddLanguagesRegistrationScreenState
                     maxLength: 10,
                     decoration: null,
                     textAlign: TextAlign.start,
-                    placeholder: "price",
-                    controller: isSkillBuild
-                        ? skillPriceControllers[rowNumber]
-                        : wishPriceControllers[rowNumber],
+                    placeholder: "e.g. free",
+                    controller: skillPriceControllers[rowNumber],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: GestureDetector(
                     onTap: () => setState(() {
-                      if (isSkillBuild) {
-                        skillKeywordControllers.removeAt(rowNumber);
-                        skillDescriptionControllers.removeAt(rowNumber);
-                        skillPriceControllers.removeAt(rowNumber);
-                      } else {
-                        wishKeywordControllers.removeAt(rowNumber);
-                        wishDescriptionControllers.removeAt(rowNumber);
-                        wishPriceControllers.removeAt(rowNumber);
-                      }
+                      skillKeywordControllers.removeAt(rowNumber);
+                      skillDescriptionControllers.removeAt(rowNumber);
+                      skillPriceControllers.removeAt(rowNumber);
                     }),
                     child: Icon(Feather.x),
                   ),
@@ -131,10 +107,8 @@ class _AddLanguagesRegistrationScreenState
                     maxLength: 100,
                     decoration: null,
                     textAlign: TextAlign.start,
-                    placeholder: "description",
-                    controller: isSkillBuild
-                        ? skillDescriptionControllers[rowNumber]
-                        : wishDescriptionControllers[rowNumber],
+                    placeholder: "e.g. native",
+                    controller: skillDescriptionControllers[rowNumber],
                   ),
                 ),
               ],
@@ -146,29 +120,23 @@ class _AddLanguagesRegistrationScreenState
     }
 
     rows.add(
-      _addRowButton(isSkillBuild),
+      _addRowButton(),
     );
     return Column(
       children: rows,
     );
   }
 
-  Widget _addRowButton(isSkillBuild) {
+  Widget _addRowButton() {
     return Container(
       alignment: Alignment.bottomLeft,
       child: GestureDetector(
         child: Icon(Feather.plus),
         onTap: () {
           setState(() {
-            if (isSkillBuild) {
-              skillKeywordControllers.add(TextEditingController());
-              skillDescriptionControllers.add(TextEditingController());
-              skillPriceControllers.add(TextEditingController());
-            } else {
-              wishKeywordControllers.add(TextEditingController());
-              wishDescriptionControllers.add(TextEditingController());
-              wishPriceControllers.add(TextEditingController());
-            }
+            skillKeywordControllers.add(TextEditingController());
+            skillDescriptionControllers.add(TextEditingController());
+            skillPriceControllers.add(TextEditingController());
           });
         },
       ),
@@ -251,7 +219,7 @@ class _AddLanguagesRegistrationScreenState
                             SizedBox(
                               height: 10.0,
                             ),
-                            _buildListOfTextFields(isSkillBuild: true),
+                            _buildListOfTextFields(),
                             SizedBox(
                               height: 10.0,
                             ),

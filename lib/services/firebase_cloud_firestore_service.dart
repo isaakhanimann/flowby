@@ -58,13 +58,13 @@ class FirebaseCloudFirestoreService {
         Map<dynamic, dynamic> map = doc.data;
         ChatWithoutLastMessage chat = ChatWithoutLastMessage(
             uid1: map['uid1'],
-            username1: map['username1'] ?? 'Default username1',
+            username1: map['username1'],
             user1ImageFileName: map['user1ImageFileName'],
-            hasUser1Blocked: map['hasUser1Blocked'] ?? false,
+            hasUser1Blocked: map['hasUser1Blocked'],
             uid2: map['uid2'],
             username2: map['username2'] ?? 'Default username2',
             user2ImageFileName: map['user2ImageFileName'],
-            hasUser2Blocked: map['hasUser2Blocked'] ?? false,
+            hasUser2Blocked: map['hasUser2Blocked'],
             chatpath: doc.reference.path);
         return chat;
       }).distinct(); //use distinct to avoid unnecessary rebuilds
