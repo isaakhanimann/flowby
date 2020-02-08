@@ -183,6 +183,7 @@ input:-webkit-autofill:focus {
 .bttn-white {
     font-family: "Montserrat", sans-serif;
     padding: 12px 30px;
+    margin-bottom: 40px;
     background-color: #ffffff;
     display: inline-block;
     color: #0527ce;

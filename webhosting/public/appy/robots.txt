@@ -1,4 +1,14 @@
 User-agent: *
 Allow: /
+Disallow: /*.pdf
+Disallow: /css/
+Disallow: /fonts/
+Disallow: /images/
+Disallow: /js/
+Disallow: /well-known/
+Disallow: /blog.html
+Disallow: /index2.html
+Disallow: /single.html
+Disallow: /*.css
 
 Sitemap: https://flowby.co/sitemap.xml
