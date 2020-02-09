@@ -132,12 +132,19 @@
 @media only screen and (max-width: 767px) {
     body {
         font-size: 14px;
+        font-family: 'Noto Sans TC', sans-serif;
     }
     h1 {
         font-size: 40px;
     }
     h3 {
-        font-size: 22px;
+        font-size: 26px;
+    }
+    h4 {
+        font-size: 20px;
+    }
+    h5 {
+        font-size: 14px;
     }
     .bttn-white {
         padding: 8px 30px;
@@ -274,6 +281,17 @@
     }
 }
 
+/* Small Mobile Layout: 480px. */
+@media only screen and (max-width: 480px) {
+    .home-area {
+        padding-top: 80px;
+    }
+    .bttn-white {
+        font-size: 10px;
+        padding: 5px;
+
+    }
+}
 /* Wide Mobile Layout: 480px. */
 
 @media only screen and (min-width: 480px) and (max-width: 767px) {}

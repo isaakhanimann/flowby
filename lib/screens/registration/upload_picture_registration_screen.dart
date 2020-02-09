@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/user_description_registration_screen.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
@@ -221,6 +222,8 @@ class _UploadPictureRegistrationScreenState
                             });
                             try {
                               if (_profilePic != null) {
+                                final cloudFirestoreService =
+                                Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
                                 final storageService =
                                     Provider.of<FirebaseStorageService>(context,
                                         listen: false);
@@ -228,6 +231,7 @@ class _UploadPictureRegistrationScreenState
                                     fileName: _user.uid, image: _profilePic);
 
                                 _user.imageFileName = _user.uid;
+                                cloudFirestoreService.uploadProfilePic(uid: _user.uid);
                               }
                             } catch (e) {
                               print('Could not upload and get on Save');

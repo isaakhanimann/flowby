@@ -1,6 +1,7 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_wishes_registration_screen.dart';
+import 'package:Flowby/widgets/build_list_of_text_fields.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -204,7 +205,6 @@ class _AddSkillsRegistrationScreenState
     widget.user != null
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
-    _setLanguagesInSkills(_user);
   }
 
   @override

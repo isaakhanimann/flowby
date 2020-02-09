@@ -18,6 +18,7 @@ class FirebaseCloudFirestoreService {
       _fireStore.collection('users').document(user.uid).setData(user.toMap());
     } catch (e) {
       print('Isaak could not upload user info');
+      debugPrint('error: $e');
     }
   }
 
@@ -234,6 +235,16 @@ class FirebaseCloudFirestoreService {
           .collection('users')
           .document(uid)
           .updateData({'pushToken': pushToken});
+    } catch (e) {
+      print('Isaak could not upload Push Token');
+    }
+  }
+  void uploadProfilePic({@required String uid}) {
+    try {
+      _fireStore
+          .collection('users')
+          .document(uid)
+          .updateData({'imageFileName': uid});
     } catch (e) {
       print('Isaak could not upload Push Token');
     }

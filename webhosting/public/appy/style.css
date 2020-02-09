@@ -68,7 +68,7 @@ a:hover {
     color: #768ede;
 }
 
-img {
+img, picture {
     max-width: 100%;
     height: auto;
 }
@@ -95,6 +95,12 @@ h2 {
 
 h3 {
     font-size: 32px;
+}
+h4 {
+    font-size: 22px;
+}
+h5 {
+    font-size: 16px;
 }
 p {
   font-size: 18px;
@@ -175,7 +181,9 @@ input:-webkit-autofill:focus {
 
 .bttn-default,
 .bttn-white {
+    font-family: "Montserrat", sans-serif;
     padding: 12px 30px;
+    margin-bottom: 40px;
     background-color: #ffffff;
     display: inline-block;
     color: #0527ce;
@@ -453,7 +461,7 @@ input:-webkit-autofill:focus {
     /* background: url('images/header-bg.jpg') no-repeat scroll center bottom / cover; */
     background-color: #0527CE;
     color: #768ede;
-    padding-top: 26vh;
+    padding-top: 20vh;
     color: #ffffff;
     margin-bottom: 100px;
 }
@@ -538,7 +546,6 @@ input:-webkit-autofill:focus {
 
 .service-box {
     position: relative;
-    padding-left: 100px;
 }
 
 .team-slide .owl-controls .owl-nav > div,
@@ -1393,7 +1400,8 @@ input:-webkit-autofill:focus {
   border: none;
   padding: 5px;
   padding-left: 15px;
-  width: 260px;
+  width: 62.5vw;
+  max-width: 300px;
   border-radius: 15px 0px 0px 15px;
 }
 .inf-main .inf-submit input[type=submit]{
@@ -1424,4 +1432,10 @@ input:-webkit-autofill:focus {
 
 .page-title .title{
   color: #294FED;
+}
+
+.slogan{
+font-family: "Montserrat", sans-serif;
+line-height: 75px;
+font-size:60px;
 }

@@ -138,6 +138,13 @@ class ChatScreenWithPath extends StatelessWidget {
             final ChatWithoutLastMessage chat = snapshot.data;
 
             return Stack(children: [
+              Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                ),
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -206,7 +213,7 @@ class Header extends StatelessWidget {
       }
     }
     return Container(
-      color: Colors.white,
+      color: Color(0xFFFFFFFF),
       child: Padding(
         padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
         child: Row(
@@ -324,7 +331,12 @@ class MessagesStream extends StatelessWidget {
         final List<Message> messages = snapshot.data;
 
         if (messages == null) {
-          return Container(color: Colors.white);
+          return Container(
+            color: Colors.white,
+            child: Center(
+              child: Text('No messages yet'),
+            ),
+          );
         }
         return ListView.builder(
           itemCount: messages.length,
@@ -408,8 +420,10 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
               expands: true,
               maxLines: null,
               minLines: null,
+              placeholder: 'Type a message',
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
+                  color: Colors.white,
                   border: Border.all(color: kChatScreenBorderTextFieldColor),
                   borderRadius: BorderRadius.all(Radius.circular(20))),
               controller: messageTextController,

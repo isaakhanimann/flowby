@@ -49,16 +49,16 @@ class _NoResultsState extends State<NoResults> {
               SizedBox(height: 15.0),
               widget.isSkillSelected
                   ? Text(
-                      'No user found... add this skill as a wish so skilled people can find you',
+                      'No user found... add this skill in your profile as a wish, so skillful people can find you.',
                       style: kAddSkillsTextStyle,
                       textAlign: TextAlign.center,
                     )
-                  : Text('No user with this wish found',
+                  : Text('No user found with this wish.',
                       style: kAddSkillsTextStyle, textAlign: TextAlign.center),
               SizedBox(height: 5.0),
               widget.isSkillSelected
                   ? RoundedButton(
-                      text: 'Add skill',
+                      text: 'Add wish',
                       textColor: Colors.white,
                       color: kBlueButtonColor,
                       onPressed: () async {
@@ -88,7 +88,7 @@ class _NoResultsState extends State<NoResults> {
                       textColor: Colors.white,
                       color: kBlueButtonColor,
                       onPressed: () => Share.share(
-                          'Flowby is a skill-sharing community where you meet people nearby you to learn new skills. The more, the merrier and the more skills. Join the adventure: https://flowby.app/'),
+                          'Flowby is a close by community of people that share their skills in person. Join the adventure: https://flowby.app. Tell your friends about it, the more the merrier.'),
                     ),
             ],
           ),
