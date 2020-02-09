@@ -155,7 +155,7 @@ class ChatItem extends StatelessWidget {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Expanded(
+              Flexible(
                 flex: 2,
                 child: Text(
                   otherUsername,
@@ -163,7 +163,8 @@ class ChatItem extends StatelessWidget {
                   style: kUsernameTextStyle,
                 ),
               ),
-              Expanded(
+              Flexible(
+                flex: 1,
                 child: Text(
                   HelperFunctions.getTimestampAsString(
                       timestamp: chat.lastMessageTimestamp),

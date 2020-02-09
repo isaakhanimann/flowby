@@ -207,8 +207,8 @@ class ProfileItem extends StatelessWidget {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Expanded(
-                flex: 2,
+              Flexible(
+                flex: 1,
                 child: Text(
                   user.username,
                   maxLines: 1,
@@ -216,7 +216,9 @@ class ProfileItem extends StatelessWidget {
                   style: kUsernameTextStyle,
                 ),
               ),
-              Expanded(
+              Flexible(
+                fit: FlexFit.loose,
+                flex: 1,
                 child: FutureBuilder(
                   future: locationService.distanceBetween(
                       startLatitude: currentPosition?.latitude,
@@ -236,9 +238,10 @@ class ProfileItem extends StatelessWidget {
                     }
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.baseline,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       textBaseline: TextBaseline.alphabetic,
                       children: <Widget>[
-                        Expanded(
+                        Flexible(
                           flex: 3,
                           child: Text(
                             distanceInKm.toString() + ' km ',
@@ -247,7 +250,8 @@ class ProfileItem extends StatelessWidget {
                             style: kLocationTextStyle,
                           ),
                         ),
-                        Expanded(
+                        Flexible(
+                          flex: 1,
                           child: Icon(
                             Feather.map_pin,
                             size: 12,
