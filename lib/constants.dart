@@ -4,59 +4,66 @@ import 'package:flutter/material.dart';
 // Text Styles
 const kUsernameTitleTextStyle = TextStyle(
     fontFamily: 'MontserratRegular',
-    fontSize: 35.0,
-    fontWeight: FontWeight.w500,
-    color: kLoginBackgroundColor);
-const kRegisterHeaderTextStyle = TextStyle(
-  color: Colors.black,
-  fontFamily: 'MontserratRegular',
-  fontSize: 22.0,
-);
-const kChatScreenHeaderTextStyle =
-    TextStyle(fontSize: 20, fontFamily: 'MuliRegular');
-const kSkillsTitleTextStyle = TextStyle(
-    fontFamily: 'MontserratRegular',
     fontSize: 30.0,
     fontWeight: FontWeight.w500,
     color: kLoginBackgroundColor);
+const kRegisterHeaderTextStyle = TextStyle(
+    color: Colors.black, fontFamily: 'MontserratRegular', fontSize: 20.0);
+const kSearchPlaceHolderTextStyle =
+    TextStyle(fontSize: 16, color: kPlaceHolderColor);
+const kSearchTextStyle = TextStyle(fontSize: 16, color: Colors.black);
+const kHomeSwitchTextStyle = TextStyle(fontSize: 16);
+const kChatScreenHeaderTextStyle =
+    TextStyle(fontSize: 20, fontFamily: 'MuliRegular');
+const kTimestampTextStyle = TextStyle(fontSize: 12.0, color: Colors.black54);
+const kSkillsTitleTextStyle = TextStyle(
+    fontFamily: 'MontserratRegular',
+    fontSize: 26.0,
+    fontWeight: FontWeight.w500,
+    color: kLoginBackgroundColor);
+const kOrTextStyle = TextStyle(
+  color: Colors.white,
+  fontFamily: 'MontserratRegular',
+  fontSize: 18.0,
+);
 const kSmallTitleTextStyle = TextStyle(
-    fontFamily: 'NotoRegular',
-    fontSize: 18.0,
-    fontWeight: FontWeight.w400,
-    color: kSmallTitlesTextColor);
-const kKeywordHeaderTextStyle = TextStyle(
-    fontFamily: 'NotoMedium',
-    fontSize: 18.0,
-    fontWeight: FontWeight.w400,
-    color: kKeywordHeaderColor);
-const kEditProfileTextFieldTextStyle = TextStyle(
-    fontFamily: 'NotoRegular',
-    fontSize: 20.0,
-    fontWeight: FontWeight.w400,
-    color: kTextFieldTextColor);
-const kAddSkillsTextStyle = TextStyle(
     fontFamily: 'NotoRegular',
     fontSize: 16.0,
     fontWeight: FontWeight.w400,
     color: kSmallTitlesTextColor);
+const kKeywordHeaderTextStyle = TextStyle(
+    fontFamily: 'NotoMedium',
+    fontSize: 16.0,
+    fontWeight: FontWeight.w400,
+    color: kKeywordHeaderColor);
+const kEditProfileTextFieldTextStyle = TextStyle(
+    fontFamily: 'NotoRegular',
+    fontSize: 18.0,
+    fontWeight: FontWeight.w400,
+    color: kTextFieldTextColor);
+const kAddSkillsTextStyle = TextStyle(
+    fontFamily: 'NotoRegular',
+    fontSize: 14.0,
+    fontWeight: FontWeight.w400,
+    color: kSmallTitlesTextColor);
 const kNavigationBarTextStyle = TextStyle(fontFamily: 'MontserratRegular');
 const kLocationTextStyle =
-    TextStyle(color: Colors.grey, fontSize: 14, fontFamily: 'NotoRegular');
+    TextStyle(color: Colors.grey, fontSize: 12, fontFamily: 'NotoRegular');
 const kUsernameTextStyle =
     TextStyle(fontWeight: FontWeight.bold, fontFamily: 'MontserratRegular');
 const kChatTabTimestampTextStyle =
-    TextStyle(color: Colors.black38, fontSize: 12, fontFamily: 'NotoRegular');
+    TextStyle(color: Colors.black38, fontSize: 10, fontFamily: 'NotoRegular');
 const kChatLastMessageTextStyle =
-    TextStyle(color: Colors.black38, fontSize: 15, fontFamily: 'NotoRegular');
+    TextStyle(color: Colors.black38, fontSize: 13, fontFamily: 'NotoRegular');
 const kCardSubtitleTextStyle =
-    TextStyle(color: Colors.grey, fontSize: 14, fontFamily: 'NotoRegular');
+    TextStyle(color: Colors.grey, fontSize: 12, fontFamily: 'NotoRegular');
 const kCupertinoScaffoldTextStyle =
     TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratRegular');
 const kTabsLargeTitleTextStyle = TextStyle(fontFamily: 'MontserratRegular');
 const kBlockedTextStyle =
     TextStyle(color: Colors.red, fontFamily: 'MontserratRegular');
 const kSmallBlockedTextStyle =
-    TextStyle(color: Colors.red, fontSize: 12, fontFamily: 'MontserratRegular');
+    TextStyle(color: Colors.red, fontSize: 10, fontFamily: 'MontserratRegular');
 
 // Colors
 const kLoginBackgroundColor = Color(0xFF0D4FF7);

@@ -116,10 +116,10 @@ class _HomeTabState extends State<HomeTab> {
                               groupValue: isSkillSelected,
                               onValueChanged: switchSearch,
                               children: <bool, Widget>{
-                                true: Text('Skills',
-                                    style: TextStyle(fontSize: 18)),
-                                false: Text('Wishes',
-                                    style: TextStyle(fontSize: 18)),
+                                true:
+                                    Text('Skills', style: kHomeSwitchTextStyle),
+                                false:
+                                    Text('Wishes', style: kHomeSwitchTextStyle),
                               },
                             ),
                           ),
@@ -292,7 +292,7 @@ class SearchBar extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10))),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         placeholder: isSkillSearch ? 'Search Skills' : 'Search Wishes',
-        placeholderStyle: TextStyle(fontSize: 16, color: kPlaceHolderColor),
+        placeholderStyle: kSearchPlaceHolderTextStyle,
         prefix: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Icon(
@@ -301,7 +301,7 @@ class SearchBar extends StatelessWidget {
           ),
         ),
         controller: controller,
-        style: TextStyle(fontSize: 16, color: Colors.black),
+        style: kSearchTextStyle,
         clearButtonMode: OverlayVisibilityMode.editing,
       ),
     );

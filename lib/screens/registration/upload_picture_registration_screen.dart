@@ -133,12 +133,9 @@ class _UploadPictureRegistrationScreenState
                         ),
                         Text(
                           'Welcome $_username!',
+                          overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
+                          style: kRegisterHeaderTextStyle,
                         ),
                         SizedBox(
                           height: 10.0,
@@ -146,11 +143,7 @@ class _UploadPictureRegistrationScreenState
                         Text(
                           'Choose a picture',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
+                          style: kRegisterHeaderTextStyle,
                         ),
                         GestureDetector(
                           onTap: _changeProfilePic,
@@ -253,7 +246,6 @@ class _UploadPictureRegistrationScreenState
                             });
                           },
                         ),
-
                       ]),
                 ),
               ]),

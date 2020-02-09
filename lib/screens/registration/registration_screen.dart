@@ -328,11 +328,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 Text(
                   'OR',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'MontserratRegular',
-                    fontSize: 18.0,
-                  ),
+                  style: kOrTextStyle,
                 ),
                 GoogleLoginButton(
                   text: 'Sign Up with Google',

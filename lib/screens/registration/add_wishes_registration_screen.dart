@@ -273,11 +273,7 @@ class _AddWishesRegistrationScreenState
                               Text(
                                 'Tell others what you would like to learn',
                                 textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'MontserratRegular',
-                                  fontSize: 22.0,
-                                ),
+                                style: kRegisterHeaderTextStyle,
                               ),
                               SizedBox(
                                 height: 10.0,
@@ -317,12 +313,6 @@ class _AddWishesRegistrationScreenState
                                 Provider.of<FirebaseAuthService>(context,
                                     listen: false);
 
-                            /*
-                            final loggedInUser = Provider.of<FirebaseUser>(
-                                context,
-                                listen: false);
-                            */
-
                             authService.getCurrentUser().then((loggedInUser) {
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                 NavigationScreen.id,
@@ -335,19 +325,6 @@ class _AddWishesRegistrationScreenState
                             });
                           },
                         ),
-                        /*
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          'We all have at least a valuable skill',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
-                        ), */
                         SizedBox(
                           height: 10.0,
                         ),

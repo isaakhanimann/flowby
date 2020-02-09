@@ -313,11 +313,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text(
                   'OR',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'MontserratRegular',
-                    fontSize: 18.0,
-                  ),
+                  style: kOrTextStyle,
                 ),
                 GoogleLoginButton(
                   text: 'Log In with Google',

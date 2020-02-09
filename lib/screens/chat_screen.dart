@@ -264,8 +264,7 @@ class Header extends StatelessWidget {
                       Text(
                         otherUsername,
                         overflow: TextOverflow.ellipsis,
-                        style:
-                            TextStyle(fontSize: 20, fontFamily: 'MuliRegular'),
+                        style: kChatScreenHeaderTextStyle,
                       )
                     ],
                   ),
@@ -454,7 +453,7 @@ class MessageBubble extends StatelessWidget {
         children: <Widget>[
           Text(
             timestamp,
-            style: TextStyle(fontSize: 12.0, color: Colors.black54),
+            style: kTimestampTextStyle,
           ),
           Material(
             borderRadius: isMe

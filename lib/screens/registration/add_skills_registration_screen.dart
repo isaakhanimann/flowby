@@ -276,11 +276,7 @@ class _AddSkillsRegistrationScreenState
                               Text(
                                 'Share what you are good at',
                                 textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'MontserratRegular',
-                                  fontSize: 22.0,
-                                ),
+                                style: kRegisterHeaderTextStyle,
                               ),
                               SizedBox(
                                 height: 10.0,
