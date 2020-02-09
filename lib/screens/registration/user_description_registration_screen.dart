@@ -30,132 +30,101 @@ class _UserDescriptionRegistrationScreenState
   Widget build(BuildContext context) {
     widget.user != null ? _user = widget.user : print('error, no user found');
 
-    //print(_user);
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("assets/images/Freeflowter_Stony.png"),
-          alignment: Alignment(0.0, 0.0),
-          fit: BoxFit.cover,
-        ),
-      ),
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
         child: SafeArea(
-          child: Scaffold(
-            /*appBar: AppBar(
-              title: Text('Upload a picture'),
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-            ),*/
-            backgroundColor: Colors.white,
-            body: SingleChildScrollView(
-              child: Stack(children: [
-                Hero(
-                  child: ProgressBar(progress: 0.4),
-                  transitionOnUserGestures: true,
-                  tag: 'progress_bar',
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 10.0,
+          child: SingleChildScrollView(
+            child: Stack(children: [
+              Hero(
+                child: ProgressBar(progress: 0.4),
+                transitionOnUserGestures: true,
+                tag: 'progress_bar',
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        'Let the others know who you are',
+                        textAlign: TextAlign.center,
+                        style: kRegisterHeaderTextStyle,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      CupertinoTextField(
+                        style: kEditProfileTextFieldTextStyle,
+                        placeholder: 'Your biography...',
+                        maxLength: 200,
+                        maxLines: 4,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: kBoxBorderColor),
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.white,
                         ),
-                        Text(
-                          'Let the others know who you are',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        TextFormField(
-                          onChanged: (value) {
-                            _bio = value;
-                          },
-                          maxLength: 100,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          decoration: InputDecoration(
-                            hintText: 'Your biography...',
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintStyle:
-                                TextStyle(fontFamily: 'MontserratRegular'),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 45.0, horizontal: 30.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5.0),
-                              ),
+                        onChanged: (value) {
+                          _bio = value;
+                        },
+                        textAlign: TextAlign.start,
+                      ),
+                      RoundedButton(
+                        text: 'Next',
+                        color: kBlueButtonColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          setState(() {
+                            showSpinner = true;
+                          });
+
+                          _user.bio = _bio;
+
+                          Navigator.of(context, rootNavigator: true).push(
+                            CupertinoPageRoute<void>(
+                              builder: (context) {
+                                return AddLanguagesRegistrationScreen(
+                                    user: _user);
+                              },
                             ),
+                          );
+
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        },
+                      ),
+                      Text(
+                        'We love real people with real stories.',
+                        textAlign: TextAlign.center,
+                        style: kRegisterHeaderTextStyle,
+                      ),
+                      Container(
+                        height: 350.0,
+                        width: 350.0,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                                Colors.white, BlendMode.colorBurn),
+                            image: AssetImage(
+                                "assets/images/Freeflowter_Stony.png"),
+                            alignment: Alignment(0.0, 0.0),
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        RoundedButton(
-                          text: 'Next',
-                          color: kBlueButtonColor,
-                          textColor: Colors.white,
-                          onPressed: () async {
-                            setState(() {
-                              showSpinner = true;
-                            });
-
-                            _user.bio = _bio;
-
-                            Navigator.of(context, rootNavigator: true).push(
-                              CupertinoPageRoute<void>(
-                                builder: (context) {
-                                  return AddLanguagesRegistrationScreen(
-                                      user: _user);
-                                },
-                              ),
-                            );
-
-                            setState(() {
-                              showSpinner = false;
-                            });
-                          },
-                        ),
-                        Text(
-                          'We love real people with real stories.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
-                        ),
-                        /*Container(
-                          height: 350.0,
-                          width: 350.0,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              colorFilter: ColorFilter.mode(
-                                  Colors.white, BlendMode.colorBurn),
-                              image: AssetImage(
-                                  "assets/images/Freeflowter_Stony.png"),
-                              alignment: Alignment(0.0, 0.0),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),*/
-                      ]),
-                ),
-              ]),
-            ),
+                      ),
+                    ]),
+              ),
+            ]),
           ),
         ),
       ),

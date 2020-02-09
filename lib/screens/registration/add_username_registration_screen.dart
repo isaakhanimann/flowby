@@ -81,11 +81,7 @@ class _AddUsernameRegistrationScreenState
                         Text(
                           'What\'s your name?',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
+                          style: kRegisterHeaderTextStyle,
                         ),
                         SizedBox(
                           height: 10.0,

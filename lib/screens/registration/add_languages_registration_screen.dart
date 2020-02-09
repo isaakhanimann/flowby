@@ -210,11 +210,7 @@ class _AddLanguagesRegistrationScreenState
                             Text(
                               'Share your culture or meet for a tandem',
                               textAlign: TextAlign.start,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'MontserratRegular',
-                                fontSize: 22.0,
-                              ),
+                              style: kRegisterHeaderTextStyle,
                             ),
                             SizedBox(
                               height: 10.0,
@@ -260,32 +256,6 @@ class _AddLanguagesRegistrationScreenState
                             });
                           },
                         ),
-                        /*
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          'We all have at least a valuable skill',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
-                        ),
-                        Container(
-                          height: 350.0,
-                          width: 350.0,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              colorFilter: ColorFilter.mode(
-                                  Colors.white, BlendMode.colorBurn),
-                              image: AssetImage("images/Freeflowter_Stony.png"),
-                              alignment: Alignment(0.0, 0.0),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),*/
                       ]),
                 ),
               ]),

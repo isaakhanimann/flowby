@@ -7,6 +7,13 @@ const kUsernameTitleTextStyle = TextStyle(
     fontSize: 35.0,
     fontWeight: FontWeight.w500,
     color: kLoginBackgroundColor);
+const kRegisterHeaderTextStyle = TextStyle(
+  color: Colors.black,
+  fontFamily: 'MontserratRegular',
+  fontSize: 22.0,
+);
+const kChatScreenHeaderTextStyle =
+    TextStyle(fontSize: 20, fontFamily: 'MuliRegular');
 const kSkillsTitleTextStyle = TextStyle(
     fontFamily: 'MontserratRegular',
     fontSize: 30.0,

@@ -155,30 +155,42 @@ class ChatItem extends StatelessWidget {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                otherUsername,
-                style: kUsernameTextStyle,
+              Expanded(
+                flex: 2,
+                child: Text(
+                  otherUsername,
+                  overflow: TextOverflow.ellipsis,
+                  style: kUsernameTextStyle,
+                ),
               ),
-              Text(
-                HelperFunctions.getTimestampAsString(
-                    timestamp: chat.lastMessageTimestamp),
-                style: kChatTabTimestampTextStyle,
+              Expanded(
+                child: Text(
+                  HelperFunctions.getTimestampAsString(
+                      timestamp: chat.lastMessageTimestamp),
+                  overflow: TextOverflow.ellipsis,
+                  style: kChatTabTimestampTextStyle,
+                ),
               ),
             ],
           ),
           subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                chat.lastMessageText,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: kChatLastMessageTextStyle,
+              Expanded(
+                flex: 2,
+                child: Text(
+                  chat.lastMessageText,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: kChatLastMessageTextStyle,
+                ),
               ),
               if (haveIBlocked || hasOtherBlocked)
-                Text(
-                  'blocked',
-                  style: kSmallBlockedTextStyle,
+                Expanded(
+                  child: Text(
+                    'blocked',
+                    style: kSmallBlockedTextStyle,
+                  ),
                 )
             ],
           ),

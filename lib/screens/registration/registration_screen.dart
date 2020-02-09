@@ -270,7 +270,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 ),
                 LoginInputField(
                   isCapitalized: true,
-                  placeholder: 'Full name',
+                  placeholder: 'Name',
                   controller: _nameController,
                   focusNode: _nameFocus,
                   onFieldSubmitted: (term) {

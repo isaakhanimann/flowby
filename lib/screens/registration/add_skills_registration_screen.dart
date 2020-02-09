@@ -327,19 +327,6 @@ class _AddSkillsRegistrationScreenState
                             });
                           },
                         ),
-                        /*
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          'We all have at least a valuable skill',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'MontserratRegular',
-                            fontSize: 22.0,
-                          ),
-                        ),*/
                         Container(
                           height: MediaQuery.of(context).size.width * 0.75,
                           width: MediaQuery.of(context).size.width * 0.75,

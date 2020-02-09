@@ -263,6 +263,7 @@ class Header extends StatelessWidget {
                       ),
                       Text(
                         otherUsername,
+                        overflow: TextOverflow.ellipsis,
                         style:
                             TextStyle(fontSize: 20, fontFamily: 'MuliRegular'),
                       )
@@ -277,22 +278,24 @@ class Header extends StatelessWidget {
                     AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
               ),
             if (chat != null)
-              CupertinoButton(
-                child: Icon(
-                  Feather.user_x,
-                  color: haveIBlocked ? kTextFieldTextColor : Colors.red,
+              Flexible(
+                child: CupertinoButton(
+                  child: Icon(
+                    Feather.user_x,
+                    color: haveIBlocked ? kTextFieldTextColor : Colors.red,
+                  ),
+                  onPressed: () {
+                    if (amIUser1) {
+                      cloudFirestoreService.uploadChatBlocked(
+                          chatpath: chat.chatpath,
+                          hasUser1Blocked: !haveIBlocked);
+                    } else {
+                      cloudFirestoreService.uploadChatBlocked(
+                          chatpath: chat.chatpath,
+                          hasUser2Blocked: !haveIBlocked);
+                    }
+                  },
                 ),
-                onPressed: () {
-                  if (amIUser1) {
-                    cloudFirestoreService.uploadChatBlocked(
-                        chatpath: chat.chatpath,
-                        hasUser1Blocked: !haveIBlocked);
-                  } else {
-                    cloudFirestoreService.uploadChatBlocked(
-                        chatpath: chat.chatpath,
-                        hasUser2Blocked: !haveIBlocked);
-                  }
-                },
               )
           ],
         ),
@@ -376,6 +379,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
         child: Center(
           child: Text(
               'You have blocked ${amIUser1 ? widget.chat.username2 : widget.chat.username1}',
+              overflow: TextOverflow.ellipsis,
               style: kBlockedTextStyle),
         ),
       );
@@ -401,7 +405,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
             padding: const EdgeInsets.only(left: 10.0),
             child: CupertinoTextField(
               textCapitalization: TextCapitalization.sentences,
-              maxLength: 500,
+              maxLength: 200,
               expands: true,
               maxLines: null,
               minLines: null,

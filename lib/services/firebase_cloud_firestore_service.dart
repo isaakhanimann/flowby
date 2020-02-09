@@ -27,6 +27,7 @@ class FirebaseCloudFirestoreService {
           await _fireStore.collection('users').document(uid).get();
       if (userDocument.data == null) {
         print('Isaak could not get user info1');
+        return null;
       }
 
       return User.fromMap(map: userDocument.data);
