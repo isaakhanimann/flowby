@@ -309,22 +309,6 @@ class _AddWishesRegistrationScreenState
                           });
                         },
                       ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.width * 0.75,
-                        width: MediaQuery.of(context).size.width * 0.75,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            colorFilter: ColorFilter.mode(
-                                Colors.white, BlendMode.colorBurn),
-                            image: AssetImage("assets/images/stony.png"),
-                            alignment: Alignment(0.0, 0.0),
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
                     ]),
               ),
             ]),

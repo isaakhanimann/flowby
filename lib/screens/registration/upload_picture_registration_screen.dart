@@ -113,7 +113,7 @@ class _UploadPictureRegistrationScreenState
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       SizedBox(
-                        height: 10.0,
+                        height: 20.0,
                       ),
                       Text(
                         'Welcome $_username!',

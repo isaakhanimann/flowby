@@ -108,20 +108,6 @@ class _UserDescriptionRegistrationScreenState
                         textAlign: TextAlign.center,
                         style: kRegisterHeaderTextStyle,
                       ),
-                      Container(
-                        height: 350.0,
-                        width: 350.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            colorFilter: ColorFilter.mode(
-                                Colors.white, BlendMode.colorBurn),
-                            image: AssetImage(
-                                "assets/images/Freeflowter_Stony.png"),
-                            alignment: Alignment(0.0, 0.0),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
                     ]),
               ),
             ]),
