@@ -11,7 +11,6 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/services/location_service.dart';
-import 'package:Flowby/services/firebase_auth_service.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -50,10 +49,6 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
-    final authService =
-        Provider.of<FirebaseAuthService>(context, listen: false);
-
-    authService.signOut();
 
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
 
