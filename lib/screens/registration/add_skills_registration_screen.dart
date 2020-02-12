@@ -36,24 +36,6 @@ class _AddSkillsRegistrationScreenState
   List<TextEditingController> wishDescriptionControllers = [];
   List<TextEditingController> wishPriceControllers = [];
 
-  void _setLanguagesInSkills(User user) async {
-    setState(() {
-      user.skills?.forEach((SkillOrWish skillOrWish) {
-        skillKeywordControllers
-            .add(TextEditingController(text: skillOrWish.keywords));
-        skillDescriptionControllers
-            .add(TextEditingController(text: skillOrWish.description));
-        skillPriceControllers
-            .add(TextEditingController(text: skillOrWish.price));
-      });
-      //controllers for extra skill
-      skillKeywordControllers.add(TextEditingController());
-      skillDescriptionControllers.add(TextEditingController());
-      skillPriceControllers.add(TextEditingController());
-
-      showSpinner = false;
-    });
-  }
 
   Column _buildListOfTextFields({bool isSkillBuild}) {
     if (isSkillBuild) {
