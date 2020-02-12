@@ -16,9 +16,9 @@ class ListViewOfUserInfos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool canShowSkills =
-        user.hasSkills && user.skillz != null && user.skillz.isNotEmpty;
+        user.hasSkills && user.skills != null && user.skills.isNotEmpty;
     bool canShowWishes =
-        user.hasWishes && user.wishez != null && user.wishez.isNotEmpty;
+        user.hasWishes && user.wishes != null && user.wishes.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -114,7 +114,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                   style: kSkillsTitleTextStyle,
                 ),
                 SizedBox(height: 10),
-                _buildListOfTextFields(skillsOrWishes: user.skillz)
+                _buildListOfTextFields(skillsOrWishes: user.skills)
               ],
             ),
           if (canShowWishes)
@@ -129,7 +129,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                   style: kSkillsTitleTextStyle,
                 ),
                 SizedBox(height: 10),
-                _buildListOfTextFields(skillsOrWishes: user.wishez)
+                _buildListOfTextFields(skillsOrWishes: user.wishes)
               ],
             ),
           SizedBox(

@@ -13,15 +13,15 @@ class User {
   String imageFileName;
   String skillKeywords;
   String wishKeywords;
-  List<SkillOrWish> skillz;
-  List<SkillOrWish> wishez;
+  List<SkillOrWish> skills;
+  List<SkillOrWish> wishes;
 
-  List<SkillOrWish> _convertFirebaseToDart({List<dynamic> skillzOrWishez}) {
-    if (skillzOrWishez == null) {
+  List<SkillOrWish> _convertFirebaseToDart({List<dynamic> skillsOrWishes}) {
+    if (skillsOrWishes == null) {
       return [];
     }
     List<SkillOrWish> list = [];
-    for (var skillOrWish in skillzOrWishez) {
+    for (var skillOrWish in skillsOrWishes) {
       list.add(SkillOrWish.fromDynamic(skillOrWish));
     }
     return list;
@@ -33,8 +33,8 @@ class User {
       this.bio,
       this.hasSkills,
       this.hasWishes,
-      this.skillz,
-      this.wishez,
+      this.skills,
+      this.wishes,
       this.location,
       this.imageFileName});
 
@@ -46,10 +46,10 @@ class User {
     this.hasWishes = map['hasWishes'] ?? false;
     this.location = map['location'];
     this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
-    this.skillz = _convertFirebaseToDart(skillzOrWishez: map['skillz']);
-    this.wishez = _convertFirebaseToDart(skillzOrWishez: map['wishez']);
-    this.skillKeywords = _getKeywordString(skillz);
-    this.wishKeywords = _getKeywordString(wishez);
+    this.skills = _convertFirebaseToDart(skillsOrWishes: map['skills']);
+    this.wishes = _convertFirebaseToDart(skillsOrWishes: map['wishes']);
+    this.skillKeywords = _getKeywordString(skills);
+    this.wishKeywords = _getKeywordString(wishes);
   }
 
   Map<String, dynamic> toMap() {
@@ -60,8 +60,8 @@ class User {
       'hasSkills': hasSkills,
       'hasWishes': hasWishes,
       'imageFileName': imageFileName,
-      'skillz': skillz?.map((SkillOrWish s) => s.toMap())?.toList(),
-      'wishez': wishez?.map((SkillOrWish w) => w.toMap())?.toList()
+      'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
+      'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList()
     };
   }
 
@@ -102,8 +102,8 @@ class User {
     toPrint += 'hasWishes: $hasWishes, ';
     toPrint += 'location: ${location.toString()}, ';
     toPrint += 'imageFileName: ${imageFileName.toString()}, ';
-    toPrint += 'skillz: ${skillz.toString()}, ';
-    toPrint += 'wishez: ${wishez.toString()}, ';
+    toPrint += 'skills: ${skills.toString()}, ';
+    toPrint += 'wishes: ${wishes.toString()}, ';
     toPrint += 'skillKeywords: ${skillKeywords.toString()}, ';
     toPrint += 'wishKeywords: ${wishKeywords.toString()}, ';
     toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';

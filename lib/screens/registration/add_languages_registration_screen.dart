@@ -230,7 +230,7 @@ class _AddLanguagesRegistrationScreenState
                               showSpinner = true;
                             });
 
-                            List<SkillOrWish> skillz =
+                            List<SkillOrWish> skills =
                                 User.controllersToListOfSkillsOrWishes(
                                     keywordsControllers:
                                         skillKeywordControllers,
@@ -238,7 +238,7 @@ class _AddLanguagesRegistrationScreenState
                                         skillDescriptionControllers,
                                     priceControllers: skillPriceControllers);
 
-                            _user.skillz = skillz;
+                            _user.skills = skills;
 
                             print(_user);
 

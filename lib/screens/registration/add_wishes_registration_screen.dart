@@ -293,7 +293,7 @@ class _AddWishesRegistrationScreenState
                               showSpinner = true;
                             });
 
-                            List<SkillOrWish> wishez =
+                            List<SkillOrWish> wishes =
                                 User.controllersToListOfSkillsOrWishes(
                                     keywordsControllers: wishKeywordControllers,
                                     descriptionControllers:
@@ -301,7 +301,7 @@ class _AddWishesRegistrationScreenState
                                     priceControllers: wishPriceControllers);
 
                             _user.hasWishes = _localHasWishes;
-                            _user.wishez = wishez;
+                            _user.wishes = wishes;
 
                             final cloudFirestoreService =
                                 Provider.of<FirebaseCloudFirestoreService>(

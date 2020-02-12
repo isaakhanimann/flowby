@@ -1,7 +1,6 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_wishes_registration_screen.dart';
-import 'package:Flowby/widgets/build_list_of_text_fields.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,7 +38,7 @@ class _AddSkillsRegistrationScreenState
 
   void _setLanguagesInSkills(User user) async {
     setState(() {
-      user.skillz?.forEach((SkillOrWish skillOrWish) {
+      user.skills?.forEach((SkillOrWish skillOrWish) {
         skillKeywordControllers
             .add(TextEditingController(text: skillOrWish.keywords));
         skillDescriptionControllers
@@ -296,7 +295,7 @@ class _AddSkillsRegistrationScreenState
                               showSpinner = true;
                             });
 
-                            List<SkillOrWish> skillz =
+                            List<SkillOrWish> skills =
                                 User.controllersToListOfSkillsOrWishes(
                                     keywordsControllers:
                                         skillKeywordControllers,
@@ -305,7 +304,7 @@ class _AddSkillsRegistrationScreenState
                                     priceControllers: skillPriceControllers);
 
                             _user.hasSkills = _localHasSkills;
-                            _user.skillz = skillz;
+                            _user.skills = skills;
 
                             print(_user);
 
