@@ -88,7 +88,7 @@ class _AddUsernameRegistrationScreenState
                         isCapitalized: true,
                         placeholder: 'Full name',
                         isLast: false,
-                        isEmail: true,
+                        isEmail: false,
                         setText: (value) {
                           _username = value;
                         },

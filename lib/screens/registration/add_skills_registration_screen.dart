@@ -130,6 +130,7 @@ class _AddSkillsRegistrationScreenState
                     expands: true,
                     maxLines: null,
                     minLines: null,
+                    textCapitalization: TextCapitalization.sentences,
                     style: kAddSkillsTextStyle,
                     maxLength: 100,
                     decoration: null,
