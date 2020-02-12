@@ -49,7 +49,6 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
-
     final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
 
     final cloudFirestoreService =
