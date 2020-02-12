@@ -36,7 +36,6 @@ class _AddSkillsRegistrationScreenState
   List<TextEditingController> wishDescriptionControllers = [];
   List<TextEditingController> wishPriceControllers = [];
 
-
   Column _buildListOfTextFields({bool isSkillBuild}) {
     if (isSkillBuild) {
       if (skillKeywordControllers.length == 0) {
