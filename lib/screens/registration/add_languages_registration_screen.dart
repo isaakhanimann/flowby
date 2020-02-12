@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 
 class AddLanguagesRegistrationScreen extends StatefulWidget {
   static const String id = 'add_skills_registration_screen';
@@ -24,14 +26,9 @@ class _AddLanguagesRegistrationScreenState
     extends State<AddLanguagesRegistrationScreen> {
   bool showSpinner = false;
 
-  User _user;
-
   List<TextEditingController> skillKeywordControllers = [];
   List<TextEditingController> skillDescriptionControllers = [];
   List<TextEditingController> skillPriceControllers = [];
-  List<TextEditingController> wishKeywordControllers = [];
-  List<TextEditingController> wishDescriptionControllers = [];
-  List<TextEditingController> wishPriceControllers = [];
 
   Column _buildListOfTextFields() {
     if (skillKeywordControllers.length == 0) {
@@ -144,123 +141,102 @@ class _AddLanguagesRegistrationScreenState
     );
   }
 
-  Map<String, String> controllersToMap(
-      {List<TextEditingController> keyControllers,
-      List<TextEditingController> descriptionControllers}) {
-    Map<String, String> map = Map();
-    for (int i = 0; i < keyControllers.length; i++) {
-      String keyword = keyControllers[i].text;
-      if (keyword != null && keyword.isNotEmpty) {
-        if (!map.containsKey(keyword)) {
-          map[keyword] = descriptionControllers[i].text ?? '';
-        }
-      }
-    }
-    return map;
+  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    await cloudFirestoreService.uploadUser(user: user);
+    setState(() {
+      showSpinner = false;
+    });
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return AddSkillsRegistrationScreen(user: user);
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.user != null
-        ? _user = widget.user
-        : print('Why da fuck is User == NULL?!');
-
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("assets/images/Freeflowter_Stony.png"),
-          alignment: Alignment(0.0, 0.0),
-          fit: BoxFit.cover,
-        ),
-      ),
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
         child: SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            body: SingleChildScrollView(
-              child: Stack(children: [
-                Hero(
-                  child: ProgressBar(progress: 0.6),
-                  transitionOnUserGestures: true,
-                  tag: 'progress_bar',
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Text(
-                          'Your languages',
-                          style: kUsernameTitleTextStyle,
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Share your culture or meet for a tandem',
-                              textAlign: TextAlign.start,
-                              style: kRegisterHeaderTextStyle,
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            _buildListOfTextFields(),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                          ],
-                        ),
-                        RoundedButton(
-                          text: 'Next',
-                          color: kBlueButtonColor,
-                          textColor: Colors.white,
-                          onPressed: () async {
-                            setState(() {
-                              showSpinner = true;
-                            });
+          child: SingleChildScrollView(
+            child: Stack(children: [
+              Hero(
+                child: ProgressBar(progress: 0.6),
+                transitionOnUserGestures: true,
+                tag: 'progress_bar',
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Text(
+                        'Your languages',
+                        style: kUsernameTitleTextStyle,
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Share your culture or meet for a tandem',
+                            textAlign: TextAlign.start,
+                            style: kRegisterHeaderTextStyle,
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          _buildListOfTextFields(),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                        ],
+                      ),
+                      RoundedButton(
+                        text: 'Next',
+                        color: kBlueButtonColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          setState(() {
+                            showSpinner = true;
+                          });
 
-                            List<SkillOrWish> skills =
-                                User.controllersToListOfSkillsOrWishes(
-                                    keywordsControllers:
-                                        skillKeywordControllers,
-                                    descriptionControllers:
-                                        skillDescriptionControllers,
-                                    priceControllers: skillPriceControllers);
+                          List<SkillOrWish> skills =
+                              User.controllersToListOfSkillsOrWishes(
+                                  keywordsControllers: skillKeywordControllers,
+                                  descriptionControllers:
+                                      skillDescriptionControllers,
+                                  priceControllers: skillPriceControllers);
 
-                            _user.skills = skills;
+                          widget.user.skills = skills;
+                          widget.user.hasSkills = true;
 
-                            print(_user);
+                          _uploadUserAndNavigate(
+                              context: context, user: widget.user);
 
-                            Navigator.of(context, rootNavigator: true).push(
-                              CupertinoPageRoute<void>(
-                                builder: (context) {
-                                  return AddSkillsRegistrationScreen(
-                                      user: _user);
-                                },
-                              ),
-                            );
-
-                            setState(() {
-                              showSpinner = false;
-                            });
-                          },
-                        ),
-                      ]),
-                ),
-              ]),
-            ),
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        },
+                      ),
+                    ]),
+              ),
+            ]),
           ),
         ),
       ),

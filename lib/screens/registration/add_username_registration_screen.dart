@@ -28,7 +28,6 @@ class _AddUsernameRegistrationScreenState
   bool showSpinner = false;
 
   String _username;
-  User _user;
 
   Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
     final cloudFirestoreService =
@@ -50,8 +49,6 @@ class _AddUsernameRegistrationScreenState
 
   @override
   Widget build(BuildContext context) {
-    widget.user != null ? _user = widget.user : print('error, no user found');
-
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
@@ -110,8 +107,9 @@ class _AddUsernameRegistrationScreenState
                             showSpinner = true;
                           });
 
-                          _user.username = _username;
-                          _uploadUserAndNavigate(context: context, user: _user);
+                          widget.user.username = _username;
+                          _uploadUserAndNavigate(
+                              context: context, user: widget.user);
 
                           setState(() {
                             showSpinner = false;

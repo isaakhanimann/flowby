@@ -6,6 +6,8 @@ import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 
 class UserDescriptionRegistrationScreen extends StatefulWidget {
   static const String id = 'user_description_registration_screen';
@@ -24,12 +26,25 @@ class _UserDescriptionRegistrationScreenState
   bool showSpinner = false;
 
   String _bio;
-  User _user;
+
+  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    await cloudFirestoreService.uploadUser(user: user);
+    setState(() {
+      showSpinner = false;
+    });
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return AddLanguagesRegistrationScreen(user: user);
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    widget.user != null ? _user = widget.user : print('error, no user found');
-
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
@@ -60,7 +75,7 @@ class _UserDescriptionRegistrationScreenState
                         style: kRegisterHeaderTextStyle,
                       ),
                       SizedBox(
-                        height: 10.0,
+                        height: 20.0,
                       ),
                       CupertinoTextField(
                         style: kEditProfileTextFieldTextStyle,
@@ -87,16 +102,10 @@ class _UserDescriptionRegistrationScreenState
                             showSpinner = true;
                           });
 
-                          _user.bio = _bio;
+                          widget.user.bio = _bio;
 
-                          Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute<void>(
-                              builder: (context) {
-                                return AddLanguagesRegistrationScreen(
-                                    user: _user);
-                              },
-                            ),
-                          );
+                          _uploadUserAndNavigate(
+                              context: context, user: widget.user);
 
                           setState(() {
                             showSpinner = false;

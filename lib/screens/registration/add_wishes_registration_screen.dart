@@ -1,7 +1,6 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
-import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
@@ -27,46 +26,25 @@ class _AddWishesRegistrationScreenState
     extends State<AddWishesRegistrationScreen> {
   bool showSpinner = false;
 
-//  String _databaseHashtagWishes;
   bool _localHasWishes = true;
-
-  User _user;
-
-  List<TextEditingController> skillKeywordControllers = [];
-  List<TextEditingController> skillDescriptionControllers = [];
-  List<TextEditingController> skillPriceControllers = [];
 
   List<TextEditingController> wishKeywordControllers = [];
   List<TextEditingController> wishDescriptionControllers = [];
   List<TextEditingController> wishPriceControllers = [];
 
   Column _buildListOfTextFields({bool isSkillBuild}) {
-    if (isSkillBuild) {
-      if (skillKeywordControllers.length == 0) {
-        setState(() {
-          // Default controllers
-          skillKeywordControllers.add(TextEditingController());
-          skillDescriptionControllers.add(TextEditingController());
-          skillPriceControllers.add(TextEditingController());
-        });
-      }
-    } else {
-      if (wishKeywordControllers.length == 0) {
-        setState(() {
-          // Default controllers
-          wishKeywordControllers.add(TextEditingController());
-          wishDescriptionControllers.add(TextEditingController());
-          wishPriceControllers.add(TextEditingController());
-        });
-      }
+    if (wishKeywordControllers.length == 0) {
+      setState(() {
+        // Default controllers
+        wishKeywordControllers.add(TextEditingController());
+        wishDescriptionControllers.add(TextEditingController());
+        wishPriceControllers.add(TextEditingController());
+      });
     }
 
     List<Widget> rows = [];
     for (int rowNumber = 0;
-        rowNumber <
-            (isSkillBuild
-                ? skillKeywordControllers.length
-                : wishKeywordControllers.length);
+        rowNumber < wishKeywordControllers.length;
         rowNumber++) {
       rows.add(
         Column(
@@ -85,9 +63,7 @@ class _AddWishesRegistrationScreenState
                     decoration: null,
                     textAlign: TextAlign.start,
                     placeholder: "#keywords",
-                    controller: isSkillBuild
-                        ? skillKeywordControllers[rowNumber]
-                        : wishKeywordControllers[rowNumber],
+                    controller: wishKeywordControllers[rowNumber],
                   ),
                 ),
                 SizedBox(width: 20),
@@ -101,24 +77,16 @@ class _AddWishesRegistrationScreenState
                     decoration: null,
                     textAlign: TextAlign.start,
                     placeholder: "price",
-                    controller: isSkillBuild
-                        ? skillPriceControllers[rowNumber]
-                        : wishPriceControllers[rowNumber],
+                    controller: wishPriceControllers[rowNumber],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: GestureDetector(
                     onTap: () => setState(() {
-                      if (isSkillBuild) {
-                        skillKeywordControllers.removeAt(rowNumber);
-                        skillDescriptionControllers.removeAt(rowNumber);
-                        skillPriceControllers.removeAt(rowNumber);
-                      } else {
-                        wishKeywordControllers.removeAt(rowNumber);
-                        wishDescriptionControllers.removeAt(rowNumber);
-                        wishPriceControllers.removeAt(rowNumber);
-                      }
+                      wishKeywordControllers.removeAt(rowNumber);
+                      wishDescriptionControllers.removeAt(rowNumber);
+                      wishPriceControllers.removeAt(rowNumber);
                     }),
                     child: Icon(Feather.x),
                   ),
@@ -140,9 +108,7 @@ class _AddWishesRegistrationScreenState
                     decoration: null,
                     textAlign: TextAlign.start,
                     placeholder: "description",
-                    controller: isSkillBuild
-                        ? skillDescriptionControllers[rowNumber]
-                        : wishDescriptionControllers[rowNumber],
+                    controller: wishDescriptionControllers[rowNumber],
                   ),
                 ),
               ],
@@ -154,58 +120,45 @@ class _AddWishesRegistrationScreenState
     }
 
     rows.add(
-      _addRowButton(isSkillBuild),
-      // I personally prefer the above widget. The old version is under so you can test it.
-      // _addButtonRowAlt(isSkillBuild),
+      _addRowButton(),
     );
     return Column(
       children: rows,
     );
   }
 
-  Widget _addRowButton(isSkillBuild) {
+  Widget _addRowButton() {
     return Container(
       alignment: Alignment.bottomLeft,
       child: GestureDetector(
         child: Icon(Feather.plus),
         onTap: () {
           setState(() {
-            if (isSkillBuild) {
-              skillKeywordControllers.add(TextEditingController());
-              skillDescriptionControllers.add(TextEditingController());
-              skillPriceControllers.add(TextEditingController());
-            } else {
-              wishKeywordControllers.add(TextEditingController());
-              wishDescriptionControllers.add(TextEditingController());
-              wishPriceControllers.add(TextEditingController());
-            }
+            wishKeywordControllers.add(TextEditingController());
+            wishDescriptionControllers.add(TextEditingController());
+            wishPriceControllers.add(TextEditingController());
           });
         },
       ),
     );
   }
 
-  Map<String, String> controllersToMap(
-      {List<TextEditingController> keyControllers,
-      List<TextEditingController> descriptionControllers}) {
-    Map<String, String> map = Map();
-    for (int i = 0; i < keyControllers.length; i++) {
-      String keyword = keyControllers[i].text;
-      if (keyword != null && keyword.isNotEmpty) {
-        if (!map.containsKey(keyword)) {
-          map[keyword] = descriptionControllers[i].text ?? '';
-        }
-      }
-    }
-    return map;
+  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    await cloudFirestoreService.uploadUser(user: user);
+    setState(() {
+      showSpinner = false;
+    });
+
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      NavigationScreen.id,
+      (Route<dynamic> route) => false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.user != null
-        ? _user = widget.user
-        : print('Why da fuck is User == NULL?!');
-
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
@@ -284,25 +237,11 @@ class _AddWishesRegistrationScreenState
                                       wishDescriptionControllers,
                                   priceControllers: wishPriceControllers);
 
-                          _user.hasWishes = _localHasWishes;
-                          _user.wishes = wishes;
+                          widget.user.hasWishes = _localHasWishes;
+                          widget.user.wishes = wishes;
 
-                          final cloudFirestoreService =
-                              Provider.of<FirebaseCloudFirestoreService>(
-                                  context,
-                                  listen: false);
-
-                          await cloudFirestoreService.uploadUser(user: _user);
-                          final authService = Provider.of<FirebaseAuthService>(
-                              context,
-                              listen: false);
-
-                          authService.getCurrentUser().then((loggedInUser) {
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              NavigationScreen.id,
-                              (Route<dynamic> route) => false,
-                            );
-                          });
+                          _uploadUserAndNavigate(
+                              context: context, user: widget.user);
 
                           setState(() {
                             showSpinner = false;
