@@ -78,6 +78,7 @@ dependencies{
     // For example, to use Firebase Authentication and Cloud Firestore
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.firebase:firebase-firestore:21.4.0'
+    implementation 'com.github.yalantis:ucrop:2.2.4'
 }
 
 apply plugin: 'com.google.gms.google-services'
