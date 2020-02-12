@@ -189,137 +189,118 @@ class _AddSkillsRegistrationScreenState
 
   @override
   Widget build(BuildContext context) {
-    //print(_user);
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("assets/images/Freeflowter_Stony.png"),
-          alignment: Alignment(0.0, 0.0),
-          fit: BoxFit.cover,
-        ),
-      ),
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
         child: SafeArea(
-          child: Scaffold(
-            /*appBar: AppBar(
-              title: Text('Upload a picture'),
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-            ),*/
-            backgroundColor: Colors.white,
-            body: SingleChildScrollView(
-              child: Stack(children: [
-                Hero(
-                  child: ProgressBar(progress: 0.8),
-                  transitionOnUserGestures: true,
-                  tag: 'progress_bar',
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: SingleChildScrollView(
+            child: Stack(children: [
+              Hero(
+                child: ProgressBar(progress: 0.8),
+                transitionOnUserGestures: true,
+                tag: 'progress_bar',
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            'Your skills',
+                            style: kUsernameTitleTextStyle,
+                          ),
+                          CupertinoSwitch(
+                            value: _localHasSkills,
+                            onChanged: (newBool) {
+                              setState(() {
+                                _localHasSkills = newBool;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      if (_localHasSkills)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Your skills',
-                              style: kUsernameTitleTextStyle,
+                              'Share what you are good at',
+                              textAlign: TextAlign.start,
+                              style: kRegisterHeaderTextStyle,
                             ),
-                            CupertinoSwitch(
-                              value: _localHasSkills,
-                              onChanged: (newBool) {
-                                setState(() {
-                                  _localHasSkills = newBool;
-                                });
-                              },
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            _buildListOfTextFields(isSkillBuild: true),
+                            SizedBox(
+                              height: 10.0,
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        if (_localHasSkills)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                'Share what you are good at',
-                                textAlign: TextAlign.start,
-                                style: kRegisterHeaderTextStyle,
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              _buildListOfTextFields(isSkillBuild: true),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                            ],
-                          ),
-                        RoundedButton(
-                          text: 'Next',
-                          color: kBlueButtonColor,
-                          textColor: Colors.white,
-                          onPressed: () async {
-                            setState(() {
-                              showSpinner = true;
-                            });
+                      RoundedButton(
+                        text: 'Next',
+                        color: kBlueButtonColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          setState(() {
+                            showSpinner = true;
+                          });
 
-                            List<SkillOrWish> skills =
-                                User.controllersToListOfSkillsOrWishes(
-                                    keywordsControllers:
-                                        skillKeywordControllers,
-                                    descriptionControllers:
-                                        skillDescriptionControllers,
-                                    priceControllers: skillPriceControllers);
+                          List<SkillOrWish> skills =
+                              User.controllersToListOfSkillsOrWishes(
+                                  keywordsControllers: skillKeywordControllers,
+                                  descriptionControllers:
+                                      skillDescriptionControllers,
+                                  priceControllers: skillPriceControllers);
 
-                            _user.hasSkills = _localHasSkills;
-                            _user.skills = skills;
+                          _user.hasSkills = _localHasSkills;
+                          _user.skills = skills;
 
-                            print(_user);
+                          print(_user);
 
-                            Navigator.of(context, rootNavigator: true).push(
-                              CupertinoPageRoute<void>(
-                                builder: (context) {
-                                  return AddWishesRegistrationScreen(
-                                      user: _user);
-                                },
-                              ),
-                            );
-
-                            setState(() {
-                              showSpinner = false;
-                            });
-                          },
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.75,
-                          width: MediaQuery.of(context).size.width * 0.75,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              colorFilter: ColorFilter.mode(
-                                  Colors.white, BlendMode.colorBurn),
-                              image: AssetImage("assets/images/flowby.png"),
-                              alignment: Alignment(0.0, 0.0),
-                              fit: BoxFit.contain,
+                          Navigator.of(context, rootNavigator: true).push(
+                            CupertinoPageRoute<void>(
+                              builder: (context) {
+                                return AddWishesRegistrationScreen(user: _user);
+                              },
                             ),
+                          );
+
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        },
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.width * 0.75,
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                                Colors.white, BlendMode.colorBurn),
+                            image: AssetImage("assets/images/flowby.png"),
+                            alignment: Alignment(0.0, 0.0),
+                            fit: BoxFit.contain,
                           ),
                         ),
-                      ]),
-                ),
-              ]),
-            ),
+                      ),
+                    ]),
+              ),
+            ]),
           ),
         ),
       ),

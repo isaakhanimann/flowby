@@ -205,146 +205,128 @@ class _AddWishesRegistrationScreenState
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
 
-    //print(_user);
-
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("assets/images/Freeflowter_Stony.png"),
-          alignment: Alignment(0.0, 0.0),
-          fit: BoxFit.cover,
-        ),
-      ),
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
         child: SafeArea(
-          child: Scaffold(
-            /*appBar: AppBar(
-              title: Text('Upload a picture'),
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-            ),*/
-            backgroundColor: Colors.white,
-            body: SingleChildScrollView(
-              child: Stack(children: [
-                Hero(
-                  child: ProgressBar(progress: 1),
-                  transitionOnUserGestures: true,
-                  tag: 'progress_bar',
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: SingleChildScrollView(
+            child: Stack(children: [
+              Hero(
+                child: ProgressBar(progress: 1),
+                transitionOnUserGestures: true,
+                tag: 'progress_bar',
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            'Your wishes',
+                            style: kUsernameTitleTextStyle,
+                          ),
+                          CupertinoSwitch(
+                            value: _localHasWishes,
+                            onChanged: (newBool) {
+                              setState(() {
+                                _localHasWishes = newBool;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      if (_localHasWishes)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Your wishes',
-                              style: kUsernameTitleTextStyle,
+                              'Tell others what you would like to learn',
+                              textAlign: TextAlign.start,
+                              style: kRegisterHeaderTextStyle,
                             ),
-                            CupertinoSwitch(
-                              value: _localHasWishes,
-                              onChanged: (newBool) {
-                                setState(() {
-                                  _localHasWishes = newBool;
-                                });
-                              },
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            _buildListOfTextFields(isSkillBuild: false),
+                            SizedBox(
+                              height: 10.0,
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        if (_localHasWishes)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                'Tell others what you would like to learn',
-                                textAlign: TextAlign.start,
-                                style: kRegisterHeaderTextStyle,
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              _buildListOfTextFields(isSkillBuild: false),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                            ],
-                          ),
-                        RoundedButton(
-                          text: 'I am ready!',
-                          color: kBlueButtonColor,
-                          textColor: Colors.white,
-                          onPressed: () async {
-                            setState(() {
-                              showSpinner = true;
-                            });
+                      RoundedButton(
+                        text: 'I am ready!',
+                        color: kBlueButtonColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          setState(() {
+                            showSpinner = true;
+                          });
 
-                            List<SkillOrWish> wishes =
-                                User.controllersToListOfSkillsOrWishes(
-                                    keywordsControllers: wishKeywordControllers,
-                                    descriptionControllers:
-                                        wishDescriptionControllers,
-                                    priceControllers: wishPriceControllers);
+                          List<SkillOrWish> wishes =
+                              User.controllersToListOfSkillsOrWishes(
+                                  keywordsControllers: wishKeywordControllers,
+                                  descriptionControllers:
+                                      wishDescriptionControllers,
+                                  priceControllers: wishPriceControllers);
 
-                            _user.hasWishes = _localHasWishes;
-                            _user.wishes = wishes;
+                          _user.hasWishes = _localHasWishes;
+                          _user.wishes = wishes;
 
-                            final cloudFirestoreService =
-                                Provider.of<FirebaseCloudFirestoreService>(
-                                    context,
-                                    listen: false);
+                          final cloudFirestoreService =
+                              Provider.of<FirebaseCloudFirestoreService>(
+                                  context,
+                                  listen: false);
 
-                            await cloudFirestoreService.uploadUser(user: _user);
-                            final authService =
-                                Provider.of<FirebaseAuthService>(context,
-                                    listen: false);
+                          await cloudFirestoreService.uploadUser(user: _user);
+                          final authService = Provider.of<FirebaseAuthService>(
+                              context,
+                              listen: false);
 
-                            authService.getCurrentUser().then((loggedInUser) {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                NavigationScreen.id,
-                                (Route<dynamic> route) => false,
-                              );
-                            });
+                          authService.getCurrentUser().then((loggedInUser) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              NavigationScreen.id,
+                              (Route<dynamic> route) => false,
+                            );
+                          });
 
-                            setState(() {
-                              showSpinner = false;
-                            });
-                          },
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.75,
-                          width: MediaQuery.of(context).size.width * 0.75,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              colorFilter: ColorFilter.mode(
-                                  Colors.white, BlendMode.colorBurn),
-                              image: AssetImage("assets/images/stony.png"),
-                              alignment: Alignment(0.0, 0.0),
-                              fit: BoxFit.contain,
-                            ),
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.width * 0.75,
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                                Colors.white, BlendMode.colorBurn),
+                            image: AssetImage("assets/images/stony.png"),
+                            alignment: Alignment(0.0, 0.0),
+                            fit: BoxFit.contain,
                           ),
                         ),
-                      ]),
-                ),
-              ]),
-            ),
+                      ),
+                    ]),
+              ),
+            ]),
           ),
         ),
       ),

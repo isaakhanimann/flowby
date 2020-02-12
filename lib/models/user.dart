@@ -59,7 +59,7 @@ class User {
       'bio': bio,
       'hasSkills': hasSkills,
       'hasWishes': hasWishes,
-      'imageFileName': imageFileName,
+      'imageFileName': imageFileName ?? 'default-profile-pic.jpg',
       'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
       'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList()
     };

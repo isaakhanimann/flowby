@@ -52,7 +52,7 @@ class _UserDescriptionRegistrationScreenState
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       SizedBox(
-                        height: 10.0,
+                        height: 20.0,
                       ),
                       Text(
                         'Let the others know who you are',

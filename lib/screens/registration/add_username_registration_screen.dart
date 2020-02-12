@@ -51,80 +51,76 @@ class _AddUsernameRegistrationScreenState
   @override
   Widget build(BuildContext context) {
     widget.user != null ? _user = widget.user : print('error, no user found');
-    // print(_user)
 
-    return Container(
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
         child: SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            body: SingleChildScrollView(
-              child: Stack(children: [
-                Hero(
-                  child: ProgressBar(progress: 0),
-                  transitionOnUserGestures: true,
-                  tag: 'progress_bar',
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          'What\'s your name?',
-                          textAlign: TextAlign.center,
-                          style: kRegisterHeaderTextStyle,
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        LoginInputField(
-                          isCapitalized: true,
-                          placeholder: 'Full name',
-                          isLast: false,
-                          isEmail: true,
-                          setText: (value) {
-                            _username = value;
-                          },
-                        ),
-                        RoundedButton(
-                          text: 'Next',
-                          color: kBlueButtonColor,
-                          textColor: Colors.white,
-                          onPressed: () async {
-                            if (_username == null) {
-                              showAlert(
-                                  context: context,
-                                  title: "Full name is missing",
-                                  description: 'Enter your name. Thank you.');
-                              return;
-                            }
+          child: SingleChildScrollView(
+            child: Stack(children: [
+              Hero(
+                child: ProgressBar(progress: 0),
+                transitionOnUserGestures: true,
+                tag: 'progress_bar',
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        'What\'s your name?',
+                        textAlign: TextAlign.center,
+                        style: kRegisterHeaderTextStyle,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      LoginInputField(
+                        isCapitalized: true,
+                        placeholder: 'Full name',
+                        isLast: false,
+                        isEmail: true,
+                        setText: (value) {
+                          _username = value;
+                        },
+                      ),
+                      RoundedButton(
+                        text: 'Next',
+                        color: kBlueButtonColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          if (_username == null) {
+                            showAlert(
+                                context: context,
+                                title: "Full name is missing",
+                                description: 'Enter your name. Thank you.');
+                            return;
+                          }
 
-                            setState(() {
-                              showSpinner = true;
-                            });
+                          setState(() {
+                            showSpinner = true;
+                          });
 
-                            _user.username = _username;
-                            _uploadUserAndNavigate(
-                                context: context, user: _user);
+                          _user.username = _username;
+                          _uploadUserAndNavigate(context: context, user: _user);
 
-                            setState(() {
-                              showSpinner = false;
-                            });
-                          },
-                        ),
-                      ]),
-                ),
-              ]),
-            ),
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        },
+                      ),
+                    ]),
+              ),
+            ]),
           ),
         ),
       ),
