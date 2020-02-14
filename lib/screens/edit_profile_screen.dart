@@ -40,217 +40,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   List<TextEditingController> wishDescriptionControllers = [];
   List<TextEditingController> wishPriceControllers = [];
 
-  void _changeProfilePic() async {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-              child: Text('Take Photo'),
-              onPressed: () {
-                Navigator.pop(context);
-                _setImage(ImageSource.camera);
-              },
-            ),
-            CupertinoActionSheetAction(
-              child: Text('Choose Photo'),
-              onPressed: () {
-                Navigator.pop(context);
-                _setImage(ImageSource.gallery);
-              },
-            )
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            child: Text('Cancel'),
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )),
-    );
-  }
-
-  void _setImage(ImageSource source) async {
-    var selectedImage =
-        await ImagePicker.pickImage(source: source, imageQuality: 20);
-
-    File croppedImage = await ImageCropper.cropImage(
-        sourcePath: selectedImage.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        androidUiSettings: AndroidUiSettings(
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
-    setState(() {
-      _profilePic = croppedImage;
-    });
-  }
-
-  void _getUser(BuildContext context) async {
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    String uid = widget.user.uid;
-    user = await cloudFirestoreService.getUser(uid: uid);
-    //also fill the temps in case the user presses save and the messageboxes are filled
-
-    setState(() {
-      _usernameController.text = user.username;
-      _bioController.text = user.bio;
-      _localHasSkills = user.hasSkills;
-      _localHasWishes = user.hasWishes;
-      user.skills?.forEach((SkillOrWish skillOrWish) {
-        skillKeywordControllers
-            .add(TextEditingController(text: skillOrWish.keywords));
-        skillDescriptionControllers
-            .add(TextEditingController(text: skillOrWish.description));
-        skillPriceControllers
-            .add(TextEditingController(text: skillOrWish.price));
-      });
-      //controllers for extra skill
-      skillKeywordControllers.add(TextEditingController());
-      skillDescriptionControllers.add(TextEditingController());
-      skillPriceControllers.add(TextEditingController());
-
-      user.wishes?.forEach((SkillOrWish skillOrWish) {
-        wishKeywordControllers
-            .add(TextEditingController(text: skillOrWish.keywords));
-        wishDescriptionControllers
-            .add(TextEditingController(text: skillOrWish.description));
-        wishPriceControllers
-            .add(TextEditingController(text: skillOrWish.price));
-      });
-      wishKeywordControllers.add(TextEditingController());
-      wishDescriptionControllers.add(TextEditingController());
-      wishPriceControllers.add(TextEditingController());
-
-      _profilePic = null;
-      showSpinner = false;
-    });
-  }
-
-  Widget _addRowButton(isSkillBuild) {
-    return Container(
-      alignment: Alignment.bottomLeft,
-      child: GestureDetector(
-        child: Icon(Feather.plus),
-        onTap: () {
-          setState(() {
-            if (isSkillBuild) {
-              skillKeywordControllers.add(TextEditingController());
-              skillDescriptionControllers.add(TextEditingController());
-              skillPriceControllers.add(TextEditingController());
-            } else {
-              wishKeywordControllers.add(TextEditingController());
-              wishDescriptionControllers.add(TextEditingController());
-              wishPriceControllers.add(TextEditingController());
-            }
-          });
-        },
-      ),
-    );
-  }
-
-  Column _buildListOfRows({bool isSkillBuild}) {
-    List<Widget> rows = [];
-    for (int rowNumber = 0;
-        rowNumber <
-            (isSkillBuild
-                ? skillKeywordControllers.length
-                : wishKeywordControllers.length);
-        rowNumber++) {
-      rows.add(
-        Column(
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CupertinoTextField(
-                    expands: true,
-                    minLines: null,
-                    maxLines: null,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 20,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "#keywords",
-                    controller: isSkillBuild
-                        ? skillKeywordControllers[rowNumber]
-                        : wishKeywordControllers[rowNumber],
-                  ),
-                ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: CupertinoTextField(
-                    expands: true,
-                    maxLines: null,
-                    minLines: null,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 10,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "price",
-                    controller: isSkillBuild
-                        ? skillPriceControllers[rowNumber]
-                        : wishPriceControllers[rowNumber],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 0.0),
-                  child: GestureDetector(
-                    onTap: () => setState(() {
-                      if (isSkillBuild) {
-                        skillKeywordControllers.removeAt(rowNumber);
-                        skillDescriptionControllers.removeAt(rowNumber);
-                        skillPriceControllers.removeAt(rowNumber);
-                      } else {
-                        wishKeywordControllers.removeAt(rowNumber);
-                        wishDescriptionControllers.removeAt(rowNumber);
-                        wishPriceControllers.removeAt(rowNumber);
-                      }
-                    }),
-                    child: Icon(Feather.x),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CupertinoTextField(
-                    expands: true,
-                    maxLines: null,
-                    minLines: null,
-                    textCapitalization: TextCapitalization.sentences,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 100,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "description",
-                    controller: isSkillBuild
-                        ? skillDescriptionControllers[rowNumber]
-                        : wishDescriptionControllers[rowNumber],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15.0),
-          ],
-        ),
-      );
-    }
-
-    rows.add(_addRowButton(isSkillBuild));
-    return Column(
-      children: rows,
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -258,6 +47,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _getUser(context);
   }
 
+  @override
   void dispose() {
     _usernameController.dispose();
     _bioController.dispose();
@@ -553,48 +343,215 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
   }
-}
 
-class RatePicker extends StatelessWidget {
-  final Function onSelected;
-  final int initialValue;
-
-  RatePicker({@required this.onSelected, this.initialValue});
-
-  List<Text> _getPickerItems() {
-    List<Text> textList = [];
-    for (int i = 0; i < 500; i++) {
-      textList.add(Text(
-        i.toString(),
-        style: kAddSkillsTextStyle,
-      ));
-    }
-    return textList;
+  void _changeProfilePic() async {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: Text('Take Photo'),
+              onPressed: () {
+                Navigator.pop(context);
+                _setImage(ImageSource.camera);
+              },
+            ),
+            CupertinoActionSheetAction(
+              child: Text('Choose Photo'),
+              onPressed: () {
+                Navigator.pop(context);
+                _setImage(ImageSource.gallery);
+              },
+            )
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: Text('Cancel'),
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          height: 100,
-          width: 130,
-          alignment: Alignment.center,
-          child: CupertinoPicker(
-            scrollController:
-                FixedExtentScrollController(initialItem: initialValue),
-            backgroundColor: Colors.white,
-            itemExtent: 27,
-            onSelectedItemChanged: onSelected,
-            children: _getPickerItems(),
-          ),
+  void _setImage(ImageSource source) async {
+    var selectedImage =
+        await ImagePicker.pickImage(source: source, imageQuality: 20);
+
+    File croppedImage = await ImageCropper.cropImage(
+        sourcePath: selectedImage.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        androidUiSettings: AndroidUiSettings(
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
+    setState(() {
+      _profilePic = croppedImage;
+    });
+  }
+
+  void _getUser(BuildContext context) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    String uid = widget.user.uid;
+    user = await cloudFirestoreService.getUser(uid: uid);
+    //also fill the temps in case the user presses save and the messageboxes are filled
+
+    setState(() {
+      _usernameController.text = user.username;
+      _bioController.text = user.bio;
+      _localHasSkills = user.hasSkills;
+      _localHasWishes = user.hasWishes;
+      user.skills?.forEach((SkillOrWish skillOrWish) {
+        skillKeywordControllers
+            .add(TextEditingController(text: skillOrWish.keywords));
+        skillDescriptionControllers
+            .add(TextEditingController(text: skillOrWish.description));
+        skillPriceControllers
+            .add(TextEditingController(text: skillOrWish.price));
+      });
+      //controllers for extra skill
+      skillKeywordControllers.add(TextEditingController());
+      skillDescriptionControllers.add(TextEditingController());
+      skillPriceControllers.add(TextEditingController());
+
+      user.wishes?.forEach((SkillOrWish skillOrWish) {
+        wishKeywordControllers
+            .add(TextEditingController(text: skillOrWish.keywords));
+        wishDescriptionControllers
+            .add(TextEditingController(text: skillOrWish.description));
+        wishPriceControllers
+            .add(TextEditingController(text: skillOrWish.price));
+      });
+      wishKeywordControllers.add(TextEditingController());
+      wishDescriptionControllers.add(TextEditingController());
+      wishPriceControllers.add(TextEditingController());
+
+      _profilePic = null;
+      showSpinner = false;
+    });
+  }
+
+  Widget _addRowButton(isSkillBuild) {
+    return Container(
+      alignment: Alignment.bottomLeft,
+      child: GestureDetector(
+        child: Icon(Feather.plus),
+        onTap: () {
+          setState(() {
+            if (isSkillBuild) {
+              skillKeywordControllers.add(TextEditingController());
+              skillDescriptionControllers.add(TextEditingController());
+              skillPriceControllers.add(TextEditingController());
+            } else {
+              wishKeywordControllers.add(TextEditingController());
+              wishDescriptionControllers.add(TextEditingController());
+              wishPriceControllers.add(TextEditingController());
+            }
+          });
+        },
+      ),
+    );
+  }
+
+  Column _buildListOfRows({bool isSkillBuild}) {
+    List<Widget> rows = [];
+    for (int rowNumber = 0;
+        rowNumber <
+            (isSkillBuild
+                ? skillKeywordControllers.length
+                : wishKeywordControllers.length);
+        rowNumber++) {
+      rows.add(
+        Column(
+          children: <Widget>[
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: CupertinoTextField(
+                    expands: true,
+                    minLines: null,
+                    maxLines: null,
+                    style: kAddSkillsTextStyle,
+                    maxLength: 20,
+                    decoration: null,
+                    textAlign: TextAlign.start,
+                    placeholder: "#keywords",
+                    controller: isSkillBuild
+                        ? skillKeywordControllers[rowNumber]
+                        : wishKeywordControllers[rowNumber],
+                  ),
+                ),
+                SizedBox(width: 20),
+                Expanded(
+                  child: CupertinoTextField(
+                    expands: true,
+                    maxLines: null,
+                    minLines: null,
+                    style: kAddSkillsTextStyle,
+                    maxLength: 10,
+                    decoration: null,
+                    textAlign: TextAlign.start,
+                    placeholder: "price",
+                    controller: isSkillBuild
+                        ? skillPriceControllers[rowNumber]
+                        : wishPriceControllers[rowNumber],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 0.0),
+                  child: GestureDetector(
+                    onTap: () => setState(() {
+                      if (isSkillBuild) {
+                        skillKeywordControllers.removeAt(rowNumber);
+                        skillDescriptionControllers.removeAt(rowNumber);
+                        skillPriceControllers.removeAt(rowNumber);
+                      } else {
+                        wishKeywordControllers.removeAt(rowNumber);
+                        wishDescriptionControllers.removeAt(rowNumber);
+                        wishPriceControllers.removeAt(rowNumber);
+                      }
+                    }),
+                    child: Icon(Feather.x),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: CupertinoTextField(
+                    expands: true,
+                    maxLines: null,
+                    minLines: null,
+                    textCapitalization: TextCapitalization.sentences,
+                    style: kAddSkillsTextStyle,
+                    maxLength: 100,
+                    decoration: null,
+                    textAlign: TextAlign.start,
+                    placeholder: "description",
+                    controller: isSkillBuild
+                        ? skillDescriptionControllers[rowNumber]
+                        : wishDescriptionControllers[rowNumber],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15.0),
+          ],
         ),
-        Text(
-          'CHF/h',
-          style: kAddSkillsTextStyle,
-        ),
-      ],
+      );
+    }
+
+    rows.add(_addRowButton(isSkillBuild));
+    return Column(
+      children: rows,
     );
   }
 }

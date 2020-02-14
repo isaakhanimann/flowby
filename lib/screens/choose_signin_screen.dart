@@ -38,6 +38,12 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
@@ -119,11 +125,5 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

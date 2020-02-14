@@ -29,24 +29,6 @@ class _AddUsernameRegistrationScreenState
 
   String _username;
 
-  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    await cloudFirestoreService.uploadUser(user: user);
-    setState(() {
-      showSpinner = false;
-    });
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return UploadPictureRegistrationScreen(
-            user: user,
-          );
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -121,6 +103,24 @@ class _AddUsernameRegistrationScreenState
             ]),
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    await cloudFirestoreService.uploadUser(user: user);
+    setState(() {
+      showSpinner = false;
+    });
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return UploadPictureRegistrationScreen(
+            user: user,
+          );
+        },
       ),
     );
   }

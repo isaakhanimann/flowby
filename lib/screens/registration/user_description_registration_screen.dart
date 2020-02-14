@@ -27,22 +27,6 @@ class _UserDescriptionRegistrationScreenState
 
   String _bio;
 
-  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    await cloudFirestoreService.uploadUser(user: user);
-    setState(() {
-      showSpinner = false;
-    });
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return AddLanguagesRegistrationScreen(user: user);
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -122,6 +106,22 @@ class _UserDescriptionRegistrationScreenState
             ]),
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    await cloudFirestoreService.uploadUser(user: user);
+    setState(() {
+      showSpinner = false;
+    });
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return AddLanguagesRegistrationScreen(user: user);
+        },
       ),
     );
   }

@@ -21,12 +21,6 @@ class _HomeTabState extends State<HomeTab> {
   bool isSkillSelected = true;
   FocusNode _focusNode;
 
-  void switchSearch(var newIsSelected) {
-    setState(() {
-      isSkillSelected = !isSkillSelected;
-    });
-  }
-
   TextEditingController _controller;
   String _searchTerm = '';
 
@@ -40,18 +34,7 @@ class _HomeTabState extends State<HomeTab> {
   @override
   void dispose() {
     _controller.dispose();
-
     super.dispose();
-  }
-
-  void _onTextChanged() {
-    setState(() {
-      _searchTerm = _controller.text;
-    });
-  }
-
-  void setFocus() {
-    FocusScope.of(context).requestFocus(_focusNode);
   }
 
   @override
@@ -158,6 +141,22 @@ class _HomeTabState extends State<HomeTab> {
         );
       },
     );
+  }
+
+  void switchSearch(var newIsSelected) {
+    setState(() {
+      isSkillSelected = !isSkillSelected;
+    });
+  }
+
+  void _onTextChanged() {
+    setState(() {
+      _searchTerm = _controller.text;
+    });
+  }
+
+  void setFocus() {
+    FocusScope.of(context).requestFocus(_focusNode);
   }
 }
 

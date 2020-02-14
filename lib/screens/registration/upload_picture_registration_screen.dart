@@ -35,53 +35,6 @@ class _UploadPictureRegistrationScreenState
   String _username;
   User _user;
 
-  void _changeProfilePic() async {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-              child: const Text('Take Photo'),
-              onPressed: () {
-                Navigator.pop(context);
-                _setImage(ImageSource.camera);
-              },
-            ),
-            CupertinoActionSheetAction(
-              child: const Text('Choose Photo'),
-              onPressed: () {
-                Navigator.pop(context);
-                _setImage(ImageSource.gallery);
-              },
-            )
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            child: const Text('Cancel'),
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )),
-    );
-  }
-
-  void _setImage(ImageSource source) async {
-    var selectedImage =
-        await ImagePicker.pickImage(source: source, imageQuality: 15);
-    File croppedImage = await ImageCropper.cropImage(
-        sourcePath: selectedImage.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        androidUiSettings: AndroidUiSettings(
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
-    setState(() {
-      _profilePic = croppedImage;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     widget.user.username != null
@@ -248,5 +201,52 @@ class _UploadPictureRegistrationScreenState
         ),
       ),
     );
+  }
+
+  void _changeProfilePic() async {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: const Text('Take Photo'),
+              onPressed: () {
+                Navigator.pop(context);
+                _setImage(ImageSource.camera);
+              },
+            ),
+            CupertinoActionSheetAction(
+              child: const Text('Choose Photo'),
+              onPressed: () {
+                Navigator.pop(context);
+                _setImage(ImageSource.gallery);
+              },
+            )
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text('Cancel'),
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )),
+    );
+  }
+
+  void _setImage(ImageSource source) async {
+    var selectedImage =
+        await ImagePicker.pickImage(source: source, imageQuality: 15);
+    File croppedImage = await ImageCropper.cropImage(
+        sourcePath: selectedImage.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        androidUiSettings: AndroidUiSettings(
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
+    setState(() {
+      _profilePic = croppedImage;
+    });
   }
 }

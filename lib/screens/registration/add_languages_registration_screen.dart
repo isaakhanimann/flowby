@@ -30,6 +30,92 @@ class _AddLanguagesRegistrationScreenState
   List<TextEditingController> skillDescriptionControllers = [];
   List<TextEditingController> skillPriceControllers = [];
 
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
+      child: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        progressIndicator: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Stack(children: [
+              Hero(
+                child: ProgressBar(progress: 0.6),
+                transitionOnUserGestures: true,
+                tag: 'progress_bar',
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Text(
+                        'Your languages',
+                        style: kUsernameTitleTextStyle,
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Share your culture or meet for a tandem',
+                            textAlign: TextAlign.start,
+                            style: kRegisterHeaderTextStyle,
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          _buildListOfTextFields(),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                        ],
+                      ),
+                      RoundedButton(
+                        text: 'Next',
+                        color: kBlueButtonColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          setState(() {
+                            showSpinner = true;
+                          });
+
+                          List<SkillOrWish> skills =
+                              User.controllersToListOfSkillsOrWishes(
+                                  keywordsControllers: skillKeywordControllers,
+                                  descriptionControllers:
+                                      skillDescriptionControllers,
+                                  priceControllers: skillPriceControllers);
+
+                          widget.user.skills = skills;
+                          widget.user.hasSkills = true;
+
+                          _uploadUserAndNavigate(
+                              context: context, user: widget.user);
+
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        },
+                      ),
+                    ]),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+
   Column _buildListOfTextFields() {
     if (skillKeywordControllers.length == 0) {
       setState(() {
@@ -153,92 +239,6 @@ class _AddLanguagesRegistrationScreenState
         builder: (context) {
           return AddSkillsRegistrationScreen(user: user);
         },
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      backgroundColor: CupertinoColors.white,
-      child: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        progressIndicator: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Stack(children: [
-              Hero(
-                child: ProgressBar(progress: 0.6),
-                transitionOnUserGestures: true,
-                tag: 'progress_bar',
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      Text(
-                        'Your languages',
-                        style: kUsernameTitleTextStyle,
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Share your culture or meet for a tandem',
-                            textAlign: TextAlign.start,
-                            style: kRegisterHeaderTextStyle,
-                          ),
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                          _buildListOfTextFields(),
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                        ],
-                      ),
-                      RoundedButton(
-                        text: 'Next',
-                        color: kBlueButtonColor,
-                        textColor: Colors.white,
-                        onPressed: () async {
-                          setState(() {
-                            showSpinner = true;
-                          });
-
-                          List<SkillOrWish> skills =
-                              User.controllersToListOfSkillsOrWishes(
-                                  keywordsControllers: skillKeywordControllers,
-                                  descriptionControllers:
-                                      skillDescriptionControllers,
-                                  priceControllers: skillPriceControllers);
-
-                          widget.user.skills = skills;
-                          widget.user.hasSkills = true;
-
-                          _uploadUserAndNavigate(
-                              context: context, user: widget.user);
-
-                          setState(() {
-                            showSpinner = false;
-                          });
-                        },
-                      ),
-                    ]),
-              ),
-            ]),
-          ),
-        ),
       ),
     );
   }

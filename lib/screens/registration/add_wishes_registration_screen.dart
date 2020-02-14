@@ -32,6 +32,106 @@ class _AddWishesRegistrationScreenState
   List<TextEditingController> wishDescriptionControllers = [];
   List<TextEditingController> wishPriceControllers = [];
 
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
+      child: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        progressIndicator: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Stack(children: [
+              Hero(
+                child: ProgressBar(progress: 1),
+                transitionOnUserGestures: true,
+                tag: 'progress_bar',
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            'Your wishes',
+                            style: kUsernameTitleTextStyle,
+                          ),
+                          CupertinoSwitch(
+                            value: _localHasWishes,
+                            onChanged: (newBool) {
+                              setState(() {
+                                _localHasWishes = newBool;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      if (_localHasWishes)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Tell others what you would like to learn',
+                              textAlign: TextAlign.start,
+                              style: kRegisterHeaderTextStyle,
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            _buildListOfTextFields(isSkillBuild: false),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                          ],
+                        ),
+                      RoundedButton(
+                        text: 'I am ready!',
+                        color: kBlueButtonColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          setState(() {
+                            showSpinner = true;
+                          });
+
+                          List<SkillOrWish> wishes =
+                              User.controllersToListOfSkillsOrWishes(
+                                  keywordsControllers: wishKeywordControllers,
+                                  descriptionControllers:
+                                      wishDescriptionControllers,
+                                  priceControllers: wishPriceControllers);
+
+                          widget.user.hasWishes = _localHasWishes;
+                          widget.user.wishes = wishes;
+
+                          _uploadUserAndNavigate(
+                              context: context, user: widget.user);
+
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        },
+                      ),
+                    ]),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+
   Column _buildListOfTextFields({bool isSkillBuild}) {
     if (wishKeywordControllers.length == 0) {
       setState(() {
@@ -154,106 +254,6 @@ class _AddWishesRegistrationScreenState
     Navigator.of(context).pushNamedAndRemoveUntil(
       NavigationScreen.id,
       (Route<dynamic> route) => false,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      backgroundColor: CupertinoColors.white,
-      child: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        progressIndicator: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Stack(children: [
-              Hero(
-                child: ProgressBar(progress: 1),
-                transitionOnUserGestures: true,
-                tag: 'progress_bar',
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            'Your wishes',
-                            style: kUsernameTitleTextStyle,
-                          ),
-                          CupertinoSwitch(
-                            value: _localHasWishes,
-                            onChanged: (newBool) {
-                              setState(() {
-                                _localHasWishes = newBool;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      if (_localHasWishes)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Tell others what you would like to learn',
-                              textAlign: TextAlign.start,
-                              style: kRegisterHeaderTextStyle,
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            _buildListOfTextFields(isSkillBuild: false),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                          ],
-                        ),
-                      RoundedButton(
-                        text: 'I am ready!',
-                        color: kBlueButtonColor,
-                        textColor: Colors.white,
-                        onPressed: () async {
-                          setState(() {
-                            showSpinner = true;
-                          });
-
-                          List<SkillOrWish> wishes =
-                              User.controllersToListOfSkillsOrWishes(
-                                  keywordsControllers: wishKeywordControllers,
-                                  descriptionControllers:
-                                      wishDescriptionControllers,
-                                  priceControllers: wishPriceControllers);
-
-                          widget.user.hasWishes = _localHasWishes;
-                          widget.user.wishes = wishes;
-
-                          _uploadUserAndNavigate(
-                              context: context, user: widget.user);
-
-                          setState(() {
-                            showSpinner = false;
-                          });
-                        },
-                      ),
-                    ]),
-              ),
-            ]),
-          ),
-        ),
-      ),
     );
   }
 }
