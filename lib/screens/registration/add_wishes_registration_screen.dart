@@ -100,27 +100,8 @@ class _AddWishesRegistrationScreenState
                         text: 'I am ready!',
                         color: kBlueButtonColor,
                         textColor: Colors.white,
-                        onPressed: () async {
-                          setState(() {
-                            showSpinner = true;
-                          });
-
-                          List<SkillOrWish> wishes =
-                              User.controllersToListOfSkillsOrWishes(
-                                  keywordsControllers: wishKeywordControllers,
-                                  descriptionControllers:
-                                      wishDescriptionControllers,
-                                  priceControllers: wishPriceControllers);
-
-                          widget.user.hasWishes = _localHasWishes;
-                          widget.user.wishes = wishes;
-
-                          _uploadUserAndNavigate(
-                              context: context, user: widget.user);
-
-                          setState(() {
-                            showSpinner = false;
-                          });
+                        onPressed: () {
+                          _uploadUserAndNavigate(context);
                         },
                       ),
                     ]),
@@ -243,10 +224,21 @@ class _AddWishesRegistrationScreenState
     );
   }
 
-  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
+  Future<void> _uploadUserAndNavigate(BuildContext context) async {
+    setState(() {
+      showSpinner = true;
+    });
+
+    List<SkillOrWish> wishes = User.controllersToListOfSkillsOrWishes(
+        keywordsControllers: wishKeywordControllers,
+        descriptionControllers: wishDescriptionControllers,
+        priceControllers: wishPriceControllers);
+
+    widget.user.hasWishes = _localHasWishes;
+    widget.user.wishes = wishes;
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    await cloudFirestoreService.uploadUser(user: user);
+    await cloudFirestoreService.uploadUser(user: widget.user);
     setState(() {
       showSpinner = false;
     });

@@ -32,18 +32,8 @@ class _UploadPictureRegistrationScreenState
   bool showSpinner = false;
   File _profilePic;
 
-  String _username;
-  User _user;
-
   @override
   Widget build(BuildContext context) {
-    widget.user.username != null
-        ? _username = widget.user.username
-        : _username = 'error';
-    widget.user != null
-        ? _user = widget.user
-        : print('Why da fuck is User == NULL?!');
-
     return CupertinoPageScaffold(
       backgroundColor: Colors.white,
       child: ModalProgressHUD(
@@ -69,7 +59,7 @@ class _UploadPictureRegistrationScreenState
                         height: 20.0,
                       ),
                       Text(
-                        'Welcome $_username!',
+                        'Welcome ${widget.user.username}!',
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
                         style: kRegisterHeaderTextStyle,
@@ -147,34 +137,7 @@ class _UploadPictureRegistrationScreenState
                           setState(() {
                             showSpinner = true;
                           });
-                          try {
-                            if (_profilePic != null) {
-                              final cloudFirestoreService =
-                                  Provider.of<FirebaseCloudFirestoreService>(
-                                      context,
-                                      listen: false);
-                              final storageService =
-                                  Provider.of<FirebaseStorageService>(context,
-                                      listen: false);
-                              await storageService.uploadImage(
-                                  fileName: _user.uid, image: _profilePic);
-
-                              _user.imageFileName = _user.uid;
-                              cloudFirestoreService.uploadProfilePic(
-                                  uid: _user.uid);
-                            }
-                          } catch (e) {
-                            print('Could not upload and get on Save');
-                          }
-                          Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute<void>(
-                              builder: (context) {
-                                return UserDescriptionRegistrationScreen(
-                                  user: _user,
-                                );
-                              },
-                            ),
-                          );
+                          _uploadImageAndUserAndNavigate(context: context);
                           setState(() {
                             showSpinner = false;
                           });
@@ -199,6 +162,37 @@ class _UploadPictureRegistrationScreenState
             ]),
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _uploadImageAndUserAndNavigate({BuildContext context}) async {
+    try {
+      if (_profilePic != null) {
+        final cloudFirestoreService =
+            Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        final storageService =
+            Provider.of<FirebaseStorageService>(context, listen: false);
+        await storageService.uploadImage(
+            fileName: widget.user.uid, image: _profilePic);
+
+        widget.user.imageFileName = widget.user.uid;
+        cloudFirestoreService.uploadProfilePic(uid: widget.user.uid);
+      }
+    } catch (e) {
+      print('Could not upload image');
+    }
+    setState(() {
+      showSpinner = false;
+    });
+
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return UserDescriptionRegistrationScreen(
+            user: widget.user,
+          );
+        },
       ),
     );
   }

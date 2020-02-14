@@ -76,26 +76,8 @@ class _AddUsernameRegistrationScreenState
                         text: 'Next',
                         color: kBlueButtonColor,
                         textColor: Colors.white,
-                        onPressed: () async {
-                          if (_username == null) {
-                            showAlert(
-                                context: context,
-                                title: "Full name is missing",
-                                description: 'Enter your name. Thank you.');
-                            return;
-                          }
-
-                          setState(() {
-                            showSpinner = true;
-                          });
-
-                          widget.user.username = _username;
-                          _uploadUserAndNavigate(
-                              context: context, user: widget.user);
-
-                          setState(() {
-                            showSpinner = false;
-                          });
+                        onPressed: () {
+                          _uploadUserAndNavigate(context);
                         },
                       ),
                     ]),
@@ -107,10 +89,21 @@ class _AddUsernameRegistrationScreenState
     );
   }
 
-  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
+  Future<void> _uploadUserAndNavigate(BuildContext context) async {
+    if (_username == null) {
+      showAlert(
+          context: context,
+          title: "Full name is missing",
+          description: 'Enter your name. Thank you.');
+      return;
+    }
+    setState(() {
+      showSpinner = true;
+    });
+    widget.user.username = _username;
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    await cloudFirestoreService.uploadUser(user: user);
+    await cloudFirestoreService.uploadUser(user: widget.user);
     setState(() {
       showSpinner = false;
     });
@@ -118,7 +111,7 @@ class _AddUsernameRegistrationScreenState
       CupertinoPageRoute<void>(
         builder: (context) {
           return UploadPictureRegistrationScreen(
-            user: user,
+            user: widget.user,
           );
         },
       ),

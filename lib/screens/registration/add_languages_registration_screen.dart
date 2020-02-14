@@ -84,27 +84,8 @@ class _AddLanguagesRegistrationScreenState
                         text: 'Next',
                         color: kBlueButtonColor,
                         textColor: Colors.white,
-                        onPressed: () async {
-                          setState(() {
-                            showSpinner = true;
-                          });
-
-                          List<SkillOrWish> skills =
-                              User.controllersToListOfSkillsOrWishes(
-                                  keywordsControllers: skillKeywordControllers,
-                                  descriptionControllers:
-                                      skillDescriptionControllers,
-                                  priceControllers: skillPriceControllers);
-
-                          widget.user.skills = skills;
-                          widget.user.hasSkills = true;
-
-                          _uploadUserAndNavigate(
-                              context: context, user: widget.user);
-
-                          setState(() {
-                            showSpinner = false;
-                          });
+                        onPressed: () {
+                          _uploadUserAndNavigate(context);
                         },
                       ),
                     ]),
@@ -227,17 +208,29 @@ class _AddLanguagesRegistrationScreenState
     );
   }
 
-  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
+  Future<void> _uploadUserAndNavigate(BuildContext context) async {
+    setState(() {
+      showSpinner = true;
+    });
+
+    List<SkillOrWish> skills = User.controllersToListOfSkillsOrWishes(
+        keywordsControllers: skillKeywordControllers,
+        descriptionControllers: skillDescriptionControllers,
+        priceControllers: skillPriceControllers);
+
+    widget.user.skills = skills;
+    widget.user.hasSkills = true;
+
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    await cloudFirestoreService.uploadUser(user: user);
+    await cloudFirestoreService.uploadUser(user: widget.user);
     setState(() {
       showSpinner = false;
     });
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
-          return AddSkillsRegistrationScreen(user: user);
+          return AddSkillsRegistrationScreen(user: widget.user);
         },
       ),
     );
