@@ -15,7 +15,10 @@ class FirebaseCloudFirestoreService {
 
   Future<void> uploadUser({@required User user}) async {
     try {
-      _fireStore.collection('users').document(user.uid).setData(user.toMap());
+      _fireStore
+          .collection('users')
+          .document(user.uid)
+          .setData(user.toMap(), merge: true);
     } catch (e) {
       print('Isaak could not upload user info');
       debugPrint('error: $e');
@@ -239,6 +242,7 @@ class FirebaseCloudFirestoreService {
       print('Isaak could not upload Push Token');
     }
   }
+
   void uploadProfilePic({@required String uid}) {
     try {
       _fireStore

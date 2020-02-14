@@ -15,8 +15,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
-//TODO: change box border when the user doesn't enter an input
-
 class UploadPictureRegistrationScreen extends StatefulWidget {
   static const String id = 'upload_picture_registration_screen';
 
@@ -93,167 +91,159 @@ class _UploadPictureRegistrationScreenState
         ? _user = widget.user
         : print('Why da fuck is User == NULL?!');
 
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("assets/images/Freeflowter_Stony.png"),
-          alignment: Alignment(0.0, 0.0),
-          fit: BoxFit.cover,
-        ),
-      ),
+    return CupertinoPageScaffold(
+      backgroundColor: Colors.white,
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
         child: SafeArea(
-          child: Scaffold(
-            /*appBar: AppBar(
-              title: Text('Upload a picture'),
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-            ),*/
-            backgroundColor: Colors.white,
-            body: SingleChildScrollView(
-              child: Stack(children: [
-                Hero(
-                  child: ProgressBar(progress: 0.2),
-                  transitionOnUserGestures: true,
-                  tag: 'progress_bar',
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          'Welcome $_username!',
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: kRegisterHeaderTextStyle,
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          'Choose a picture',
-                          textAlign: TextAlign.center,
-                          style: kRegisterHeaderTextStyle,
-                        ),
-                        GestureDetector(
-                          onTap: _changeProfilePic,
-                          child: Center(
-                            heightFactor: 1.2,
-                            child: _profilePic == null
-                                ? Stack(
-                                    alignment: AlignmentDirectional.center,
-                                    children: <Widget>[
-                                      Opacity(
-                                        opacity: 0.4,
-                                        child: CachedNetworkImage(
-                                          imageUrl:
-                                              "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$kDefaultProfilePicName?alt=media",
-                                          imageBuilder:
-                                              (context, imageProvider) {
-                                            return CircleAvatar(
-                                                radius: 60,
-                                                backgroundColor: Colors.grey,
-                                                backgroundImage: imageProvider);
-                                          },
-                                          placeholder: (context, url) =>
-                                              CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    kDefaultProfilePicColor),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              Icon(Icons.error),
+          child: SingleChildScrollView(
+            child: Stack(children: [
+              Hero(
+                child: ProgressBar(progress: 0.2),
+                transitionOnUserGestures: true,
+                tag: 'progress_bar',
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Text(
+                        'Welcome $_username!',
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: kRegisterHeaderTextStyle,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        'Choose a picture',
+                        textAlign: TextAlign.center,
+                        style: kRegisterHeaderTextStyle,
+                      ),
+                      GestureDetector(
+                        onTap: _changeProfilePic,
+                        child: Center(
+                          heightFactor: 1.2,
+                          child: _profilePic == null
+                              ? Stack(
+                                  alignment: AlignmentDirectional.center,
+                                  children: <Widget>[
+                                    Opacity(
+                                      opacity: 0.4,
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$kDefaultProfilePicName?alt=media",
+                                        imageBuilder: (context, imageProvider) {
+                                          return CircleAvatar(
+                                              radius: 60,
+                                              backgroundColor: Colors.grey,
+                                              backgroundImage: imageProvider);
+                                        },
+                                        placeholder: (context, url) =>
+                                            CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  kDefaultProfilePicColor),
                                         ),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
                                       ),
-                                      Icon(
-                                        CupertinoIcons.photo_camera_solid,
-                                        size: 50,
-                                      )
-                                    ],
-                                  )
-                                : Stack(
-                                    alignment: AlignmentDirectional.center,
-                                    children: <Widget>[
-                                      Opacity(
-                                        opacity: 0.4,
-                                        child: CircleAvatar(
-                                          backgroundColor: Colors.grey,
-                                          backgroundImage:
-                                              FileImage(_profilePic),
-                                          radius: 60,
-                                        ),
+                                    ),
+                                    Icon(
+                                      CupertinoIcons.photo_camera_solid,
+                                      size: 50,
+                                    )
+                                  ],
+                                )
+                              : Stack(
+                                  alignment: AlignmentDirectional.center,
+                                  children: <Widget>[
+                                    Opacity(
+                                      opacity: 0.4,
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.grey,
+                                        backgroundImage: FileImage(_profilePic),
+                                        radius: 60,
                                       ),
-                                      Icon(
-                                        CupertinoIcons.photo_camera_solid,
-                                        size: 50,
-                                      )
-                                    ],
-                                  ),
-                          ),
+                                    ),
+                                    Icon(
+                                      CupertinoIcons.photo_camera_solid,
+                                      size: 50,
+                                    )
+                                  ],
+                                ),
                         ),
-                        Center(
-                          child: GestureDetector(
-                            onTap: _changeProfilePic,
-                            child: Text('Edit',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'MontserratRegular',
-                                )),
-                          ),
-                        ),
-                        RoundedButton(
-                          text: 'Next',
-                          color: kBlueButtonColor,
-                          textColor: Colors.white,
-                          onPressed: () async {
-                            setState(() {
-                              showSpinner = true;
-                            });
-                            try {
-                              if (_profilePic != null) {
-                                final cloudFirestoreService =
-                                Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-                                final storageService =
-                                    Provider.of<FirebaseStorageService>(context,
-                                        listen: false);
-                                await storageService.uploadImage(
-                                    fileName: _user.uid, image: _profilePic);
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      RoundedButton(
+                        text: 'Next',
+                        color: kBlueButtonColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          setState(() {
+                            showSpinner = true;
+                          });
+                          try {
+                            if (_profilePic != null) {
+                              final cloudFirestoreService =
+                                  Provider.of<FirebaseCloudFirestoreService>(
+                                      context,
+                                      listen: false);
+                              final storageService =
+                                  Provider.of<FirebaseStorageService>(context,
+                                      listen: false);
+                              await storageService.uploadImage(
+                                  fileName: _user.uid, image: _profilePic);
 
-                                _user.imageFileName = _user.uid;
-                                cloudFirestoreService.uploadProfilePic(uid: _user.uid);
-                              }
-                            } catch (e) {
-                              print('Could not upload and get on Save');
+                              _user.imageFileName = _user.uid;
+                              cloudFirestoreService.uploadProfilePic(
+                                  uid: _user.uid);
                             }
-                            Navigator.of(context, rootNavigator: true).push(
-                              CupertinoPageRoute<void>(
-                                builder: (context) {
-                                  return UserDescriptionRegistrationScreen(
-                                    user: _user,
-                                  );
-                                },
-                              ),
-                            );
-                            setState(() {
-                              showSpinner = false;
-                            });
-                          },
+                          } catch (e) {
+                            print('Could not upload and get on Save');
+                          }
+                          Navigator.of(context, rootNavigator: true).push(
+                            CupertinoPageRoute<void>(
+                              builder: (context) {
+                                return UserDescriptionRegistrationScreen(
+                                  user: _user,
+                                );
+                              },
+                            ),
+                          );
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        },
+                      ),
+                      Container(
+                        height: 350.0,
+                        width: 350.0,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                                Colors.white, BlendMode.colorBurn),
+                            image: AssetImage(
+                                "assets/images/Freeflowter_Stony.png"),
+                            alignment: Alignment(0.0, 0.0),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ]),
-                ),
-              ]),
-            ),
+                      ),
+                    ]),
+              ),
+            ]),
           ),
         ),
       ),

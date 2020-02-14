@@ -1,13 +1,14 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_wishes_registration_screen.dart';
-import 'package:Flowby/widgets/build_list_of_text_fields.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 
 class AddSkillsRegistrationScreen extends StatefulWidget {
   static const String id = 'add_skills_registration_screen';
@@ -27,62 +28,23 @@ class _AddSkillsRegistrationScreenState
 
   bool _localHasSkills = true;
 
-  User _user;
-
   List<TextEditingController> skillKeywordControllers = [];
   List<TextEditingController> skillDescriptionControllers = [];
   List<TextEditingController> skillPriceControllers = [];
 
-  List<TextEditingController> wishKeywordControllers = [];
-  List<TextEditingController> wishDescriptionControllers = [];
-  List<TextEditingController> wishPriceControllers = [];
-
-  void _setLanguagesInSkills(User user) async {
-    setState(() {
-      user.skillz?.forEach((SkillOrWish skillOrWish) {
-        skillKeywordControllers
-            .add(TextEditingController(text: skillOrWish.keywords));
-        skillDescriptionControllers
-            .add(TextEditingController(text: skillOrWish.description));
-        skillPriceControllers
-            .add(TextEditingController(text: skillOrWish.price));
+  Column _buildListOfTextFields() {
+    if (skillKeywordControllers.length == 0) {
+      setState(() {
+        // Default controllers
+        skillKeywordControllers.add(TextEditingController());
+        skillDescriptionControllers.add(TextEditingController());
+        skillPriceControllers.add(TextEditingController());
       });
-      //controllers for extra skill
-      skillKeywordControllers.add(TextEditingController());
-      skillDescriptionControllers.add(TextEditingController());
-      skillPriceControllers.add(TextEditingController());
-
-      showSpinner = false;
-    });
-  }
-
-  Column _buildListOfTextFields({bool isSkillBuild}) {
-    if (isSkillBuild) {
-      if (skillKeywordControllers.length == 0) {
-        setState(() {
-          // Default controllers
-          skillKeywordControllers.add(TextEditingController());
-          skillDescriptionControllers.add(TextEditingController());
-          skillPriceControllers.add(TextEditingController());
-        });
-      }
-    } else {
-      if (wishKeywordControllers.length == 0) {
-        setState(() {
-          // Default controllers
-          skillKeywordControllers.add(TextEditingController());
-          skillDescriptionControllers.add(TextEditingController());
-          skillPriceControllers.add(TextEditingController());
-        });
-      }
     }
 
     List<Widget> rows = [];
     for (int rowNumber = 0;
-        rowNumber <
-            (isSkillBuild
-                ? skillKeywordControllers.length
-                : wishKeywordControllers.length);
+        rowNumber < skillKeywordControllers.length;
         rowNumber++) {
       rows.add(
         Column(
@@ -101,9 +63,7 @@ class _AddSkillsRegistrationScreenState
                     decoration: null,
                     textAlign: TextAlign.start,
                     placeholder: "#keywords",
-                    controller: isSkillBuild
-                        ? skillKeywordControllers[rowNumber]
-                        : wishKeywordControllers[rowNumber],
+                    controller: skillKeywordControllers[rowNumber],
                   ),
                 ),
                 SizedBox(width: 20),
@@ -117,24 +77,16 @@ class _AddSkillsRegistrationScreenState
                     decoration: null,
                     textAlign: TextAlign.start,
                     placeholder: "price",
-                    controller: isSkillBuild
-                        ? skillPriceControllers[rowNumber]
-                        : wishPriceControllers[rowNumber],
+                    controller: skillPriceControllers[rowNumber],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: GestureDetector(
                     onTap: () => setState(() {
-                      if (isSkillBuild) {
-                        skillKeywordControllers.removeAt(rowNumber);
-                        skillDescriptionControllers.removeAt(rowNumber);
-                        skillPriceControllers.removeAt(rowNumber);
-                      } else {
-                        wishKeywordControllers.removeAt(rowNumber);
-                        wishDescriptionControllers.removeAt(rowNumber);
-                        wishPriceControllers.removeAt(rowNumber);
-                      }
+                      skillKeywordControllers.removeAt(rowNumber);
+                      skillDescriptionControllers.removeAt(rowNumber);
+                      skillPriceControllers.removeAt(rowNumber);
                     }),
                     child: Icon(Feather.x),
                   ),
@@ -150,14 +102,13 @@ class _AddSkillsRegistrationScreenState
                     expands: true,
                     maxLines: null,
                     minLines: null,
+                    textCapitalization: TextCapitalization.sentences,
                     style: kAddSkillsTextStyle,
                     maxLength: 100,
                     decoration: null,
                     textAlign: TextAlign.start,
                     placeholder: "description",
-                    controller: isSkillBuild
-                        ? skillDescriptionControllers[rowNumber]
-                        : wishDescriptionControllers[rowNumber],
+                    controller: skillDescriptionControllers[rowNumber],
                   ),
                 ),
               ],
@@ -169,30 +120,57 @@ class _AddSkillsRegistrationScreenState
     }
 
     rows.add(
-      _addRowButton(isSkillBuild),
+      _addRowButton(),
     );
     return Column(
       children: rows,
     );
   }
 
-  Widget _addRowButton(isSkillBuild) {
+  Widget _addRowButton() {
     return Container(
       alignment: Alignment.bottomLeft,
       child: GestureDetector(
         child: Icon(Feather.plus),
         onTap: () {
           setState(() {
-            if (isSkillBuild) {
-              skillKeywordControllers.add(TextEditingController());
-              skillDescriptionControllers.add(TextEditingController());
-              skillPriceControllers.add(TextEditingController());
-            } else {
-              wishKeywordControllers.add(TextEditingController());
-              wishDescriptionControllers.add(TextEditingController());
-              wishPriceControllers.add(TextEditingController());
-            }
+            skillKeywordControllers.add(TextEditingController());
+            skillDescriptionControllers.add(TextEditingController());
+            skillPriceControllers.add(TextEditingController());
           });
+        },
+      ),
+    );
+  }
+
+  void _initializeTextfields(BuildContext context) {
+    setState(() {
+      widget.user.skills?.forEach((SkillOrWish skillOrWish) {
+        skillKeywordControllers
+            .add(TextEditingController(text: skillOrWish.keywords));
+        skillDescriptionControllers
+            .add(TextEditingController(text: skillOrWish.description));
+        skillPriceControllers
+            .add(TextEditingController(text: skillOrWish.price));
+      });
+      //controllers for extra skill
+      skillKeywordControllers.add(TextEditingController());
+      skillDescriptionControllers.add(TextEditingController());
+      skillPriceControllers.add(TextEditingController());
+    });
+  }
+
+  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    await cloudFirestoreService.uploadUser(user: user);
+    setState(() {
+      showSpinner = false;
+    });
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return AddWishesRegistrationScreen(user: user);
         },
       ),
     );
@@ -201,145 +179,116 @@ class _AddSkillsRegistrationScreenState
   @override
   void initState() {
     super.initState();
-    //this is an asynchronous method
-    widget.user != null
-        ? _user = widget.user
-        : print('Why da fuck is User == NULL?!');
+    _initializeTextfields(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    //print(_user);
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.white, BlendMode.colorBurn),
-          image: AssetImage("assets/images/Freeflowter_Stony.png"),
-          alignment: Alignment(0.0, 0.0),
-          fit: BoxFit.cover,
-        ),
-      ),
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
         child: SafeArea(
-          child: Scaffold(
-            /*appBar: AppBar(
-              title: Text('Upload a picture'),
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-            ),*/
-            backgroundColor: Colors.white,
-            body: SingleChildScrollView(
-              child: Stack(children: [
-                Hero(
-                  child: ProgressBar(progress: 0.8),
-                  transitionOnUserGestures: true,
-                  tag: 'progress_bar',
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: SingleChildScrollView(
+            child: Stack(children: [
+              Hero(
+                child: ProgressBar(progress: 0.8),
+                transitionOnUserGestures: true,
+                tag: 'progress_bar',
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            'Your skills',
+                            style: kUsernameTitleTextStyle,
+                          ),
+                          CupertinoSwitch(
+                            value: _localHasSkills,
+                            onChanged: (newBool) {
+                              setState(() {
+                                _localHasSkills = newBool;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      if (_localHasSkills)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Your skills',
-                              style: kUsernameTitleTextStyle,
+                              'Share what you are good at',
+                              textAlign: TextAlign.start,
+                              style: kRegisterHeaderTextStyle,
                             ),
-                            CupertinoSwitch(
-                              value: _localHasSkills,
-                              onChanged: (newBool) {
-                                setState(() {
-                                  _localHasSkills = newBool;
-                                });
-                              },
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            _buildListOfTextFields(),
+                            SizedBox(
+                              height: 10.0,
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        if (_localHasSkills)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                'Share what you are good at',
-                                textAlign: TextAlign.start,
-                                style: kRegisterHeaderTextStyle,
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              _buildListOfTextFields(isSkillBuild: true),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                            ],
-                          ),
-                        RoundedButton(
-                          text: 'Next',
-                          color: kBlueButtonColor,
-                          textColor: Colors.white,
-                          onPressed: () async {
-                            setState(() {
-                              showSpinner = true;
-                            });
+                      RoundedButton(
+                        text: 'Next',
+                        color: kBlueButtonColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          setState(() {
+                            showSpinner = true;
+                          });
 
-                            List<SkillOrWish> skillz =
-                                User.controllersToListOfSkillsOrWishes(
-                                    keywordsControllers:
-                                        skillKeywordControllers,
-                                    descriptionControllers:
-                                        skillDescriptionControllers,
-                                    priceControllers: skillPriceControllers);
+                          List<SkillOrWish> skills =
+                              User.controllersToListOfSkillsOrWishes(
+                                  keywordsControllers: skillKeywordControllers,
+                                  descriptionControllers:
+                                      skillDescriptionControllers,
+                                  priceControllers: skillPriceControllers);
 
-                            _user.hasSkills = _localHasSkills;
-                            _user.skillz = skillz;
+                          widget.user.hasSkills = _localHasSkills;
+                          widget.user.skills = skills;
 
-                            print(_user);
+                          _uploadUserAndNavigate(
+                              context: context, user: widget.user);
 
-                            Navigator.of(context, rootNavigator: true).push(
-                              CupertinoPageRoute<void>(
-                                builder: (context) {
-                                  return AddWishesRegistrationScreen(
-                                      user: _user);
-                                },
-                              ),
-                            );
-
-                            setState(() {
-                              showSpinner = false;
-                            });
-                          },
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.75,
-                          width: MediaQuery.of(context).size.width * 0.75,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              colorFilter: ColorFilter.mode(
-                                  Colors.white, BlendMode.colorBurn),
-                              image: AssetImage("assets/images/flowby.png"),
-                              alignment: Alignment(0.0, 0.0),
-                              fit: BoxFit.contain,
-                            ),
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        },
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.width * 0.75,
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                                Colors.white, BlendMode.colorBurn),
+                            image: AssetImage("assets/images/flowby.png"),
+                            alignment: Alignment(0.0, 0.0),
+                            fit: BoxFit.contain,
                           ),
                         ),
-                      ]),
-                ),
-              ]),
-            ),
+                      ),
+                    ]),
+              ),
+            ]),
           ),
         ),
       ),
