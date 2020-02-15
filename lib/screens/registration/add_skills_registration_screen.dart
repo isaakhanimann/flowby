@@ -1,12 +1,12 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_wishes_registration_screen.dart';
+import 'package:Flowby/widgets/list_of_textfields.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 
@@ -27,16 +27,6 @@ class _AddSkillsRegistrationScreenState
   bool showSpinner = false;
 
   bool _localHasSkills = true;
-
-  List<TextEditingController> skillKeywordControllers = [];
-  List<TextEditingController> skillDescriptionControllers = [];
-  List<TextEditingController> skillPriceControllers = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeTextfields(context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +86,13 @@ class _AddSkillsRegistrationScreenState
                             SizedBox(
                               height: 10.0,
                             ),
-                            _buildListOfTextFields(),
+                            ListOfTextfields(
+                                initialSkills: widget.user.skills,
+                                updateKeywordsAtIndex: updateKeywordsAtIndex,
+                                updateDescriptionAtIndex:
+                                    updateDescriptionAtIndex,
+                                updatePriceAtIndex: updatePriceAtIndex,
+                                addEmptySkill: addEmptySkill),
                             SizedBox(
                               height: 10.0,
                             ),
@@ -132,132 +128,21 @@ class _AddSkillsRegistrationScreenState
     );
   }
 
-  Column _buildListOfTextFields() {
-    if (skillKeywordControllers.length == 0) {
-      setState(() {
-        // Default controllers
-        skillKeywordControllers.add(TextEditingController());
-        skillDescriptionControllers.add(TextEditingController());
-        skillPriceControllers.add(TextEditingController());
-      });
-    }
-
-    List<Widget> rows = [];
-    for (int rowNumber = 0;
-        rowNumber < skillKeywordControllers.length;
-        rowNumber++) {
-      rows.add(
-        Column(
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CupertinoTextField(
-                    expands: true,
-                    minLines: null,
-                    maxLines: null,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 20,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "#keywords",
-                    controller: skillKeywordControllers[rowNumber],
-                  ),
-                ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: CupertinoTextField(
-                    expands: true,
-                    maxLines: null,
-                    minLines: null,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 10,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "price",
-                    controller: skillPriceControllers[rowNumber],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 0.0),
-                  child: GestureDetector(
-                    onTap: () => setState(() {
-                      skillKeywordControllers.removeAt(rowNumber);
-                      skillDescriptionControllers.removeAt(rowNumber);
-                      skillPriceControllers.removeAt(rowNumber);
-                    }),
-                    child: Icon(Feather.x),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CupertinoTextField(
-                    expands: true,
-                    maxLines: null,
-                    minLines: null,
-                    textCapitalization: TextCapitalization.sentences,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 100,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "description",
-                    controller: skillDescriptionControllers[rowNumber],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15.0),
-          ],
-        ),
-      );
-    }
-
-    rows.add(
-      _addRowButton(),
-    );
-    return Column(
-      children: rows,
-    );
+  updateKeywordsAtIndex({int index, String text}) {
+    widget.user.skills[index].keywords = text;
   }
 
-  Widget _addRowButton() {
-    return Container(
-      alignment: Alignment.bottomLeft,
-      child: GestureDetector(
-        child: Icon(Feather.plus),
-        onTap: () {
-          setState(() {
-            skillKeywordControllers.add(TextEditingController());
-            skillDescriptionControllers.add(TextEditingController());
-            skillPriceControllers.add(TextEditingController());
-          });
-        },
-      ),
-    );
+  updateDescriptionAtIndex({int index, String text}) {
+    widget.user.skills[index].description = text;
   }
 
-  void _initializeTextfields(BuildContext context) {
-    setState(() {
-      widget.user.skills?.forEach((SkillOrWish skillOrWish) {
-        skillKeywordControllers
-            .add(TextEditingController(text: skillOrWish.keywords));
-        skillDescriptionControllers
-            .add(TextEditingController(text: skillOrWish.description));
-        skillPriceControllers
-            .add(TextEditingController(text: skillOrWish.price));
-      });
-      //controllers for extra skill
-      skillKeywordControllers.add(TextEditingController());
-      skillDescriptionControllers.add(TextEditingController());
-      skillPriceControllers.add(TextEditingController());
-    });
+  updatePriceAtIndex({int index, String text}) {
+    widget.user.skills[index].price = text;
+  }
+
+  addEmptySkill() {
+    widget.user.skills
+        .add(SkillOrWish(keywords: '', description: '', price: ''));
   }
 
   Future<void> _uploadUserAndNavigate(BuildContext context) async {
@@ -265,13 +150,9 @@ class _AddSkillsRegistrationScreenState
       showSpinner = true;
     });
 
-    List<SkillOrWish> skills = User.controllersToListOfSkillsOrWishes(
-        keywordsControllers: skillKeywordControllers,
-        descriptionControllers: skillDescriptionControllers,
-        priceControllers: skillPriceControllers);
-
     widget.user.hasSkills = _localHasSkills;
-    widget.user.skills = skills;
+    widget.user.skills.removeWhere(
+        (skill) => (skill.keywords == null || skill.keywords.isEmpty));
 
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
