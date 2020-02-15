@@ -88,11 +88,13 @@ class _AddSkillsRegistrationScreenState
                             ),
                             ListOfTextfields(
                                 initialSkills: widget.user.skills,
-                                updateKeywordsAtIndex: updateKeywordsAtIndex,
+                                updateKeywordsAtIndex:
+                                    widget.user.updateSkillKeywordsAtIndex,
                                 updateDescriptionAtIndex:
-                                    updateDescriptionAtIndex,
-                                updatePriceAtIndex: updatePriceAtIndex,
-                                addEmptySkill: addEmptySkill),
+                                    widget.user.updateSkillDescriptionAtIndex,
+                                updatePriceAtIndex:
+                                    widget.user.updateSkillPriceAtIndex,
+                                addEmptySkill: widget.user.addEmptySkill),
                             SizedBox(
                               height: 10.0,
                             ),
@@ -126,23 +128,6 @@ class _AddSkillsRegistrationScreenState
         ),
       ),
     );
-  }
-
-  updateKeywordsAtIndex({int index, String text}) {
-    widget.user.skills[index].keywords = text;
-  }
-
-  updateDescriptionAtIndex({int index, String text}) {
-    widget.user.skills[index].description = text;
-  }
-
-  updatePriceAtIndex({int index, String text}) {
-    widget.user.skills[index].price = text;
-  }
-
-  addEmptySkill() {
-    widget.user.skills
-        .add(SkillOrWish(keywords: '', description: '', price: ''));
   }
 
   Future<void> _uploadUserAndNavigate(BuildContext context) async {

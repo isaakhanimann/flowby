@@ -76,6 +76,22 @@ class User {
     return result;
   }
 
+  updateSkillKeywordsAtIndex({int index, String text}) {
+    skills[index].keywords = text;
+  }
+
+  updateSkillDescriptionAtIndex({int index, String text}) {
+    skills[index].description = text;
+  }
+
+  updateSkillPriceAtIndex({int index, String text}) {
+    skills[index].price = text;
+  }
+
+  addEmptySkill() {
+    skills.add(SkillOrWish(keywords: '', description: '', price: ''));
+  }
+
   static List<SkillOrWish> controllersToListOfSkillsOrWishes(
       {List<TextEditingController> keywordsControllers,
       List<TextEditingController> descriptionControllers,
