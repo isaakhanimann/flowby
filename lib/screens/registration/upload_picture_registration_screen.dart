@@ -133,14 +133,8 @@ class _UploadPictureRegistrationScreenState
                         text: 'Next',
                         color: kBlueButtonColor,
                         textColor: Colors.white,
-                        onPressed: () async {
-                          setState(() {
-                            showSpinner = true;
-                          });
+                        onPressed: () {
                           _uploadImageAndUserAndNavigate(context: context);
-                          setState(() {
-                            showSpinner = false;
-                          });
                         },
                       ),
                       Container(
@@ -167,6 +161,9 @@ class _UploadPictureRegistrationScreenState
   }
 
   Future<void> _uploadImageAndUserAndNavigate({BuildContext context}) async {
+    setState(() {
+      showSpinner = true;
+    });
     try {
       if (_profilePic != null) {
         final cloudFirestoreService =
@@ -177,7 +174,7 @@ class _UploadPictureRegistrationScreenState
             fileName: widget.user.uid, image: _profilePic);
 
         widget.user.imageFileName = widget.user.uid;
-        cloudFirestoreService.uploadProfilePic(uid: widget.user.uid);
+        await cloudFirestoreService.uploadUser(user: widget.user);
       }
     } catch (e) {
       print('Could not upload image');
