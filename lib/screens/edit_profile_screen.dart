@@ -215,12 +215,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               if (_localHasSkills)
                 ListOfTextfields(
-                    initialSkillsOrWishes: user.skills,
-                    updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
-                    updateDescriptionAtIndex:
-                        user.updateSkillDescriptionAtIndex,
-                    updatePriceAtIndex: user.updateSkillPriceAtIndex,
-                    addEmptySkillOrWish: user.addEmptySkill),
+                  initialSkillsOrWishes: user.skills,
+                  updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
+                  updateDescriptionAtIndex: user.updateSkillDescriptionAtIndex,
+                  updatePriceAtIndex: user.updateSkillPriceAtIndex,
+                  addEmptySkillOrWish: user.addEmptySkill,
+                  deleteSkillOrWishAtIndex: user.deleteSkillAtIndex,
+                ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -244,11 +245,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               if (_localHasWishes)
                 ListOfTextfields(
-                    initialSkillsOrWishes: user.wishes,
-                    updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
-                    updateDescriptionAtIndex: user.updateWishDescriptionAtIndex,
-                    updatePriceAtIndex: user.updateWishPriceAtIndex,
-                    addEmptySkillOrWish: user.addEmptyWish),
+                  initialSkillsOrWishes: user.wishes,
+                  updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
+                  updateDescriptionAtIndex: user.updateWishDescriptionAtIndex,
+                  updatePriceAtIndex: user.updateWishPriceAtIndex,
+                  addEmptySkillOrWish: user.addEmptyWish,
+                  deleteSkillOrWishAtIndex: user.deleteWishAtIndex,
+                ),
               SizedBox(
                 height: 20,
               ),

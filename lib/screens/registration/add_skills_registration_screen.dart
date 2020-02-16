@@ -87,14 +87,17 @@ class _AddSkillsRegistrationScreenState
                               height: 10.0,
                             ),
                             ListOfTextfields(
-                                initialSkillsOrWishes: widget.user.skills,
-                                updateKeywordsAtIndex:
-                                    widget.user.updateSkillKeywordsAtIndex,
-                                updateDescriptionAtIndex:
-                                    widget.user.updateSkillDescriptionAtIndex,
-                                updatePriceAtIndex:
-                                    widget.user.updateSkillPriceAtIndex,
-                                addEmptySkillOrWish: widget.user.addEmptySkill),
+                              initialSkillsOrWishes: widget.user.skills,
+                              updateKeywordsAtIndex:
+                                  widget.user.updateSkillKeywordsAtIndex,
+                              updateDescriptionAtIndex:
+                                  widget.user.updateSkillDescriptionAtIndex,
+                              updatePriceAtIndex:
+                                  widget.user.updateSkillPriceAtIndex,
+                              addEmptySkillOrWish: widget.user.addEmptySkill,
+                              deleteSkillOrWishAtIndex:
+                                  widget.user.deleteSkillAtIndex,
+                            ),
                             SizedBox(
                               height: 10.0,
                             ),

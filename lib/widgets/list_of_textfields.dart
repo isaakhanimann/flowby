@@ -9,13 +9,15 @@ class ListOfTextfields extends StatefulWidget {
   final Function updateDescriptionAtIndex;
   final Function updatePriceAtIndex;
   final Function addEmptySkillOrWish;
+  final Function deleteSkillOrWishAtIndex;
 
   ListOfTextfields(
       {@required this.initialSkillsOrWishes,
       @required this.updateKeywordsAtIndex,
       @required this.updateDescriptionAtIndex,
       @required this.updatePriceAtIndex,
-      @required this.addEmptySkillOrWish});
+      @required this.addEmptySkillOrWish,
+      @required this.deleteSkillOrWishAtIndex});
 
   @override
   _ListOfTextfieldsState createState() => _ListOfTextfieldsState();
@@ -30,13 +32,15 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < widget.initialSkillsOrWishes.length; i++) {
-      SkillOrWish skillOrWish = widget.initialSkillsOrWishes[i];
-      _addIthControllerToList(
-          index: i,
-          initialKeywords: skillOrWish.keywords,
-          initialDescription: skillOrWish.description,
-          initialPrice: skillOrWish.price);
+    if (widget.initialSkillsOrWishes != null) {
+      for (int i = 0; i < widget.initialSkillsOrWishes.length; i++) {
+        SkillOrWish skillOrWish = widget.initialSkillsOrWishes[i];
+        _addIthControllerToList(
+            index: i,
+            initialKeywords: skillOrWish.keywords,
+            initialDescription: skillOrWish.description,
+            initialPrice: skillOrWish.price);
+      }
     }
     //controllers for extra skill
     widget.addEmptySkillOrWish();
@@ -100,11 +104,9 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: GestureDetector(
-                    onTap: () => setState(() {
-                      keywordControllers.removeAt(rowNumber);
-                      descriptionControllers.removeAt(rowNumber);
-                      priceControllers.removeAt(rowNumber);
-                    }),
+                    onTap: () {
+                      _deleteIthController(index: rowNumber);
+                    },
                     child: Icon(Feather.x),
                   ),
                 ),
@@ -156,6 +158,15 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
     return Column(
       children: rows,
     );
+  }
+
+  _deleteIthController({int index}) {
+    setState(() {
+      keywordControllers.removeAt(index);
+      descriptionControllers.removeAt(index);
+      priceControllers.removeAt(index);
+    });
+    widget.deleteSkillOrWishAtIndex(index: index);
   }
 
   _addIthControllerToList(

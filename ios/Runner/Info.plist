@@ -41,6 +41,8 @@
 	<string>Flowby needs access to your location to see how far away other users are</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Flowby needs access to your location to see how far away other users are</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    	<string>Flowby needs access to your location to see how far away other users are</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Flowby wants to record the sound of your videos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
