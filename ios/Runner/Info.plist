@@ -36,13 +36,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>flowby wants to set your profile picture</string>
+	<string>Flowby wants to set your profile picture</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>flowby needs access to location when open</string>
+	<string>Flowby needs access to your location to see how far away other users are</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Flowby needs access to your location to see how far away other users are</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>flowby wants to record the sound of the videos</string>
+	<string>Flowby wants to record the sound of your videos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>flowby wants to set your profile picture</string>
+	<string>Flowby wants to set your profile picture</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
