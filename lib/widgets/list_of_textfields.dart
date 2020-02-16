@@ -4,11 +4,11 @@ import 'package:Flowby/constants.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 class ListOfTextfields extends StatefulWidget {
-  List<SkillOrWish> initialSkills;
-  Function updateKeywordsAtIndex;
-  Function updateDescriptionAtIndex;
-  Function updatePriceAtIndex;
-  Function addEmptySkill;
+  final List<SkillOrWish> initialSkills;
+  final Function updateKeywordsAtIndex;
+  final Function updateDescriptionAtIndex;
+  final Function updatePriceAtIndex;
+  final Function addEmptySkill;
 
   ListOfTextfields(
       {@required this.initialSkills,
@@ -48,6 +48,16 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
   }
 
   @override
+  void dispose() {
+    List<TextEditingController> allControllers =
+        keywordControllers + descriptionControllers + priceControllers;
+    for (TextEditingController controller in allControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<Widget> rows = [];
     for (int rowNumber = 0;
@@ -69,7 +79,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                     maxLength: 20,
                     decoration: null,
                     textAlign: TextAlign.start,
-                    placeholder: "e.g. #english",
+                    placeholder: "#keywords",
                     controller: keywordControllers[rowNumber],
                   ),
                 ),
@@ -83,7 +93,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                     maxLength: 10,
                     decoration: null,
                     textAlign: TextAlign.start,
-                    placeholder: "e.g. free",
+                    placeholder: "Price",
                     controller: priceControllers[rowNumber],
                   ),
                 ),
@@ -114,7 +124,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                     maxLength: 100,
                     decoration: null,
                     textAlign: TextAlign.start,
-                    placeholder: "e.g. native",
+                    placeholder: "Description",
                     controller: descriptionControllers[rowNumber],
                   ),
                 ),
