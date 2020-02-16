@@ -1,6 +1,5 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/registration/add_languages_registration_screen.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/screens/registration/add_skills_registration_screen.dart';
 
 class UserDescriptionRegistrationScreen extends StatefulWidget {
   static const String id = 'user_description_registration_screen';
@@ -113,7 +113,7 @@ class _UserDescriptionRegistrationScreenState
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
-          return AddLanguagesRegistrationScreen(user: widget.user);
+          return AddSkillsRegistrationScreen(user: widget.user);
         },
       ),
     );
