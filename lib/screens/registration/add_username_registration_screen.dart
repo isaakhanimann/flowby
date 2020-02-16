@@ -27,7 +27,14 @@ class _AddUsernameRegistrationScreenState
     extends State<AddUsernameRegistrationScreen> {
   bool showSpinner = false;
 
-  String _username;
+  TextEditingController _usernameController;
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController =
+        TextEditingController(text: widget.user.username ?? '');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +74,7 @@ class _AddUsernameRegistrationScreenState
                         isCapitalized: true,
                         placeholder: 'Name',
                         isLast: true,
-                        setText: (value) {
-                          _username = value;
-                        },
+                        controller: _usernameController,
                       ),
                       RoundedButton(
                         text: 'Next',
@@ -89,7 +94,7 @@ class _AddUsernameRegistrationScreenState
   }
 
   Future<void> _uploadUserAndNavigate(BuildContext context) async {
-    if (_username == null) {
+    if (_usernameController.text == null) {
       showAlert(
           context: context,
           title: "Full name is missing",
@@ -99,7 +104,7 @@ class _AddUsernameRegistrationScreenState
     setState(() {
       showSpinner = true;
     });
-    widget.user.username = _username;
+    widget.user.username = _usernameController.text;
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     await cloudFirestoreService.uploadUser(user: widget.user);

@@ -181,27 +181,15 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     setState(() {
       showSpinner = false;
     });
-    if (user.username == null) {
-      Navigator.of(context, rootNavigator: true).push(
-        CupertinoPageRoute<void>(
-          builder: (context) {
-            return AddUsernameRegistrationScreen(
-              user: user,
-            );
-          },
-        ),
-      );
-    } else {
-      Navigator.of(context, rootNavigator: true).push(
-        CupertinoPageRoute<void>(
-          builder: (context) {
-            return UploadPictureRegistrationScreen(
-              user: user,
-            );
-          },
-        ),
-      );
-    }
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return AddUsernameRegistrationScreen(
+            user: user,
+          );
+        },
+      ),
+    );
   }
 
   Future<void> _signInWithEmail(BuildContext context) async {
