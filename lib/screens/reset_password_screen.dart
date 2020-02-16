@@ -51,7 +51,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               ),
               LoginInputField(
                 isLast: false,
-                isEmail: true,
+                keyboardType: TextInputType.emailAddress,
                 placeholder: 'Email address',
                 setText: (value) {
                   email = value;

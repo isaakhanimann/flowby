@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class LoginInputField extends StatelessWidget {
   final bool isLast;
   final Function setText;
-  final bool isEmail;
+  final TextInputType keyboardType;
+  final bool obscureText;
   final String placeholder;
   final bool isCapitalized;
 
@@ -15,7 +16,8 @@ class LoginInputField extends StatelessWidget {
   LoginInputField(
       {this.isLast,
       this.setText,
-      this.isEmail,
+      this.keyboardType = TextInputType.text,
+      this.obscureText = false,
       this.placeholder,
       this.controller,
       this.focusNode,
@@ -37,8 +39,8 @@ class LoginInputField extends StatelessWidget {
       focusNode: focusNode,
       onSubmitted: onFieldSubmitted,
       textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
-      keyboardType: isEmail ? TextInputType.emailAddress : null,
-      obscureText: !isEmail,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
       onChanged: setText,
     );
   }
