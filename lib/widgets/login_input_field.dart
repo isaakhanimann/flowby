@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 class LoginInputField extends StatelessWidget {
   final bool isLast;
   final Function setText;
-  final bool isEmail;
   final String placeholder;
   final bool isCapitalized;
+  final TextInputType keyboardType;
+  final bool obscureText;
 
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -15,12 +16,13 @@ class LoginInputField extends StatelessWidget {
   LoginInputField(
       {this.isLast,
       this.setText,
-      this.isEmail,
       this.placeholder,
       this.controller,
       this.focusNode,
       this.onFieldSubmitted,
-      this.isCapitalized = false});
+      this.isCapitalized = false,
+      this.keyboardType = TextInputType.text,
+      this.obscureText = false});
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +39,8 @@ class LoginInputField extends StatelessWidget {
       focusNode: focusNode,
       onSubmitted: onFieldSubmitted,
       textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
-      keyboardType: isEmail ? TextInputType.emailAddress : null,
-      obscureText: !isEmail,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
       onChanged: setText,
     );
   }

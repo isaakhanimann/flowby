@@ -83,9 +83,8 @@ class _AddUsernameRegistrationScreenState
                       ),
                       LoginInputField(
                         isCapitalized: true,
-                        placeholder: 'Full name',
+                        placeholder: 'Name',
                         isLast: false,
-                        isEmail: false,
                         setText: (value) {
                           _username = value;
                         },
