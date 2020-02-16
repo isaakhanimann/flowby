@@ -4,25 +4,25 @@ import 'package:Flowby/constants.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 class ListOfTextfields extends StatefulWidget {
-  final List<SkillOrWish> initialSkills;
+  final List<SkillOrWish> initialSkillsOrWishes;
   final Function updateKeywordsAtIndex;
   final Function updateDescriptionAtIndex;
   final Function updatePriceAtIndex;
-  final Function addEmptySkill;
+  final Function addEmptySkillOrWish;
 
   ListOfTextfields(
-      {@required this.initialSkills,
+      {@required this.initialSkillsOrWishes,
       @required this.updateKeywordsAtIndex,
       @required this.updateDescriptionAtIndex,
       @required this.updatePriceAtIndex,
-      @required this.addEmptySkill});
+      @required this.addEmptySkillOrWish});
 
   @override
   _ListOfTextfieldsState createState() => _ListOfTextfieldsState();
 }
 
 class _ListOfTextfieldsState extends State<ListOfTextfields> {
-  // whenever a controllers text is updated it updates the skill in the parent
+  // whenever a controllers text is updated it updates the skill or wish in the parent
   List<TextEditingController> keywordControllers = [];
   List<TextEditingController> descriptionControllers = [];
   List<TextEditingController> priceControllers = [];
@@ -30,16 +30,16 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < widget.initialSkills.length; i++) {
-      SkillOrWish skill = widget.initialSkills[i];
+    for (int i = 0; i < widget.initialSkillsOrWishes.length; i++) {
+      SkillOrWish skillOrWish = widget.initialSkillsOrWishes[i];
       _addIthControllerToList(
           index: i,
-          initialKeywords: skill.keywords,
-          initialDescription: skill.description,
-          initialPrice: skill.price);
+          initialKeywords: skillOrWish.keywords,
+          initialDescription: skillOrWish.description,
+          initialPrice: skillOrWish.price);
     }
     //controllers for extra skill
-    widget.addEmptySkill();
+    widget.addEmptySkillOrWish();
     _addIthControllerToList(
         index: keywordControllers.length,
         initialKeywords: '',
@@ -141,7 +141,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
         child: GestureDetector(
           child: Icon(Feather.plus),
           onTap: () {
-            widget.addEmptySkill();
+            widget.addEmptySkillOrWish();
             setState(() {
               _addIthControllerToList(
                   index: keywordControllers.length,

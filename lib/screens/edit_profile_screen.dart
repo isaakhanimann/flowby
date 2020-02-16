@@ -215,12 +215,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               if (_localHasSkills)
                 ListOfTextfields(
-                    initialSkills: user.skills,
+                    initialSkillsOrWishes: user.skills,
                     updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
                     updateDescriptionAtIndex:
                         user.updateSkillDescriptionAtIndex,
                     updatePriceAtIndex: user.updateSkillPriceAtIndex,
-                    addEmptySkill: user.addEmptySkill),
+                    addEmptySkillOrWish: user.addEmptySkill),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -244,11 +244,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               if (_localHasWishes)
                 ListOfTextfields(
-                    initialSkills: user.wishes,
+                    initialSkillsOrWishes: user.wishes,
                     updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
                     updateDescriptionAtIndex: user.updateWishDescriptionAtIndex,
                     updatePriceAtIndex: user.updateWishPriceAtIndex,
-                    addEmptySkill: user.addEmptyWish),
+                    addEmptySkillOrWish: user.addEmptyWish),
               SizedBox(
                 height: 20,
               ),

@@ -87,14 +87,14 @@ class _AddSkillsRegistrationScreenState
                               height: 10.0,
                             ),
                             ListOfTextfields(
-                                initialSkills: widget.user.skills,
+                                initialSkillsOrWishes: widget.user.skills,
                                 updateKeywordsAtIndex:
                                     widget.user.updateSkillKeywordsAtIndex,
                                 updateDescriptionAtIndex:
                                     widget.user.updateSkillDescriptionAtIndex,
                                 updatePriceAtIndex:
                                     widget.user.updateSkillPriceAtIndex,
-                                addEmptySkill: widget.user.addEmptySkill),
+                                addEmptySkillOrWish: widget.user.addEmptySkill),
                             SizedBox(
                               height: 10.0,
                             ),
