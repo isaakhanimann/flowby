@@ -252,21 +252,21 @@ class ProfileItem extends StatelessWidget {
                       textBaseline: TextBaseline.alphabetic,
                       children: <Widget>[
                         Flexible(
-                          flex: 3,
-                          child: Text(
-                            distanceInKm.toString() + 'km ',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: kLocationTextStyle,
-                          ),
-                        ),
-                        Flexible(
                           flex: 1,
                           child: Icon(
                             Feather.navigation,
                             size: 12,
                           ),
-                        )
+                        ),
+                        Flexible(
+                          flex: 3,
+                          child: Text(
+                            ' ' + distanceInKm.toString() + 'km',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: kLocationTextStyle,
+                          ),
+                        ),
                       ],
                     );
                   },

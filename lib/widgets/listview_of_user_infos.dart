@@ -66,13 +66,13 @@ class ListViewOfUserInfos extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: <Widget>[
-                  Text(
-                    user.distanceInKm.toString() + 'km ',
-                  ),
                   Icon(
                     Feather.navigation,
                     size: 14,
-                  )
+                  ),
+                  Text(
+                    ' ' + user.distanceInKm.toString() + 'km',
+                  ),
                 ],
               ),
             ),
