@@ -263,7 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     FocusScope.of(context).requestFocus(_passwordFocus);
                   },
                   isLast: false,
-                  isEmail: true,
+                  keyboardType: TextInputType.emailAddress,
                   placeholder: 'Email address',
                   setText: (value) {
                     email = value;
@@ -279,7 +279,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     FocusScope.of(context).requestFocus(FocusNode());
                   },
                   isLast: true,
-                  isEmail: false,
+                  obscureText: true,
                   placeholder: 'Password',
                   setText: (value) {
                     password = value;

@@ -272,7 +272,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     FocusScope.of(context).requestFocus(_emailFocus);
                   },
                   isLast: false,
-                  isEmail: true,
                   setText: (value) {
                     name = value;
                   },
@@ -288,7 +287,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     FocusScope.of(context).requestFocus(_passwordFocus);
                   },
                   isLast: false,
-                  isEmail: true,
+                  keyboardType: TextInputType.emailAddress,
                   setText: (value) {
                     email = value;
                   },
@@ -304,7 +303,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     FocusScope.of(context).requestFocus(FocusNode());
                   },
                   isLast: true,
-                  isEmail: false,
+                  obscureText: true,
                   setText: (value) {
                     password = value;
                   },

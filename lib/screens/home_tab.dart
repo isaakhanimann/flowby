@@ -255,7 +255,7 @@ class ProfileItem extends StatelessWidget {
                         Flexible(
                           flex: 3,
                           child: Text(
-                            distanceInKm.toString() + ' km ',
+                            distanceInKm.toString() + 'km ',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: kLocationTextStyle,
@@ -264,7 +264,7 @@ class ProfileItem extends StatelessWidget {
                         Flexible(
                           flex: 1,
                           child: Icon(
-                            Feather.map_pin,
+                            Feather.navigation,
                             size: 12,
                           ),
                         )
