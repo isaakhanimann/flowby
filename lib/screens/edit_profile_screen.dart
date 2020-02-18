@@ -6,10 +6,10 @@ import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
+import 'package:Flowby/widgets/list_of_textfields.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -33,224 +33,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   var _usernameController = TextEditingController();
   var _bioController = TextEditingController();
 
-  List<TextEditingController> skillKeywordControllers = [];
-  List<TextEditingController> skillDescriptionControllers = [];
-  List<TextEditingController> skillPriceControllers = [];
-  List<TextEditingController> wishKeywordControllers = [];
-  List<TextEditingController> wishDescriptionControllers = [];
-  List<TextEditingController> wishPriceControllers = [];
-
-  void _changeProfilePic() async {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-              child: Text('Take Photo'),
-              onPressed: () {
-                Navigator.pop(context);
-                _setImage(ImageSource.camera);
-              },
-            ),
-            CupertinoActionSheetAction(
-              child: Text('Choose Photo'),
-              onPressed: () {
-                Navigator.pop(context);
-                _setImage(ImageSource.gallery);
-              },
-            )
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            child: Text('Cancel'),
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )),
-    );
-  }
-
-  void _setImage(ImageSource source) async {
-    var selectedImage =
-        await ImagePicker.pickImage(source: source, imageQuality: 20);
-
-    File croppedImage = await ImageCropper.cropImage(
-        sourcePath: selectedImage.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        androidUiSettings: AndroidUiSettings(
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
-    setState(() {
-      _profilePic = croppedImage;
-    });
-  }
-
-  void _getUser(BuildContext context) async {
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    String uid = widget.user.uid;
-    user = await cloudFirestoreService.getUser(uid: uid);
-    //also fill the temps in case the user presses save and the messageboxes are filled
-
-    setState(() {
-      _usernameController.text = user.username;
-      _bioController.text = user.bio;
-      _localHasSkills = user.hasSkills;
-      _localHasWishes = user.hasWishes;
-      user.skills?.forEach((SkillOrWish skillOrWish) {
-        skillKeywordControllers
-            .add(TextEditingController(text: skillOrWish.keywords));
-        skillDescriptionControllers
-            .add(TextEditingController(text: skillOrWish.description));
-        skillPriceControllers
-            .add(TextEditingController(text: skillOrWish.price));
-      });
-      //controllers for extra skill
-      skillKeywordControllers.add(TextEditingController());
-      skillDescriptionControllers.add(TextEditingController());
-      skillPriceControllers.add(TextEditingController());
-
-      user.wishes?.forEach((SkillOrWish skillOrWish) {
-        wishKeywordControllers
-            .add(TextEditingController(text: skillOrWish.keywords));
-        wishDescriptionControllers
-            .add(TextEditingController(text: skillOrWish.description));
-        wishPriceControllers
-            .add(TextEditingController(text: skillOrWish.price));
-      });
-      wishKeywordControllers.add(TextEditingController());
-      wishDescriptionControllers.add(TextEditingController());
-      wishPriceControllers.add(TextEditingController());
-
-      _profilePic = null;
-      showSpinner = false;
-    });
-  }
-
-  Widget _addRowButton(isSkillBuild) {
-    return Container(
-      alignment: Alignment.bottomLeft,
-      child: GestureDetector(
-        child: Icon(Feather.plus),
-        onTap: () {
-          setState(() {
-            if (isSkillBuild) {
-              skillKeywordControllers.add(TextEditingController());
-              skillDescriptionControllers.add(TextEditingController());
-              skillPriceControllers.add(TextEditingController());
-            } else {
-              wishKeywordControllers.add(TextEditingController());
-              wishDescriptionControllers.add(TextEditingController());
-              wishPriceControllers.add(TextEditingController());
-            }
-          });
-        },
-      ),
-    );
-  }
-
-  Column _buildListOfRows({bool isSkillBuild}) {
-    List<Widget> rows = [];
-    for (int rowNumber = 0;
-        rowNumber <
-            (isSkillBuild
-                ? skillKeywordControllers.length
-                : wishKeywordControllers.length);
-        rowNumber++) {
-      rows.add(
-        Column(
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CupertinoTextField(
-                    expands: true,
-                    minLines: null,
-                    maxLines: null,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 20,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "#keywords",
-                    controller: isSkillBuild
-                        ? skillKeywordControllers[rowNumber]
-                        : wishKeywordControllers[rowNumber],
-                  ),
-                ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: CupertinoTextField(
-                    expands: true,
-                    maxLines: null,
-                    minLines: null,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 10,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "price",
-                    controller: isSkillBuild
-                        ? skillPriceControllers[rowNumber]
-                        : wishPriceControllers[rowNumber],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 0.0),
-                  child: GestureDetector(
-                    onTap: () => setState(() {
-                      if (isSkillBuild) {
-                        skillKeywordControllers.removeAt(rowNumber);
-                        skillDescriptionControllers.removeAt(rowNumber);
-                        skillPriceControllers.removeAt(rowNumber);
-                      } else {
-                        wishKeywordControllers.removeAt(rowNumber);
-                        wishDescriptionControllers.removeAt(rowNumber);
-                        wishPriceControllers.removeAt(rowNumber);
-                      }
-                    }),
-                    child: Icon(Feather.x),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CupertinoTextField(
-                    expands: true,
-                    maxLines: null,
-                    minLines: null,
-                    textCapitalization: TextCapitalization.sentences,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 100,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "description",
-                    controller: isSkillBuild
-                        ? skillDescriptionControllers[rowNumber]
-                        : wishDescriptionControllers[rowNumber],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15.0),
-          ],
-        ),
-      );
-    }
-
-    rows.add(_addRowButton(isSkillBuild));
-    return Column(
-      children: rows,
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -258,27 +40,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _getUser(context);
   }
 
+  @override
   void dispose() {
     _usernameController.dispose();
     _bioController.dispose();
-    List<TextEditingController> allControllers = skillKeywordControllers +
-        skillDescriptionControllers +
-        wishKeywordControllers +
-        wishDescriptionControllers;
-    for (TextEditingController controller in allControllers) {
-      controller.dispose();
-    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-
-    final storageService =
-        Provider.of<FirebaseStorageService>(context, listen: false);
-
     if (showSpinner) {
       return CupertinoPageScaffold(
         backgroundColor: CupertinoColors.white,
@@ -304,45 +74,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         trailing: CupertinoButton(
             padding: EdgeInsets.all(10),
             child: Text('Done', style: kNavigationBarTextStyle),
-            onPressed: () async {
-              setState(() {
-                showSpinner = true;
-              });
-              try {
-                if (_profilePic != null) {
-                  await storageService.uploadImage(
-                      fileName: widget.user.uid, image: _profilePic);
-                }
-
-                // only add a skill to the user if the keywords are not null or empty
-                List<SkillOrWish> skills =
-                    User.controllersToListOfSkillsOrWishes(
-                        keywordsControllers: skillKeywordControllers,
-                        descriptionControllers: skillDescriptionControllers,
-                        priceControllers: skillPriceControllers);
-                List<SkillOrWish> wishes =
-                    User.controllersToListOfSkillsOrWishes(
-                        keywordsControllers: wishKeywordControllers,
-                        descriptionControllers: wishDescriptionControllers,
-                        priceControllers: wishPriceControllers);
-
-                User user = User(
-                    username: _usernameController.text,
-                    uid: widget.user.uid,
-                    bio: _bioController.text,
-                    hasSkills: _localHasSkills,
-                    hasWishes: _localHasWishes,
-                    skills: skills,
-                    wishes: wishes,
-                    imageFileName: widget.user.uid);
-                await cloudFirestoreService.uploadUser(user: user);
-                Navigator.of(context).pop();
-              } catch (e) {
-                print('Could not upload and get on Save');
-              }
-              setState(() {
-                showSpinner = false;
-              });
+            onPressed: () {
+              _uploadUserAndNavigate(context);
             }),
       ),
       child: SafeArea(
@@ -480,7 +213,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              if (_localHasSkills) _buildListOfRows(isSkillBuild: true),
+              if (_localHasSkills)
+                ListOfTextfields(
+                  initialSkillsOrWishes: user.skills,
+                  updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
+                  updateDescriptionAtIndex: user.updateSkillDescriptionAtIndex,
+                  updatePriceAtIndex: user.updateSkillPriceAtIndex,
+                  addEmptySkillOrWish: user.addEmptySkill,
+                  deleteSkillOrWishAtIndex: user.deleteSkillAtIndex,
+                ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -502,7 +243,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              if (_localHasWishes) _buildListOfRows(isSkillBuild: false),
+              if (_localHasWishes)
+                ListOfTextfields(
+                  initialSkillsOrWishes: user.wishes,
+                  updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
+                  updateDescriptionAtIndex: user.updateWishDescriptionAtIndex,
+                  updatePriceAtIndex: user.updateWishPriceAtIndex,
+                  addEmptySkillOrWish: user.addEmptyWish,
+                  deleteSkillOrWishAtIndex: user.deleteWishAtIndex,
+                ),
               SizedBox(
                 height: 20,
               ),
@@ -553,48 +302,105 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
   }
-}
 
-class RatePicker extends StatelessWidget {
-  final Function onSelected;
-  final int initialValue;
+  Future<void> _uploadUserAndNavigate(BuildContext context) async {
+    setState(() {
+      showSpinner = true;
+    });
+    try {
+      final cloudFirestoreService =
+          Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-  RatePicker({@required this.onSelected, this.initialValue});
+      final storageService =
+          Provider.of<FirebaseStorageService>(context, listen: false);
 
-  List<Text> _getPickerItems() {
-    List<Text> textList = [];
-    for (int i = 0; i < 500; i++) {
-      textList.add(Text(
-        i.toString(),
-        style: kAddSkillsTextStyle,
-      ));
+      if (_profilePic != null) {
+        await storageService.uploadImage(
+            fileName: widget.user.uid, image: _profilePic);
+      }
+
+      user.hasSkills = _localHasSkills;
+      user.hasWishes = _localHasWishes;
+      user.skills.removeWhere(
+          (skill) => (skill.keywords == null || skill.keywords.isEmpty));
+      user.wishes.removeWhere(
+          (wish) => (wish.keywords == null || wish.keywords.isEmpty));
+      user.bio = _bioController.text;
+      user.imageFileName = widget.user.uid;
+
+      await cloudFirestoreService.uploadUser(user: user);
+      Navigator.of(context).pop();
+    } catch (e) {
+      print('Could not upload and get on Save');
     }
-    return textList;
+    setState(() {
+      showSpinner = false;
+    });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          height: 100,
-          width: 130,
-          alignment: Alignment.center,
-          child: CupertinoPicker(
-            scrollController:
-                FixedExtentScrollController(initialItem: initialValue),
-            backgroundColor: Colors.white,
-            itemExtent: 27,
-            onSelectedItemChanged: onSelected,
-            children: _getPickerItems(),
-          ),
-        ),
-        Text(
-          'CHF/h',
-          style: kAddSkillsTextStyle,
-        ),
-      ],
+  void _changeProfilePic() async {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: Text('Take Photo'),
+              onPressed: () {
+                Navigator.pop(context);
+                _setImage(ImageSource.camera);
+              },
+            ),
+            CupertinoActionSheetAction(
+              child: Text('Choose Photo'),
+              onPressed: () {
+                Navigator.pop(context);
+                _setImage(ImageSource.gallery);
+              },
+            )
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: Text('Cancel'),
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )),
     );
+  }
+
+  void _setImage(ImageSource source) async {
+    var selectedImage =
+        await ImagePicker.pickImage(source: source, imageQuality: 20);
+
+    File croppedImage = await ImageCropper.cropImage(
+        sourcePath: selectedImage.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        androidUiSettings: AndroidUiSettings(
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
+    setState(() {
+      _profilePic = croppedImage;
+    });
+  }
+
+  void _getUser(BuildContext context) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    String uid = widget.user.uid;
+    user = await cloudFirestoreService.getUser(uid: uid);
+    //also fill the temps in case the user presses save and the messageboxes are filled
+
+    setState(() {
+      _usernameController.text = user.username;
+      _bioController.text = user.bio;
+      _localHasSkills = user.hasSkills;
+      _localHasWishes = user.hasWishes;
+
+      _profilePic = null;
+      showSpinner = false;
+    });
   }
 }

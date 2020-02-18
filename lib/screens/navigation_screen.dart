@@ -29,32 +29,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
   StreamSubscription<Position> positionStreamSubscription;
   FirebaseUser loggedInUser;
 
-  Future<void> getLoggedInUserUploadLocationAndToken() async {
-    final authService =
-        Provider.of<FirebaseAuthService>(context, listen: false);
-    FirebaseUser user = await authService.getCurrentUser();
-    setState(() {
-      loggedInUser = user;
-    });
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-
-    final firebaseMessaging =
-        Provider.of<FirebaseCloudMessaging>(context, listen: false);
-
-    if (loggedInUser != null) {
-      positionStreamSubscription = positionStream.listen((Position position) {
-        cloudFirestoreService.uploadUsersLocation(
-            uid: loggedInUser.uid, position: position);
-      });
-      firebaseMessaging.firebaseCloudMessagingListeners(context);
-      firebaseMessaging.getToken().then((token) {
-        cloudFirestoreService.uploadPushToken(
-            uid: loggedInUser.uid, pushToken: token);
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -176,5 +150,31 @@ class _NavigationScreenState extends State<NavigationScreen> {
         },
       ),
     );
+  }
+
+  Future<void> getLoggedInUserUploadLocationAndToken() async {
+    final authService =
+        Provider.of<FirebaseAuthService>(context, listen: false);
+    FirebaseUser user = await authService.getCurrentUser();
+    setState(() {
+      loggedInUser = user;
+    });
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    final firebaseMessaging =
+        Provider.of<FirebaseCloudMessaging>(context, listen: false);
+
+    if (loggedInUser != null) {
+      positionStreamSubscription = positionStream.listen((Position position) {
+        cloudFirestoreService.uploadUsersLocation(
+            uid: loggedInUser.uid, position: position);
+      });
+      firebaseMessaging.firebaseCloudMessagingListeners(context);
+      firebaseMessaging.getToken().then((token) {
+        cloudFirestoreService.uploadPushToken(
+            uid: loggedInUser.uid, pushToken: token);
+      });
+    }
   }
 }

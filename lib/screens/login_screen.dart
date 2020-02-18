@@ -35,6 +35,135 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
+  @override
+  Widget build(BuildContext context) {
+    final appleSignInAvailable =
+        Provider.of<AppleSignInAvailable>(context, listen: false);
+    return ModalProgressHUD(
+      inAsyncCall: showSpinner,
+      progressIndicator: SizedBox(
+        width: 200,
+        child: FlareActor(
+          'assets/animations/liquid_loader.flr',
+          alignment: Alignment.center,
+          color: kDefaultProfilePicColor,
+          fit: BoxFit.contain,
+          animation: "Untitled",
+        ),
+      ),
+      child: CupertinoPageScaffold(
+        resizeToAvoidBottomInset: false,
+        navigationBar: CupertinoNavigationBar(
+          border: null,
+          leading: CupertinoButton(
+            child: Icon(CupertinoIcons.back, color: CupertinoColors.white),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          middle: Padding(
+            padding: const EdgeInsets.only(top: 13.0),
+            child: Text(
+              'Log In',
+              style: kCupertinoScaffoldTextStyle,
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+        ),
+        backgroundColor: kLoginScreenBackgroundColor,
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                SizedBox(
+                  height: 48.0,
+                ),
+                LoginInputField(
+                  controller: _emailController,
+                  focusNode: _emailFocus,
+                  onFieldSubmitted: (term) {
+                    FocusScope.of(context).requestFocus(_passwordFocus);
+                  },
+                  isLast: false,
+                  keyboardType: TextInputType.emailAddress,
+                  placeholder: 'Email address',
+                  setText: (value) {
+                    email = value;
+                  },
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                LoginInputField(
+                  controller: _passwordController,
+                  focusNode: _passwordFocus,
+                  onFieldSubmitted: (term) {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  isLast: true,
+                  obscureText: true,
+                  placeholder: 'Password',
+                  setText: (value) {
+                    password = value;
+                  },
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => ResetPasswordScreen()));
+                  },
+                  child: Text(
+                    'Forgot your password?',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                RoundedButton(
+                    color: kBlueButtonColor,
+                    textColor: Colors.white,
+                    onPressed: () async {
+                      _signInWithEmail(context);
+                    },
+                    text: 'Log In'),
+                Text(
+                  'OR',
+                  textAlign: TextAlign.center,
+                  style: kOrTextStyle,
+                ),
+                GoogleLoginButton(
+                  text: 'Log In with Google',
+                  color: Color(0xFFDD4B39),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    _signInWithGoogle(context);
+                  },
+                ),
+                if (appleSignInAvailable.isAvailable)
+                  AppleSignInButton(
+                    style: ButtonStyle.black,
+                    type: ButtonType.signIn,
+                    onPressed: () {
+                      _signInWithApple(context);
+                    },
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _signInWithEmail(BuildContext context) async {
     if (email == null || password == null) {
       return;
@@ -208,134 +337,5 @@ class _LoginScreenState extends State<LoginScreen> {
         showSpinner = false;
       });
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final appleSignInAvailable =
-        Provider.of<AppleSignInAvailable>(context, listen: false);
-    return ModalProgressHUD(
-      inAsyncCall: showSpinner,
-      progressIndicator: SizedBox(
-        width: 200,
-        child: FlareActor(
-          'assets/animations/liquid_loader.flr',
-          alignment: Alignment.center,
-          color: kDefaultProfilePicColor,
-          fit: BoxFit.contain,
-          animation: "Untitled",
-        ),
-      ),
-      child: CupertinoPageScaffold(
-        resizeToAvoidBottomInset: false,
-        navigationBar: CupertinoNavigationBar(
-          border: null,
-          leading: CupertinoButton(
-            child: Icon(CupertinoIcons.back, color: CupertinoColors.white),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          middle: Padding(
-            padding: const EdgeInsets.only(top: 13.0),
-            child: Text(
-              'Log In',
-              style: kCupertinoScaffoldTextStyle,
-            ),
-          ),
-          backgroundColor: Colors.transparent,
-        ),
-        backgroundColor: kLoginScreenBackgroundColor,
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                SizedBox(
-                  height: 48.0,
-                ),
-                LoginInputField(
-                  controller: _emailController,
-                  focusNode: _emailFocus,
-                  onFieldSubmitted: (term) {
-                    FocusScope.of(context).requestFocus(_passwordFocus);
-                  },
-                  isLast: false,
-                  keyboardType: TextInputType.emailAddress,
-                  placeholder: 'Email address',
-                  setText: (value) {
-                    email = value;
-                  },
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),
-                LoginInputField(
-                  controller: _passwordController,
-                  focusNode: _passwordFocus,
-                  onFieldSubmitted: (term) {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  isLast: true,
-                  obscureText: true,
-                  placeholder: 'Password',
-                  setText: (value) {
-                    password = value;
-                  },
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => ResetPasswordScreen()));
-                  },
-                  child: Text(
-                    'Forgot your password?',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                RoundedButton(
-                    color: kBlueButtonColor,
-                    textColor: Colors.white,
-                    onPressed: () async {
-                      _signInWithEmail(context);
-                    },
-                    text: 'Log In'),
-                Text(
-                  'OR',
-                  textAlign: TextAlign.center,
-                  style: kOrTextStyle,
-                ),
-                GoogleLoginButton(
-                  text: 'Log In with Google',
-                  color: Color(0xFFDD4B39),
-                  textColor: Colors.white,
-                  onPressed: () {
-                    _signInWithGoogle(context);
-                  },
-                ),
-                if (appleSignInAvailable.isAvailable)
-                  AppleSignInButton(
-                    style: ButtonStyle.black,
-                    type: ButtonType.signIn,
-                    onPressed: () {
-                      _signInWithApple(context);
-                    },
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

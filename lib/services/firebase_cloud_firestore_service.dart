@@ -206,9 +206,10 @@ class FirebaseCloudFirestoreService {
     return Stream.empty();
   }
 
-  void uploadMessage({@required String chatPath, @required Message message}) {
+  Future<void> uploadMessage(
+      {@required String chatPath, @required Message message}) async {
     try {
-      _fireStore.document(chatPath).collection('messages').add(
+      await _fireStore.document(chatPath).collection('messages').add(
         {
           'text': message.text,
           'senderUid': message.senderUid,
@@ -221,9 +222,10 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  void uploadUsersLocation({@required uid, @required Position position}) {
+  Future<void> uploadUsersLocation(
+      {@required uid, @required Position position}) async {
     try {
-      _fireStore.collection('users').document(uid).updateData({
+      await _fireStore.collection('users').document(uid).updateData({
         'location': GeoPoint(position.latitude, position.longitude)
 //        , 'locationTimestamp': position.timestamp
       });
@@ -232,23 +234,13 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  void uploadPushToken({@required String uid, @required String pushToken}) {
+  Future<void> uploadPushToken(
+      {@required String uid, @required String pushToken}) async {
     try {
       _fireStore
           .collection('users')
           .document(uid)
           .updateData({'pushToken': pushToken});
-    } catch (e) {
-      print('Isaak could not upload Push Token');
-    }
-  }
-
-  void uploadProfilePic({@required String uid}) {
-    try {
-      _fireStore
-          .collection('users')
-          .document(uid)
-          .updateData({'imageFileName': uid});
     } catch (e) {
       print('Isaak could not upload Push Token');
     }

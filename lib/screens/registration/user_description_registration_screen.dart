@@ -27,22 +27,6 @@ class _UserDescriptionRegistrationScreenState
 
   String _bio;
 
-  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    await cloudFirestoreService.uploadUser(user: user);
-    setState(() {
-      showSpinner = false;
-    });
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return AddSkillsRegistrationScreen(user: user);
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -97,19 +81,8 @@ class _UserDescriptionRegistrationScreenState
                         text: 'Next',
                         color: kBlueButtonColor,
                         textColor: Colors.white,
-                        onPressed: () async {
-                          setState(() {
-                            showSpinner = true;
-                          });
-
-                          widget.user.bio = _bio;
-
-                          _uploadUserAndNavigate(
-                              context: context, user: widget.user);
-
-                          setState(() {
-                            showSpinner = false;
-                          });
+                        onPressed: () {
+                          _uploadUserAndNavigate(context);
                         },
                       ),
                       Text(
@@ -122,6 +95,26 @@ class _UserDescriptionRegistrationScreenState
             ]),
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _uploadUserAndNavigate(BuildContext context) async {
+    setState(() {
+      showSpinner = true;
+    });
+    widget.user.bio = _bio;
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    await cloudFirestoreService.uploadUser(user: widget.user);
+    setState(() {
+      showSpinner = false;
+    });
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return AddSkillsRegistrationScreen(user: widget.user);
+        },
       ),
     );
   }

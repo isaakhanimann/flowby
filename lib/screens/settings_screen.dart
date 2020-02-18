@@ -16,6 +16,31 @@ class SettingsScreen extends StatelessWidget {
 
   SettingsScreen({@required this.user});
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: CupertinoColors.white,
+      child: CustomScrollView(
+        slivers: <Widget>[
+          CupertinoSliverNavigationBar(
+            backgroundColor: CupertinoColors.white,
+            border: null,
+            largeTitle: Text('Settings'),
+          ),
+          SliverSafeArea(
+            top: false,
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                _buildSettingsChildren(context),
+                addAutomaticKeepAlives: true,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   _launchURL({@required String url}) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -110,31 +135,6 @@ class SettingsScreen extends StatelessWidget {
         },
       ),
     ];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: CupertinoColors.white,
-      child: CustomScrollView(
-        slivers: <Widget>[
-          CupertinoSliverNavigationBar(
-            backgroundColor: CupertinoColors.white,
-            border: null,
-            largeTitle: Text('Settings'),
-          ),
-          SliverSafeArea(
-            top: false,
-            sliver: SliverList(
-              delegate: SliverChildListDelegate(
-                _buildSettingsChildren(context),
-                addAutomaticKeepAlives: true,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
   }
 }
 

@@ -32,65 +32,8 @@ class _UploadPictureRegistrationScreenState
   bool showSpinner = false;
   File _profilePic;
 
-  String _username;
-  User _user;
-
-  void _changeProfilePic() async {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-              child: const Text('Take Photo'),
-              onPressed: () {
-                Navigator.pop(context);
-                _setImage(ImageSource.camera);
-              },
-            ),
-            CupertinoActionSheetAction(
-              child: const Text('Choose Photo'),
-              onPressed: () {
-                Navigator.pop(context);
-                _setImage(ImageSource.gallery);
-              },
-            )
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            child: const Text('Cancel'),
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )),
-    );
-  }
-
-  void _setImage(ImageSource source) async {
-    var selectedImage =
-        await ImagePicker.pickImage(source: source, imageQuality: 15);
-    File croppedImage = await ImageCropper.cropImage(
-        sourcePath: selectedImage.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        androidUiSettings: AndroidUiSettings(
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
-    setState(() {
-      _profilePic = croppedImage;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    widget.user.username != null
-        ? _username = widget.user.username
-        : _username = 'error';
-    widget.user != null
-        ? _user = widget.user
-        : print('Why da fuck is User == NULL?!');
-
     return CupertinoPageScaffold(
       backgroundColor: Colors.white,
       child: ModalProgressHUD(
@@ -116,7 +59,7 @@ class _UploadPictureRegistrationScreenState
                         height: 20.0,
                       ),
                       Text(
-                        'Welcome $_username!',
+                        'Welcome ${widget.user.username}!',
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
                         style: kRegisterHeaderTextStyle,
@@ -190,41 +133,8 @@ class _UploadPictureRegistrationScreenState
                         text: 'Next',
                         color: kBlueButtonColor,
                         textColor: Colors.white,
-                        onPressed: () async {
-                          setState(() {
-                            showSpinner = true;
-                          });
-                          try {
-                            if (_profilePic != null) {
-                              final cloudFirestoreService =
-                                  Provider.of<FirebaseCloudFirestoreService>(
-                                      context,
-                                      listen: false);
-                              final storageService =
-                                  Provider.of<FirebaseStorageService>(context,
-                                      listen: false);
-                              await storageService.uploadImage(
-                                  fileName: _user.uid, image: _profilePic);
-
-                              _user.imageFileName = _user.uid;
-                              cloudFirestoreService.uploadProfilePic(
-                                  uid: _user.uid);
-                            }
-                          } catch (e) {
-                            print('Could not upload and get on Save');
-                          }
-                          Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute<void>(
-                              builder: (context) {
-                                return UserDescriptionRegistrationScreen(
-                                  user: _user,
-                                );
-                              },
-                            ),
-                          );
-                          setState(() {
-                            showSpinner = false;
-                          });
+                        onPressed: () {
+                          _uploadImageAndUserAndNavigate(context: context);
                         },
                       ),
                       Container(
@@ -248,5 +158,86 @@ class _UploadPictureRegistrationScreenState
         ),
       ),
     );
+  }
+
+  Future<void> _uploadImageAndUserAndNavigate({BuildContext context}) async {
+    setState(() {
+      showSpinner = true;
+    });
+    try {
+      if (_profilePic != null) {
+        final cloudFirestoreService =
+            Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        final storageService =
+            Provider.of<FirebaseStorageService>(context, listen: false);
+        await storageService.uploadImage(
+            fileName: widget.user.uid, image: _profilePic);
+
+        widget.user.imageFileName = widget.user.uid;
+        await cloudFirestoreService.uploadUser(user: widget.user);
+      }
+    } catch (e) {
+      print('Could not upload image');
+    }
+    setState(() {
+      showSpinner = false;
+    });
+
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return UserDescriptionRegistrationScreen(
+            user: widget.user,
+          );
+        },
+      ),
+    );
+  }
+
+  void _changeProfilePic() async {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: const Text('Take Photo'),
+              onPressed: () {
+                Navigator.pop(context);
+                _setImage(ImageSource.camera);
+              },
+            ),
+            CupertinoActionSheetAction(
+              child: const Text('Choose Photo'),
+              onPressed: () {
+                Navigator.pop(context);
+                _setImage(ImageSource.gallery);
+              },
+            )
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text('Cancel'),
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )),
+    );
+  }
+
+  void _setImage(ImageSource source) async {
+    var selectedImage =
+        await ImagePicker.pickImage(source: source, imageQuality: 15);
+    File croppedImage = await ImageCropper.cropImage(
+        sourcePath: selectedImage.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        androidUiSettings: AndroidUiSettings(
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
+    setState(() {
+      _profilePic = croppedImage;
+    });
   }
 }

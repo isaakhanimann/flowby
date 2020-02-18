@@ -30,17 +30,19 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Flowby wants to set your profile picture</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Flowby needs access to your location to see how far away other users are</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Flowby needs access to your location to see how far away other users are</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Flowby needs access to your location to see how far away other users are</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    	<string>Flowby needs access to your location to see how far away other users are</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Flowby wants to record the sound of your videos</string>
 	<key>NSPhotoLibraryUsageDescription</key>

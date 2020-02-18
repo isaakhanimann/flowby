@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Flowby/constants.dart';
-import 'package:flutter/cupertino.dart';
 
 class User {
   String username;
@@ -13,8 +12,8 @@ class User {
   String imageFileName;
   String skillKeywords;
   String wishKeywords;
-  List<SkillOrWish> skills;
-  List<SkillOrWish> wishes;
+  List<SkillOrWish> skills = [];
+  List<SkillOrWish> wishes = [];
 
   List<SkillOrWish> _convertFirebaseToDart({List<dynamic> skillsOrWishes}) {
     if (skillsOrWishes == null) {
@@ -76,21 +75,50 @@ class User {
     return result;
   }
 
-  static List<SkillOrWish> controllersToListOfSkillsOrWishes(
-      {List<TextEditingController> keywordsControllers,
-      List<TextEditingController> descriptionControllers,
-      List<TextEditingController> priceControllers}) {
-    List<SkillOrWish> list = [];
-    for (int i = 0; i < keywordsControllers.length; i++) {
-      String keywords = keywordsControllers[i].text;
-      String description = descriptionControllers[i].text;
-      String price = priceControllers[i].text;
-      if (keywords != null && keywords.isNotEmpty) {
-        list.add(SkillOrWish(
-            keywords: keywords, description: description, price: price));
-      }
+  updateSkillKeywordsAtIndex({int index, String text}) {
+    skills[index].keywords = text;
+  }
+
+  updateSkillDescriptionAtIndex({int index, String text}) {
+    skills[index].description = text;
+  }
+
+  updateSkillPriceAtIndex({int index, String text}) {
+    skills[index].price = text;
+  }
+
+  addEmptySkill() {
+    if (skills == null) {
+      skills = [];
     }
-    return list;
+    skills.add(SkillOrWish(keywords: '', description: '', price: ''));
+  }
+
+  deleteSkillAtIndex({int index}) {
+    skills.removeAt(index);
+  }
+
+  updateWishKeywordsAtIndex({int index, String text}) {
+    wishes[index].keywords = text;
+  }
+
+  updateWishDescriptionAtIndex({int index, String text}) {
+    wishes[index].description = text;
+  }
+
+  updateWishPriceAtIndex({int index, String text}) {
+    wishes[index].price = text;
+  }
+
+  addEmptyWish() {
+    if (wishes == null) {
+      wishes = [];
+    }
+    wishes.add(SkillOrWish(keywords: '', description: '', price: ''));
+  }
+
+  deleteWishAtIndex({int index}) {
+    wishes.removeAt(index);
   }
 
   @override

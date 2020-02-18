@@ -27,24 +27,13 @@ class _AddUsernameRegistrationScreenState
     extends State<AddUsernameRegistrationScreen> {
   bool showSpinner = false;
 
-  String _username;
+  TextEditingController _usernameController;
 
-  Future<void> _uploadUserAndNavigate({BuildContext context, User user}) async {
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    await cloudFirestoreService.uploadUser(user: user);
-    setState(() {
-      showSpinner = false;
-    });
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return UploadPictureRegistrationScreen(
-            user: user,
-          );
-        },
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    _usernameController =
+        TextEditingController(text: widget.user.username ?? '');
   }
 
   @override
@@ -84,35 +73,15 @@ class _AddUsernameRegistrationScreenState
                       LoginInputField(
                         isCapitalized: true,
                         placeholder: 'Name',
-                        isLast: false,
-                        setText: (value) {
-                          _username = value;
-                        },
+                        isLast: true,
+                        controller: _usernameController,
                       ),
                       RoundedButton(
                         text: 'Next',
                         color: kBlueButtonColor,
                         textColor: Colors.white,
-                        onPressed: () async {
-                          if (_username == null) {
-                            showAlert(
-                                context: context,
-                                title: "Full name is missing",
-                                description: 'Enter your name. Thank you.');
-                            return;
-                          }
-
-                          setState(() {
-                            showSpinner = true;
-                          });
-
-                          widget.user.username = _username;
-                          _uploadUserAndNavigate(
-                              context: context, user: widget.user);
-
-                          setState(() {
-                            showSpinner = false;
-                          });
+                        onPressed: () {
+                          _uploadUserAndNavigate(context);
                         },
                       ),
                     ]),
@@ -120,6 +89,35 @@ class _AddUsernameRegistrationScreenState
             ]),
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _uploadUserAndNavigate(BuildContext context) async {
+    if (_usernameController.text == null) {
+      showAlert(
+          context: context,
+          title: "Full name is missing",
+          description: 'Enter your name. Thank you.');
+      return;
+    }
+    setState(() {
+      showSpinner = true;
+    });
+    widget.user.username = _usernameController.text;
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    await cloudFirestoreService.uploadUser(user: widget.user);
+    setState(() {
+      showSpinner = false;
+    });
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return UploadPictureRegistrationScreen(
+            user: widget.user,
+          );
+        },
       ),
     );
   }
