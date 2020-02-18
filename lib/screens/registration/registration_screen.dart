@@ -1,6 +1,6 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/registration/upload_picture_registration_screen.dart';
+import 'package:Flowby/screens/registration/verify_email_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
@@ -212,14 +212,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       final authResult =
           await authService.registerWithEmail(email: email, password: password);
 
-      //await authResult.user.sendEmailVerification();
-
       if (authResult != null) {
         User user = User(
           username: name,
           uid: authResult.user.uid,
         );
         await cloudFirestoreService.uploadUser(user: user);
+        await authResult.user.sendEmailVerification();
         setState(() {
           showSpinner = false;
         });
@@ -227,7 +226,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
-              return UploadPictureRegistrationScreen(
+              return VerifyEmailScreen(
                 user: user,
               );
             },
