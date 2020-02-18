@@ -104,8 +104,8 @@ class FirebaseCloudMessaging {
             otherUsername: message.data['otherUsername'],
             heroTag: message.data['otherUid'] + 'chats',
             otherImageFileName: message.data['otherImageFileName'],
-            otherImageVersionNumber:
-                11, // this is a random number for now, it should be otherImageVersionNumber
+            otherImageVersionNumber: message.data[
+                'otherImageVersionNumber'], // this is a random number for now, it should be otherImageVersionNumber
             chatPath: message.data['chatPath'],
           );
         },
@@ -124,7 +124,7 @@ class CloudMessage {
   CloudMessage({this.title, this.body});
 
   // click_action = FLUTTER_NOTIFICATION_CLICK is needed otherwise the plugin will be unable to deliver the notification to your app when the users clicks on it in the system tray.
-  Map<String, String> data = {
+  Map<String, dynamic> data = {
     "click_action": "FLUTTER_NOTIFICATION_CLICK",
     "id": "1",
     "status": "done"
@@ -144,6 +144,8 @@ class CloudMessage {
     data['otherUid'] = mapMessage['data']['otherUid'];
     data['otherUsername'] = mapMessage['data']['otherUsername'];
     data['otherImageFileName'] = mapMessage['data']['otherImageFileName'];
+    data['otherImageVersionNumber'] =
+        mapMessage['data']['otherImageVersionNumber'];
     data['chatPath'] = mapMessage['data']['chatPath'];
   }
 }
