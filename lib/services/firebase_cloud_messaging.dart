@@ -104,6 +104,8 @@ class FirebaseCloudMessaging {
             otherUsername: message.data['otherUsername'],
             heroTag: message.data['otherUid'] + 'chats',
             otherImageFileName: message.data['otherImageFileName'],
+            otherImageVersionNumber:
+                11, // this is a random number for now, it should be otherImageVersionNumber
             chatPath: message.data['chatPath'],
           );
         },

@@ -18,6 +18,7 @@ class ChatScreen extends StatelessWidget {
   final String otherUid;
   final String otherUsername;
   final String otherImageFileName;
+  final int otherImageVersionNumber;
   final String heroTag;
 
   final String chatPath;
@@ -30,6 +31,7 @@ class ChatScreen extends StatelessWidget {
       @required this.otherUsername,
       @required this.heroTag,
       @required this.otherImageFileName,
+      @required this.otherImageVersionNumber,
       this.chatPath});
 
   @override
@@ -43,6 +45,7 @@ class ChatScreen extends StatelessWidget {
         child: ChatScreenWithPath(
             otherUsername: otherUsername,
             otherImageFileName: otherImageFileName,
+            otherImageVersionNumber: otherImageVersionNumber,
             heroTag: heroTag,
             chatPath: chatPath),
       );
@@ -79,6 +82,7 @@ class ChatScreen extends StatelessWidget {
           child: ChatScreenWithPath(
               otherUsername: otherUsername,
               otherImageFileName: otherImageFileName,
+              otherImageVersionNumber: otherImageVersionNumber,
               heroTag: heroTag,
               chatPath: foundChatPath),
         );
@@ -92,6 +96,7 @@ class ChatScreenWithPath extends StatelessWidget {
     Key key,
     @required this.otherUsername,
     @required this.otherImageFileName,
+    @required this.otherImageVersionNumber,
     @required this.heroTag,
     @required this.chatPath,
   }) : super(key: key);
@@ -99,6 +104,7 @@ class ChatScreenWithPath extends StatelessWidget {
   final String otherUsername;
   final String chatPath;
   final String otherImageFileName;
+  final int otherImageVersionNumber;
   final String heroTag;
 
   @override
@@ -121,6 +127,7 @@ class ChatScreenWithPath extends StatelessWidget {
                 children: <Widget>[
                   Header(
                     otherImageFileName: otherImageFileName,
+                    otherImageVersionNumber: otherImageVersionNumber,
                     otherUsername: otherUsername,
                     heroTag: heroTag,
                   ),
@@ -142,7 +149,7 @@ class ChatScreenWithPath extends StatelessWidget {
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                  color: Colors.white,
                 ),
               ),
               Column(
@@ -162,6 +169,7 @@ class ChatScreenWithPath extends StatelessWidget {
               Header(
                   otherImageFileName: otherImageFileName,
                   otherUsername: otherUsername,
+                  otherImageVersionNumber: otherImageVersionNumber,
                   heroTag: heroTag,
                   chat: chat),
             ]);
@@ -187,12 +195,14 @@ class Header extends StatelessWidget {
   const Header(
       {Key key,
       @required this.otherImageFileName,
+      @required this.otherImageVersionNumber,
       @required this.otherUsername,
       @required this.heroTag,
       this.chat})
       : super(key: key);
 
   final String otherImageFileName;
+  final int otherImageVersionNumber;
   final String otherUsername;
   final String heroTag;
   final ChatWithoutLastMessage chat;
@@ -239,6 +249,7 @@ class Header extends StatelessWidget {
                     Navigator.of(context, rootNavigator: true).push(ScaleRoute(
                         page: ShowProfilePictureScreen(
                       imageFileName: otherImageFileName,
+                      imageVersionNumber: otherImageVersionNumber,
                       otherUsername: otherUsername,
                       heroTag: heroTag,
                     )));
@@ -247,7 +258,7 @@ class Header extends StatelessWidget {
                     children: <Widget>[
                       CachedNetworkImage(
                         imageUrl:
-                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media",
+                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media&version=$otherImageVersionNumber",
                         imageBuilder: (context, imageProvider) {
                           return Hero(
                             transitionOnUserGestures: true,

@@ -4,10 +4,12 @@ class Chat {
   String uid1;
   String username1;
   String user1ImageFileName;
+  int user1ImageVersionNumber;
   bool hasUser1Blocked;
   String uid2;
   String username2;
   String user2ImageFileName;
+  int user2ImageVersionNumber;
   bool hasUser2Blocked;
   String chatpath;
   String lastMessageText;
@@ -17,10 +19,12 @@ class Chat {
       {this.uid1,
       this.username1,
       this.user1ImageFileName,
+      this.user1ImageVersionNumber,
       this.hasUser1Blocked,
       this.uid2,
       this.username2,
       this.user2ImageFileName,
+      this.user2ImageVersionNumber,
       this.hasUser2Blocked,
       this.lastMessageText,
       this.lastMessageTimestamp});
@@ -29,10 +33,12 @@ class Chat {
     this.uid1 = map['uid1'];
     this.username1 = map['username1'] ?? 'Default username1';
     this.user1ImageFileName = map['user1ImageFileName'];
+    this.user1ImageVersionNumber = map['user1ImageVersionNumber'] ?? 1;
     this.hasUser1Blocked = map['hasUser1Blocked'] ?? false;
     this.uid2 = map['uid2'];
     this.username2 = map['username2'] ?? 'Default username2';
     this.user2ImageFileName = map['user2ImageFileName'];
+    this.user2ImageVersionNumber = map['user2ImageVersionNumber'] ?? 1;
     this.hasUser2Blocked = map['hasUser2Blocked'] ?? false;
     this.lastMessageText = map['lastMessageText'] ?? 'No messages';
     this.lastMessageTimestamp =
@@ -44,10 +50,12 @@ class Chat {
       'uid1': uid1,
       'username1': username1,
       'user1ImageFileName': user1ImageFileName,
+      'user1ImageVersionNumber': user1ImageVersionNumber,
       'hasUser1Blocked': hasUser1Blocked,
       'uid2': uid2,
       'username2': username2,
       'user2ImageFileName': user2ImageFileName,
+      'user2ImageVersionNumber': user2ImageVersionNumber,
       'hasUser2Blocked': hasUser2Blocked,
       'lastMessageText': lastMessageText,
       'lastMessageTimestamp': lastMessageTimestamp,
@@ -63,9 +71,11 @@ class Chat {
     String toPrint = '\n{ uid1: $uid1, ';
     toPrint += 'username1: $username1, ';
     toPrint += 'user1ImageFileName: $user1ImageFileName, ';
+    toPrint += 'user1ImageVersionNumber: $user1ImageVersionNumber, ';
     toPrint += 'uid2: $uid2, ';
     toPrint += 'username2: $username2, ';
     toPrint += 'user2ImageFileName: $user2ImageFileName, ';
+    toPrint += 'user2ImageVersionNumber: $user2ImageVersionNumber, ';
     toPrint += 'lastMessageText: $lastMessageText, ';
     toPrint += 'lastMessageTimestamp: ${lastMessageTimestamp.toString()} }\n';
     return toPrint;

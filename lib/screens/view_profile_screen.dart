@@ -57,6 +57,7 @@ class ViewProfileScreen extends StatelessWidget {
                             otherUid: user.uid,
                             otherUsername: user.username,
                             otherImageFileName: user.imageFileName,
+                            otherImageVersionNumber: user.imageVersionNumber,
                             heroTag: heroTag,
                           );
                         },

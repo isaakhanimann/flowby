@@ -33,13 +33,14 @@ class ListViewOfUserInfos extends StatelessWidget {
                 Navigator.of(context, rootNavigator: true).push(ScaleRoute(
                     page: ShowProfilePictureScreen(
                   imageFileName: user.imageFileName,
+                  imageVersionNumber: user.imageVersionNumber,
                   otherUsername: user.username,
                   heroTag: heroTag ?? user.imageFileName,
                 )));
               },
               child: CachedNetworkImage(
                 imageUrl:
-                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media&version=${user.imageVersionNumber}",
                 imageBuilder: (context, imageProvider) {
                   return Hero(
                     transitionOnUserGestures: true,
