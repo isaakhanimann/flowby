@@ -21,7 +21,6 @@ class ChatScreen extends StatelessWidget {
   final String otherImageFileName;
   final int otherImageVersionNumber;
   final String heroTag;
-
   final String chatPath;
 
   //either the chatPath is supplied and we can get the messageStream directly
@@ -37,63 +36,43 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (chatPath != null) {
-      return Provider<String>.value(
-        value: loggedInUid,
-        child: ChatScreenWithPath(
-            chatPath: chatPath,
-            otherUsername: otherUsername,
-            otherImageFileName: otherImageFileName,
-            otherImageVersionNumber: otherImageVersionNumber,
-            heroTag: heroTag),
-      );
-    }
-
-    return ChatScreenThatHasToGetPath(
-        loggedInUid: loggedInUid,
-        otherUid: otherUid,
-        otherUsername: otherUsername,
-        otherImageFileName: otherImageFileName,
-        otherImageVersionNumber: otherImageVersionNumber,
-        heroTag: heroTag);
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
+      child: SafeArea(
+        child: Provider<GlobalChatScreenInfo>.value(
+          value: GlobalChatScreenInfo(
+              loggedInUid: loggedInUid,
+              otherUid: otherUid,
+              otherUsername: otherUsername,
+              otherImageFileName: otherImageFileName,
+              otherImageVersionNumber: otherImageVersionNumber,
+              heroTag: heroTag),
+          child: (chatPath != null)
+              ? ChatScreenWithPath(chatPath: chatPath)
+              : ChatScreenThatHasToGetPath(),
+        ),
+      ),
+    );
   }
 }
 
 class ChatScreenThatHasToGetPath extends StatelessWidget {
-  const ChatScreenThatHasToGetPath({
-    Key key,
-    @required this.loggedInUid,
-    @required this.otherUid,
-    @required this.otherUsername,
-    @required this.otherImageFileName,
-    @required this.otherImageVersionNumber,
-    @required this.heroTag,
-  }) : super(key: key);
-
-  final String loggedInUid;
-  final String otherUid;
-  final String otherUsername;
-  final String otherImageFileName;
-  final int otherImageVersionNumber;
-  final String heroTag;
-
   @override
   Widget build(BuildContext context) {
+    GlobalChatScreenInfo screenInfo =
+        Provider.of<GlobalChatScreenInfo>(context);
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return FutureBuilder(
       future: cloudFirestoreService.getChatPath(
-          loggedInUid: loggedInUid,
-          otherUid: otherUid,
-          otherUsername: otherUsername,
-          otherUserImageFileName: otherImageFileName),
+          loggedInUid: screenInfo.loggedInUid,
+          otherUid: screenInfo.otherUid,
+          otherUsername: screenInfo.otherUsername,
+          otherUserImageFileName: screenInfo.otherImageFileName),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return CupertinoPageScaffold(
-            backgroundColor: CupertinoColors.white,
-            child: CenteredLoadingIndicator(),
-          );
+          return CenteredLoadingIndicator();
         }
         if (snapshot.hasError) {
           return Container(
@@ -103,15 +82,7 @@ class ChatScreenThatHasToGetPath extends StatelessWidget {
         }
         String foundChatPath = snapshot.data;
 
-        return Provider<String>.value(
-          value: loggedInUid,
-          child: ChatScreenWithPath(
-              chatPath: foundChatPath,
-              otherUsername: otherUsername,
-              otherImageFileName: otherImageFileName,
-              otherImageVersionNumber: otherImageVersionNumber,
-              heroTag: heroTag),
-        );
+        return ChatScreenWithPath(chatPath: foundChatPath);
       },
     );
   }
@@ -120,53 +91,29 @@ class ChatScreenThatHasToGetPath extends StatelessWidget {
 class ChatScreenWithPath extends StatelessWidget {
   const ChatScreenWithPath({
     Key key,
-    @required this.otherUsername,
-    @required this.otherImageFileName,
-    @required this.otherImageVersionNumber,
-    @required this.heroTag,
     @required this.chatPath,
   }) : super(key: key);
 
-  final String otherUsername;
   final String chatPath;
-  final String otherImageFileName;
-  final int otherImageVersionNumber;
-  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    return CupertinoPageScaffold(
-      backgroundColor: CupertinoColors.white,
-      child: SafeArea(
-        child: StreamBuilder(
-          stream: cloudFirestoreService.getChatStreamWithoutLastMessageField(
-              chatPath: chatPath),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting ||
-                snapshot.connectionState == ConnectionState.none) {
-              return ChatIsLoading(
-                  chatPath: chatPath,
-                  otherUsername: otherUsername,
-                  otherImageFileName: otherImageFileName,
-                  otherImageVersionNumber: otherImageVersionNumber,
-                  heroTag: heroTag);
-            }
+    return StreamBuilder(
+      stream: cloudFirestoreService.getChatStreamWithoutLastMessageField(
+          chatPath: chatPath),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.connectionState == ConnectionState.none) {
+          return ChatIsLoading(chatPath: chatPath);
+        }
 
-            final ChatWithoutLastMessage chat = snapshot.data;
+        final ChatWithoutLastMessage chat = snapshot.data;
 
-            return ChatHasLoaded(
-                chat: chat,
-                chatPath: chatPath,
-                otherUsername: otherUsername,
-                otherImageFileName: otherImageFileName,
-                otherImageVersionNumber: otherImageVersionNumber,
-                heroTag: heroTag);
-          },
-        ),
-      ),
+        return ChatHasLoaded(chat: chat, chatPath: chatPath);
+      },
     );
   }
 }
@@ -176,18 +123,10 @@ class ChatHasLoaded extends StatelessWidget {
     Key key,
     @required this.chatPath,
     @required this.chat,
-    @required this.otherImageFileName,
-    @required this.otherUsername,
-    @required this.otherImageVersionNumber,
-    @required this.heroTag,
   }) : super(key: key);
 
   final String chatPath;
   final ChatWithoutLastMessage chat;
-  final String otherImageFileName;
-  final String otherUsername;
-  final int otherImageVersionNumber;
-  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -216,12 +155,7 @@ class ChatHasLoaded extends StatelessWidget {
           MessageSendingSection(chat: chat),
         ],
       ),
-      Header(
-          otherImageFileName: otherImageFileName,
-          otherUsername: otherUsername,
-          otherImageVersionNumber: otherImageVersionNumber,
-          heroTag: heroTag,
-          chat: chat),
+      Header(chat: chat),
     ]);
   }
 }
@@ -229,17 +163,9 @@ class ChatHasLoaded extends StatelessWidget {
 class ChatIsLoading extends StatelessWidget {
   const ChatIsLoading({
     Key key,
-    @required this.otherImageFileName,
-    @required this.otherImageVersionNumber,
-    @required this.otherUsername,
-    @required this.heroTag,
     @required this.chatPath,
   }) : super(key: key);
 
-  final String otherImageFileName;
-  final int otherImageVersionNumber;
-  final String otherUsername;
-  final String heroTag;
   final String chatPath;
 
   @override
@@ -251,12 +177,7 @@ class ChatIsLoading extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Header(
-          otherImageFileName: otherImageFileName,
-          otherImageVersionNumber: otherImageVersionNumber,
-          otherUsername: otherUsername,
-          heroTag: heroTag,
-        ),
+        Header(),
         Expanded(
           child: MessagesStream(
             messagesStream:
@@ -281,30 +202,20 @@ class MessageSendingSectionLoading extends StatelessWidget {
 }
 
 class Header extends StatelessWidget {
-  const Header(
-      {Key key,
-      @required this.otherImageFileName,
-      @required this.otherImageVersionNumber,
-      @required this.otherUsername,
-      @required this.heroTag,
-      this.chat})
-      : super(key: key);
+  const Header({Key key, this.chat}) : super(key: key);
 
-  final String otherImageFileName;
-  final int otherImageVersionNumber;
-  final String otherUsername;
-  final String heroTag;
   final ChatWithoutLastMessage chat;
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUid = Provider.of<String>(context);
+    GlobalChatScreenInfo screenInfo =
+        Provider.of<GlobalChatScreenInfo>(context);
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     bool amIUser1;
     bool haveIBlocked;
     if (chat != null) {
-      amIUser1 = (chat.uid1 == loggedInUid);
+      amIUser1 = (chat.uid1 == screenInfo.loggedInUid);
       if (amIUser1) {
         haveIBlocked = chat.hasUser1Blocked;
       } else {
@@ -337,21 +248,21 @@ class Header extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context, rootNavigator: true).push(ScaleRoute(
                         page: ShowProfilePictureScreen(
-                      imageFileName: otherImageFileName,
-                      imageVersionNumber: otherImageVersionNumber,
-                      otherUsername: otherUsername,
-                      heroTag: heroTag,
+                      imageFileName: screenInfo.otherImageFileName,
+                      imageVersionNumber: screenInfo.otherImageVersionNumber,
+                      otherUsername: screenInfo.otherUsername,
+                      heroTag: screenInfo.heroTag,
                     )));
                   },
                   child: Row(
                     children: <Widget>[
                       CachedNetworkImage(
                         imageUrl:
-                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media&version=$otherImageVersionNumber",
+                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${screenInfo.otherImageFileName}?alt=media&version=${screenInfo.otherImageVersionNumber}",
                         imageBuilder: (context, imageProvider) {
                           return Hero(
                             transitionOnUserGestures: true,
-                            tag: heroTag,
+                            tag: screenInfo.heroTag,
                             child: CircleAvatar(
                                 radius: 30,
                                 backgroundColor: Colors.grey,
@@ -369,7 +280,7 @@ class Header extends StatelessWidget {
                         width: 10,
                       ),
                       Text(
-                        otherUsername,
+                        screenInfo.otherUsername,
                         overflow: TextOverflow.ellipsis,
                         style: kChatScreenHeaderTextStyle,
                       )
@@ -417,7 +328,8 @@ class MessagesStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String loggedInUid = Provider.of<String>(context);
+    GlobalChatScreenInfo screenInfo =
+        Provider.of<GlobalChatScreenInfo>(context);
     return StreamBuilder<List<Message>>(
       stream: messagesStream,
       builder: (context, snapshot) {
@@ -447,7 +359,7 @@ class MessagesStream extends StatelessWidget {
               text: message.text,
               timestamp: HelperFunctions.getTimestampAsString(
                   timestamp: messageTimestamp),
-              isMe: loggedInUid == message.senderUid,
+              isMe: screenInfo.loggedInUid == message.senderUid,
             );
           },
           reverse: true,
@@ -472,9 +384,9 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
 
   @override
   Widget build(BuildContext context) {
-    String loggedInUid = Provider.of<String>(context);
-
-    bool amIUser1 = widget.chat.uid1 == loggedInUid;
+    GlobalChatScreenInfo screenInfo =
+        Provider.of<GlobalChatScreenInfo>(context);
+    bool amIUser1 = widget.chat.uid1 == screenInfo.loggedInUid;
     bool haveIBlocked;
     bool hasOtherBlocked;
     if (amIUser1) {
@@ -536,7 +448,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
             if (messageTextController.text != '') {
               //Implement send functionality.
               Message message = Message(
-                  senderUid: loggedInUid,
+                  senderUid: screenInfo.loggedInUid,
                   text: messageTextController.text,
                   timestamp: FieldValue.serverTimestamp());
               cloudFirestoreService.uploadMessage(
@@ -620,4 +532,21 @@ class SendButton extends StatelessWidget {
       ),
     );
   }
+}
+
+class GlobalChatScreenInfo {
+  final String loggedInUid;
+  final String otherUid;
+  final String otherUsername;
+  final String otherImageFileName;
+  final int otherImageVersionNumber;
+  final String heroTag;
+
+  GlobalChatScreenInfo(
+      {@required this.loggedInUid,
+      @required this.otherUid,
+      @required this.otherUsername,
+      @required this.otherImageFileName,
+      @required this.otherImageVersionNumber,
+      @required this.heroTag});
 }
