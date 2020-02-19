@@ -151,7 +151,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
     );
   }
 
-
   Future<void> getLoggedInUserUploadLocationAndToken() async {
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
