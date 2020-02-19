@@ -95,7 +95,7 @@ class _FlowbyState extends State<Flowby> {
         prefs.getBool('shouldExplanationBeLoaded') ?? true;
     if (shouldExplanationBeLoaded) {
       setState(() {
-        shouldExplanationBeLoaded = true;
+        this.shouldExplanationBeLoaded = true;
       });
       await prefs.setBool('shouldExplanationBeLoaded', false);
     }
