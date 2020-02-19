@@ -41,6 +41,19 @@ class FirebaseCloudFirestoreService {
     }
   }
 
+  Stream<User> getUserStream({@required String uid}) {
+    try {
+      return _fireStore
+          .collection('users')
+          .document(uid)
+          .snapshots()
+          .map((doc) => User.fromMap(map: doc.data));
+    } catch (e) {
+      print('Isaak could not get the user stream');
+    }
+    return Stream.empty();
+  }
+
   Stream<List<User>> getUsersStream({@required String uidToExclude}) {
     try {
       var userSnapshots = _fireStore.collection('users').snapshots().map(

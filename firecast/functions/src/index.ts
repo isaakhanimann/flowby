@@ -119,7 +119,7 @@ exports.updateImageUpdateUserAndChats = functions.storage
 
     const imageVersionNumber = userDoc?.data()?.imageVersionNumber;
     let newImageVersionNumber = 1;
-    if (imageVersionNumber != null) {
+    if (imageVersionNumber !== null) {
       newImageVersionNumber = imageVersionNumber + 1;
     }
 
