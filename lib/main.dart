@@ -13,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'services/apple_sign_in_available.dart';
 import 'constants.dart';
 import 'route_generator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Flowby/screens/explanation_screen.dart';
 
 void main() async {
   // This app is designed only to work vertically, so we limit
@@ -27,9 +29,23 @@ void main() async {
   ));
 }
 
-class Flowby extends StatelessWidget {
+class Flowby extends StatefulWidget {
+  @override
+  _FlowbyState createState() => _FlowbyState();
+}
+
+class _FlowbyState extends State<Flowby> {
+  bool shouldExplanationBeLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(shouldExplanationBeLoaded);
     return MultiProvider(
       providers: [
         Provider<FirebaseAuthService>(
@@ -64,10 +80,24 @@ class Flowby extends StatelessWidget {
               brightness: Brightness.light,
               primaryColor: kLoginBackgroundColor),
           debugShowCheckedModeBanner: false,
-          initialRoute: NavigationScreen.id,
+          initialRoute: shouldExplanationBeLoaded
+              ? ExplanationScreen.id
+              : NavigationScreen.id,
           onGenerateRoute: RouteGenerator.generateRoute,
         ),
       ),
     );
+  }
+
+  _loadPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool shouldExplanationBeLoaded =
+        prefs.getBool('shouldExplanationBeLoaded') ?? true;
+    if (shouldExplanationBeLoaded) {
+      setState(() {
+        shouldExplanationBeLoaded = true;
+      });
+      await prefs.setBool('shouldExplanationBeLoaded', false);
+    }
   }
 }

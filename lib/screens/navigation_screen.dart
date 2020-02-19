@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/chats_tab.dart';
 import 'package:Flowby/screens/home_tab.dart';
@@ -151,6 +150,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ),
     );
   }
+
 
   Future<void> getLoggedInUserUploadLocationAndToken() async {
     final authService =
