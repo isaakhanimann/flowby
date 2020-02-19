@@ -2,6 +2,7 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/no_results.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,12 +50,7 @@ class _HomeTabState extends State<HomeTab> {
           cloudFirestoreService.getUsersStream(uidToExclude: loggedInUser?.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-            ),
-          );
+          return CenteredLoadingIndicator();
         }
         List<User> allUsers =
             List.from(snapshot.data); // to convert it editable list

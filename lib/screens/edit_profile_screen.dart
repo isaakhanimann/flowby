@@ -6,6 +6,7 @@ import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
+import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/list_of_textfields.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,13 +52,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     if (showSpinner) {
       return CupertinoPageScaffold(
-        backgroundColor: CupertinoColors.white,
-        child: Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-          ),
-        ),
-      );
+          backgroundColor: CupertinoColors.white,
+          child: CenteredLoadingIndicator());
     }
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(

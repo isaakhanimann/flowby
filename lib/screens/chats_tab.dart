@@ -3,6 +3,7 @@ import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,12 +26,7 @@ class ChatsTab extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.connectionState == ConnectionState.none) {
-            return Center(
-              child: CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-              ),
-            );
+            return CenteredLoadingIndicator();
           }
           List<Chat> chats =
               List.from(snapshot.data); // to convert it to editable list

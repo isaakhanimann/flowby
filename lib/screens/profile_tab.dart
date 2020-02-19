@@ -3,6 +3,7 @@ import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/edit_profile_screen.dart';
 import 'package:Flowby/screens/settings_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/listview_of_user_infos.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,12 +25,7 @@ class ProfileTab extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.connectionState == ConnectionState.none) {
-            return Center(
-              child: CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-              ),
-            );
+            return CenteredLoadingIndicator();
           }
 
           User user = snapshot.data;

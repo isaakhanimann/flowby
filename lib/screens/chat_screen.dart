@@ -11,6 +11,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/chat_without_last_message.dart';
 import 'package:Flowby/widgets/route_transitions/scale_route.dart';
+import 'package:Flowby/widgets/centered_loading_indicator.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
@@ -36,20 +37,50 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-
     if (chatPath != null) {
       return Provider<String>.value(
         value: loggedInUid,
         child: ChatScreenWithPath(
+            chatPath: chatPath,
             otherUsername: otherUsername,
             otherImageFileName: otherImageFileName,
             otherImageVersionNumber: otherImageVersionNumber,
-            heroTag: heroTag,
-            chatPath: chatPath),
+            heroTag: heroTag),
       );
     }
+
+    return ChatScreenThatHasToGetPath(
+        loggedInUid: loggedInUid,
+        otherUid: otherUid,
+        otherUsername: otherUsername,
+        otherImageFileName: otherImageFileName,
+        otherImageVersionNumber: otherImageVersionNumber,
+        heroTag: heroTag);
+  }
+}
+
+class ChatScreenThatHasToGetPath extends StatelessWidget {
+  const ChatScreenThatHasToGetPath({
+    Key key,
+    @required this.loggedInUid,
+    @required this.otherUid,
+    @required this.otherUsername,
+    @required this.otherImageFileName,
+    @required this.otherImageVersionNumber,
+    @required this.heroTag,
+  }) : super(key: key);
+
+  final String loggedInUid;
+  final String otherUid;
+  final String otherUsername;
+  final String otherImageFileName;
+  final int otherImageVersionNumber;
+  final String heroTag;
+
+  @override
+  Widget build(BuildContext context) {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     return FutureBuilder(
       future: cloudFirestoreService.getChatPath(
@@ -61,12 +92,7 @@ class ChatScreen extends StatelessWidget {
         if (snapshot.connectionState != ConnectionState.done) {
           return CupertinoPageScaffold(
             backgroundColor: CupertinoColors.white,
-            child: Center(
-              child: CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-              ),
-            ),
+            child: CenteredLoadingIndicator(),
           );
         }
         if (snapshot.hasError) {
@@ -80,11 +106,11 @@ class ChatScreen extends StatelessWidget {
         return Provider<String>.value(
           value: loggedInUid,
           child: ChatScreenWithPath(
+              chatPath: foundChatPath,
               otherUsername: otherUsername,
               otherImageFileName: otherImageFileName,
               otherImageVersionNumber: otherImageVersionNumber,
-              heroTag: heroTag,
-              chatPath: foundChatPath),
+              heroTag: heroTag),
         );
       },
     );
@@ -121,61 +147,124 @@ class ChatScreenWithPath extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting ||
                 snapshot.connectionState == ConnectionState.none) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Header(
-                    otherImageFileName: otherImageFileName,
-                    otherImageVersionNumber: otherImageVersionNumber,
-                    otherUsername: otherUsername,
-                    heroTag: heroTag,
-                  ),
-                  Expanded(
-                    child: MessagesStream(
-                      messagesStream: cloudFirestoreService.getMessageStream(
-                          chatPath: chatPath),
-                    ),
-                  ),
-                  MessageSendingSectionLoading(),
-                ],
-              );
+              return ChatIsLoading(
+                  chatPath: chatPath,
+                  otherUsername: otherUsername,
+                  otherImageFileName: otherImageFileName,
+                  otherImageVersionNumber: otherImageVersionNumber,
+                  heroTag: heroTag);
             }
 
             final ChatWithoutLastMessage chat = snapshot.data;
 
-            return Stack(children: [
-              Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  SizedBox(height: 60),
-                  Expanded(
-                    child: MessagesStream(
-                      messagesStream: cloudFirestoreService.getMessageStream(
-                          chatPath: chatPath),
-                    ),
-                  ),
-                  MessageSendingSection(chat: chat),
-                ],
-              ),
-              Header(
-                  otherImageFileName: otherImageFileName,
-                  otherUsername: otherUsername,
-                  otherImageVersionNumber: otherImageVersionNumber,
-                  heroTag: heroTag,
-                  chat: chat),
-            ]);
+            return ChatHasLoaded(
+                chat: chat,
+                chatPath: chatPath,
+                otherUsername: otherUsername,
+                otherImageFileName: otherImageFileName,
+                otherImageVersionNumber: otherImageVersionNumber,
+                heroTag: heroTag);
           },
         ),
       ),
+    );
+  }
+}
+
+class ChatHasLoaded extends StatelessWidget {
+  const ChatHasLoaded({
+    Key key,
+    @required this.chatPath,
+    @required this.chat,
+    @required this.otherImageFileName,
+    @required this.otherUsername,
+    @required this.otherImageVersionNumber,
+    @required this.heroTag,
+  }) : super(key: key);
+
+  final String chatPath;
+  final ChatWithoutLastMessage chat;
+  final String otherImageFileName;
+  final String otherUsername;
+  final int otherImageVersionNumber;
+  final String heroTag;
+
+  @override
+  Widget build(BuildContext context) {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    return Stack(children: [
+      Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+      ),
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SizedBox(height: 60),
+          Expanded(
+            child: MessagesStream(
+              messagesStream:
+                  cloudFirestoreService.getMessageStream(chatPath: chatPath),
+            ),
+          ),
+          MessageSendingSection(chat: chat),
+        ],
+      ),
+      Header(
+          otherImageFileName: otherImageFileName,
+          otherUsername: otherUsername,
+          otherImageVersionNumber: otherImageVersionNumber,
+          heroTag: heroTag,
+          chat: chat),
+    ]);
+  }
+}
+
+class ChatIsLoading extends StatelessWidget {
+  const ChatIsLoading({
+    Key key,
+    @required this.otherImageFileName,
+    @required this.otherImageVersionNumber,
+    @required this.otherUsername,
+    @required this.heroTag,
+    @required this.chatPath,
+  }) : super(key: key);
+
+  final String otherImageFileName;
+  final int otherImageVersionNumber;
+  final String otherUsername;
+  final String heroTag;
+  final String chatPath;
+
+  @override
+  Widget build(BuildContext context) {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Header(
+          otherImageFileName: otherImageFileName,
+          otherImageVersionNumber: otherImageVersionNumber,
+          otherUsername: otherUsername,
+          heroTag: heroTag,
+        ),
+        Expanded(
+          child: MessagesStream(
+            messagesStream:
+                cloudFirestoreService.getMessageStream(chatPath: chatPath),
+          ),
+        ),
+        MessageSendingSectionLoading(),
+      ],
     );
   }
 }
