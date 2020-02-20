@@ -19,12 +19,10 @@ class VerifyEmailScreen extends StatefulWidget {
   VerifyEmailScreen({this.user});
 
   @override
-  _VerifyEmailScreenState createState() =>
-      _VerifyEmailScreenState();
+  _VerifyEmailScreenState createState() => _VerifyEmailScreenState();
 }
 
-class _VerifyEmailScreenState
-    extends State<VerifyEmailScreen> {
+class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   bool showSpinner = false;
 
   @override
@@ -80,9 +78,14 @@ class _VerifyEmailScreenState
 
   Future<void> _uploadUserAndNavigate(BuildContext context) async {
     final authService =
-    Provider.of<FirebaseAuthService>(context, listen: false);
+        Provider.of<FirebaseAuthService>(context, listen: false);
     FirebaseUser user = await authService.getCurrentUser();
     await user.reload();
+    // The reload() function is not working as intended. See here: https://github.com/FirebaseExtended/flutterfire/issues/717
+    // The workaround is to call a second time getCurrentUser()
+    // https://pub.dev/packages/firebase_user_stream
+    user = await authService.getCurrentUser();
+
     if (user.isEmailVerified == false) {
       showAlert(
           context: context,
@@ -90,12 +93,6 @@ class _VerifyEmailScreenState
           description: 'It seems that you haven\'t verified your email yet.');
       return;
     }
-    setState(() {
-      showSpinner = true;
-    });
-    setState(() {
-      showSpinner = false;
-    });
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {

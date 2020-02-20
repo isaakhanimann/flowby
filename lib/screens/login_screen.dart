@@ -168,9 +168,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (email == null || password == null) {
       return;
     }
-    setState(() {
-      showSpinner = true;
-    });
     try {
       final authService =
           Provider.of<FirebaseAuthService>(context, listen: false);
@@ -178,6 +175,16 @@ class _LoginScreenState extends State<LoginScreen> {
           await authService.signInWithEmail(email: email, password: password);
       final user = authResult?.user;
       if (user != null) {
+        if (user.isEmailVerified == false) {
+          showAlert(
+              context: context,
+              title: "Verify your email",
+              description: 'It seems that you haven\'t verified your email yet.');
+          return;
+        }
+        setState(() {
+          showSpinner = true;
+        });
         //cleans the navigation stack, so we don't come back to the login page if we
         //press the back button in Android
         Navigator.of(context).pushNamedAndRemoveUntil(
