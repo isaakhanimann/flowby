@@ -1,6 +1,10 @@
+import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/constants.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:Flowby/services/location_service.dart';
+import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 
 class ExplanationSeeDistanceTab extends StatelessWidget {
   @override
@@ -20,12 +24,67 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
             ),
             SizedBox(height: 50),
             Text(
-              'See how far away the other users are',
+              'See how far away other users are',
               style: kExplanationMiddleTextStyle,
             ),
+            SizedBox(height: 50),
+            RoundedButton(
+                color: kBlueButtonColor,
+                textColor: CupertinoColors.white,
+                onPressed: () {
+                  _checkAndHandleLocationPermissions(context);
+                },
+                text: 'Enable Location')
           ],
         ),
       ),
     );
+  }
+
+  _checkAndHandleLocationPermissions(BuildContext context) async {
+    //just get the current location so the user is prompted to accept using the location
+    final locationService =
+        Provider.of<LocationService>(context, listen: false);
+    try {
+      GeolocationStatus status =
+          await locationService.checkGeolocationPermissionStatus();
+      if (status == GeolocationStatus.granted) {
+        showCupertinoDialog(
+          context: context,
+          builder: (_) => CupertinoAlertDialog(
+            title: Text('Location is enabled'),
+            content: Text('You have got all you need'),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                child: Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              )
+            ],
+          ),
+        );
+      } else {
+        // get location because this function automatically asks for permission
+        await locationService.getCurrentPosition();
+      }
+    } catch (e) {
+      print(e);
+      showCupertinoDialog(
+        context: context,
+        builder: (_) => CupertinoAlertDialog(
+          title: Text('Location Permissions Denied'),
+          content: Text('Enable Location Permissions in your Settings'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+            )
+          ],
+        ),
+      );
+    }
   }
 }
