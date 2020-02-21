@@ -4,25 +4,25 @@ import 'package:Flowby/screens/explanation_provide_skill_tab.dart';
 import 'package:Flowby/screens/explanation_looking_for_skill_tab.dart';
 import 'package:Flowby/screens/explanation_didnt_find_skill_tab.dart';
 import 'package:Flowby/screens/explanation_see_distance_tab.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:liquid_swipe/liquid_swipe.dart';
 
 class ExplanationScreen extends StatelessWidget {
   static const String id = 'explanation_screen';
-  final pageController = PageController(initialPage: 0);
+
+  final pages = [
+    Container(child: ExplanationProvideSkillTab()),
+    Container(child: ExplanationLookingForSkillTab()),
+    Container(child: ExplanationDidntFindSkillTab()),
+    Container(child: ExplanationSeeDistanceTab())
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: <Widget>[
-        PageView(
-          controller: pageController,
-          children: <Widget>[
-            ExplanationProvideSkillTab(),
-            ExplanationLookingForSkillTab(),
-            ExplanationDidntFindSkillTab(),
-            ExplanationSeeDistanceTab()
-          ],
+        LiquidSwipe(
+          pages: pages,
         ),
         Positioned(
           bottom: 30,
@@ -40,17 +40,6 @@ class ExplanationScreen extends StatelessWidget {
             },
           ),
         ),
-        Positioned(
-          bottom: 50,
-          child: SmoothPageIndicator(
-            controller: pageController, // PageController
-            count: 4,
-            effect: WormEffect(
-              dotColor: CupertinoColors.white,
-            ),
-            // your preferred effect
-          ),
-        )
       ],
     );
   }
