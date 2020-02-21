@@ -2,6 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Text Styles
+const kExplanationTitleTextStyle = TextStyle(
+    fontFamily: 'MontserratRegular',
+    fontSize: 30.0,
+    fontWeight: FontWeight.w500,
+    color: kLoginBackgroundColor);
+const kExplanationMiddleTextStyle = TextStyle(
+    fontFamily: 'MontserratRegular',
+    fontSize: 20.0,
+    fontWeight: FontWeight.w500,
+    color: kLoginBackgroundColor);
 const kUsernameTitleTextStyle = TextStyle(
     fontFamily: 'MontserratRegular',
     fontSize: 30.0,

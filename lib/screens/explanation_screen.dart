@@ -7,7 +7,7 @@ import 'package:Flowby/screens/explanation_see_distance_tab.dart';
 
 class ExplanationScreen extends StatelessWidget {
   static const String id = 'explanation_screen';
-  final pageController = PageController(initialPage: 1);
+  final pageController = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
