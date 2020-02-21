@@ -10,13 +10,26 @@ class ExplanationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PageView(
-      controller: pageController,
+    return Stack(
+      alignment: Alignment.bottomRight,
       children: <Widget>[
-        ExplanationProvideSkillTab(),
-        ExplanationLookingForSkillTab(),
-        ExplanationDidntFindSkillTab(),
-        ExplanationSeeDistanceTab()
+        PageView(
+          controller: pageController,
+          children: <Widget>[
+            ExplanationProvideSkillTab(),
+            ExplanationLookingForSkillTab(),
+            ExplanationDidntFindSkillTab(),
+            ExplanationSeeDistanceTab()
+          ],
+        ),
+        SafeArea(
+          child: CupertinoButton(
+            child: Text('Skip'),
+            onPressed: () {
+              print('skip pressed');
+            },
+          ),
+        )
       ],
     );
   }
