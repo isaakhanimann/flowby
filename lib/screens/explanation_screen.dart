@@ -1,3 +1,4 @@
+import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/screens/explanation_provide_skill_tab.dart';
 import 'package:Flowby/screens/explanation_looking_for_skill_tab.dart';
@@ -26,7 +27,13 @@ class ExplanationScreen extends StatelessWidget {
           child: CupertinoButton(
             child: Text('Skip'),
             onPressed: () {
-              print('skip pressed');
+              Navigator.of(context, rootNavigator: true).push(
+                CupertinoPageRoute<void>(
+                  builder: (context) {
+                    return NavigationScreen();
+                  },
+                ),
+              );
             },
           ),
         )

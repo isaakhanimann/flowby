@@ -86,7 +86,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool shouldExplanationBeLoaded =
         prefs.getBool('shouldExplanationBeLoaded') ?? true;
-    if (true) {
+    if (shouldExplanationBeLoaded) {
       setState(() {
         this.shouldExplanationBeLoaded = true;
       });
