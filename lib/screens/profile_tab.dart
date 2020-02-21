@@ -4,7 +4,6 @@ import 'package:Flowby/screens/edit_profile_screen.dart';
 import 'package:Flowby/screens/settings_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/listview_of_user_infos.dart';
-import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,16 +38,19 @@ class ProfileTab extends StatelessWidget {
             child: Stack(alignment: Alignment.bottomCenter, children: <Widget>[
               ListViewOfUserInfos(user: user),
               Positioned(
-                bottom: 20,
-                child: RoundedButton(
-                  text: 'Edit your profile',
-                  color: kBlueButtonColor,
-                  textColor: Colors.white,
+                top: 0,
+                right: 0,
+                child: CupertinoButton(
+                  child: Icon(
+                    Feather.edit,
+                  ),
                   onPressed: () {
                     Navigator.of(context, rootNavigator: true).push(
                       CupertinoPageRoute<void>(
                         builder: (context) {
-                          return EditProfileScreen(user: user);
+                          return EditProfileScreen(
+                            user: user,
+                          );
                         },
                       ),
                     );
@@ -57,11 +59,10 @@ class ProfileTab extends StatelessWidget {
               ),
               Positioned(
                 top: 0,
-                right: 0,
+                left: 0,
                 child: CupertinoButton(
                   child: Icon(
                     Feather.settings,
-                    size: 30,
                   ),
                   onPressed: () {
                     Navigator.of(context, rootNavigator: true).push(

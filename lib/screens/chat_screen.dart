@@ -242,6 +242,7 @@ class Header extends StatelessWidget {
                   },
                   child: Icon(
                     Feather.chevron_left,
+                    size: 30,
                   ),
                 ),
                 GestureDetector(
