@@ -45,7 +45,7 @@ class _HomeTabState extends State<HomeTab> {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    return StreamBuilder<List<User>>(
+    return StreamBuilder<Iterable<User>>(
       stream:
           cloudFirestoreService.getUsersStream(uidToExclude: loggedInUser?.uid),
       builder: (context, snapshot) {
