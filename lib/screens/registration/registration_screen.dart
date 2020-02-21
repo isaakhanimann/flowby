@@ -281,7 +281,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       User user = User(
           username: firebaseUser.displayName,
           uid: firebaseUser.uid,
-          imageFileName: 'default-profile_pic.jpg');
+          imageFileName: 'default-profile-pic.jpg');
       _uploadUserAndNavigate(context: context, user: user);
       setState(() {
         showSpinner = false;
