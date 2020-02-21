@@ -298,51 +298,19 @@ class Header extends StatelessWidget {
             if (chat != null)
               Flexible(
                 child: CupertinoButton(
-                  child: haveIBlocked ? Text('Unblock') : Text('Block'),
+                  child: Icon(
+                    Feather.user_x,
+                    color: haveIBlocked ? kTextFieldTextColor : Colors.red,
+                  ),
                   onPressed: () {
-                    if (!haveIBlocked) {
-                      showCupertinoDialog(
-                        context: context,
-                        builder: (_) => CupertinoAlertDialog(
-                          title: Text('Block $otherUsername?'),
-                          content: Text(
-                              'Blocked contacts will no longer be able to send you messages'),
-                          actions: <Widget>[
-                            CupertinoDialogAction(
-                              child: Text('Cancel'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            CupertinoDialogAction(
-                              child: Text('Block'),
-                              onPressed: () {
-                                if (amIUser1) {
-                                  cloudFirestoreService.uploadChatBlocked(
-                                      chatpath: chat.chatpath,
-                                      hasUser1Blocked: !haveIBlocked);
-                                } else {
-                                  cloudFirestoreService.uploadChatBlocked(
-                                      chatpath: chat.chatpath,
-                                      hasUser2Blocked: !haveIBlocked);
-                                }
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    else{
-                      if (amIUser1) {
-                        cloudFirestoreService.uploadChatBlocked(
-                            chatpath: chat.chatpath,
-                            hasUser1Blocked: !haveIBlocked);
-                      } else {
-                        cloudFirestoreService.uploadChatBlocked(
-                            chatpath: chat.chatpath,
-                            hasUser2Blocked: !haveIBlocked);
-                      }
+                    if (amIUser1) {
+                      cloudFirestoreService.uploadChatBlocked(
+                          chatpath: chat.chatpath,
+                          hasUser1Blocked: !haveIBlocked);
+                    } else {
+                      cloudFirestoreService.uploadChatBlocked(
+                          chatpath: chat.chatpath,
+                          hasUser2Blocked: !haveIBlocked);
                     }
                   },
                 ),

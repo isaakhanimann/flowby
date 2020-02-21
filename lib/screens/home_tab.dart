@@ -92,7 +92,6 @@ class _HomeTabState extends State<HomeTab> {
                       padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
                       child: Icon(
                         Feather.info,
-                        size: 30,
                       ),
                       onPressed: () {
                         Navigator.of(context, rootNavigator: true).push(
