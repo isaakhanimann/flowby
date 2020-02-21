@@ -1,20 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/widgets/top_middle_bottom_text.dart';
+import 'package:flutter/material.dart';
 
-class ExplanationProvideSkillTab extends StatelessWidget {
+class ExplanationDidntFindSkillTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
       height: double.infinity,
-      color: CupertinoColors.systemYellow,
+      color: Colors.cyanAccent,
       child: TopMiddleBottomText(
-        topText: 'Want to provide a certain skill?',
+        topText: 'Didn’t find anyone with the skill you were looking for?',
         middleText:
-            'Add a skill, specify the topic & description and how much you want to get paid for it',
-        bottomText:
-            'Wait to get notified or actively look for people who have wished for it',
+            'Add a wish\nSpecify the topic & description\nAdd the price you would be willing to pay for it',
+        bottomText: 'Wait to get notified',
       ),
     );
   }

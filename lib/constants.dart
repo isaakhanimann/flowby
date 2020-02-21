@@ -6,12 +6,12 @@ const kExplanationTitleTextStyle = TextStyle(
     fontFamily: 'MontserratRegular',
     fontSize: 30.0,
     fontWeight: FontWeight.w500,
-    color: kLoginBackgroundColor);
+    color: kKeywordHeaderColor);
 const kExplanationMiddleTextStyle = TextStyle(
     fontFamily: 'MontserratRegular',
     fontSize: 20.0,
     fontWeight: FontWeight.w500,
-    color: kLoginBackgroundColor);
+    color: kKeywordHeaderColor);
 const kUsernameTitleTextStyle = TextStyle(
     fontFamily: 'MontserratRegular',
     fontSize: 30.0,

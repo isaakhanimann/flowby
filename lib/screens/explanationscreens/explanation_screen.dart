@@ -1,10 +1,10 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:Flowby/screens/explanation_provide_skill_tab.dart';
-import 'package:Flowby/screens/explanation_looking_for_skill_tab.dart';
-import 'package:Flowby/screens/explanation_didnt_find_skill_tab.dart';
-import 'package:Flowby/screens/explanation_see_distance_tab.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_provide_skill_tab.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_looking_for_skill_tab.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_didnt_find_skill_tab.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_see_distance_tab.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 
 class ExplanationScreen extends StatefulWidget {
