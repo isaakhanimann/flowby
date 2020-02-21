@@ -55,23 +55,27 @@ class _HomeTabState extends State<HomeTab> {
         }
         List<User> allUsers =
             List.from(snapshot.data); // to convert it editable list
+        List<User> allNotHiddenUsers =
+            allUsers.where((u) => !u.isHidden).toList();
         List<User> searchResultUsers;
 
         if (isSkillSelected) {
-          searchResultUsers = allUsers
-              .where((u) => u.hasSkills && u.skillKeywords != '')
-              .where((u) => u.skillKeywords
-                  .toString()
-                  .toLowerCase()
-                  .contains(_searchTerm.toLowerCase()))
+          searchResultUsers = allNotHiddenUsers
+              .where((u) =>
+                  u.skillKeywords != '' &&
+                  u.skillKeywords
+                      .toString()
+                      .toLowerCase()
+                      .contains(_searchTerm.toLowerCase()))
               .toList();
         } else {
-          searchResultUsers = allUsers
-              .where((u) => u.hasWishes && u.wishKeywords != '')
-              .where((u) => u.wishKeywords
-                  .toString()
-                  .toLowerCase()
-                  .contains(_searchTerm.toLowerCase()))
+          searchResultUsers = allNotHiddenUsers
+              .where((u) =>
+                  u.wishKeywords != '' &&
+                  u.wishKeywords
+                      .toString()
+                      .toLowerCase()
+                      .contains(_searchTerm.toLowerCase()))
               .toList();
         }
 

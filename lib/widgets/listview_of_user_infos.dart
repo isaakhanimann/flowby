@@ -16,9 +16,9 @@ class ListViewOfUserInfos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool canShowSkills =
-        user.hasSkills && user.skills != null && user.skills.isNotEmpty;
+        !user.isHidden && user.skills != null && user.skills.isNotEmpty;
     bool canShowWishes =
-        user.hasWishes && user.wishes != null && user.wishes.isNotEmpty;
+        !user.isHidden && user.wishes != null && user.wishes.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),

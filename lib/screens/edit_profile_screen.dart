@@ -26,8 +26,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   User user;
-  bool _localHasSkills;
-  bool _localHasWishes;
+  bool _isHidden;
   File _profilePic;
   bool showSpinner = true;
 
@@ -139,7 +138,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   SizedBox(
-                    width: 60,
+                    width: 100,
                     child: Text(
                       'Name',
                       style: kAddSkillsTextStyle,
@@ -166,7 +165,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(
-                    width: 60,
+                    width: 100,
                     child: Text(
                       'Bio',
                       style: kAddSkillsTextStyle,
@@ -190,64 +189,56 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    'Skills',
-                    style: kSkillsTitleTextStyle,
+                  SizedBox(
+                    width: 100,
+                    child: Text(
+                      'Hide Profile',
+                      style: kAddSkillsTextStyle,
+                    ),
                   ),
                   CupertinoSwitch(
-                    value: _localHasSkills,
+                    value: _isHidden,
                     onChanged: (newBool) {
                       setState(() {
-                        _localHasSkills = newBool;
+                        _isHidden = newBool;
                       });
                     },
                   ),
                 ],
               ),
-              SizedBox(
-                height: 20,
-              ),
-              if (_localHasSkills)
-                ListOfTextfields(
-                  initialSkillsOrWishes: user.skills,
-                  updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
-                  updateDescriptionAtIndex: user.updateSkillDescriptionAtIndex,
-                  updatePriceAtIndex: user.updateSkillPriceAtIndex,
-                  addEmptySkillOrWish: user.addEmptySkill,
-                  deleteSkillOrWishAtIndex: user.deleteSkillAtIndex,
-                ),
               SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Wishes',
-                    style: kSkillsTitleTextStyle,
-                  ),
-                  CupertinoSwitch(
-                    value: _localHasWishes,
-                    onChanged: (newBool) {
-                      setState(() {
-                        _localHasWishes = newBool;
-                      });
-                    },
-                  ),
-                ],
+              Text(
+                'Skills',
+                style: kSkillsTitleTextStyle,
               ),
               SizedBox(
                 height: 20,
               ),
-              if (_localHasWishes)
-                ListOfTextfields(
-                  initialSkillsOrWishes: user.wishes,
-                  updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
-                  updateDescriptionAtIndex: user.updateWishDescriptionAtIndex,
-                  updatePriceAtIndex: user.updateWishPriceAtIndex,
-                  addEmptySkillOrWish: user.addEmptyWish,
-                  deleteSkillOrWishAtIndex: user.deleteWishAtIndex,
-                ),
+              ListOfTextfields(
+                initialSkillsOrWishes: user.skills,
+                updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
+                updateDescriptionAtIndex: user.updateSkillDescriptionAtIndex,
+                updatePriceAtIndex: user.updateSkillPriceAtIndex,
+                addEmptySkillOrWish: user.addEmptySkill,
+                deleteSkillOrWishAtIndex: user.deleteSkillAtIndex,
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Wishes',
+                style: kSkillsTitleTextStyle,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              ListOfTextfields(
+                initialSkillsOrWishes: user.wishes,
+                updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
+                updateDescriptionAtIndex: user.updateWishDescriptionAtIndex,
+                updatePriceAtIndex: user.updateWishPriceAtIndex,
+                addEmptySkillOrWish: user.addEmptyWish,
+                deleteSkillOrWishAtIndex: user.deleteWishAtIndex,
+              ),
               SizedBox(
                 height: 20,
               ),
@@ -315,8 +306,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             fileName: widget.user.uid, image: _profilePic);
       }
 
-      user.hasSkills = _localHasSkills;
-      user.hasWishes = _localHasWishes;
+      user.isHidden = _isHidden;
       user.skills.removeWhere(
           (skill) => (skill.keywords == null || skill.keywords.isEmpty));
       user.wishes.removeWhere(
@@ -391,8 +381,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() {
       _usernameController.text = user.username;
       _bioController.text = user.bio;
-      _localHasSkills = user.hasSkills;
-      _localHasWishes = user.hasWishes;
+      _isHidden = user.isHidden;
 
       _profilePic = null;
       showSpinner = false;
