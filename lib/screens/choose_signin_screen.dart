@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:video_player/video_player.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChooseSigninScreen extends StatefulWidget {
   static const String id = 'ChooseSigninScreen';
@@ -98,9 +99,32 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                                   builder: (context) => LoginScreen()));
                         },
                       ),
-                      SizedBox(
-                        height: 60,
-                      )
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          FlatButton(
+                            child: Text(
+                              'Privacy Policy',
+                              style: kPrivacyPolicyTextStyle,
+                            ),
+                            onPressed: () => _launchURL(
+                                url: 'https://flowby.co/privacy-policy.pdf'),
+                          ),
+                          Text(
+                            '|',
+                            style: kPrivacyPolicyTextStyle,
+                          ),
+                          FlatButton(
+                            child: Text(
+                              'Terms & Conditions',
+                              style: kPrivacyPolicyTextStyle,
+                            ),
+                            onPressed: () => _launchURL(
+                                url:
+                                    'https://flowby.co/terms-and-conditions.pdf'),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -125,5 +149,13 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
         ],
       ),
     );
+  }
+}
+
+_launchURL({@required String url}) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }

@@ -181,14 +181,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     setState(() {
       showSpinner = false;
     });
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return AddUsernameRegistrationScreen(
-            user: user,
-          );
-        },
-      ),
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+      CupertinoPageRoute(
+          builder: (BuildContext context) =>
+              AddUsernameRegistrationScreen(user: user)),
+      (Route<dynamic> route) => false,
     );
   }
 
@@ -231,6 +228,12 @@ class _RegistrationScreenState extends State<RegistrationScreen>
               );
             },
           ),
+        );
+        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+          CupertinoPageRoute(
+              builder: (BuildContext context) =>
+                  AddUsernameRegistrationScreen(user: user)),
+              (Route<dynamic> route) => false,
         );
       }
     } catch (e) {
