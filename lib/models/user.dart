@@ -47,7 +47,12 @@ class User {
     this.hasWishes = map['hasWishes'] ?? false;
     this.location = map['location'];
     this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
-    this.imageVersionNumber = map['imageVersionNumber'] ?? 1;
+    try {
+      this.imageVersionNumber = map['imageVersionNumber'].round();
+    } catch (e) {
+      //could not convert double to int (because its infinity or NaN)
+      this.imageVersionNumber = 1;
+    }
     this.skills = _convertFirebaseToDart(skillsOrWishes: map['skills']);
     this.wishes = _convertFirebaseToDart(skillsOrWishes: map['wishes']);
     this.skillKeywords = _getKeywordString(skills);

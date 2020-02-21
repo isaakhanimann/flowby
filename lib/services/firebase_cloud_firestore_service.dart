@@ -56,13 +56,15 @@ class FirebaseCloudFirestoreService {
 
   Stream<List<User>> getUsersStream({@required String uidToExclude}) {
     try {
-      var userSnapshots = _fireStore.collection('users').snapshots().map(
-          (snap) => snap.documents
+      Stream<List<User>> usersStream = _fireStore
+          .collection('users')
+          .snapshots()
+          .map((snap) => snap.documents
               .map((doc) => User.fromMap(map: doc.data))
               .where((user) =>
                   (uidToExclude != null) ? user.uid != uidToExclude : true)
               .toList());
-      return userSnapshots;
+      return usersStream;
     } catch (e) {
       print(e);
       return null;

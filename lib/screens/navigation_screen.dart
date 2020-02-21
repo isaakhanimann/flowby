@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/chats_tab.dart';
+import 'package:Flowby/screens/explanation_screen.dart';
 import 'package:Flowby/screens/home_tab.dart';
 import 'package:Flowby/screens/profile_tab.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
@@ -16,6 +16,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:Flowby/screens/choose_signin_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -28,10 +29,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
   FirebaseUser loggedInUser;
+  bool shouldExplanationBeLoaded = false;
 
   @override
   void initState() {
     super.initState();
+    _loadPreferences();
     final locationService =
         Provider.of<LocationService>(context, listen: false);
     //asBroadcast because the streamprovider for the homescreen also listens to it
@@ -49,6 +52,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (shouldExplanationBeLoaded) {
+      return ExplanationScreen();
+    }
     if (loggedInUser == null) {
       return MultiProvider(
         providers: [
@@ -59,34 +65,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
             value: loggedInUser,
           ),
         ],
-        child: CupertinoPageScaffold(
-          backgroundColor: CupertinoColors.white,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: <Widget>[
-              HomeTab(),
-              Positioned(
-                bottom: 50,
-                child: RoundedButton(
-                  text: 'Sign In',
-                  color: kDefaultProfilePicColor,
-                  textColor: kBlueButtonColor,
-                  onPressed: () async {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute<void>(
-                        builder: (context) {
-                          return ChooseSigninScreen(
-                            canGoBack: true,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              )
-            ],
-          ),
-        ),
+        child: HomeScreenWithSignin(),
       );
     }
 
@@ -99,57 +78,20 @@ class _NavigationScreenState extends State<NavigationScreen> {
           value: loggedInUser,
         ),
       ],
-      child: CupertinoTabScaffold(
-        tabBar: CupertinoTabBar(
-          backgroundColor: Colors.white,
-          activeColor: kDefaultProfilePicColor,
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(
-              Feather.search,
-            )),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Feather.mail,
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Feather.user,
-              ),
-            ),
-          ],
-        ),
-        tabBuilder: (context, index) {
-          // since every tabview is created new on every call maybe this code can be shorter without side effects
-          CupertinoTabView returnValue;
-          switch (index) {
-            case 0:
-              returnValue = CupertinoTabView(builder: (context) {
-                return CupertinoPageScaffold(
-                  child: HomeTab(),
-                );
-              });
-              break;
-            case 1:
-              returnValue = CupertinoTabView(builder: (context) {
-                return CupertinoPageScaffold(
-                  child: ChatsTab(),
-                );
-              });
-              break;
-            case 2:
-              returnValue = CupertinoTabView(builder: (context) {
-                return CupertinoPageScaffold(
-                  child: ProfileTab(),
-                );
-              });
-              break;
-          }
-          return returnValue;
-        },
-      ),
+      child: ScreenWithAllTabs(),
     );
+  }
+
+  _loadPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool shouldExplanationBeLoaded =
+        prefs.getBool('shouldExplanationBeLoaded') ?? true;
+    if (shouldExplanationBeLoaded) {
+      setState(() {
+        this.shouldExplanationBeLoaded = true;
+      });
+      await prefs.setBool('shouldExplanationBeLoaded', false);
+    }
   }
 
   Future<void> getLoggedInUserUploadLocationAndToken() async {
@@ -176,5 +118,103 @@ class _NavigationScreenState extends State<NavigationScreen> {
             uid: loggedInUser.uid, pushToken: token);
       });
     }
+  }
+}
+
+class ScreenWithAllTabs extends StatelessWidget {
+  const ScreenWithAllTabs({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        backgroundColor: Colors.white,
+        activeColor: kDefaultProfilePicColor,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(
+            Feather.search,
+          )),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Feather.mail,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Feather.user,
+            ),
+          ),
+        ],
+      ),
+      tabBuilder: (context, index) {
+        // since every tabview is created new on every call maybe this code can be shorter without side effects
+        CupertinoTabView returnValue;
+        switch (index) {
+          case 0:
+            returnValue = CupertinoTabView(builder: (context) {
+              return CupertinoPageScaffold(
+                child: HomeTab(),
+              );
+            });
+            break;
+          case 1:
+            returnValue = CupertinoTabView(builder: (context) {
+              return CupertinoPageScaffold(
+                child: ChatsTab(),
+              );
+            });
+            break;
+          case 2:
+            returnValue = CupertinoTabView(builder: (context) {
+              return CupertinoPageScaffold(
+                child: ProfileTab(),
+              );
+            });
+            break;
+        }
+        return returnValue;
+      },
+    );
+  }
+}
+
+class HomeScreenWithSignin extends StatelessWidget {
+  const HomeScreenWithSignin({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          HomeTab(),
+          Positioned(
+            bottom: 50,
+            child: RoundedButton(
+              text: 'Sign In',
+              color: kDefaultProfilePicColor,
+              textColor: kBlueButtonColor,
+              onPressed: () async {
+                Navigator.of(context).push(
+                  CupertinoPageRoute<void>(
+                    builder: (context) {
+                      return ChooseSigninScreen(
+                        canGoBack: true,
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

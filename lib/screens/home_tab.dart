@@ -1,7 +1,9 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/explanation_screen.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/no_results.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,12 +51,7 @@ class _HomeTabState extends State<HomeTab> {
           cloudFirestoreService.getUsersStream(uidToExclude: loggedInUser?.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-            ),
-          );
+          return CenteredLoadingIndicator();
         }
         List<User> allUsers =
             List.from(snapshot.data); // to convert it editable list
@@ -79,11 +76,36 @@ class _HomeTabState extends State<HomeTab> {
         }
 
         return SafeArea(
+          bottom: false,
           child: Column(
             children: <Widget>[
-              Image(
-                image: AssetImage("assets/images/logo_flowby.png"),
-                height: 30.0,
+              SizedBox(
+                height: 40,
+                child: Stack(fit: StackFit.expand, children: [
+                  Image(
+                    image: AssetImage("assets/images/logo_flowby.png"),
+                    height: 30.0,
+                  ),
+                  Positioned(
+                    right: 0,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                      child: Icon(
+                        Feather.info,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).push(
+                          CupertinoPageRoute<void>(
+                            builder: (context) {
+                              return ExplanationScreen();
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ]),
               ),
               Expanded(
                 child: ListView.builder(

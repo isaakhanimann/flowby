@@ -10,13 +10,6 @@ class LocationService {
     return position;
   }
 
-//  static void getLastKnownPositionAndUploadIt(
-//      {@required String userEmail}) async {
-//    Position position = await Geolocator()
-//        .getLastKnownPosition(desiredAccuracy: LocationAccuracy.medium);
-//    FirebaseConnection.uploadUsersLocation(uid: userEmail, position: position);
-//  }
-
   StreamSubscription<Position> getPositionStreamSubscription() {
     //To listen for location changes you can subscribe to the onPositionChanged stream. Supply an instance of the LocationOptions class to configure the desired accuracy and the minimum distance change (in meters) before updates are send to the application.
     var locationOptions =
