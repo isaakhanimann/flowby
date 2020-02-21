@@ -142,7 +142,7 @@ class ChatScreenWithPath extends StatelessWidget {
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                  color: Colors.white,
                 ),
               ),
               Column(
@@ -286,19 +286,51 @@ class Header extends StatelessWidget {
             if (chat != null)
               Flexible(
                 child: CupertinoButton(
-                  child: Icon(
-                    Feather.user_x,
-                    color: haveIBlocked ? kTextFieldTextColor : Colors.red,
-                  ),
+                  child: haveIBlocked ? Text('Unblock') : Text('Block'),
                   onPressed: () {
-                    if (amIUser1) {
-                      cloudFirestoreService.uploadChatBlocked(
-                          chatpath: chat.chatpath,
-                          hasUser1Blocked: !haveIBlocked);
-                    } else {
-                      cloudFirestoreService.uploadChatBlocked(
-                          chatpath: chat.chatpath,
-                          hasUser2Blocked: !haveIBlocked);
+                    if (!haveIBlocked) {
+                      showCupertinoDialog(
+                        context: context,
+                        builder: (_) => CupertinoAlertDialog(
+                          title: Text('Block $otherUsername?'),
+                          content: Text(
+                              'Blocked contacts will no longer be able to send you messages'),
+                          actions: <Widget>[
+                            CupertinoDialogAction(
+                              child: Text('Cancel'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            CupertinoDialogAction(
+                              child: Text('Block'),
+                              onPressed: () {
+                                if (amIUser1) {
+                                  cloudFirestoreService.uploadChatBlocked(
+                                      chatpath: chat.chatpath,
+                                      hasUser1Blocked: !haveIBlocked);
+                                } else {
+                                  cloudFirestoreService.uploadChatBlocked(
+                                      chatpath: chat.chatpath,
+                                      hasUser2Blocked: !haveIBlocked);
+                                }
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    else{
+                      if (amIUser1) {
+                        cloudFirestoreService.uploadChatBlocked(
+                            chatpath: chat.chatpath,
+                            hasUser1Blocked: !haveIBlocked);
+                      } else {
+                        cloudFirestoreService.uploadChatBlocked(
+                            chatpath: chat.chatpath,
+                            hasUser2Blocked: !haveIBlocked);
+                      }
                     }
                   },
                 ),

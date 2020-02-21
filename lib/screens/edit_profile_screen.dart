@@ -326,7 +326,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       user.wishes.removeWhere(
           (wish) => (wish.keywords == null || wish.keywords.isEmpty));
       user.bio = _bioController.text;
-      user.imageFileName = widget.user.uid;
 
       await cloudFirestoreService.uploadUser(user: user);
       Navigator.of(context).pop();
