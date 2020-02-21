@@ -76,6 +76,7 @@ class _HomeTabState extends State<HomeTab> {
         }
 
         return SafeArea(
+          bottom: false,
           child: Column(
             children: <Widget>[
               SizedBox(
