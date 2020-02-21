@@ -197,7 +197,7 @@ class ProfileItem extends StatelessWidget {
           },
           leading: CachedNetworkImage(
             imageUrl:
-                "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+                "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media&version=${user.imageVersionNumber}",
             imageBuilder: (context, imageProvider) {
               return Hero(
                 transitionOnUserGestures: true,

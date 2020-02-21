@@ -95,7 +95,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               opacity: 0.4,
                               child: CachedNetworkImage(
                                 imageUrl:
-                                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
+                                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media&version=${user.imageVersionNumber}",
                                 imageBuilder: (context, imageProvider) {
                                   return CircleAvatar(
                                       radius: 60,

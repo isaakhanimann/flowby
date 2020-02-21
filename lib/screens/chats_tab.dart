@@ -94,6 +94,10 @@ class ChatItem extends StatelessWidget {
         user1IsLoggedInUser ? chat.username2 : chat.username1;
     String otherImageFileName =
         user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
+    int otherImageVersionNumber = user1IsLoggedInUser
+        ? chat.user2ImageVersionNumber
+        : chat.user1ImageVersionNumber;
+
     if (otherImageFileName == null) otherImageFileName = kDefaultProfilePicName;
 
     final heroTag = otherUid + 'chats';
@@ -126,6 +130,7 @@ class ChatItem extends StatelessWidget {
                     otherUid: otherUid,
                     otherUsername: otherUsername,
                     otherImageFileName: otherImageFileName,
+                    otherImageVersionNumber: otherImageVersionNumber,
                     heroTag: heroTag,
                     chatPath: chat.chatpath,
                   );
@@ -135,7 +140,7 @@ class ChatItem extends StatelessWidget {
           },
           leading: CachedNetworkImage(
             imageUrl:
-                "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media",
+                "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media&version=$otherImageVersionNumber",
             imageBuilder: (context, imageProvider) {
               return Hero(
                 transitionOnUserGestures: true,

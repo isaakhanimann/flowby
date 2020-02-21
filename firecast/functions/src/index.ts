@@ -112,24 +112,21 @@ exports.updateImageUpdateUserAndChats = functions.storage
     const filePath = object.name; // File path in the bucket.
     // Get the file name, this should be the uid of the user
     const uid = path.basename(filePath);
-    // Exit if the user already had a unique imageFileName
     const userDoc = await db
       .collection("users")
       .doc(uid)
       .get();
 
-    if (userDoc.exists) {
-      if (userDoc.data()?.imageFileName === uid) {
-        console.log(
-          "ImageFileName is already uid so it does not need to be changed anywhere"
-        );
-        return;
-      }
+    const imageVersionNumber = userDoc?.data()?.imageVersionNumber;
+    let newImageVersionNumber = 1;
+    if (imageVersionNumber !== null) {
+      newImageVersionNumber = imageVersionNumber + 1;
     }
+
     // Update the user in the users collection
     db.collection("users")
       .doc(uid)
-      .update({ imageFileName: uid })
+      .update({ imageFileName: uid, imageVersionNumber: newImageVersionNumber })
       .then(() => {
         console.log(`Users imageFileName updated to ${uid}`);
       })
@@ -146,7 +143,10 @@ exports.updateImageUpdateUserAndChats = functions.storage
           if (documentSnapshot.exists) {
             db.collection("chats")
               .doc(documentSnapshot.ref.id)
-              .update({ user1ImageFileName: uid })
+              .update({
+                user1ImageFileName: uid,
+                user1ImageVersionNumber: newImageVersionNumber
+              })
               .then(() => {
                 console.log(`Users user1ImageFileName updated to ${uid}`);
               })
@@ -166,7 +166,10 @@ exports.updateImageUpdateUserAndChats = functions.storage
           if (documentSnapshot.exists) {
             db.collection("chats")
               .doc(documentSnapshot.ref.id)
-              .update({ user2ImageFileName: uid })
+              .update({
+                user2ImageFileName: uid,
+                user2ImageVersionNumber: newImageVersionNumber
+              })
               .then(() => {
                 console.log(`Users user2ImageFileName updated to ${uid}`);
               })
@@ -189,7 +192,7 @@ exports.deleteUserEveryhere = functions.auth
     db.collection("users")
       .doc(user.uid)
       .delete()
-      .catch(function (error: any) {
+      .catch(function(error: any) {
         console.log(
           `Error deleting user out of users collection, uid =  ${user.uid}`
         );
@@ -200,11 +203,11 @@ exports.deleteUserEveryhere = functions.auth
     bucket
       .file(`images/${user.uid}`)
       .delete()
-      .then(function () {
+      .then(function() {
         // File deleted successfully
         console.log(`Deleted image ${user.uid} successfully`);
       })
-      .catch(function (error: any) {
+      .catch(function(error: any) {
         console.log(`Could not delete the image ${user.uid}`);
       });
 
@@ -224,7 +227,7 @@ exports.deleteUserEveryhere = functions.auth
                   `Chat ${documentSnapshot.ref.id} deleted successfully`
                 );
               })
-              .catch(function (error: any) {
+              .catch(function(error: any) {
                 console.log(`Error deleting chat ${documentSnapshot.ref.id}`);
               });
           }
@@ -263,8 +266,6 @@ exports.sendNotification = functions.firestore
   .document("chats/{chatId}/messages/{messageId}")
   .onCreate(
     async (snap: FirebaseFirestore.DocumentSnapshot, context: EventContext) => {
-      console.log("----------------start function--------------------");
-
       const message: FirebaseFirestore.DocumentData = snap.data()!;
 
       const senderUid: string = message.senderUid;
@@ -321,8 +322,9 @@ exports.sendNotification = functions.firestore
             otherUid: senderUid,
             otherUsername: senderUsername,
             otherImageFileName: sender?.imageFileName,
-            chatPath: "chats/" + chatId,
-          },
+            otherImageVersionNumber: sender?.imageVersionNumber,
+            chatPath: "chats/" + chatId
+          }
         };
         // send the push notification to the receivers device
         return fcm

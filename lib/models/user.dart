@@ -10,6 +10,7 @@ class User {
   GeoPoint location;
   int distanceInKm;
   String imageFileName;
+  int imageVersionNumber;
   String skillKeywords;
   String wishKeywords;
   List<SkillOrWish> skills = [];
@@ -35,7 +36,8 @@ class User {
       this.skills,
       this.wishes,
       this.location,
-      this.imageFileName});
+      this.imageFileName,
+      this.imageVersionNumber});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'] ?? '';
@@ -45,6 +47,7 @@ class User {
     this.hasWishes = map['hasWishes'] ?? false;
     this.location = map['location'];
     this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
+    this.imageVersionNumber = map['imageVersionNumber'] ?? 1;
     this.skills = _convertFirebaseToDart(skillsOrWishes: map['skills']);
     this.wishes = _convertFirebaseToDart(skillsOrWishes: map['wishes']);
     this.skillKeywords = _getKeywordString(skills);
@@ -59,6 +62,7 @@ class User {
       'hasSkills': hasSkills,
       'hasWishes': hasWishes,
       'imageFileName': imageFileName ?? 'default-profile-pic.jpg',
+      'imageVersionNumber': imageVersionNumber ?? 1,
       'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
       'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList()
     };
@@ -130,6 +134,7 @@ class User {
     toPrint += 'hasWishes: $hasWishes, ';
     toPrint += 'location: ${location.toString()}, ';
     toPrint += 'imageFileName: ${imageFileName.toString()}, ';
+    toPrint += 'imageVersionNumber: ${imageVersionNumber.toString()}, ';
     toPrint += 'skills: ${skills.toString()}, ';
     toPrint += 'wishes: ${wishes.toString()}, ';
     toPrint += 'skillKeywords: ${skillKeywords.toString()}, ';

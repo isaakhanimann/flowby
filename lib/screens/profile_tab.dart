@@ -19,10 +19,11 @@ class ProfileTab extends StatelessWidget {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    return FutureBuilder(
-        future: cloudFirestoreService.getUser(uid: loggedInUser.uid),
+    return StreamBuilder(
+        stream: cloudFirestoreService.getUserStream(uid: loggedInUser.uid),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.connectionState == ConnectionState.none) {
             return Center(
               child: CircularProgressIndicator(
                 valueColor:
@@ -30,6 +31,7 @@ class ProfileTab extends StatelessWidget {
               ),
             );
           }
+
           User user = snapshot.data;
 
           return SafeArea(

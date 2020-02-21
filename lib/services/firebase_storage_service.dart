@@ -11,6 +11,7 @@ class FirebaseStorageService {
   Future<void> uploadImage(
       {@required String fileName, @required File image}) async {
     try {
+      //the imagefilename and imageversionnumber of the user document is updated with cloud functions
       final StorageUploadTask uploadTask =
           _storageReference.child('images/$fileName').putFile(image);
       await uploadTask.onComplete;
