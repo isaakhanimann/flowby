@@ -1,5 +1,6 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/explanation_screen.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
@@ -77,9 +78,33 @@ class _HomeTabState extends State<HomeTab> {
         return SafeArea(
           child: Column(
             children: <Widget>[
-              Image(
-                image: AssetImage("assets/images/logo_flowby.png"),
-                height: 30.0,
+              SizedBox(
+                height: 40,
+                child: Stack(fit: StackFit.expand, children: [
+                  Image(
+                    image: AssetImage("assets/images/logo_flowby.png"),
+                    height: 30.0,
+                  ),
+                  Positioned(
+                    left: 0,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      child: Icon(
+                        Feather.info,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).push(
+                          CupertinoPageRoute<void>(
+                            builder: (context) {
+                              return ExplanationScreen();
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ]),
               ),
               Expanded(
                 child: ListView.builder(
