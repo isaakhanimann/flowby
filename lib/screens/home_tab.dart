@@ -86,9 +86,9 @@ class _HomeTabState extends State<HomeTab> {
                     height: 30.0,
                   ),
                   Positioned(
-                    left: 0,
+                    right: 0,
                     child: CupertinoButton(
-                      padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
                       child: Icon(
                         Feather.info,
                         size: 30,
