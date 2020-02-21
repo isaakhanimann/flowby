@@ -68,8 +68,8 @@ class ViewProfileScreen extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 0,
-              left: 0,
+              top: 5,
+              left: 6,
               child: CupertinoButton(
                 child: Icon(
                   Feather.chevron_left,
