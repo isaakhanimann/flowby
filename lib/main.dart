@@ -6,6 +6,7 @@ import 'package:Flowby/services/firebase_cloud_messaging.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:Flowby/services/image_picker_service.dart';
 import 'package:Flowby/services/location_service.dart';
+import 'package:Flowby/services/preferences_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,6 +50,9 @@ class Flowby extends StatelessWidget {
         ),
         Provider<FirebaseCloudMessaging>(
           create: (_) => FirebaseCloudMessaging(),
+        ),
+        Provider<PreferencesService>(
+          create: (_) => PreferencesService(),
         ),
       ],
       child: GestureDetector(

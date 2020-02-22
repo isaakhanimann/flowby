@@ -16,7 +16,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:Flowby/screens/choose_signin_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Flowby/screens/choose_role_screen.dart';
+import 'package:Flowby/services/preferences_service.dart';
 
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -30,11 +31,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
   StreamSubscription<Position> positionStreamSubscription;
   FirebaseUser loggedInUser;
   bool shouldExplanationBeLoaded = false;
+  bool shouldRoleBeChosen = true;
 
   @override
   void initState() {
     super.initState();
-    _loadPreferences();
+    _loadPreferences(context);
     final locationService =
         Provider.of<LocationService>(context, listen: false);
     //asBroadcast because the streamprovider for the homescreen also listens to it
@@ -52,6 +54,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (shouldRoleBeChosen) {
+      return ChooseRoleScreen();
+    }
     if (shouldExplanationBeLoaded) {
       return ExplanationScreen();
     }
@@ -82,15 +87,17 @@ class _NavigationScreenState extends State<NavigationScreen> {
     );
   }
 
-  _loadPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  _loadPreferences(BuildContext context) async {
+    final preferencesService =
+        Provider.of<PreferencesService>(context, listen: false);
     bool shouldExplanationBeLoaded =
-        prefs.getBool('shouldExplanationBeLoaded') ?? true;
+        await preferencesService.getExplanationBool();
+
     if (shouldExplanationBeLoaded) {
       setState(() {
         this.shouldExplanationBeLoaded = true;
       });
-      await prefs.setBool('shouldExplanationBeLoaded', false);
+      await preferencesService.setExplanationBoolToFalse();
     }
   }
 
