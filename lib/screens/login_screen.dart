@@ -165,6 +165,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signInWithEmail(BuildContext context) async {
+    setState(() {
+      showSpinner = true;
+    });
     if (email == null || password == null) {
       return;
     }
@@ -176,20 +179,42 @@ class _LoginScreenState extends State<LoginScreen> {
       final user = authResult?.user;
       if (user != null) {
         if (user.isEmailVerified == false) {
-          showAlert(
-              context: context,
-              title: "Verify your email",
-              description: 'It seems that you haven\'t verified your email yet.');
+          showCupertinoDialog(
+            context: context,
+            builder: (_) => CupertinoAlertDialog(
+              title: Text('Verify your email'),
+              content: Text(
+                  'It seems that you haven\'t verified your email yet.'),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      showSpinner = false;
+                    });
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text('Send verification'),
+                  onPressed: () async {
+                    await authResult.user.sendEmailVerification();
+                    Navigator.pop(context);
+                    setState(() {
+                      showSpinner = false;
+                    });
+                  },
+                ),
+              ],
+            ),
+          );
           return;
         }
-        setState(() {
-          showSpinner = true;
-        });
         //cleans the navigation stack, so we don't come back to the login page if we
         //press the back button in Android
         Navigator.of(context).pushNamedAndRemoveUntil(
           NavigationScreen.id,
-          (Route<dynamic> route) => false,
+              (Route<dynamic> route) => false,
           arguments: user,
         );
       }
