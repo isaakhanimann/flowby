@@ -58,15 +58,17 @@ const kAddSkillsTextStyle = TextStyle(
     color: kSmallTitlesTextColor);
 const kNavigationBarTextStyle = TextStyle(fontFamily: 'MontserratRegular');
 const kLocationTextStyle =
-    TextStyle(color: Colors.grey, fontSize: 12, fontFamily: 'NotoRegular');
-const kUsernameTextStyle =
-    TextStyle(fontWeight: FontWeight.bold, fontFamily: 'MontserratRegular');
+    TextStyle(color: kBlueButtonColor, fontSize: 12, fontFamily: 'NotoRegular');
+const kUsernameTextStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontFamily: 'MontserratRegular',
+    color: kKeywordHeaderColor);
 const kChatTabTimestampTextStyle =
     TextStyle(color: Colors.black38, fontSize: 10, fontFamily: 'NotoRegular');
 const kChatLastMessageTextStyle =
-    TextStyle(color: Colors.black38, fontSize: 13, fontFamily: 'NotoRegular');
+    TextStyle(fontSize: 13, fontFamily: 'NotoRegular');
 const kCardSubtitleTextStyle =
-    TextStyle(color: Colors.grey, fontSize: 12, fontFamily: 'NotoRegular');
+    TextStyle(fontSize: 12, fontFamily: 'NotoRegular');
 const kCupertinoScaffoldTextStyle =
     TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratRegular');
 const kTabsLargeTitleTextStyle = TextStyle(fontFamily: 'MontserratRegular');
@@ -88,7 +90,7 @@ const kPlaceHolderColor = Color(0xff979797);
 const kBoxBorderColor = Color(0xff979797);
 const kChatScreenBorderTextFieldColor = Color(0xFFdadada);
 const kCardBackgroundColor = Color(0xFFf4f4f4);
-const kSkillsCardColor = Color(0xffecfcff);
+
 //const kCardBackgroundColor = Color(0x2Ffdd66d);
 
 // Other

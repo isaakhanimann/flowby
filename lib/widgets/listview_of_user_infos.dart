@@ -133,7 +133,7 @@ class SkillOrWishSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: kSkillsCardColor,
+      color: kCardBackgroundColor,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15))),
       child: Padding(
