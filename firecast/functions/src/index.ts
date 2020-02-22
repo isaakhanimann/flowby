@@ -322,7 +322,7 @@ exports.sendNotification = functions.firestore
             otherUid: senderUid,
             otherUsername: senderUsername,
             otherImageFileName: sender?.imageFileName,
-            otherImageVersionNumber: String(sender?.imageVersionNumber),
+            otherImageVersionNumber: sender?.imageVersionNumber ? (sender?.imageVersionNumber).toString() : '1',
             chatPath: "chats/" + chatId
           }
         };
@@ -331,6 +331,7 @@ exports.sendNotification = functions.firestore
           .sendToDevice(receiver.pushToken, payload)
           .then((response: any) => {
             console.log("Successfully sent message:", response);
+            console.log("payload:", payload);
           })
           .catch((error: any) => {
             console.log("Error sending message:", error);
