@@ -4,6 +4,7 @@ import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/services/preferences_service.dart';
+import 'package:Flowby/models/role.dart';
 
 class ChooseRoleScreen extends StatelessWidget {
   @override

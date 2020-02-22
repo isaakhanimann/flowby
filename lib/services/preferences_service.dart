@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Flowby/models/role.dart';
 
 class PreferencesService {
   Future<bool> getExplanationBool() async {
@@ -16,33 +17,13 @@ class PreferencesService {
   Future<Role> getRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String roleString = prefs.getString('role') ?? 'unassigned';
-    Role role;
-    switch (roleString) {
-      case 'provider':
-        role = Role.provider;
-        break;
-      case 'consumer':
-        role = Role.consumer;
-        break;
-      default:
-        role = Role.unassigned;
-    }
+    Role role = convertStringToRole(roleString: roleString);
     return role;
   }
 
   setRole({Role role}) async {
+    String roleString = convertRoleToString(role: role);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    switch (role) {
-      case Role.provider:
-        prefs.setString('role', 'provider');
-        break;
-      case Role.consumer:
-        prefs.setString('role', 'consumer');
-        break;
-      default:
-        prefs.setString('role', 'unassigned');
-    }
+    prefs.setString('role', roleString);
   }
 }
-
-enum Role { provider, consumer, unassigned }

@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/role.dart';
 
 class User {
   String username;
   String uid;
   String bio;
+  Role role;
   bool isHidden;
   GeoPoint location;
   int distanceInKm;
@@ -15,21 +17,11 @@ class User {
   List<SkillOrWish> skills = [];
   List<SkillOrWish> wishes = [];
 
-  List<SkillOrWish> _convertFirebaseToDart({List<dynamic> skillsOrWishes}) {
-    if (skillsOrWishes == null) {
-      return [];
-    }
-    List<SkillOrWish> list = [];
-    for (var skillOrWish in skillsOrWishes) {
-      list.add(SkillOrWish.fromDynamic(skillOrWish));
-    }
-    return list;
-  }
-
   User(
       {this.username,
       this.uid,
       this.bio,
+      this.role,
       this.isHidden,
       this.skills,
       this.wishes,
@@ -41,6 +33,7 @@ class User {
     this.username = map['username'] ?? '';
     this.uid = map['uid'] ?? '';
     this.bio = map['bio'] ?? '';
+    this.role = convertStringToRole(roleString: map['role']);
     this.isHidden = map['isHidden'] ?? false;
     this.location = map['location'];
     this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
@@ -61,23 +54,13 @@ class User {
       'username': username,
       'uid': uid,
       'bio': bio,
+      'role': convertRoleToString(role: role),
       'isHidden': isHidden,
       'imageFileName': imageFileName ?? 'default-profile-pic.jpg',
       'imageVersionNumber': imageVersionNumber ?? 1,
       'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
       'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList()
     };
-  }
-
-  String _getKeywordString(List<SkillOrWish> skillsOrWishes) {
-    String result = '';
-    if (skillsOrWishes == null || skillsOrWishes.isEmpty) {
-      return result;
-    }
-    for (SkillOrWish skillOrWish in skillsOrWishes) {
-      result += skillOrWish.keywords + ' ';
-    }
-    return result;
   }
 
   updateSkillKeywordsAtIndex({int index, String text}) {
@@ -131,6 +114,7 @@ class User {
     String toPrint = '\n{ username: $username, ';
     toPrint += 'uid: $uid, ';
     toPrint += 'bio: $bio, ';
+    toPrint += 'role: ${convertRoleToString(role: role)}, ';
     toPrint += 'isHidden: $isHidden, ';
     toPrint += 'location: ${location.toString()}, ';
     toPrint += 'imageFileName: ${imageFileName.toString()}, ';
@@ -142,6 +126,28 @@ class User {
     toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';
 
     return toPrint;
+  }
+
+  List<SkillOrWish> _convertFirebaseToDart({List<dynamic> skillsOrWishes}) {
+    if (skillsOrWishes == null) {
+      return [];
+    }
+    List<SkillOrWish> list = [];
+    for (var skillOrWish in skillsOrWishes) {
+      list.add(SkillOrWish.fromDynamic(skillOrWish));
+    }
+    return list;
+  }
+
+  String _getKeywordString(List<SkillOrWish> skillsOrWishes) {
+    String result = '';
+    if (skillsOrWishes == null || skillsOrWishes.isEmpty) {
+      return result;
+    }
+    for (SkillOrWish skillOrWish in skillsOrWishes) {
+      result += skillOrWish.keywords + ' ';
+    }
+    return result;
   }
 }
 
