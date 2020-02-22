@@ -16,9 +16,9 @@ class ListViewOfUserInfos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool canShowSkills =
-        user.hasSkills && user.skills != null && user.skills.isNotEmpty;
+        !user.isHidden && user.skills != null && user.skills.isNotEmpty;
     bool canShowWishes =
-        user.hasWishes && user.wishes != null && user.wishes.isNotEmpty;
+        !user.isHidden && user.wishes != null && user.wishes.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -104,34 +104,15 @@ class ListViewOfUserInfos extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           if (canShowSkills)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Skills',
-                  style: kSkillsTitleTextStyle,
-                ),
-                SizedBox(height: 10),
-                _buildListOfTextFields(skillsOrWishes: user.skills)
-              ],
+            SkillOrWishSection(
+              skillsOrWishes: user.skills,
+              title: 'Skills',
             ),
+          SizedBox(height: 15),
           if (canShowWishes)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  'Wishes',
-                  style: kSkillsTitleTextStyle,
-                ),
-                SizedBox(height: 10),
-                _buildListOfTextFields(skillsOrWishes: user.wishes)
-              ],
+            SkillOrWishSection(
+              skillsOrWishes: user.wishes,
+              title: 'Wishes',
             ),
           SizedBox(
             height: 90,
@@ -140,8 +121,49 @@ class ListViewOfUserInfos extends StatelessWidget {
       ),
     );
   }
+}
 
-  Column _buildListOfTextFields({List<SkillOrWish> skillsOrWishes}) {
+class SkillOrWishSection extends StatelessWidget {
+  final List<SkillOrWish> skillsOrWishes;
+  final String title;
+
+  SkillOrWishSection({@required this.skillsOrWishes, @required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: kCardBackgroundColor,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15))),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              title,
+              style: kSkillsTitleTextStyle,
+            ),
+            SizedBox(height: 10),
+            ListOfTexts(skillsOrWishes: skillsOrWishes)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ListOfTexts extends StatelessWidget {
+  final List<SkillOrWish> skillsOrWishes;
+
+  ListOfTexts({@required this.skillsOrWishes});
+
+  @override
+  Widget build(BuildContext context) {
     List<Widget> rows = [];
     for (SkillOrWish skillOrWish in skillsOrWishes) {
       rows.add(

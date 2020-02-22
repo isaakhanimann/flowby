@@ -26,8 +26,6 @@ class _AddSkillsRegistrationScreenState
     extends State<AddSkillsRegistrationScreen> {
   bool showSpinner = false;
 
-  bool _localHasSkills = true;
-
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -54,55 +52,41 @@ class _AddSkillsRegistrationScreenState
                       SizedBox(
                         height: 20.0,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            'Your skills',
-                            style: kUsernameTitleTextStyle,
-                          ),
-                          CupertinoSwitch(
-                            value: _localHasSkills,
-                            onChanged: (newBool) {
-                              setState(() {
-                                _localHasSkills = newBool;
-                              });
-                            },
-                          ),
-                        ],
+                      Text(
+                        'Your skills',
+                        style: kUsernameTitleTextStyle,
                       ),
                       SizedBox(
                         height: 20.0,
                       ),
-                      if (_localHasSkills)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Share what you are good at',
-                              textAlign: TextAlign.start,
-                              style: kRegisterHeaderTextStyle,
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            ListOfTextfields(
-                              initialSkillsOrWishes: widget.user.skills,
-                              updateKeywordsAtIndex:
-                                  widget.user.updateSkillKeywordsAtIndex,
-                              updateDescriptionAtIndex:
-                                  widget.user.updateSkillDescriptionAtIndex,
-                              updatePriceAtIndex:
-                                  widget.user.updateSkillPriceAtIndex,
-                              addEmptySkillOrWish: widget.user.addEmptySkill,
-                              deleteSkillOrWishAtIndex:
-                                  widget.user.deleteSkillAtIndex,
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                          ],
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Share what you are good at',
+                            textAlign: TextAlign.start,
+                            style: kRegisterHeaderTextStyle,
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          ListOfTextfields(
+                            initialSkillsOrWishes: widget.user.skills,
+                            updateKeywordsAtIndex:
+                                widget.user.updateSkillKeywordsAtIndex,
+                            updateDescriptionAtIndex:
+                                widget.user.updateSkillDescriptionAtIndex,
+                            updatePriceAtIndex:
+                                widget.user.updateSkillPriceAtIndex,
+                            addEmptySkillOrWish: widget.user.addEmptySkill,
+                            deleteSkillOrWishAtIndex:
+                                widget.user.deleteSkillAtIndex,
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                        ],
+                      ),
                       RoundedButton(
                         text: 'Next',
                         color: kBlueButtonColor,
@@ -138,7 +122,6 @@ class _AddSkillsRegistrationScreenState
       showSpinner = true;
     });
 
-    widget.user.hasSkills = _localHasSkills;
     widget.user.skills.removeWhere(
         (skill) => (skill.keywords == null || skill.keywords.isEmpty));
 

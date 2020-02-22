@@ -5,8 +5,7 @@ class User {
   String username;
   String uid;
   String bio;
-  bool hasSkills;
-  bool hasWishes;
+  bool isHidden;
   GeoPoint location;
   int distanceInKm;
   String imageFileName;
@@ -31,8 +30,7 @@ class User {
       {this.username,
       this.uid,
       this.bio,
-      this.hasSkills,
-      this.hasWishes,
+      this.isHidden,
       this.skills,
       this.wishes,
       this.location,
@@ -43,8 +41,7 @@ class User {
     this.username = map['username'] ?? '';
     this.uid = map['uid'] ?? '';
     this.bio = map['bio'] ?? '';
-    this.hasSkills = map['hasSkills'] ?? false;
-    this.hasWishes = map['hasWishes'] ?? false;
+    this.isHidden = map['isHidden'] ?? false;
     this.location = map['location'];
     this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
     try {
@@ -64,8 +61,7 @@ class User {
       'username': username,
       'uid': uid,
       'bio': bio,
-      'hasSkills': hasSkills,
-      'hasWishes': hasWishes,
+      'isHidden': isHidden,
       'imageFileName': imageFileName ?? 'default-profile-pic.jpg',
       'imageVersionNumber': imageVersionNumber ?? 1,
       'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
@@ -135,8 +131,7 @@ class User {
     String toPrint = '\n{ username: $username, ';
     toPrint += 'uid: $uid, ';
     toPrint += 'bio: $bio, ';
-    toPrint += 'hasSkills: $hasSkills, ';
-    toPrint += 'hasWishes: $hasWishes, ';
+    toPrint += 'isHidden: $isHidden, ';
     toPrint += 'location: ${location.toString()}, ';
     toPrint += 'imageFileName: ${imageFileName.toString()}, ';
     toPrint += 'imageVersionNumber: ${imageVersionNumber.toString()}, ';

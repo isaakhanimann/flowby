@@ -10,6 +10,10 @@ class LocationService {
     return position;
   }
 
+  Future<GeolocationStatus> checkGeolocationPermissionStatus() async {
+    return Geolocator().checkGeolocationPermissionStatus();
+  }
+
   StreamSubscription<Position> getPositionStreamSubscription() {
     //To listen for location changes you can subscribe to the onPositionChanged stream. Supply an instance of the LocationOptions class to configure the desired accuracy and the minimum distance change (in meters) before updates are send to the application.
     var locationOptions =

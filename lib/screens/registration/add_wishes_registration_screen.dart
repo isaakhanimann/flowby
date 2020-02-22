@@ -26,8 +26,6 @@ class _AddWishesRegistrationScreenState
     extends State<AddWishesRegistrationScreen> {
   bool showSpinner = false;
 
-  bool _localHasWishes = true;
-
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -54,54 +52,40 @@ class _AddWishesRegistrationScreenState
                       SizedBox(
                         height: 20.0,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            'Your wishes',
-                            style: kUsernameTitleTextStyle,
-                          ),
-                          CupertinoSwitch(
-                            value: _localHasWishes,
-                            onChanged: (newBool) {
-                              setState(() {
-                                _localHasWishes = newBool;
-                              });
-                            },
-                          ),
-                        ],
+                      Text(
+                        'Your wishes',
+                        style: kUsernameTitleTextStyle,
                       ),
                       SizedBox(
                         height: 20.0,
                       ),
-                      if (_localHasWishes)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Tell others what you would like to learn',
-                              textAlign: TextAlign.start,
-                              style: kRegisterHeaderTextStyle,
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            ListOfTextfields(
-                                initialSkillsOrWishes: widget.user.wishes,
-                                updateKeywordsAtIndex:
-                                    widget.user.updateWishKeywordsAtIndex,
-                                updateDescriptionAtIndex:
-                                    widget.user.updateWishDescriptionAtIndex,
-                                updatePriceAtIndex:
-                                    widget.user.updateWishPriceAtIndex,
-                                addEmptySkillOrWish: widget.user.addEmptyWish,
-                                deleteSkillOrWishAtIndex:
-                                    widget.user.deleteWishAtIndex),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                          ],
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Tell others what you would like to learn',
+                            textAlign: TextAlign.start,
+                            style: kRegisterHeaderTextStyle,
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          ListOfTextfields(
+                              initialSkillsOrWishes: widget.user.wishes,
+                              updateKeywordsAtIndex:
+                                  widget.user.updateWishKeywordsAtIndex,
+                              updateDescriptionAtIndex:
+                                  widget.user.updateWishDescriptionAtIndex,
+                              updatePriceAtIndex:
+                                  widget.user.updateWishPriceAtIndex,
+                              addEmptySkillOrWish: widget.user.addEmptyWish,
+                              deleteSkillOrWishAtIndex:
+                                  widget.user.deleteWishAtIndex),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                        ],
+                      ),
                       RoundedButton(
                         text: 'I am ready!',
                         color: kBlueButtonColor,
@@ -124,7 +108,6 @@ class _AddWishesRegistrationScreenState
       showSpinner = true;
     });
 
-    widget.user.hasWishes = _localHasWishes;
     widget.user.wishes.removeWhere(
         (wish) => (wish.keywords == null || wish.keywords.isEmpty));
     final cloudFirestoreService =

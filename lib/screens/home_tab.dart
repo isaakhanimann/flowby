@@ -1,6 +1,6 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/explanation_screen.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
@@ -55,23 +55,27 @@ class _HomeTabState extends State<HomeTab> {
         }
         List<User> allUsers =
             List.from(snapshot.data); // to convert it editable list
+        List<User> allNotHiddenUsers =
+            allUsers.where((u) => !u.isHidden).toList();
         List<User> searchResultUsers;
 
         if (isSkillSelected) {
-          searchResultUsers = allUsers
-              .where((u) => u.hasSkills && u.skillKeywords != '')
-              .where((u) => u.skillKeywords
-                  .toString()
-                  .toLowerCase()
-                  .contains(_searchTerm.toLowerCase()))
+          searchResultUsers = allNotHiddenUsers
+              .where((u) =>
+                  u.skillKeywords != '' &&
+                  u.skillKeywords
+                      .toString()
+                      .toLowerCase()
+                      .contains(_searchTerm.toLowerCase()))
               .toList();
         } else {
-          searchResultUsers = allUsers
-              .where((u) => u.hasWishes && u.wishKeywords != '')
-              .where((u) => u.wishKeywords
-                  .toString()
-                  .toLowerCase()
-                  .contains(_searchTerm.toLowerCase()))
+          searchResultUsers = allNotHiddenUsers
+              .where((u) =>
+                  u.wishKeywords != '' &&
+                  u.wishKeywords
+                      .toString()
+                      .toLowerCase()
+                      .contains(_searchTerm.toLowerCase()))
               .toList();
         }
 

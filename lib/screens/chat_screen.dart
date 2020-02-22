@@ -298,19 +298,50 @@ class Header extends StatelessWidget {
             if (chat != null)
               Flexible(
                 child: CupertinoButton(
-                  child: Icon(
-                    Feather.user_x,
-                    color: haveIBlocked ? kTextFieldTextColor : Colors.red,
-                  ),
+                  child: haveIBlocked ? Text('Unblock') : Text('Block'),
                   onPressed: () {
-                    if (amIUser1) {
-                      cloudFirestoreService.uploadChatBlocked(
-                          chatpath: chat.chatpath,
-                          hasUser1Blocked: !haveIBlocked);
+                    if (!haveIBlocked) {
+                      showCupertinoDialog(
+                        context: context,
+                        builder: (_) => CupertinoAlertDialog(
+                          title: Text('Block ${screenInfo.otherUsername}?'),
+                          content: Text(
+                              'Blocked contacts will no longer be able to send you messages'),
+                          actions: <Widget>[
+                            CupertinoDialogAction(
+                              child: Text('Cancel'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            CupertinoDialogAction(
+                              child: Text('Block'),
+                              onPressed: () {
+                                if (amIUser1) {
+                                  cloudFirestoreService.uploadChatBlocked(
+                                      chatpath: chat.chatpath,
+                                      hasUser1Blocked: !haveIBlocked);
+                                } else {
+                                  cloudFirestoreService.uploadChatBlocked(
+                                      chatpath: chat.chatpath,
+                                      hasUser2Blocked: !haveIBlocked);
+                                }
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
                     } else {
-                      cloudFirestoreService.uploadChatBlocked(
-                          chatpath: chat.chatpath,
-                          hasUser2Blocked: !haveIBlocked);
+                      if (amIUser1) {
+                        cloudFirestoreService.uploadChatBlocked(
+                            chatpath: chat.chatpath,
+                            hasUser1Blocked: !haveIBlocked);
+                      } else {
+                        cloudFirestoreService.uploadChatBlocked(
+                            chatpath: chat.chatpath,
+                            hasUser2Blocked: !haveIBlocked);
+                      }
                     }
                   },
                 ),
@@ -356,7 +387,7 @@ class MessagesStream extends StatelessWidget {
           itemBuilder: (context, index) {
             Message message = messages[index];
             var messageTimestamp = message.timestamp;
-            return MessageBubble(
+            return MessageRow(
               text: message.text,
               timestamp: HelperFunctions.getTimestampAsString(
                   timestamp: messageTimestamp),
@@ -434,11 +465,10 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
               maxLines: null,
               minLines: null,
               placeholder: 'Type a message',
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 13),
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: kChatScreenBorderTextFieldColor),
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
+                  color: kCardBackgroundColor,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
               controller: messageTextController,
             ),
           ),
@@ -463,8 +493,8 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
   }
 }
 
-class MessageBubble extends StatelessWidget {
-  MessageBubble({this.timestamp, this.text, this.isMe});
+class MessageRow extends StatelessWidget {
+  MessageRow({this.timestamp, this.text, this.isMe});
 
   final String timestamp;
   final String text;
@@ -473,40 +503,93 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4),
       child: Column(
+        // a column with just one child because I haven't figure out out else to size the bubble to fit its contents instead of filling it
         crossAxisAlignment:
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            timestamp,
-            style: kTimestampTextStyle,
-          ),
-          Material(
-            borderRadius: isMe
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30))
-                : BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30)),
-            elevation: 3.0,
-            color: isMe ? kMessageBubbleColor : Colors.white,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontSize: 15.0,
-                  color: isMe ? Colors.white : Colors.black54,
-                ),
-              ),
-            ),
-          ),
+          MessageBubble(isMe: isMe, text: text, timestamp: timestamp),
         ],
+      ),
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  const MessageBubble({
+    Key key,
+    @required this.isMe,
+    @required this.text,
+    @required this.timestamp,
+  }) : super(key: key);
+
+  final bool isMe;
+  final String text;
+  final String timestamp;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      borderRadius: isMe
+          ? BorderRadius.only(
+              topLeft: Radius.circular(15),
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15))
+          : BorderRadius.only(
+              topRight: Radius.circular(15),
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15)),
+      elevation: 0.0,
+      color: isMe ? kMessageBubbleColor : kCardBackgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        child: (text.length > 20)
+            ? Stack(
+                alignment: Alignment.bottomRight,
+                children: <Widget>[
+                  Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color: isMe ? Colors.white : kKeywordHeaderColor,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    timestamp,
+                    style: TextStyle(
+                        fontSize: 10.0,
+                        color: isMe ? Colors.white70 : Colors.black54),
+                  ),
+                ],
+              )
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment:
+                    isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color: isMe ? Colors.white : kKeywordHeaderColor,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    timestamp,
+                    style: TextStyle(
+                        fontSize: 10.0,
+                        color: isMe ? Colors.white70 : Colors.black54),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -527,7 +610,7 @@ class SendButton extends StatelessWidget {
             color: kDefaultProfilePicColor, shape: CircleBorder()),
         child: Icon(
           Feather.send,
-          color: Colors.white,
+          color: kBlueButtonColor,
           size: 22,
         ),
       ),
