@@ -34,8 +34,8 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
           onPageChangeCallback: _onPageChangeCallback,
         ),
         Positioned(
-          bottom: 30,
-          right: 20,
+          bottom: 10,
+          right: 10,
           child: CupertinoButton(
             child: Text('Skip'),
             onPressed: () {
@@ -50,9 +50,12 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
           ),
         ),
         Positioned(
-          bottom: 50,
-          child: PageIndicator(
-              numberOfPages: widget.numberOfPages, selectedPage: selectedPage),
+          bottom: 10,
+          child: SafeArea(
+            child: PageIndicator(
+                numberOfPages: widget.numberOfPages,
+                selectedPage: selectedPage),
+          ),
         ),
       ],
     );
