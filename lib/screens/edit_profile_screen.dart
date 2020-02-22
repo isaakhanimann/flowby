@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/choose_signin_screen.dart';
-import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
@@ -242,47 +240,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              CupertinoButton(
-                child: Text(
-                  'Delete Account',
-                  style: TextStyle(color: CupertinoColors.destructiveRed),
-                ),
-                onPressed: () {
-                  showCupertinoDialog(
-                    context: context,
-                    builder: (_) => CupertinoAlertDialog(
-                      title: Text('Are you sure?'),
-                      content:
-                          Text('Do you really want to delete all your info?'),
-                      actions: <Widget>[
-                        CupertinoDialogAction(
-                          child: Text('Cancel'),
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true).pop();
-                          },
-                        ),
-                        CupertinoDialogAction(
-                          child: Text('Delete'),
-                          onPressed: () async {
-                            final authService =
-                                Provider.of<FirebaseAuthService>(context);
-                            print('delete user called');
-                            await authService.deleteCurrentlyLoggedInUser();
-                            Navigator.of(context).push(
-                              CupertinoPageRoute<void>(
-                                builder: (context) {
-                                  return ChooseSigninScreen();
-                                },
-                              ),
-                            );
-                          },
-                          isDestructiveAction: true,
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              )
             ],
           ),
         ),
