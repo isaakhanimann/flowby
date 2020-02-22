@@ -34,12 +34,9 @@ class ChatsTab extends StatelessWidget {
               .compareTo(chat1.lastMessageTimestamp));
 
           if (chats.isEmpty) {
-            // Scaffold damit text nicht gelb unterstrichen ist
-            return CupertinoPageScaffold(
-              child: Center(
-                child: Text('You have no open chats',
-                    style: kCardSubtitleTextStyle),
-              ),
+            return Center(
+              child:
+                  Text('You have no open chats', style: kCardSubtitleTextStyle),
             );
           }
           return CustomScrollView(
