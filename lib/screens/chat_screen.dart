@@ -387,7 +387,7 @@ class MessagesStream extends StatelessWidget {
           itemBuilder: (context, index) {
             Message message = messages[index];
             var messageTimestamp = message.timestamp;
-            return MessageBubble(
+            return MessageRow(
               text: message.text,
               timestamp: HelperFunctions.getTimestampAsString(
                   timestamp: messageTimestamp),
@@ -465,11 +465,10 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
               maxLines: null,
               minLines: null,
               placeholder: 'Type a message',
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 13),
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: kChatScreenBorderTextFieldColor),
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
+                  color: kCardBackgroundColor,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
               controller: messageTextController,
             ),
           ),
@@ -494,8 +493,8 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
   }
 }
 
-class MessageBubble extends StatelessWidget {
-  MessageBubble({this.timestamp, this.text, this.isMe});
+class MessageRow extends StatelessWidget {
+  MessageRow({this.timestamp, this.text, this.isMe});
 
   final String timestamp;
   final String text;
@@ -510,71 +509,87 @@ class MessageBubble extends StatelessWidget {
         crossAxisAlignment:
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          Material(
-            borderRadius: isMe
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    bottomLeft: Radius.circular(15),
-                    bottomRight: Radius.circular(15))
-                : BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    bottomLeft: Radius.circular(15),
-                    bottomRight: Radius.circular(15)),
-            elevation: 3.0,
-            color: isMe ? kMessageBubbleColor : Colors.white,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: (text.length > 20)
-                  ? Stack(
-                      alignment: Alignment.bottomRight,
-                      children: <Widget>[
-                        Text(
-                          text,
-                          style: TextStyle(
-                            fontSize: 15.0,
-                            color: isMe ? Colors.white : Colors.black54,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          timestamp,
-                          style: TextStyle(
-                              fontSize: 10.0,
-                              color: isMe ? Colors.white70 : Colors.black54),
-                        ),
-                      ],
-                    )
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: isMe
-                          ? MainAxisAlignment.end
-                          : MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Text(
-                          text,
-                          style: TextStyle(
-                            fontSize: 15.0,
-                            color: isMe ? Colors.white : Colors.black54,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          timestamp,
-                          style: TextStyle(
-                              fontSize: 10.0,
-                              color: isMe ? Colors.white70 : Colors.black54),
-                        ),
-                      ],
-                    ),
-            ),
-          ),
+          MessageBubble(isMe: isMe, text: text, timestamp: timestamp),
         ],
+      ),
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  const MessageBubble({
+    Key key,
+    @required this.isMe,
+    @required this.text,
+    @required this.timestamp,
+  }) : super(key: key);
+
+  final bool isMe;
+  final String text;
+  final String timestamp;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      borderRadius: isMe
+          ? BorderRadius.only(
+              topLeft: Radius.circular(15),
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15))
+          : BorderRadius.only(
+              topRight: Radius.circular(15),
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15)),
+      elevation: 0.0,
+      color: isMe ? kMessageBubbleColor : kCardBackgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        child: (text.length > 20)
+            ? Stack(
+                alignment: Alignment.bottomRight,
+                children: <Widget>[
+                  Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color: isMe ? Colors.white : kKeywordHeaderColor,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    timestamp,
+                    style: TextStyle(
+                        fontSize: 10.0,
+                        color: isMe ? Colors.white70 : Colors.black54),
+                  ),
+                ],
+              )
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment:
+                    isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color: isMe ? Colors.white : kKeywordHeaderColor,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    timestamp,
+                    style: TextStyle(
+                        fontSize: 10.0,
+                        color: isMe ? Colors.white70 : Colors.black54),
+                  ),
+                ],
+              ),
       ),
     );
   }
