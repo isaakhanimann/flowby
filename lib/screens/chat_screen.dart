@@ -332,8 +332,7 @@ class Header extends StatelessWidget {
                           ],
                         ),
                       );
-                    }
-                    else{
+                    } else {
                       if (amIUser1) {
                         cloudFirestoreService.uploadChatBlocked(
                             chatpath: chat.chatpath,
@@ -505,37 +504,74 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4),
       child: Column(
+        // a column with just one child because I haven't figure out out else to size the bubble to fit its contents instead of filling it
         crossAxisAlignment:
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            timestamp,
-            style: kTimestampTextStyle,
-          ),
           Material(
             borderRadius: isMe
                 ? BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30))
+                    topLeft: Radius.circular(15),
+                    bottomLeft: Radius.circular(15),
+                    bottomRight: Radius.circular(15))
                 : BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30)),
+                    topRight: Radius.circular(15),
+                    bottomLeft: Radius.circular(15),
+                    bottomRight: Radius.circular(15)),
             elevation: 3.0,
             color: isMe ? kMessageBubbleColor : Colors.white,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontSize: 15.0,
-                  color: isMe ? Colors.white : Colors.black54,
-                ),
-              ),
+              child: (text.length > 20)
+                  ? Stack(
+                      alignment: Alignment.bottomRight,
+                      children: <Widget>[
+                        Text(
+                          text,
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            color: isMe ? Colors.white : Colors.black54,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          timestamp,
+                          style: TextStyle(
+                              fontSize: 10.0,
+                              color: isMe ? Colors.white70 : Colors.black54),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: isMe
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          text,
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            color: isMe ? Colors.white : Colors.black54,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          timestamp,
+                          style: TextStyle(
+                              fontSize: 10.0,
+                              color: isMe ? Colors.white70 : Colors.black54),
+                        ),
+                      ],
+                    ),
             ),
           ),
         ],
@@ -559,7 +595,7 @@ class SendButton extends StatelessWidget {
             color: kDefaultProfilePicColor, shape: CircleBorder()),
         child: Icon(
           Feather.send,
-          color: Colors.white,
+          color: kBlueButtonColor,
           size: 22,
         ),
       ),

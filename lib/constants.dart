@@ -25,7 +25,6 @@ const kSearchTextStyle = TextStyle(fontSize: 16, color: Colors.black);
 const kHomeSwitchTextStyle = TextStyle(fontSize: 16);
 const kChatScreenHeaderTextStyle =
     TextStyle(fontSize: 20, fontFamily: 'MuliRegular');
-const kTimestampTextStyle = TextStyle(fontSize: 12.0, color: Colors.black54);
 const kSkillsTitleTextStyle = TextStyle(
     fontFamily: 'MontserratRegular',
     fontSize: 26.0,
