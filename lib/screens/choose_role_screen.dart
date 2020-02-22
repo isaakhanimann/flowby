@@ -1,4 +1,5 @@
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -7,8 +8,6 @@ import 'package:Flowby/services/preferences_service.dart';
 class ChooseRoleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final preferencesService =
-        Provider.of<PreferencesService>(context, listen: false);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
@@ -27,20 +26,33 @@ class ChooseRoleScreen extends StatelessWidget {
           RoundedButton(
               color: kBlueButtonColor,
               textColor: CupertinoColors.white,
-              onPressed: () async {
+              onPressed: () {
                 Role role = Role.consumer;
-                await preferencesService.setRole(role: role);
+                _setRoleAndNavigate(context: context, role: role);
               },
               text: 'Search'),
           RoundedButton(
               color: kBlueButtonColor,
               textColor: CupertinoColors.white,
-              onPressed: () async {
+              onPressed: () {
                 Role role = Role.provider;
-                await preferencesService.setRole(role: role);
+                _setRoleAndNavigate(context: context, role: role);
               },
               text: 'Provide')
         ],
+      ),
+    );
+  }
+
+  _setRoleAndNavigate({BuildContext context, Role role}) async {
+    final preferencesService =
+        Provider.of<PreferencesService>(context, listen: false);
+    await preferencesService.setRole(role: role);
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return NavigationScreen();
+        },
       ),
     );
   }
