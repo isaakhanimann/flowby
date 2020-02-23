@@ -1,4 +1,3 @@
-import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/edit_profile_screen.dart';
 import 'package:Flowby/screens/settings_screen.dart';
