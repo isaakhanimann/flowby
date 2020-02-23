@@ -31,10 +31,9 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
-  FirebaseUser loggedInUser;
-  User currentUser;
+  Role role;
   bool shouldExplanationBeLoaded = false;
-  bool shouldRoleBeChosen = true;
+  FirebaseUser loggedInUser;
 
   @override
   void initState() {
@@ -53,21 +52,35 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (shouldRoleBeChosen) {
-      return ChooseRoleScreen();
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    if (role == Role.unassigned) {
+      return StreamProvider<User>.value(
+        value: cloudFirestoreService.getUserStream(uid: loggedInUser?.uid),
+        catchError: (context, object) {
+          return null;
+        },
+        child: ChooseRoleScreen(),
+      );
     }
+
     if (shouldExplanationBeLoaded) {
-      return ExplanationScreen();
+      return ExplanationScreen(role: role);
     }
+
     if (loggedInUser == null) {
       return MultiProvider(
         providers: [
           StreamProvider<Position>.value(
             value: positionStream,
           ),
-          Provider<FirebaseUser>.value(
-            value: loggedInUser,
-          ),
+          StreamProvider<User>.value(
+            value: cloudFirestoreService.getUserStream(uid: loggedInUser?.uid),
+            catchError: (context, object) {
+              return null;
+            },
+          )
         ],
         child: HomeScreenWithSignin(),
       );
@@ -78,9 +91,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
         StreamProvider<Position>.value(
           value: positionStream,
         ),
-        Provider<FirebaseUser>.value(
-          value: loggedInUser,
-        ),
+        StreamProvider<User>.value(
+          value: cloudFirestoreService.getUserStream(uid: loggedInUser.uid),
+          catchError: (context, object) {
+            return null;
+          },
+        )
       ],
       child: ScreenWithAllTabs(),
     );
@@ -89,18 +105,28 @@ class _NavigationScreenState extends State<NavigationScreen> {
   _initializeEverything(BuildContext context) async {
     Future<Role> preferenceRole = _getPreferenceRole();
 
-    await _setUser(); // await because currentUser must be assigned before the next two lines
+    final authService =
+        Provider.of<FirebaseAuthService>(context, listen: false);
+
+    FirebaseUser firebaseUser = await authService.getCurrentUser();
+
+    setState(() {
+      this.loggedInUser = firebaseUser;
+    });
+
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    User currentUser =
+        await cloudFirestoreService.getUser(uid: firebaseUser?.uid);
 
     Role profileRole = currentUser.role;
-    _uploadLocationAndPushToken();
+    _uploadLocationAndPushToken(loggedInUser: firebaseUser);
 
-    Role role = profileRole ?? await preferenceRole;
-
-    if (role == Role.unassigned) {
-      setState(() {
-        shouldRoleBeChosen = true;
-      });
-    }
+    Role finalRole = profileRole ?? await preferenceRole;
+    setState(() {
+      role = finalRole;
+    });
   }
 
   Future<Role> _getPreferenceRole() async {
@@ -111,7 +137,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     return preferenceRole;
   }
 
-  _uploadLocationAndPushToken() async {
+  _uploadLocationAndPushToken({@required FirebaseUser loggedInUser}) async {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
@@ -130,26 +156,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
       });
       firebaseMessaging.firebaseCloudMessagingListeners(context);
       firebaseMessaging.getToken().then((token) {
-        cloudFirestoreService.uploadPushToken(
+        cloudFirestoreService.uploadUsersPushToken(
             uid: loggedInUser.uid, pushToken: token);
       });
     }
-  }
-
-  _setUser() async {
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-
-    // get logged in User 1
-    final authService =
-        Provider.of<FirebaseAuthService>(context, listen: false);
-    FirebaseUser firebaseUser = await authService.getCurrentUser();
-
-    User user = await cloudFirestoreService.getUser(uid: firebaseUser?.uid);
-
-    setState(() {
-      currentUser = user;
-    });
   }
 
   _setExplanation() async {

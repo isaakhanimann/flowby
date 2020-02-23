@@ -5,11 +5,11 @@ import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:Flowby/models/user.dart';
 
 class ChatsTab extends StatelessWidget {
   @override
@@ -18,7 +18,7 @@ class ChatsTab extends StatelessWidget {
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     //listening to loggedInUser (so it rebuilds) is not necessary as the navigationscreen provides it and always has the up to date value because it is rebuilt whenever we navigate to it
-    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    final loggedInUser = Provider.of<User>(context, listen: false);
 
     return StreamBuilder(
         stream:
@@ -80,7 +80,7 @@ class ChatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    final loggedInUser = Provider.of<User>(context, listen: false);
     bool user1IsLoggedInUser = (chat.uid1 == loggedInUser.uid);
     String otherUid = user1IsLoggedInUser ? chat.uid2 : chat.uid1;
     String otherUsername =

@@ -4,7 +4,6 @@ import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/screens/registration/registration_screen.dart';
 import 'package:Flowby/screens/registration/upload_picture_registration_screen.dart';
 import 'package:Flowby/screens/reset_password_screen.dart';
-import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,8 +14,6 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => ChooseSigninScreen());
       case NavigationScreen.id:
         return CupertinoPageRoute(builder: (_) => NavigationScreen());
-      case ExplanationScreen.id:
-        return CupertinoPageRoute(builder: (_) => ExplanationScreen());
       case LoginScreen.id:
         return CupertinoPageRoute(builder: (_) => LoginScreen());
       case RegistrationScreen.id:

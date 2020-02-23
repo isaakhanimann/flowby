@@ -306,6 +306,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             fileName: widget.user.uid, image: _profilePic);
       }
 
+      user.username = _usernameController.text;
       user.isHidden = _isHidden;
       user.skills.removeWhere(
           (skill) => (skill.keywords == null || skill.keywords.isEmpty));

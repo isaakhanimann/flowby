@@ -6,7 +6,6 @@ import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/no_results.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -41,7 +40,7 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    final loggedInUser = Provider.of<User>(context);
 
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
@@ -101,7 +100,9 @@ class _HomeTabState extends State<HomeTab> {
                         Navigator.of(context, rootNavigator: true).push(
                           CupertinoPageRoute<void>(
                             builder: (context) {
-                              return ExplanationScreen();
+                              return ExplanationScreen(
+                                role: loggedInUser.role,
+                              );
                             },
                           ),
                         );
@@ -193,7 +194,7 @@ class ProfileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUser = Provider.of<FirebaseUser>(context, listen: false);
+    final loggedInUser = Provider.of<User>(context);
     final String heroTag = user.uid + 'home';
     var currentPosition = Provider.of<Position>(context);
     final locationService =
