@@ -190,6 +190,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   }
 
   Future<void> _signInWithEmail(BuildContext context) async {
+    try {
+      setState(() {
+        showSpinner = true;
+      });
     if (email == null || password == null) {
       showAlert(
           context: context,
@@ -197,10 +201,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
           description: 'Enter an email and an password. Thank you.');
       return;
     }
-    try {
-      setState(() {
-        showSpinner = true;
-      });
 
       final authService =
           Provider.of<FirebaseAuthService>(context, listen: false);
@@ -219,20 +219,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         setState(() {
           showSpinner = false;
         });
-
-        Navigator.of(context, rootNavigator: true).push(
-          CupertinoPageRoute<void>(
-            builder: (context) {
-              return VerifyEmailScreen(
-                user: user,
-              );
-            },
-          ),
-        );
         Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
           CupertinoPageRoute(
               builder: (BuildContext context) =>
-                  AddUsernameRegistrationScreen(user: user)),
+                  VerifyEmailScreen(user: user)),
               (Route<dynamic> route) => false,
         );
       }

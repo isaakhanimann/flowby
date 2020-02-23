@@ -44,7 +44,7 @@ const kPrivacyPolicyTextStyle = TextStyle(
     fontFamily: 'NotoRegular',
     fontSize: 12.0,
     fontWeight: FontWeight.w400,
-    color: kSmallTitlesTextColor);
+    color: Colors.white);
 const kKeywordHeaderTextStyle = TextStyle(
     fontFamily: 'NotoMedium',
     fontSize: 16.0,

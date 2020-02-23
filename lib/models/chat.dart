@@ -1,3 +1,4 @@
+import 'package:Flowby/constants.dart';
 import 'package:flutter/cupertino.dart';
 
 class Chat {
@@ -18,13 +19,13 @@ class Chat {
   Chat(
       {this.uid1,
       this.username1,
-      this.user1ImageFileName,
-      this.user1ImageVersionNumber,
+      this.user1ImageFileName = kDefaultProfilePicName,
+      this.user1ImageVersionNumber = 1,
       this.hasUser1Blocked,
       this.uid2,
       this.username2,
-      this.user2ImageFileName,
-      this.user2ImageVersionNumber,
+      this.user2ImageFileName = kDefaultProfilePicName,
+      this.user2ImageVersionNumber = 1,
       this.hasUser2Blocked,
       this.lastMessageText,
       this.lastMessageTimestamp});
@@ -32,12 +33,12 @@ class Chat {
   Chat.fromMap({Map<String, dynamic> map}) {
     this.uid1 = map['uid1'];
     this.username1 = map['username1'] ?? 'Default username1';
-    this.user1ImageFileName = map['user1ImageFileName'];
+    this.user1ImageFileName = map['user1ImageFileName'] ?? kDefaultProfilePicName;
     this.user1ImageVersionNumber = map['user1ImageVersionNumber'] ?? 1;
     this.hasUser1Blocked = map['hasUser1Blocked'] ?? false;
     this.uid2 = map['uid2'];
     this.username2 = map['username2'] ?? 'Default username2';
-    this.user2ImageFileName = map['user2ImageFileName'];
+    this.user2ImageFileName = map['user2ImageFileName'] ?? kDefaultProfilePicName;
     this.user2ImageVersionNumber = map['user2ImageVersionNumber'] ?? 1;
     this.hasUser2Blocked = map['hasUser2Blocked'] ?? false;
     this.lastMessageText = map['lastMessageText'] ?? 'No messages';
