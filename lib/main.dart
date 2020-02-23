@@ -70,6 +70,11 @@ class Flowby extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           initialRoute: NavigationScreen.id,
           onGenerateRoute: RouteGenerator.generateRoute,
+          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+            DefaultMaterialLocalizations.delegate,
+            DefaultWidgetsLocalizations.delegate,
+            DefaultCupertinoLocalizations.delegate,
+          ],
         ),
       ),
     );

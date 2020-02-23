@@ -69,7 +69,7 @@ class SettingsScreen extends StatelessWidget {
         leading: Icon(Feather.share_2, color: kLoginBackgroundColor),
         title: Text('Invite a friend'),
         onTap: () => Share.share(
-            'Flowby is the largest skill-sharing community. The more the merrier. Join the adventure: https://flowby.apps'),
+            'Flowby is the largest skill-sharing community. The more the merrier. Join the adventure: https://flowby.app. Tell your friends about it, the more the merrier.'),
       ),
       SettingsItem(
           leading: Icon(Feather.message_circle, color: kLoginBackgroundColor),

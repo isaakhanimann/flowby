@@ -189,6 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 CupertinoDialogAction(
                   child: Text('Cancel'),
                   onPressed: () {
+                    authService.signOut();
                     Navigator.pop(context);
                     setState(() {
                       showSpinner = false;
@@ -199,6 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text('Send verification'),
                   onPressed: () async {
                     await authResult.user.sendEmailVerification();
+                    authService.signOut();
                     Navigator.pop(context);
                     setState(() {
                       showSpinner = false;

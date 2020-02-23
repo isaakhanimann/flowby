@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/chat_without_last_message.dart';
@@ -548,12 +549,18 @@ class MessageBubble extends StatelessWidget {
             ? Stack(
                 alignment: Alignment.bottomRight,
                 children: <Widget>[
-                  Text(
-                    text,
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: isMe ? Colors.white : kKeywordHeaderColor,
+                  GestureDetector(
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: isMe ? Colors.white : kKeywordHeaderColor,
+                      ),
                     ),
+                    onLongPress: () {
+                      print('Copied to clipboard');
+                      Clipboard.setData(ClipboardData(text: text));
+                    }
                   ),
                   SizedBox(
                     width: 10,
