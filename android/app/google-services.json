@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "547934201313-ithtlo46nj3candaijn4gvfbq4mf3v8r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.flowby",
+            "certificate_hash": "c3fde51c9d8e011ae3c8b9df02786765102746ff"
+          }
+        },
+        {
           "client_id": "547934201313-a4d7koqcc6gqf684p0v6gnc69ctcvend.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
