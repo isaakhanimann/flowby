@@ -157,7 +157,7 @@ class ChatHasLoaded extends StatelessWidget {
           MessageSendingSection(chat: chat),
         ],
       ),
-      Header(chat: chat),
+      ChatHeader(chat: chat),
     ]);
   }
 }
@@ -179,7 +179,7 @@ class ChatIsLoading extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Header(),
+        ChatHeader(),
         Expanded(
           child: MessagesStream(
             messagesStream:
@@ -203,8 +203,8 @@ class MessageSendingSectionLoading extends StatelessWidget {
   }
 }
 
-class Header extends StatelessWidget {
-  const Header({Key key, this.chat}) : super(key: key);
+class ChatHeader extends StatelessWidget {
+  const ChatHeader({Key key, this.chat}) : super(key: key);
 
   final ChatWithoutLastMessage chat;
 

@@ -5,6 +5,7 @@ import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/no_results.dart';
+import 'package:Flowby/widgets/tab_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -83,32 +84,11 @@ class _HomeTabState extends State<HomeTab> {
           bottom: false,
           child: Column(
             children: <Widget>[
-              SizedBox(
-                height: 40,
-                child: Stack(fit: StackFit.expand, children: [
-                  Image(
-                    image: AssetImage("assets/images/logo_flowby.png"),
-                    height: 30.0,
-                  ),
-                  Positioned(
-                    right: 0,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-                      child: Icon(
-                        Feather.info,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          CupertinoPageRoute<void>(
-                            builder: (context) {
-                              return ExplanationScreen();
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ]),
+              TabHeader(
+                rightIcon: Icon(
+                  Feather.info,
+                ),
+                rightAction: ExplanationScreen(),
               ),
               Expanded(
                 child: ListView.builder(
