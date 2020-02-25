@@ -194,13 +194,16 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       setState(() {
         showSpinner = true;
       });
-    if (email == null || password == null) {
-      showAlert(
-          context: context,
-          title: "Missing email or password",
-          description: 'Enter an email and an password. Thank you.');
-      return;
-    }
+      if (email == null || password == null) {
+        showAlert(
+            context: context,
+            title: "Missing email or password",
+            description: 'Enter an email and an password. Thank you.');
+        setState(() {
+          showSpinner = false;
+        });
+        return;
+      }
 
       final authService =
           Provider.of<FirebaseAuthService>(context, listen: false);
@@ -221,9 +224,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         });
         Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
           CupertinoPageRoute(
-              builder: (BuildContext context) =>
-                  VerifyEmailScreen(user: user)),
-              (Route<dynamic> route) => false,
+              builder: (BuildContext context) => VerifyEmailScreen(user: user)),
+          (Route<dynamic> route) => false,
         );
       }
     } catch (e) {
