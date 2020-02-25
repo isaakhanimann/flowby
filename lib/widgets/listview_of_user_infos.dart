@@ -8,10 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 class ListViewOfUserInfos extends StatelessWidget {
-  ListViewOfUserInfos({@required this.user, this.heroTag});
-
   final User user;
   final String heroTag;
+  final bool isProfileTab;
+
+  ListViewOfUserInfos({@required this.user, this.heroTag, this.isProfileTab = true});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,9 @@ class ListViewOfUserInfos extends StatelessWidget {
         !user.isHidden && user.wishes != null && user.wishes.isNotEmpty;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: isProfileTab
+          ? const EdgeInsets.only(left: 15, right: 15, top: 35)
+          : const EdgeInsets.symmetric(horizontal: 15),
       child: ListView(
         children: <Widget>[
           SizedBox(

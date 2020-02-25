@@ -32,12 +32,14 @@ class ProfileTab extends StatelessWidget {
           return SafeArea(
             bottom: false,
             child: Stack(alignment: Alignment.topCenter, children: <Widget>[
-              ListViewOfUserInfos(user: user),
-              TabHeader(
-                leftIcon: Icon(Feather.settings),
-                leftAction: SettingsScreen(user: user),
-                rightIcon: Icon(Feather.edit),
-                rightAction: EditProfileScreen(user: user),
+              ListViewOfUserInfos(user: user, isProfileTab: true),
+              Positioned(
+                child: TabHeader(
+                  leftIcon: Icon(Feather.settings),
+                  leftAction: SettingsScreen(user: user),
+                  rightIcon: Icon(Feather.edit),
+                  rightAction: EditProfileScreen(user: user),
+                ),
               ),
             ]),
           );

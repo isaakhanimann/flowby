@@ -85,9 +85,7 @@ class _HomeTabState extends State<HomeTab> {
           child: Column(
             children: <Widget>[
               TabHeader(
-                rightIcon: Icon(
-                  Feather.info,
-                ),
+                rightIcon: Icon(Feather.info),
                 rightAction: ExplanationScreen(),
               ),
               Expanded(
