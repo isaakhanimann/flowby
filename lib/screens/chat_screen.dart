@@ -3,6 +3,7 @@ import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/models/message.dart';
 import 'package:Flowby/screens/show_profile_picture_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/copyable_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -549,18 +550,12 @@ class MessageBubble extends StatelessWidget {
             ? Stack(
                 alignment: Alignment.bottomRight,
                 children: <Widget>[
-                  GestureDetector(
-                    child: Text(
-                      text,
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        color: isMe ? Colors.white : kKeywordHeaderColor,
-                      ),
+                  CopyableText(
+                    text,
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color: isMe ? Colors.white : kKeywordHeaderColor,
                     ),
-                    onLongPress: () {
-                      print('Copied to clipboard');
-                      Clipboard.setData(ClipboardData(text: text));
-                    }
                   ),
                   SizedBox(
                     width: 10,
@@ -579,7 +574,7 @@ class MessageBubble extends StatelessWidget {
                     isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Text(
+                  CopyableText(
                     text,
                     style: TextStyle(
                       fontSize: 15.0,
