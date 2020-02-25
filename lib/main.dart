@@ -6,6 +6,7 @@ import 'package:Flowby/services/firebase_cloud_messaging.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:Flowby/services/image_picker_service.dart';
 import 'package:Flowby/services/location_service.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,18 +60,21 @@ class Flowby extends StatelessWidget {
             currentFocus.unfocus();
           }
         },
-        child: CupertinoApp(
-          theme: CupertinoThemeData(
-              brightness: Brightness.light,
-              primaryColor: kLoginBackgroundColor),
-          debugShowCheckedModeBanner: false,
-          initialRoute: NavigationScreen.id,
-          onGenerateRoute: RouteGenerator.generateRoute,
-          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
-            DefaultMaterialLocalizations.delegate,
-            DefaultWidgetsLocalizations.delegate,
-            DefaultCupertinoLocalizations.delegate,
-          ],
+        child: BotToastInit( // widget that pops up toasts (used to notify users when they copy a message)
+          child: CupertinoApp(
+            navigatorObservers: [BotToastNavigatorObserver()],
+            theme: CupertinoThemeData(
+                brightness: Brightness.light,
+                primaryColor: kLoginBackgroundColor),
+            debugShowCheckedModeBanner: false,
+            initialRoute: NavigationScreen.id,
+            onGenerateRoute: RouteGenerator.generateRoute,
+            localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+              DefaultMaterialLocalizations.delegate,
+              DefaultWidgetsLocalizations.delegate,
+              DefaultCupertinoLocalizations.delegate,
+            ],
+          ),
         ),
       ),
     );
