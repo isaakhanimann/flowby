@@ -229,6 +229,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       height: 20,
                     ),
                     ListOfTextfields(
+                      key: UniqueKey(),
                       initialSkillsOrWishes: user.skills,
                       updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
                       updateDescriptionAtIndex:
@@ -250,6 +251,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       height: 20,
                     ),
                     ListOfTextfields(
+                      key: UniqueKey(),
                       initialSkillsOrWishes: user.wishes,
                       updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
                       updateDescriptionAtIndex:

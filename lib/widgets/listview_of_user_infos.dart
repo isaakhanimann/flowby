@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:Flowby/models/role.dart';
 
 class ListViewOfUserInfos extends StatelessWidget {
   final User user;
@@ -15,10 +16,12 @@ class ListViewOfUserInfos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool canShowSkills =
-        !user.isHidden && user.skills != null && user.skills.isNotEmpty;
-    bool canShowWishes =
-        !user.isHidden && user.wishes != null && user.wishes.isNotEmpty;
+    bool areSkillsEmpty = user.skills == null || user.skills.isEmpty;
+
+    bool areWishesEmpty = user.wishes == null || user.wishes.isEmpty;
+
+    bool isProvider = user.role == Role.provider;
+    bool isConsumer = user.role == Role.consumer;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -98,18 +101,27 @@ class ListViewOfUserInfos extends StatelessWidget {
           SizedBox(
             height: 15,
           ),
-          if (!canShowSkills && !canShowWishes)
+          if (user.isHidden)
             Text(
-              '(Your profile is invisible)',
+              '(Your profile is hidden)',
               textAlign: TextAlign.center,
             ),
-          if (canShowSkills)
+          if (!user.isHidden && isProvider && areSkillsEmpty)
+            Text(
+              '(Your profile is invisible because you have no skills)',
+              textAlign: TextAlign.center,
+            ),
+          if (!user.isHidden && isProvider && !areSkillsEmpty)
             SkillOrWishSection(
               skillsOrWishes: user.skills,
               title: 'Skills',
             ),
-          SizedBox(height: 15),
-          if (canShowWishes)
+          if (!user.isHidden && isConsumer && areWishesEmpty)
+            Text(
+              '(Your profile is invisible because you have no wishes)',
+              textAlign: TextAlign.center,
+            ),
+          if (!user.isHidden && isConsumer && !areWishesEmpty)
             SkillOrWishSection(
               skillsOrWishes: user.wishes,
               title: 'Wishes',

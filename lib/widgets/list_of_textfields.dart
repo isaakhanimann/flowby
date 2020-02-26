@@ -10,9 +10,11 @@ class ListOfTextfields extends StatefulWidget {
   final Function updatePriceAtIndex;
   final Function addEmptySkillOrWish;
   final Function deleteSkillOrWishAtIndex;
+  final UniqueKey key;
 
   ListOfTextfields(
-      {@required this.initialSkillsOrWishes,
+      {@required this.key,
+      @required this.initialSkillsOrWishes,
       @required this.updateKeywordsAtIndex,
       @required this.updateDescriptionAtIndex,
       @required this.updatePriceAtIndex,
@@ -83,7 +85,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                     maxLength: 20,
                     decoration: null,
                     textAlign: TextAlign.start,
-                    placeholder: "#keywords",
+                    placeholder: "#topic",
                     controller: keywordControllers[rowNumber],
                   ),
                 ),
