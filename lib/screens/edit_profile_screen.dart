@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:Flowby/models/role.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -27,6 +28,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool _isHidden;
   File _profilePic;
   bool showSpinner = true;
+  Role _role;
 
   var _usernameController = TextEditingController();
   var _bioController = TextEditingController();
@@ -206,37 +208,58 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ],
               ),
               SizedBox(height: 20),
-              Text(
-                'Skills',
-                style: kSkillsTitleTextStyle,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              ListOfTextfields(
-                initialSkillsOrWishes: user.skills,
-                updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
-                updateDescriptionAtIndex: user.updateSkillDescriptionAtIndex,
-                updatePriceAtIndex: user.updateSkillPriceAtIndex,
-                addEmptySkillOrWish: user.addEmptySkill,
-                deleteSkillOrWishAtIndex: user.deleteSkillAtIndex,
+              CupertinoSegmentedControl(
+                padding: EdgeInsets.symmetric(horizontal: 0),
+                groupValue: _role,
+                onValueChanged: _switchRole,
+                children: <Role, Widget>{
+                  Role.consumer: Text('Searcher', style: kHomeSwitchTextStyle),
+                  Role.provider: Text('Provider', style: kHomeSwitchTextStyle),
+                },
               ),
               SizedBox(height: 20),
-              Text(
-                'Wishes',
-                style: kSkillsTitleTextStyle,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              ListOfTextfields(
-                initialSkillsOrWishes: user.wishes,
-                updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
-                updateDescriptionAtIndex: user.updateWishDescriptionAtIndex,
-                updatePriceAtIndex: user.updateWishPriceAtIndex,
-                addEmptySkillOrWish: user.addEmptyWish,
-                deleteSkillOrWishAtIndex: user.deleteWishAtIndex,
-              ),
+              if (_role == Role.provider)
+                Column(
+                  children: <Widget>[
+                    Text(
+                      'Skills',
+                      style: kSkillsTitleTextStyle,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    ListOfTextfields(
+                      initialSkillsOrWishes: user.skills,
+                      updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
+                      updateDescriptionAtIndex:
+                          user.updateSkillDescriptionAtIndex,
+                      updatePriceAtIndex: user.updateSkillPriceAtIndex,
+                      addEmptySkillOrWish: user.addEmptySkill,
+                      deleteSkillOrWishAtIndex: user.deleteSkillAtIndex,
+                    ),
+                  ],
+                ),
+              if (_role == Role.consumer)
+                Column(
+                  children: <Widget>[
+                    Text(
+                      'Wishes',
+                      style: kSkillsTitleTextStyle,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    ListOfTextfields(
+                      initialSkillsOrWishes: user.wishes,
+                      updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
+                      updateDescriptionAtIndex:
+                          user.updateWishDescriptionAtIndex,
+                      updatePriceAtIndex: user.updateWishPriceAtIndex,
+                      addEmptySkillOrWish: user.addEmptyWish,
+                      deleteSkillOrWishAtIndex: user.deleteWishAtIndex,
+                    ),
+                  ],
+                ),
               SizedBox(
                 height: 20,
               ),
@@ -245,6 +268,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
+  }
+
+  _switchRole(Role newRole) {
+    setState(() {
+      _role = newRole;
+    });
   }
 
   Future<void> _uploadUserAndNavigate(BuildContext context) async {
@@ -265,6 +294,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       user.username = _usernameController.text;
       user.isHidden = _isHidden;
+      user.role = _role;
       user.skills.removeWhere(
           (skill) => (skill.keywords == null || skill.keywords.isEmpty));
       user.wishes.removeWhere(
@@ -340,6 +370,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _usernameController.text = user.username;
       _bioController.text = user.bio;
       _isHidden = user.isHidden;
+      _role = user.role;
 
       _profilePic = null;
       showSpinner = false;
