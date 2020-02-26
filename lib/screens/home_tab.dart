@@ -5,7 +5,9 @@ import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/no_results.dart';
+import 'package:Flowby/widgets/tab_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -110,6 +112,9 @@ class _HomeTabState extends State<HomeTab> {
                     ),
                   ),
                 ]),
+              TabHeader(
+                rightIcon: Icon(Feather.info),
+                rightAction: ExplanationScreen(),
               ),
               Expanded(
                 child: ListView.builder(

@@ -45,6 +45,12 @@ class ChatsTab extends StatelessWidget {
               CupertinoSliverNavigationBar(
                 backgroundColor: CupertinoColors.white,
                 border: null,
+                middle: Padding(
+                    padding: EdgeInsets.only(bottom: 4),
+                    child: Image(
+                      image: AssetImage("assets/images/logo_flowby.png"),
+
+                    )),
                 largeTitle: Text(
                   'Chats',
                   style: kTabsLargeTitleTextStyle,

@@ -62,9 +62,10 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
           onPageChangeCallback: _onPageChangeCallback,
         ),
         Positioned(
-          bottom: 10,
-          right: 10,
+          top: 25,
+          right: 0,
           child: CupertinoButton(
+            padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
             child: Text('Skip'),
             onPressed: () {
               Navigator.of(context, rootNavigator: true).push(

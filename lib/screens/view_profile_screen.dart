@@ -31,6 +31,7 @@ class ViewProfileScreen extends StatelessWidget {
             ListViewOfUserInfos(
               user: user,
               heroTag: heroTag,
+              isProfileTab: false,
             ),
             Positioned(
               bottom: 20,
