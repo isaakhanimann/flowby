@@ -13,6 +13,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/services/location_service.dart';
+import 'package:Flowby/models/role.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -20,7 +21,6 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  bool isSkillSelected = true;
   FocusNode _focusNode;
 
   TextEditingController _controller;
@@ -59,7 +59,7 @@ class _HomeTabState extends State<HomeTab> {
             allUsers.where((u) => !u.isHidden).toList();
         List<User> searchResultUsers;
 
-        if (isSkillSelected) {
+        if (loggedInUser.role == Role.consumer) {
           searchResultUsers = allNotHiddenUsers
               .where((u) =>
                   u.skillKeywords != '' &&
@@ -89,68 +89,38 @@ class _HomeTabState extends State<HomeTab> {
                   role: loggedInUser.role,
                 ),
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return GestureDetector(
-                        onTap: setFocus,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                          child: SearchBar(
-                            focusNode: _focusNode,
-                            isSkillSearch: isSkillSelected,
-                            controller: _controller,
-                          ),
-                        ),
-                      );
-                    } else if (index == 1) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                            child: CupertinoSegmentedControl(
-                              groupValue: isSkillSelected,
-                              onValueChanged: switchSearch,
-                              children: <bool, Widget>{
-                                true:
-                                    Text('Skills', style: kHomeSwitchTextStyle),
-                                false:
-                                    Text('Wishes', style: kHomeSwitchTextStyle),
-                              },
-                            ),
-                          ),
-                          if (searchResultUsers.length == 0 &&
-                              loggedInUser != null)
-                            NoResults(
-                              isSkillSelected: isSkillSelected,
-                              uidOfLoggedInUser: loggedInUser.uid,
-                            ),
-                        ],
-                      );
-                    } else if (index < searchResultUsers.length + 2) {
-                      return ProfileItem(
-                        user: searchResultUsers[index - 2],
-                        isSkillSearch: isSkillSelected,
-                      );
-                    }
-                    return null;
-                  },
-                  itemCount: searchResultUsers.length + 2,
+              GestureDetector(
+                onTap: setFocus,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: SearchBar(
+                    focusNode: _focusNode,
+                    isSkillSearch: loggedInUser.role == Role.consumer,
+                    controller: _controller,
+                  ),
                 ),
+              ),
+              Expanded(
+                child: searchResultUsers.length == 0 && loggedInUser != null
+                    ? NoResults(
+                        isSkillSelected: loggedInUser.role == Role.consumer,
+                        uidOfLoggedInUser: loggedInUser.uid,
+                      )
+                    : ListView.builder(
+                        itemBuilder: (context, index) {
+                          return ProfileItem(
+                            user: searchResultUsers[index],
+                            isSkillSearch: loggedInUser.role == Role.consumer,
+                          );
+                        },
+                        itemCount: searchResultUsers.length,
+                      ),
               ),
             ],
           ),
         );
       },
     );
-  }
-
-  void switchSearch(var newIsSelected) {
-    setState(() {
-      isSkillSelected = !isSkillSelected;
-    });
   }
 
   void _onTextChanged() {

@@ -39,7 +39,7 @@ class _NoResultsState extends State<NoResults> {
         child: Padding(
           padding: const EdgeInsets.only(left: 15.0, right: 15.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SizedBox(height: 15.0),
               Image.asset(
