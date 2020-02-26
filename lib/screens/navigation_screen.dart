@@ -122,7 +122,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     User currentUser =
         await cloudFirestoreService.getUser(uid: firebaseUser?.uid);
 
-    Role profileRole = currentUser.role;
+    Role profileRole = currentUser?.role;
     _uploadLocationAndPushToken(loggedInUser: firebaseUser);
 
     Role finalRole = profileRole ?? await preferenceRole;
