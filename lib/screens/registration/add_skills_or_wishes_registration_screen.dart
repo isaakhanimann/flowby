@@ -30,6 +30,10 @@ class _AddSkillsOrWishesRegistrationScreenState
   @override
   Widget build(BuildContext context) {
     bool isProvider = widget.user.role == Role.provider;
+    widget.user?.skills?.removeWhere(
+        (skill) => (skill.keywords == null || skill.keywords.isEmpty));
+    widget.user?.wishes?.removeWhere(
+        (wish) => (wish.keywords == null || wish.keywords.isEmpty));
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
@@ -142,12 +146,11 @@ class _AddSkillsOrWishesRegistrationScreenState
       showSpinner = true;
     });
 
-    if (widget.user.role == Role.provider && widget.user.skills != null) {
-      widget.user.skills.removeWhere(
+    if (widget.user.role == Role.provider) {
+      widget.user?.skills?.removeWhere(
           (skill) => (skill.keywords == null || skill.keywords.isEmpty));
-    } else if (widget.user.role == Role.consumer &&
-        widget.user.wishes != null) {
-      widget.user.wishes.removeWhere(
+    } else if (widget.user.role == Role.consumer) {
+      widget.user?.wishes?.removeWhere(
           (wish) => (wish.keywords == null || wish.keywords.isEmpty));
     }
 

@@ -49,6 +49,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    user?.skills?.removeWhere(
+        (skill) => (skill.keywords == null || skill.keywords.isEmpty));
+    user?.wishes?.removeWhere(
+        (wish) => (wish.keywords == null || wish.keywords.isEmpty));
     if (showSpinner) {
       return CupertinoPageScaffold(
           backgroundColor: CupertinoColors.white,
@@ -273,11 +277,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   _switchRole(Role newRole) {
-    //remove the empty skills and wishes because the listoftextfields will be rebuild and need to be initialized with nonempty initial skills and wishes
-    user.skills.removeWhere(
-        (skill) => (skill.keywords == null || skill.keywords.isEmpty));
-    user.wishes.removeWhere(
-        (wish) => (wish.keywords == null || wish.keywords.isEmpty));
     setState(() {
       _role = newRole;
     });
