@@ -549,6 +549,7 @@ class MessageBubble extends StatelessWidget {
         child: Wrap(
           direction: Axis.horizontal,
           alignment: WrapAlignment.end,
+          crossAxisAlignment: WrapCrossAlignment.end,
           children: <Widget>[
             CopyableText(
               text,
