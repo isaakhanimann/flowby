@@ -33,7 +33,7 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
           child: ExplanationProvideSkillTab(),
         ),
         Container(
-          child: ExplanationProvideSkillTab(),
+          child: ExplanationSeeDistanceTab(),
         )
       ];
     } else if (widget.role == Role.consumer) {

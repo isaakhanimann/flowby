@@ -1,3 +1,4 @@
+import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/constants.dart';
@@ -59,6 +60,13 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
                 child: Text('Ok'),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
+                  Navigator.of(context, rootNavigator: true).push(
+                    CupertinoPageRoute<void>(
+                      builder: (context) {
+                        return NavigationScreen();
+                      },
+                    ),
+                  );
                 },
               )
             ],
