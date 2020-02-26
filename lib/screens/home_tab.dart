@@ -42,6 +42,9 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context);
+    final localRole = Provider.of<Role>(context);
+
+    final role = loggedInUser?.role ?? localRole;
 
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
@@ -59,7 +62,7 @@ class _HomeTabState extends State<HomeTab> {
             allUsers.where((u) => !u.isHidden).toList();
         List<User> searchResultUsers;
 
-        if (loggedInUser.role == Role.consumer) {
+        if (role == Role.consumer) {
           searchResultUsers = allNotHiddenUsers
               .where((u) =>
                   u.role == Role.provider &&
@@ -88,7 +91,7 @@ class _HomeTabState extends State<HomeTab> {
               TabHeader(
                 rightIcon: Icon(Feather.info),
                 rightAction: ExplanationScreen(
-                  role: loggedInUser.role,
+                  role: role,
                 ),
               ),
               GestureDetector(
@@ -97,7 +100,7 @@ class _HomeTabState extends State<HomeTab> {
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: SearchBar(
                     focusNode: _focusNode,
-                    isSkillSearch: loggedInUser.role == Role.consumer,
+                    isSkillSearch: role == Role.consumer,
                     controller: _controller,
                   ),
                 ),
@@ -105,14 +108,14 @@ class _HomeTabState extends State<HomeTab> {
               Expanded(
                 child: searchResultUsers.length == 0 && loggedInUser != null
                     ? NoResults(
-                        isSkillSelected: loggedInUser.role == Role.consumer,
+                        isSkillSelected: role == Role.consumer,
                         uidOfLoggedInUser: loggedInUser.uid,
                       )
                     : ListView.builder(
                         itemBuilder: (context, index) {
                           return ProfileItem(
                             user: searchResultUsers[index],
-                            isSkillSearch: loggedInUser.role == Role.consumer,
+                            isSkillSearch: role == Role.consumer,
                           );
                         },
                         itemCount: searchResultUsers.length,

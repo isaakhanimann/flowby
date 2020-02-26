@@ -31,8 +31,8 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
-  Role role;
-  bool shouldExplanationBeLoaded = false;
+  Role _role;
+  bool _shouldExplanationBeLoaded = false;
   FirebaseUser loggedInUser;
 
   @override
@@ -55,7 +55,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    if (role == Role.unassigned) {
+    if (_role == Role.unassigned) {
       return StreamProvider<User>.value(
         value: cloudFirestoreService.getUserStream(uid: loggedInUser?.uid),
         catchError: (context, object) {
@@ -65,8 +65,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
       );
     }
 
-    if (shouldExplanationBeLoaded) {
-      return ExplanationScreen(role: role);
+    if (_shouldExplanationBeLoaded) {
+      return ExplanationScreen(role: _role);
     }
 
     if (loggedInUser == null) {
@@ -80,7 +80,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
             catchError: (context, object) {
               return null;
             },
-          )
+          ),
+          Provider<Role>.value(value: _role),
         ],
         child: HomeScreenWithSignin(),
       );
@@ -96,7 +97,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
           catchError: (context, object) {
             return null;
           },
-        )
+        ),
+        Provider<Role>.value(value: _role),
       ],
       child: ScreenWithAllTabs(),
     );
@@ -125,7 +127,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     Role finalRole = profileRole ?? await preferenceRole;
     setState(() {
-      role = finalRole;
+      _role = finalRole;
     });
   }
 
@@ -170,7 +172,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     if (shouldExplain) {
       setState(() {
-        shouldExplanationBeLoaded = true;
+        _shouldExplanationBeLoaded = true;
       });
       await preferencesService.setExplanationBoolToFalse();
     }
