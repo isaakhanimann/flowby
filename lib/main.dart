@@ -64,7 +64,8 @@ class Flowby extends StatelessWidget {
             currentFocus.unfocus();
           }
         },
-        child: BotToastInit( // widget that pops up toasts (used to notify users when they copy a message)
+        child: BotToastInit(
+          // widget that pops up toasts (used to notify users when they copy a message)
           child: CupertinoApp(
             navigatorObservers: [BotToastNavigatorObserver()],
             theme: CupertinoThemeData(

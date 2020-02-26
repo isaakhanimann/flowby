@@ -175,6 +175,8 @@ PODS:
     - Firebase/Core
     - Firebase/Firestore (~> 6.0)
     - Flutter
+  - cloud_firestore_web (0.1.0):
+    - Flutter
   - device_info (0.0.1):
     - Flutter
   - Firebase/Auth (6.15.0):
@@ -284,7 +286,7 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
-  - geolocator (5.2.1):
+  - geolocator (5.3.0):
     - Flutter
   - google_api_availability (2.0.2):
     - Flutter
@@ -394,6 +396,7 @@ PODS:
 DEPENDENCIES:
   - apple_sign_in (from `.symlinks/plugins/apple_sign_in/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - cloud_firestore_web (from `.symlinks/plugins/cloud_firestore_web/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_auth_web (from `.symlinks/plugins/firebase_auth_web/ios`)
@@ -463,6 +466,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/apple_sign_in/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
+  cloud_firestore_web:
+    :path: ".symlinks/plugins/cloud_firestore_web/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   firebase_auth:
@@ -527,12 +532,13 @@ SPEC CHECKSUMS:
   AppAuth: 73574f3013a1e65b9601a3ddc8b3158cce68c09d
   apple_sign_in: 7716c7ddfa195aeab7dec0dc374ef4ff45d1adb4
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
-  cloud_firestore: c5d1e4d114eecb1dfb535f008435685bcf6063f1
+  cloud_firestore: 11c87f1d0b4193831045a320aed50723b67f2ea3
+  cloud_firestore_web: 9ec3dc7f5f98de5129339802d491c1204462bfec
   device_info: cbf09d2ec12aa7110e0b09fabe54b5bd6c8efe74
   Firebase: 5d77105d9740a07ca6b16927ca971db7e860faaf
   firebase_auth: 1f46484071219159ad6c64d304af425ad7373052
   firebase_auth_web: 0955c07bcc06e84af76b9d4e32e6f31518f2d7de
-  firebase_core: 0c84455537bed6d6b5b8c2dd611ff1fbb1ea5cbd
+  firebase_core: dc539d4bdc69894823e4a6e557034a9e48960f21
   firebase_core_web: d501d8b946b60c8af265428ce483b0fff5ad52d1
   firebase_messaging: 73b3e7dd7b3b6a7e4bdac10d5295211ca4f87f90
   firebase_storage: cee2383f53c26690269ab667b4dbfe25452c6caa
@@ -552,7 +558,7 @@ SPEC CHECKSUMS:
   flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
   flutter_plugin_android_lifecycle: 47de533a02850f070f5696a623995e93eddcdb9b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  geolocator: a048cc412bf350b17d671d170f151b0c9fb8f098
+  geolocator: 7cdcf71180b80913b3cd84ab715d3b5365b378af
   google_api_availability: 6f1017d3a61be12be3bd9f929cc5b2606f24ae7f
   google_sign_in: decaf71f56e22fb1dc179de062177ae6df415716
   google_sign_in_web: 52deb24929ac0992baff65c57956031c44ed44c3
