@@ -241,6 +241,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       updatePriceAtIndex: user.updateSkillPriceAtIndex,
                       addEmptySkillOrWish: user.addEmptySkill,
                       deleteSkillOrWishAtIndex: user.deleteSkillAtIndex,
+                      topicSuggestions: [
+                        'english',
+                        'statistics',
+                        'linear algebra',
+                        'math',
+                        'german',
+                        'skating'
+                      ],
+                      priceSuggestions: [
+                        '30.-/h',
+                        '70.-/d',
+                        'free',
+                        '50 CHF',
+                        'coffee'
+                      ],
+                      descriptionSuggestions: [
+                        'I have half a year of experience'
+                      ],
                     ),
                   ],
                 ),
@@ -263,6 +281,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       updatePriceAtIndex: user.updateWishPriceAtIndex,
                       addEmptySkillOrWish: user.addEmptyWish,
                       deleteSkillOrWishAtIndex: user.deleteWishAtIndex,
+                      topicSuggestions: [
+                        'english',
+                        'statistics',
+                        'linear algebra',
+                        'math',
+                        'german',
+                        'skating'
+                      ],
+                      priceSuggestions: [
+                        '30.-/h',
+                        '70.-/d',
+                        'free',
+                        '50 CHF',
+                        'coffee'
+                      ],
+                      descriptionSuggestions: [
+                        'It\'d be great if you have already passed this course',
+                        'I need help understanding higher dimensional spaces',
+                        'Its urgent the exam is tomorrow'
+                      ],
                     ),
                   ],
                 ),

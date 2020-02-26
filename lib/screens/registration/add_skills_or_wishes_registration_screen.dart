@@ -92,6 +92,24 @@ class _AddSkillsOrWishesRegistrationScreenState
                                       widget.user.addEmptySkill,
                                   deleteSkillOrWishAtIndex:
                                       widget.user.deleteSkillAtIndex,
+                                  topicSuggestions: [
+                                    'english',
+                                    'statistics',
+                                    'linear algebra',
+                                    'math',
+                                    'german',
+                                    'skating'
+                                  ],
+                                  priceSuggestions: [
+                                    '30.-/h',
+                                    '70.-/d',
+                                    'free',
+                                    '50 CHF',
+                                    'coffee'
+                                  ],
+                                  descriptionSuggestions: [
+                                    'I have half a year of experience'
+                                  ],
                                 )
                               : ListOfTextfields(
                                   key: UniqueKey(),
@@ -105,6 +123,26 @@ class _AddSkillsOrWishesRegistrationScreenState
                                   addEmptySkillOrWish: widget.user.addEmptyWish,
                                   deleteSkillOrWishAtIndex:
                                       widget.user.deleteWishAtIndex,
+                                  topicSuggestions: [
+                                    'english',
+                                    'statistics',
+                                    'linear algebra',
+                                    'math',
+                                    'german',
+                                    'skating'
+                                  ],
+                                  priceSuggestions: [
+                                    '30.-/h',
+                                    '70.-/d',
+                                    'free',
+                                    '50 CHF',
+                                    'coffee'
+                                  ],
+                                  descriptionSuggestions: [
+                                    'It\'d be great if you have already passed this course',
+                                    'I need help understanding higher dimensional spaces',
+                                    'Its urgent the exam is tomorrow'
+                                  ],
                                 ),
                           SizedBox(
                             height: 10.0,
