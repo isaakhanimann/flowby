@@ -1,6 +1,6 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/registration/add_skills_registration_screen.dart';
+import 'package:Flowby/screens/registration/add_skills_or_wishes_registration_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
@@ -36,6 +36,14 @@ class _AddImageUsernameAndBioRegistrationScreenState
   File _profilePic;
   String _username;
   String _bio;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.user.username != null && widget.user.username != '') {
+      _username = widget.user.username;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +288,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
-          return AddSkillsRegistrationScreen(
+          return AddSkillsOrWishesRegistrationScreen(
             user: widget.user,
           );
         },

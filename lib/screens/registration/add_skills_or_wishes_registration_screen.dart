@@ -1,6 +1,6 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/registration/add_wishes_registration_screen.dart';
+import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/widgets/list_of_textfields.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
@@ -9,25 +9,27 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/models/role.dart';
 
-class AddSkillsRegistrationScreen extends StatefulWidget {
+class AddSkillsOrWishesRegistrationScreen extends StatefulWidget {
   static const String id = 'add_skills_registration_screen';
 
   final User user;
 
-  AddSkillsRegistrationScreen({this.user});
+  AddSkillsOrWishesRegistrationScreen({this.user});
 
   @override
-  _AddSkillsRegistrationScreenState createState() =>
-      _AddSkillsRegistrationScreenState();
+  _AddSkillsOrWishesRegistrationScreenState createState() =>
+      _AddSkillsOrWishesRegistrationScreenState();
 }
 
-class _AddSkillsRegistrationScreenState
-    extends State<AddSkillsRegistrationScreen> {
+class _AddSkillsOrWishesRegistrationScreenState
+    extends State<AddSkillsOrWishesRegistrationScreen> {
   bool showSpinner = false;
 
   @override
   Widget build(BuildContext context) {
+    bool isProvider = widget.user.role == Role.provider;
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
@@ -53,7 +55,7 @@ class _AddSkillsRegistrationScreenState
                         height: 20.0,
                       ),
                       Text(
-                        'Your skills',
+                        isProvider ? 'Your skills' : 'Your wishes',
                         style: kUsernameTitleTextStyle,
                       ),
                       SizedBox(
@@ -63,26 +65,43 @@ class _AddSkillsRegistrationScreenState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'Share what you are good at',
+                            isProvider
+                                ? 'Share what you are good at'
+                                : 'Tell others what you would like to learn',
                             textAlign: TextAlign.start,
                             style: kRegisterHeaderTextStyle,
                           ),
                           SizedBox(
                             height: 10.0,
                           ),
-                          ListOfTextfields(
-                            key: UniqueKey(),
-                            initialSkillsOrWishes: widget.user.skills,
-                            updateKeywordsAtIndex:
-                                widget.user.updateSkillKeywordsAtIndex,
-                            updateDescriptionAtIndex:
-                                widget.user.updateSkillDescriptionAtIndex,
-                            updatePriceAtIndex:
-                                widget.user.updateSkillPriceAtIndex,
-                            addEmptySkillOrWish: widget.user.addEmptySkill,
-                            deleteSkillOrWishAtIndex:
-                                widget.user.deleteSkillAtIndex,
-                          ),
+                          isProvider
+                              ? ListOfTextfields(
+                                  key: UniqueKey(),
+                                  initialSkillsOrWishes: widget.user.skills,
+                                  updateKeywordsAtIndex:
+                                      widget.user.updateSkillKeywordsAtIndex,
+                                  updateDescriptionAtIndex:
+                                      widget.user.updateSkillDescriptionAtIndex,
+                                  updatePriceAtIndex:
+                                      widget.user.updateSkillPriceAtIndex,
+                                  addEmptySkillOrWish:
+                                      widget.user.addEmptySkill,
+                                  deleteSkillOrWishAtIndex:
+                                      widget.user.deleteSkillAtIndex,
+                                )
+                              : ListOfTextfields(
+                                  key: UniqueKey(),
+                                  initialSkillsOrWishes: widget.user.wishes,
+                                  updateKeywordsAtIndex:
+                                      widget.user.updateWishKeywordsAtIndex,
+                                  updateDescriptionAtIndex:
+                                      widget.user.updateWishDescriptionAtIndex,
+                                  updatePriceAtIndex:
+                                      widget.user.updateWishPriceAtIndex,
+                                  addEmptySkillOrWish: widget.user.addEmptyWish,
+                                  deleteSkillOrWishAtIndex:
+                                      widget.user.deleteWishAtIndex,
+                                ),
                           SizedBox(
                             height: 10.0,
                           ),
@@ -123,8 +142,14 @@ class _AddSkillsRegistrationScreenState
       showSpinner = true;
     });
 
-    widget.user.skills.removeWhere(
-        (skill) => (skill.keywords == null || skill.keywords.isEmpty));
+    if (widget.user.role == Role.provider && widget.user.skills != null) {
+      widget.user.skills.removeWhere(
+          (skill) => (skill.keywords == null || skill.keywords.isEmpty));
+    } else if (widget.user.role == Role.consumer &&
+        widget.user.wishes != null) {
+      widget.user.wishes.removeWhere(
+          (wish) => (wish.keywords == null || wish.keywords.isEmpty));
+    }
 
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
@@ -132,12 +157,9 @@ class _AddSkillsRegistrationScreenState
     setState(() {
       showSpinner = false;
     });
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return AddWishesRegistrationScreen(user: widget.user);
-        },
-      ),
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      NavigationScreen.id,
+      (Route<dynamic> route) => false,
     );
   }
 }
