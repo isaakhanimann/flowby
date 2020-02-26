@@ -60,6 +60,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                         height: 10.0,
                       ),
                       RoundedButton(
+                        paddingInsideHorizontal: 45,
                         text: 'I\'ve verified my email',
                         color: kBlueButtonColor,
                         textColor: Colors.white,
