@@ -62,6 +62,7 @@ class _HomeTabState extends State<HomeTab> {
         if (loggedInUser.role == Role.consumer) {
           searchResultUsers = allNotHiddenUsers
               .where((u) =>
+                  u.role == Role.provider &&
                   u.skillKeywords != '' &&
                   u.skillKeywords
                       .toString()
@@ -71,6 +72,7 @@ class _HomeTabState extends State<HomeTab> {
         } else {
           searchResultUsers = allNotHiddenUsers
               .where((u) =>
+                  u.role == Role.consumer &&
                   u.wishKeywords != '' &&
                   u.wishKeywords
                       .toString()
