@@ -28,11 +28,7 @@ class ViewProfileScreen extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: <Widget>[
-            ListViewOfUserInfos(
-              user: user,
-              heroTag: heroTag,
-              isProfileTab: false,
-            ),
+            ListViewOfUserInfos(user: user, heroTag: heroTag),
             Positioned(
               bottom: 20,
               child: RoundedButton(
