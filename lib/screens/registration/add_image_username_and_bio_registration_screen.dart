@@ -1,40 +1,46 @@
-import 'dart:io';
-
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/registration/user_description_registration_screen.dart';
-import 'package:Flowby/services/firebase_storage_service.dart';
+import 'package:Flowby/screens/registration/add_skills_registration_screen.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:Flowby/services/firebase_storage_service.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:Flowby/services/preferences_service.dart';
+import 'package:Flowby/models/role.dart';
 
-class UploadPictureRegistrationScreen extends StatefulWidget {
-  static const String id = 'upload_picture_registration_screen';
+class AddImageUsernameAndBioRegistrationScreen extends StatefulWidget {
+  static const String id = 'add_username_registration_screen';
 
   final User user;
 
-  UploadPictureRegistrationScreen({this.user});
+  AddImageUsernameAndBioRegistrationScreen({this.user});
 
   @override
-  _UploadPictureRegistrationScreenState createState() =>
-      _UploadPictureRegistrationScreenState();
+  _AddImageUsernameAndBioRegistrationScreenState createState() =>
+      _AddImageUsernameAndBioRegistrationScreenState();
 }
 
-class _UploadPictureRegistrationScreenState
-    extends State<UploadPictureRegistrationScreen> {
+class _AddImageUsernameAndBioRegistrationScreenState
+    extends State<AddImageUsernameAndBioRegistrationScreen> {
   bool showSpinner = false;
+
   File _profilePic;
+  String _username;
+  String _bio;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
@@ -44,7 +50,7 @@ class _UploadPictureRegistrationScreenState
           child: SingleChildScrollView(
             child: Stack(children: [
               Hero(
-                child: ProgressBar(progress: 0.2),
+                child: ProgressBar(progress: 0.5),
                 transitionOnUserGestures: true,
                 tag: 'progress_bar',
               ),
@@ -58,13 +64,61 @@ class _UploadPictureRegistrationScreenState
                         height: 20.0,
                       ),
                       Text(
-                        'Welcome ${widget.user.username}!',
-                        overflow: TextOverflow.ellipsis,
+                        'What\'s your name?',
                         textAlign: TextAlign.center,
                         style: kRegisterHeaderTextStyle,
                       ),
                       SizedBox(
-                        height: 10.0,
+                        height: 20.0,
+                      ),
+                      CupertinoTextField(
+                        style: kEditProfileTextFieldTextStyle,
+                        placeholder: 'Enter your name',
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 35,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: kBoxBorderColor),
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
+                        ),
+                        onChanged: (value) {
+                          _username = value;
+                        },
+                        textAlign: TextAlign.start,
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Text(
+                        'Let the others know who you are',
+                        textAlign: TextAlign.center,
+                        style: kRegisterHeaderTextStyle,
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      CupertinoTextField(
+                        style: kEditProfileTextFieldTextStyle,
+                        placeholder: 'Your biography...',
+                        maxLength: 200,
+                        textCapitalization: TextCapitalization.sentences,
+                        maxLines: 4,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: kBoxBorderColor),
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
+                        ),
+                        onChanged: (value) {
+                          _bio = value;
+                        },
+                        textAlign: TextAlign.start,
+                      ),
+                      SizedBox(
+                        height: 20.0,
                       ),
                       Text(
                         'Choose a picture',
@@ -125,65 +179,19 @@ class _UploadPictureRegistrationScreenState
                                 ),
                         ),
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
                       RoundedButton(
                         text: 'Next',
                         color: kBlueButtonColor,
                         textColor: Colors.white,
                         onPressed: () {
-                          _uploadImageAndNavigate(context: context);
+                          _uploadImageAndUserAndNavigate(context);
                         },
-                      ),
-                      Container(
-                        height: 350.0,
-                        width: 350.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            colorFilter: ColorFilter.mode(
-                                Colors.white, BlendMode.colorBurn),
-                            image: AssetImage(
-                                "assets/images/Freeflowter_Stony.png"),
-                            alignment: Alignment(0.0, 0.0),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
                       ),
                     ]),
               ),
             ]),
           ),
         ),
-      ),
-    );
-  }
-
-  Future<void> _uploadImageAndNavigate({BuildContext context}) async {
-    setState(() {
-      showSpinner = true;
-    });
-    try {
-      if (_profilePic != null) {
-        final storageService =
-            Provider.of<FirebaseStorageService>(context, listen: false);
-        await storageService.uploadImage(
-            fileName: widget.user.uid, image: _profilePic);
-      }
-    } catch (e) {
-      print('Could not upload image');
-    }
-    setState(() {
-      showSpinner = false;
-    });
-
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return UserDescriptionRegistrationScreen(
-            user: widget.user,
-          );
-        },
       ),
     );
   }
@@ -233,5 +241,50 @@ class _UploadPictureRegistrationScreenState
     setState(() {
       _profilePic = croppedImage;
     });
+  }
+
+  Future<void> _uploadImageAndUserAndNavigate(BuildContext context) async {
+    if (_username == null) {
+      showAlert(
+          context: context,
+          title: "Name is missing",
+          description: 'Enter your name. Thank you.');
+      return;
+    }
+    setState(() {
+      showSpinner = true;
+    });
+    try {
+      if (_profilePic != null) {
+        final storageService =
+            Provider.of<FirebaseStorageService>(context, listen: false);
+        await storageService.uploadImage(
+            fileName: widget.user.uid, image: _profilePic);
+      }
+    } catch (e) {
+      print('Could not upload image');
+    }
+    final preferencesService =
+        Provider.of<PreferencesService>(context, listen: false);
+
+    Role preferenceRole = await preferencesService.getRole();
+    widget.user.role = preferenceRole;
+    widget.user.username = _username;
+    widget.user.bio = _bio;
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    await cloudFirestoreService.uploadUser(user: widget.user);
+    setState(() {
+      showSpinner = false;
+    });
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return AddSkillsRegistrationScreen(
+            user: widget.user,
+          );
+        },
+      ),
+    );
   }
 }

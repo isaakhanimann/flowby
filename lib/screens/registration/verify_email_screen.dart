@@ -1,6 +1,6 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/registration/upload_picture_registration_screen.dart';
+import 'package:Flowby/screens/registration/add_image_username_and_bio_registration_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
@@ -96,7 +96,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
-          return UploadPictureRegistrationScreen(
+          return AddImageUsernameAndBioRegistrationScreen(
             user: widget.user,
           );
         },

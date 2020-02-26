@@ -99,7 +99,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                     maxLength: 10,
                     decoration: null,
                     textAlign: TextAlign.start,
-                    placeholder: "Price",
+                    placeholder: "e.g. 30.-/h",
                     controller: priceControllers[rowNumber],
                   ),
                 ),
