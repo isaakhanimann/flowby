@@ -71,6 +71,7 @@ class _AddSkillsRegistrationScreenState
                             height: 10.0,
                           ),
                           ListOfTextfields(
+                            key: UniqueKey(),
                             initialSkillsOrWishes: widget.user.skills,
                             updateKeywordsAtIndex:
                                 widget.user.updateSkillKeywordsAtIndex,

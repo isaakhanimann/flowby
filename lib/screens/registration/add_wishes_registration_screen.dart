@@ -71,6 +71,7 @@ class _AddWishesRegistrationScreenState
                             height: 10.0,
                           ),
                           ListOfTextfields(
+                              key: UniqueKey(),
                               initialSkillsOrWishes: widget.user.wishes,
                               updateKeywordsAtIndex:
                                   widget.user.updateWishKeywordsAtIndex,
