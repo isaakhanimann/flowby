@@ -105,7 +105,7 @@ class SettingsScreen extends StatelessWidget {
             context: context,
             builder: (_) => CupertinoAlertDialog(
               title: Text('Are you sure?'),
-              content: Text('Do you really want to delete all your info?'),
+              content: Text('\nDo you really want to delete all your info?'),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text('Cancel'),

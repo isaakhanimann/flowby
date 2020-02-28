@@ -49,11 +49,10 @@ class ChatsTab extends StatelessWidget {
                     padding: EdgeInsets.only(bottom: 4),
                     child: Image(
                       image: AssetImage("assets/images/logo_flowby.png"),
-
                     )),
                 largeTitle: Text(
                   'Chats',
-                  style: kTabsLargeTitleTextStyle,
+                  style: kTabTitleTextStyle,
                 ),
               ),
               SliverSafeArea(

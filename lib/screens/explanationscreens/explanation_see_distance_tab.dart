@@ -55,7 +55,7 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
           context: context,
           builder: (_) => CupertinoAlertDialog(
             title: Text('Location is enabled'),
-            content: Text('You have got all you need'),
+            content: Text('\nYou have got all you need'),
             actions: <Widget>[
               CupertinoDialogAction(
                 child: Text('Ok'),
@@ -83,7 +83,7 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
         context: context,
         builder: (_) => CupertinoAlertDialog(
           title: Text('Location Permissions Denied'),
-          content: Text('Enable Location Permissions in your Settings'),
+          content: Text('\nEnable Location Permissions in your Settings'),
           actions: <Widget>[
             CupertinoDialogAction(
               child: Text('Ok'),

@@ -308,7 +308,7 @@ class ChatHeader extends StatelessWidget {
                         builder: (_) => CupertinoAlertDialog(
                           title: Text('Block ${screenInfo.otherUsername}?'),
                           content: Text(
-                              'Blocked contacts will no longer be able to send you messages'),
+                              '\nBlocked contacts will no longer be able to send you messages'),
                           actions: <Widget>[
                             CupertinoDialogAction(
                               child: Text('Cancel'),

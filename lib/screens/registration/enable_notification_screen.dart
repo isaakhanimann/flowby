@@ -70,7 +70,7 @@ class EnableNotificationScreen extends StatelessWidget {
         context: context,
         builder: (_) => CupertinoAlertDialog(
           title: Text('Notification Permissions Denied'),
-          content: Text('Enable Notification Permissions in your Settings'),
+          content: Text('\nEnable Notification Permissions in your Settings'),
           actions: <Widget>[
             CupertinoDialogAction(
               child: Text('Ok'),

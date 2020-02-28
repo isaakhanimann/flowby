@@ -184,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (_) => CupertinoAlertDialog(
               title: Text('Verify your email'),
               content:
-                  Text('It seems that you haven\'t verified your email yet.'),
+                  Text('\nIt seems that you haven\'t verified your email yet.'),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text('Cancel'),

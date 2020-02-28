@@ -22,7 +22,7 @@ const kSearchPlaceHolderTextStyle =
 const kSearchTextStyle = TextStyle(fontSize: 16, color: Colors.black);
 const kHomeSwitchTextStyle = TextStyle(fontSize: 16);
 const kChatScreenHeaderTextStyle =
-    TextStyle(fontSize: 20, fontFamily: 'MuliRegular');
+    TextStyle(fontSize: 20, fontFamily: 'MontserratSemiBold');
 const kSkillsTitleTextStyle = TextStyle(
     fontFamily: 'MontserratSemiBold',
     fontSize: 26.0,
@@ -32,6 +32,8 @@ const kOrTextStyle = TextStyle(
   fontFamily: 'MuliRegular',
   fontSize: 18.0,
 );
+const kDistanceTextStyle = TextStyle(
+    fontFamily: 'MuliSemiBold', fontSize: 14.0, color: kLoginBackgroundColor);
 const kSmallTitleTextStyle = TextStyle(
     fontFamily: 'MuliLight', fontSize: 15.0, color: kSmallTitlesTextColor);
 const kDescriptionTextStyle = TextStyle(
@@ -53,7 +55,7 @@ const kMiddleNavigationBarTextStyle = TextStyle(
 const kLocationTextStyle =
     TextStyle(color: kBlueButtonColor, fontSize: 12, fontFamily: 'MuliRegular');
 const kUsernameTextStyle =
-    TextStyle(fontFamily: 'MontserratRegular', color: kKeywordHeaderColor);
+    TextStyle(fontFamily: 'MuliBold', color: kKeywordHeaderColor);
 const kChatTabTimestampTextStyle =
     TextStyle(color: Colors.black38, fontSize: 10, fontFamily: 'MuliRegular');
 const kChatLastMessageTextStyle =
@@ -62,13 +64,12 @@ const kCardSubtitleTextStyle =
     TextStyle(fontSize: 12, fontFamily: 'MuliRegular');
 const kCupertinoScaffoldTextStyle =
     TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratSemiBold');
-const kTabsLargeTitleTextStyle = TextStyle(fontFamily: 'MontserratRegular');
 const kTabTitleTextStyle =
     TextStyle(fontFamily: 'MontserratBold', fontSize: 33);
 const kSmallTabTitleTextStyle =
     TextStyle(fontFamily: 'MontserratBold', fontSize: 20);
 const kBlockedTextStyle =
-    TextStyle(color: Colors.red, fontFamily: 'MontserratRegular');
+    TextStyle(color: Colors.red, fontFamily: 'MuliRegular');
 const kSmallBlockedTextStyle =
     TextStyle(color: Colors.red, fontSize: 10, fontFamily: 'MontserratRegular');
 

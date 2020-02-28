@@ -70,7 +70,7 @@ class ShowProfilePictureScreen extends StatelessWidget {
                       style: TextStyle(
                           color: kLoginBackgroundColor,
                           fontSize: 22,
-                          fontFamily: 'MontserratRegular'),
+                          fontFamily: 'MontserratSemiBold'),
                     ),
                   ],
                 ),

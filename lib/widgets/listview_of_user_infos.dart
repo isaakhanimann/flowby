@@ -76,6 +76,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                   ),
                   Text(
                     ' ' + user.distanceInKm.toString() + 'km',
+                    style: kDistanceTextStyle,
                   ),
                 ],
               ),
