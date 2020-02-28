@@ -11,21 +11,26 @@ class CreateSkillsSection extends StatelessWidget {
   final Function deleteSkillAtIndex;
   final List<String> topicSuggestions = [
     'english',
+    'swiss german',
     'statistics',
     'linear algebra',
-    'math',
-    'german',
+    'photography',
+    'salsa',
     'skating'
   ];
   final List<String> priceSuggestions = [
     '30.-/h',
     '70.-/d',
-    'free',
     '50 CHF',
-    'coffee'
+    'free',
+    'coffee',
+    'tandem'
   ];
   final List<String> descriptionSuggestions = [
-    'I have half a year of experience'
+    'I\'m just starting out',
+    'My swiss german is fluent',
+    'Half a year of experience',
+    'I have in depth knowledge of biochemistry'
   ];
 
   CreateSkillsSection(

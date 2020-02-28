@@ -11,23 +11,24 @@ class CreateWishesSection extends StatelessWidget {
   final Function deleteWishAtIndex;
   final List<String> topicSuggestions = [
     'english',
+    'german',
     'statistics',
     'linear algebra',
     'math',
-    'german',
     'skating'
   ];
   final List<String> priceSuggestions = [
     '30.-/h',
     '70.-/d',
-    'free',
     '50 CHF',
+    'free',
     'coffee'
   ];
   final List<String> descriptionSuggestions = [
+    'I need help understanding how an action potential gets triggered',
+    'Its urgent the exam is tomorrow',
     'It\'d be great if you have already passed this course',
-    'I need help understanding higher dimensional spaces',
-    'Its urgent the exam is tomorrow'
+    'I\'m looking for a partner for my dance class'
   ];
 
   CreateWishesSection(
