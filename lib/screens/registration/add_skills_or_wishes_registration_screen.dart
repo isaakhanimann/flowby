@@ -1,7 +1,8 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/enable_notification_screen.dart';
-import 'package:Flowby/widgets/list_of_textfields.dart';
+import 'package:Flowby/widgets/create_skills_section.dart';
+import 'package:Flowby/widgets/create_wishes_section.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -85,70 +86,29 @@ class _AddSkillsOrWishesRegistrationScreenState
                             height: 10.0,
                           ),
                           isProvider
-                              ? ListOfTextfields(
-                                  key: UniqueKey(),
-                                  initialSkillsOrWishes: widget.user.skills,
+                              ? CreateSkillsSection(
+                                  initialSkills: widget.user.skills,
                                   updateKeywordsAtIndex:
                                       widget.user.updateSkillKeywordsAtIndex,
                                   updateDescriptionAtIndex:
                                       widget.user.updateSkillDescriptionAtIndex,
                                   updatePriceAtIndex:
                                       widget.user.updateSkillPriceAtIndex,
-                                  addEmptySkillOrWish:
-                                      widget.user.addEmptySkill,
-                                  deleteSkillOrWishAtIndex:
+                                  addEmptySkill: widget.user.addEmptySkill,
+                                  deleteSkillAtIndex:
                                       widget.user.deleteSkillAtIndex,
-                                  topicSuggestions: [
-                                    'english',
-                                    'statistics',
-                                    'linear algebra',
-                                    'math',
-                                    'german',
-                                    'skating'
-                                  ],
-                                  priceSuggestions: [
-                                    '30.-/h',
-                                    '70.-/d',
-                                    'free',
-                                    '50 CHF',
-                                    'coffee'
-                                  ],
-                                  descriptionSuggestions: [
-                                    'I have half a year of experience'
-                                  ],
                                 )
-                              : ListOfTextfields(
-                                  key: UniqueKey(),
-                                  initialSkillsOrWishes: widget.user.wishes,
+                              : CreateWishesSection(
+                                  initialWishes: widget.user.wishes,
                                   updateKeywordsAtIndex:
                                       widget.user.updateWishKeywordsAtIndex,
                                   updateDescriptionAtIndex:
                                       widget.user.updateWishDescriptionAtIndex,
                                   updatePriceAtIndex:
                                       widget.user.updateWishPriceAtIndex,
-                                  addEmptySkillOrWish: widget.user.addEmptyWish,
-                                  deleteSkillOrWishAtIndex:
+                                  addEmptyWish: widget.user.addEmptyWish,
+                                  deleteWishAtIndex:
                                       widget.user.deleteWishAtIndex,
-                                  topicSuggestions: [
-                                    'english',
-                                    'statistics',
-                                    'linear algebra',
-                                    'math',
-                                    'german',
-                                    'skating'
-                                  ],
-                                  priceSuggestions: [
-                                    '30.-/h',
-                                    '70.-/d',
-                                    'free',
-                                    '50 CHF',
-                                    'coffee'
-                                  ],
-                                  descriptionSuggestions: [
-                                    'It\'d be great if you have already passed this course',
-                                    'I need help understanding higher dimensional spaces',
-                                    'Its urgent the exam is tomorrow'
-                                  ],
                                 ),
                           SizedBox(
                             height: 10.0,

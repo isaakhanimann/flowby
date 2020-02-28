@@ -5,7 +5,8 @@ import 'package:Flowby/models/user.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
-import 'package:Flowby/widgets/list_of_textfields.dart';
+import 'package:Flowby/widgets/create_skills_section.dart';
+import 'package:Flowby/widgets/create_wishes_section.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -234,34 +235,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    ListOfTextfields(
-                      key: UniqueKey(),
-                      initialSkillsOrWishes: widget.user.skills,
+                    CreateSkillsSection(
+                      initialSkills: widget.user.skills,
                       updateKeywordsAtIndex:
                           widget.user.updateSkillKeywordsAtIndex,
                       updateDescriptionAtIndex:
                           widget.user.updateSkillDescriptionAtIndex,
                       updatePriceAtIndex: widget.user.updateSkillPriceAtIndex,
-                      addEmptySkillOrWish: widget.user.addEmptySkill,
-                      deleteSkillOrWishAtIndex: widget.user.deleteSkillAtIndex,
-                      topicSuggestions: [
-                        'english',
-                        'statistics',
-                        'linear algebra',
-                        'math',
-                        'german',
-                        'skating'
-                      ],
-                      priceSuggestions: [
-                        '30.-/h',
-                        '70.-/d',
-                        'free',
-                        '50 CHF',
-                        'coffee'
-                      ],
-                      descriptionSuggestions: [
-                        'I have half a year of experience'
-                      ],
+                      addEmptySkill: widget.user.addEmptySkill,
+                      deleteSkillAtIndex: widget.user.deleteSkillAtIndex,
                     ),
                   ],
                 ),
@@ -275,36 +257,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    ListOfTextfields(
-                      key: UniqueKey(),
-                      initialSkillsOrWishes: widget.user.wishes,
+                    CreateWishesSection(
+                      initialWishes: widget.user.wishes,
                       updateKeywordsAtIndex:
                           widget.user.updateWishKeywordsAtIndex,
                       updateDescriptionAtIndex:
                           widget.user.updateWishDescriptionAtIndex,
                       updatePriceAtIndex: widget.user.updateWishPriceAtIndex,
-                      addEmptySkillOrWish: widget.user.addEmptyWish,
-                      deleteSkillOrWishAtIndex: widget.user.deleteWishAtIndex,
-                      topicSuggestions: [
-                        'english',
-                        'statistics',
-                        'linear algebra',
-                        'math',
-                        'german',
-                        'skating'
-                      ],
-                      priceSuggestions: [
-                        '30.-/h',
-                        '70.-/d',
-                        'free',
-                        '50 CHF',
-                        'coffee'
-                      ],
-                      descriptionSuggestions: [
-                        'It\'d be great if you have already passed this course',
-                        'I need help understanding higher dimensional spaces',
-                        'Its urgent the exam is tomorrow'
-                      ],
+                      addEmptyWish: widget.user.addEmptyWish,
+                      deleteWishAtIndex: widget.user.deleteWishAtIndex,
                     ),
                   ],
                 ),

@@ -11,14 +11,12 @@ class ListOfTextfields extends StatefulWidget {
   final Function updatePriceAtIndex;
   final Function addEmptySkillOrWish;
   final Function deleteSkillOrWishAtIndex;
-  final UniqueKey key;
   final List<String> topicSuggestions;
   final List<String> priceSuggestions;
   final List<String> descriptionSuggestions;
 
   ListOfTextfields(
-      {@required this.key,
-      @required this.initialSkillsOrWishes,
+      {@required this.initialSkillsOrWishes,
       @required this.updateKeywordsAtIndex,
       @required this.updateDescriptionAtIndex,
       @required this.updatePriceAtIndex,
