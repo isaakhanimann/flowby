@@ -22,40 +22,25 @@ class EnableNotificationScreen extends StatelessWidget {
       color: CupertinoColors.white,
       child: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Feather.navigation,
-                  size: 50,
-                ),
-                SizedBox(height: 50),
-                Text(
-                  'Get notified when someone messages you',
-                  style: kExplanationMiddleTextStyle,
-                ),
-                SizedBox(height: 50),
-                RoundedButton(
-                    color: kBlueButtonColor,
-                    textColor: CupertinoColors.white,
-                    onPressed: () {
-                      _checkAndHandleNotificationPermissions(context);
-                    },
-                    text: 'Enable Notifications'),
-              ],
+            Icon(
+              Feather.navigation,
+              size: 50,
             ),
-            CupertinoButton(
-              padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-              child: Text('Skip'),
-              onPressed: () {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  NavigationScreen.id,
-                  (Route<dynamic> route) => false,
-                );
-              },
+            SizedBox(height: 50),
+            Text(
+              'Enable notifications to get notified when someone messages you',
+              style: kExplanationMiddleTextStyle,
             ),
+            SizedBox(height: 50),
+            RoundedButton(
+                color: kBlueButtonColor,
+                textColor: CupertinoColors.white,
+                onPressed: () {
+                  _checkAndHandleNotificationPermissions(context);
+                },
+                text: 'Continue'),
           ],
         ),
       ),

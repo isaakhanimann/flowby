@@ -1,6 +1,6 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/navigation_screen.dart';
+import 'package:Flowby/screens/registration/enable_notification_screen.dart';
 import 'package:Flowby/widgets/list_of_textfields.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
@@ -198,9 +198,14 @@ class _AddSkillsOrWishesRegistrationScreenState
     setState(() {
       showSpinner = false;
     });
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      NavigationScreen.id,
-      (Route<dynamic> route) => false,
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return EnableNotificationScreen(
+            user: widget.user,
+          );
+        },
+      ),
     );
   }
 }
