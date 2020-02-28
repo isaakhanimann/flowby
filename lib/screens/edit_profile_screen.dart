@@ -225,50 +225,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 },
               ),
               SizedBox(height: 20),
-              if (_role == Role.provider)
-                Column(
-                  children: <Widget>[
-                    Text(
-                      'Skills',
-                      style: kSkillsTitleTextStyle,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CreateSkillsSection(
-                      initialSkills: widget.user.skills,
-                      updateKeywordsAtIndex:
-                          widget.user.updateSkillKeywordsAtIndex,
-                      updateDescriptionAtIndex:
-                          widget.user.updateSkillDescriptionAtIndex,
-                      updatePriceAtIndex: widget.user.updateSkillPriceAtIndex,
-                      addEmptySkill: widget.user.addEmptySkill,
-                      deleteSkillAtIndex: widget.user.deleteSkillAtIndex,
-                    ),
-                  ],
-                ),
-              if (_role == Role.consumer)
-                Column(
-                  children: <Widget>[
-                    Text(
-                      'Wishes',
-                      style: kSkillsTitleTextStyle,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CreateWishesSection(
-                      initialWishes: widget.user.wishes,
-                      updateKeywordsAtIndex:
-                          widget.user.updateWishKeywordsAtIndex,
-                      updateDescriptionAtIndex:
-                          widget.user.updateWishDescriptionAtIndex,
-                      updatePriceAtIndex: widget.user.updateWishPriceAtIndex,
-                      addEmptyWish: widget.user.addEmptyWish,
-                      deleteWishAtIndex: widget.user.deleteWishAtIndex,
-                    ),
-                  ],
-                ),
+              Card(
+                  elevation: 0,
+                  color: kCardBackgroundColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    child: _role == Role.provider
+                        ? Column(
+                            children: <Widget>[
+                              Text(
+                                'Skills',
+                                style: kSkillsTitleTextStyle,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              CreateSkillsSection(
+                                initialSkills: widget.user.skills,
+                                updateKeywordsAtIndex:
+                                    widget.user.updateSkillKeywordsAtIndex,
+                                updateDescriptionAtIndex:
+                                    widget.user.updateSkillDescriptionAtIndex,
+                                updatePriceAtIndex:
+                                    widget.user.updateSkillPriceAtIndex,
+                                addEmptySkill: widget.user.addEmptySkill,
+                                deleteSkillAtIndex:
+                                    widget.user.deleteSkillAtIndex,
+                              ),
+                            ],
+                          )
+                        : Column(
+                            children: <Widget>[
+                              Text(
+                                'Wishes',
+                                style: kSkillsTitleTextStyle,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              CreateWishesSection(
+                                initialWishes: widget.user.wishes,
+                                updateKeywordsAtIndex:
+                                    widget.user.updateWishKeywordsAtIndex,
+                                updateDescriptionAtIndex:
+                                    widget.user.updateWishDescriptionAtIndex,
+                                updatePriceAtIndex:
+                                    widget.user.updateWishPriceAtIndex,
+                                addEmptyWish: widget.user.addEmptyWish,
+                                deleteWishAtIndex:
+                                    widget.user.deleteWishAtIndex,
+                              ),
+                            ],
+                          ),
+                  )),
               SizedBox(
                 height: 20,
               ),

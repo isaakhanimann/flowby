@@ -82,13 +82,21 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                     placeholder: 'Topic',
                   ),
                 ),
-                SizedBox(width: 20),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
                 Expanded(
-                    child: InputFieldWithSuggestions(
-                        maxLength: 10,
-                        controller: priceControllers[rowNumber],
-                        suggestions: widget.priceSuggestions,
-                        placeholder: 'Price')),
+                  child: InputFieldWithSuggestions(
+                    maxLength: 100,
+                    controller: descriptionControllers[rowNumber],
+                    suggestions: widget.descriptionSuggestions,
+                    placeholder: 'Description',
+                    capitalization: TextCapitalization.sentences,
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: GestureDetector(
@@ -106,12 +114,10 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
               children: <Widget>[
                 Expanded(
                   child: InputFieldWithSuggestions(
-                    maxLength: 100,
-                    controller: descriptionControllers[rowNumber],
-                    suggestions: widget.descriptionSuggestions,
-                    placeholder: 'Description',
-                    capitalization: TextCapitalization.sentences,
-                  ),
+                      maxLength: 10,
+                      controller: priceControllers[rowNumber],
+                      suggestions: widget.priceSuggestions,
+                      placeholder: 'Price'),
                 ),
               ],
             ),
