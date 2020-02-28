@@ -141,78 +141,92 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  SizedBox(
-                    width: 100,
-                    child: Text(
-                      'Name',
-                      style: kAddSkillsTextStyle,
-                    ),
+              Card(
+                elevation: 0,
+                color: kCardBackgroundColor,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15))),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              'Name',
+                              style: kAddSkillsTextStyle,
+                            ),
+                          ),
+                          Expanded(
+                            child: CupertinoTextField(
+                              style: kAddSkillsTextStyle,
+                              placeholder: 'Enter your name',
+                              padding: EdgeInsets.only(bottom: 0),
+                              maxLength: 20,
+                              maxLines: 1,
+                              decoration: BoxDecoration(border: null),
+                              controller: _usernameController,
+                              textAlign: TextAlign.start,
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              'Bio',
+                              style: kAddSkillsTextStyle,
+                            ),
+                          ),
+                          Expanded(
+                            child: CupertinoTextField(
+                              expands: true,
+                              style: kAddSkillsTextStyle,
+                              placeholder: 'Enter your description',
+                              maxLength: 200,
+                              minLines: null,
+                              maxLines: null,
+                              padding: EdgeInsets.only(bottom: 0),
+                              decoration: BoxDecoration(border: null),
+                              controller: _bioController,
+                              textAlign: TextAlign.start,
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        children: <Widget>[
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              'Hide Profile',
+                              style: kAddSkillsTextStyle,
+                            ),
+                          ),
+                          CupertinoSwitch(
+                            value: _isHidden,
+                            onChanged: (newBool) {
+                              setState(() {
+                                _isHidden = newBool;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: CupertinoTextField(
-                      style: kAddSkillsTextStyle,
-                      placeholder: 'Enter your name',
-                      padding: EdgeInsets.only(bottom: 0),
-                      maxLength: 20,
-                      maxLines: 1,
-                      decoration: BoxDecoration(border: null),
-                      controller: _usernameController,
-                      textAlign: TextAlign.start,
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    width: 100,
-                    child: Text(
-                      'Bio',
-                      style: kAddSkillsTextStyle,
-                    ),
-                  ),
-                  Expanded(
-                    child: CupertinoTextField(
-                      expands: true,
-                      style: kAddSkillsTextStyle,
-                      placeholder: 'Enter your description',
-                      maxLength: 200,
-                      minLines: null,
-                      maxLines: null,
-                      padding: EdgeInsets.only(bottom: 0),
-                      decoration: BoxDecoration(border: null),
-                      controller: _bioController,
-                      textAlign: TextAlign.start,
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(height: 20),
-              Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: 100,
-                    child: Text(
-                      'Hide Profile',
-                      style: kAddSkillsTextStyle,
-                    ),
-                  ),
-                  CupertinoSwitch(
-                    value: _isHidden,
-                    onChanged: (newBool) {
-                      setState(() {
-                        _isHidden = newBool;
-                      });
-                    },
-                  ),
-                ],
+                ),
               ),
               SizedBox(height: 20),
               CupertinoSegmentedControl(
