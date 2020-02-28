@@ -8,7 +8,6 @@ class LoginInputField extends StatelessWidget {
   final TextInputType keyboardType;
   final bool obscureText;
   final String placeholder;
-  final bool isCapitalized;
 
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -22,15 +21,12 @@ class LoginInputField extends StatelessWidget {
       this.placeholder,
       this.controller,
       this.focusNode,
-      this.onFieldSubmitted,
-      this.isCapitalized = false});
+      this.onFieldSubmitted});
 
   @override
   Widget build(BuildContext context) {
     return CupertinoTextField(
       maxLength: 35,
-      textCapitalization:
-          isCapitalized ? TextCapitalization.words : TextCapitalization.none,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       placeholder: placeholder,
       placeholderStyle: kLoginPlaceHolderTextStyle,

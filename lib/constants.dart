@@ -15,8 +15,8 @@ const kUsernameTitleTextStyle = TextStyle(
     fontFamily: 'MontserratSemiBold',
     fontSize: 35.0,
     color: kLoginBackgroundColor);
-const kRegisterHeaderTextStyle = TextStyle(
-    color: Colors.black, fontFamily: 'MontserratRegular', fontSize: 20.0);
+const kRegisterHeaderTextStyle =
+    TextStyle(color: Colors.black, fontFamily: 'MuliRegular', fontSize: 20.0);
 const kSearchPlaceHolderTextStyle =
     TextStyle(fontSize: 16, color: kPlaceHolderColor);
 const kSearchTextStyle = TextStyle(fontSize: 16, color: Colors.black);

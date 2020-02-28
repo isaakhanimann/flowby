@@ -32,6 +32,7 @@ class EnableNotificationScreen extends StatelessWidget {
             Text(
               'Enable notifications to get notified when someone messages you',
               style: kExplanationMiddleTextStyle,
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 50),
             RoundedButton(

@@ -52,7 +52,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                         height: 10.0,
                       ),
                       Text(
-                        'Thank you for joining us! 👋 \n\n A verification link has been sent to your email account. 💌 \n \n Click on the link to continue the registration process. ✔',
+                        'Thank you for joining us! 👋 \n\n A verification link has been sent to your email account. 💌 \n \n Click on the link to continue the registration process. ✅',
                         textAlign: TextAlign.center,
                         style: kRegisterHeaderTextStyle,
                       ),
