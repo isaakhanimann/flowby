@@ -25,7 +25,7 @@ class EnableNotificationScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Icon(
-              Feather.navigation,
+              Feather.bell,
               size: 50,
             ),
             SizedBox(height: 50),
