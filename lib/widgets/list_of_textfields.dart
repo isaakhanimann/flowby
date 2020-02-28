@@ -1,6 +1,7 @@
 import 'package:Flowby/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_typeahead/cupertino_flutter_typeahead.dart';
 
@@ -68,61 +69,54 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
         rowNumber < keywordControllers.length;
         rowNumber++) {
       rows.add(
-        Column(
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Card(
+          elevation: 0,
+          color: kSecondCardBackgroundColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Column(
               children: <Widget>[
-                Expanded(
-                  child: InputFieldWithSuggestions(
-                    suggestions: widget.topicSuggestions,
-                    maxLength: 20,
-                    controller: keywordControllers[rowNumber],
-                    placeholder: 'Topic',
-                  ),
+                InputFieldWithSuggestions(
+                  suggestions: widget.topicSuggestions,
+                  maxLength: 20,
+                  controller: keywordControllers[rowNumber],
+                  placeholder: 'Topic',
                 ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: InputFieldWithSuggestions(
+                        maxLength: 100,
+                        controller: descriptionControllers[rowNumber],
+                        suggestions: widget.descriptionSuggestions,
+                        placeholder: 'Description',
+                        capitalization: TextCapitalization.sentences,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          _deleteIthController(index: rowNumber);
+                        },
+                        child: Icon(Feather.x),
+                      ),
+                    ),
+                  ],
+                ),
+                InputFieldWithSuggestions(
+                    maxLength: 10,
+                    controller: priceControllers[rowNumber],
+                    suggestions: widget.priceSuggestions,
+                    placeholder: 'Price'),
               ],
             ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: InputFieldWithSuggestions(
-                    maxLength: 100,
-                    controller: descriptionControllers[rowNumber],
-                    suggestions: widget.descriptionSuggestions,
-                    placeholder: 'Description',
-                    capitalization: TextCapitalization.sentences,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 0.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      _deleteIthController(index: rowNumber);
-                    },
-                    child: Icon(Feather.x),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: InputFieldWithSuggestions(
-                      maxLength: 10,
-                      controller: priceControllers[rowNumber],
-                      suggestions: widget.priceSuggestions,
-                      placeholder: 'Price'),
-                ),
-              ],
-            ),
-            SizedBox(height: 15.0),
-          ],
+          ),
         ),
       );
     }

@@ -231,7 +231,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15))),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 15),
                     child: _role == Role.provider
                         ? Column(
                             children: <Widget>[

@@ -86,6 +86,7 @@ const kPlaceHolderColor = Color(0xff979797);
 const kBoxBorderColor = Color(0xff979797);
 const kChatScreenBorderTextFieldColor = Color(0xFFdadada);
 const kCardBackgroundColor = Color(0xFFf4f4f4);
+const kSecondCardBackgroundColor = Color(0xFFE8E8E9);
 
 //const kCardBackgroundColor = Color(0x2Ffdd66d);
 
