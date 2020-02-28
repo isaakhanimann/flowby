@@ -29,13 +29,14 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
         padding: EdgeInsets.symmetric(horizontal: 20),
         width: double.infinity,
         height: double.infinity,
-        color: CupertinoColors.activeOrange,
+        color: CupertinoColors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
               'Do you want to search for skills or provide some?',
               style: kExplanationTitleTextStyle,
+              textAlign: TextAlign.center,
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 1 / 5,
