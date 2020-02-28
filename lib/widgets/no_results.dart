@@ -84,7 +84,7 @@ class _NoResultsState extends State<NoResults> {
                         );
                       })
                   : RoundedButton(
-                      text: 'Help us spread the word',
+                      text: 'Spread the word',
                       paddingInsideHorizontal: 39,
                       textColor: Colors.white,
                       color: kBlueButtonColor,

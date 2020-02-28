@@ -24,20 +24,26 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  User user;
   bool _isHidden;
   File _profilePic;
   bool showSpinner = true;
   Role _role;
 
-  var _usernameController = TextEditingController();
-  var _bioController = TextEditingController();
+  TextEditingController _usernameController;
+  TextEditingController _bioController;
 
   @override
   void initState() {
     super.initState();
-    //this is an asynchronous method
-    _getUser(context);
+    _usernameController = TextEditingController(text: widget.user.username);
+    _bioController = TextEditingController(text: widget.user.bio);
+    _isHidden = widget.user.isHidden;
+    _role = widget.user.role;
+    widget.user.addEmptySkill();
+    widget.user.addEmptyWish();
+
+    _profilePic = null;
+    showSpinner = false;
   }
 
   @override
@@ -49,10 +55,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    user?.skills?.removeWhere(
-        (skill) => (skill.keywords == null || skill.keywords.isEmpty));
-    user?.wishes?.removeWhere(
-        (wish) => (wish.keywords == null || wish.keywords.isEmpty));
     if (showSpinner) {
       return CupertinoPageScaffold(
           backgroundColor: CupertinoColors.white,
@@ -94,7 +96,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               opacity: 0.4,
                               child: CachedNetworkImage(
                                 imageUrl:
-                                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media&version=${user.imageVersionNumber}",
+                                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${widget.user.imageFileName}?alt=media&version=${widget.user.imageVersionNumber}",
                                 imageBuilder: (context, imageProvider) {
                                   return CircleAvatar(
                                       radius: 60,
@@ -234,13 +236,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     ListOfTextfields(
                       key: UniqueKey(),
-                      initialSkillsOrWishes: user.skills,
-                      updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
+                      initialSkillsOrWishes: widget.user.skills,
+                      updateKeywordsAtIndex:
+                          widget.user.updateSkillKeywordsAtIndex,
                       updateDescriptionAtIndex:
-                          user.updateSkillDescriptionAtIndex,
-                      updatePriceAtIndex: user.updateSkillPriceAtIndex,
-                      addEmptySkillOrWish: user.addEmptySkill,
-                      deleteSkillOrWishAtIndex: user.deleteSkillAtIndex,
+                          widget.user.updateSkillDescriptionAtIndex,
+                      updatePriceAtIndex: widget.user.updateSkillPriceAtIndex,
+                      addEmptySkillOrWish: widget.user.addEmptySkill,
+                      deleteSkillOrWishAtIndex: widget.user.deleteSkillAtIndex,
                       topicSuggestions: [
                         'english',
                         'statistics',
@@ -274,13 +277,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     ListOfTextfields(
                       key: UniqueKey(),
-                      initialSkillsOrWishes: user.wishes,
-                      updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
+                      initialSkillsOrWishes: widget.user.wishes,
+                      updateKeywordsAtIndex:
+                          widget.user.updateWishKeywordsAtIndex,
                       updateDescriptionAtIndex:
-                          user.updateWishDescriptionAtIndex,
-                      updatePriceAtIndex: user.updateWishPriceAtIndex,
-                      addEmptySkillOrWish: user.addEmptyWish,
-                      deleteSkillOrWishAtIndex: user.deleteWishAtIndex,
+                          widget.user.updateWishDescriptionAtIndex,
+                      updatePriceAtIndex: widget.user.updateWishPriceAtIndex,
+                      addEmptySkillOrWish: widget.user.addEmptyWish,
+                      deleteSkillOrWishAtIndex: widget.user.deleteWishAtIndex,
                       topicSuggestions: [
                         'english',
                         'statistics',
@@ -336,16 +340,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             fileName: widget.user.uid, image: _profilePic);
       }
 
-      user.username = _usernameController.text;
-      user.isHidden = _isHidden;
-      user.role = _role;
-      user.skills.removeWhere(
+      widget.user.username = _usernameController.text;
+      widget.user.isHidden = _isHidden;
+      widget.user.role = _role;
+      widget.user.skills?.removeWhere(
           (skill) => (skill.keywords == null || skill.keywords.isEmpty));
-      user.wishes.removeWhere(
+      widget.user.wishes?.removeWhere(
           (wish) => (wish.keywords == null || wish.keywords.isEmpty));
-      user.bio = _bioController.text;
+      widget.user.bio = _bioController.text;
 
-      await cloudFirestoreService.uploadUser(user: user);
+      await cloudFirestoreService.uploadUser(user: widget.user);
       Navigator.of(context).pop();
     } catch (e) {
       print('Could not upload and get on Save');
@@ -400,24 +404,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ));
     setState(() {
       _profilePic = croppedImage;
-    });
-  }
-
-  void _getUser(BuildContext context) async {
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    String uid = widget.user.uid;
-    user = await cloudFirestoreService.getUser(uid: uid);
-    //also fill the temps in case the user presses save and the messageboxes are filled
-
-    setState(() {
-      _usernameController.text = user.username;
-      _bioController.text = user.bio;
-      _isHidden = user.isHidden;
-      _role = user.role;
-
-      _profilePic = null;
-      showSpinner = false;
     });
   }
 }

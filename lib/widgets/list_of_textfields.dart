@@ -51,17 +51,12 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
             initialPrice: skillOrWish.price);
       }
     }
-    //controllers for extra skill
-    widget.addEmptySkillOrWish();
-    _addIthControllerToList(
-        index: keywordControllers.length,
-        initialKeywords: '',
-        initialDescription: '',
-        initialPrice: '');
   }
 
   @override
   void dispose() {
+    print('list of textfield dispose called');
+
     List<TextEditingController> allControllers =
         keywordControllers + descriptionControllers + priceControllers;
     for (TextEditingController controller in allControllers) {

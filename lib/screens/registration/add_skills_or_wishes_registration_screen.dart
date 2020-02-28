@@ -28,12 +28,18 @@ class _AddSkillsOrWishesRegistrationScreenState
   bool showSpinner = false;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.user.role == Role.provider) {
+      widget.user.addEmptySkill();
+    } else {
+      widget.user.addEmptyWish();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool isProvider = widget.user.role == Role.provider;
-    widget.user?.skills?.removeWhere(
-        (skill) => (skill.keywords == null || skill.keywords.isEmpty));
-    widget.user?.wishes?.removeWhere(
-        (wish) => (wish.keywords == null || wish.keywords.isEmpty));
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
