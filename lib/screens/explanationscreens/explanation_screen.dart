@@ -66,7 +66,10 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
           right: 0,
           child: CupertinoButton(
             padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-            child: Text('Skip'),
+            child: Text(
+              'Skip',
+              style: kSkipTextStyle,
+            ),
             onPressed: () {
               Navigator.of(context, rootNavigator: true).push(
                 CupertinoPageRoute<void>(

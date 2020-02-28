@@ -27,6 +27,7 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
             Text(
               'See how far away other users are',
               style: kExplanationMiddleTextStyle,
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 50),
             RoundedButton(

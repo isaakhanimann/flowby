@@ -69,8 +69,17 @@ class Flowby extends StatelessWidget {
           child: CupertinoApp(
             navigatorObservers: [BotToastNavigatorObserver()],
             theme: CupertinoThemeData(
-                brightness: Brightness.light,
-                primaryColor: kLoginBackgroundColor),
+              brightness: Brightness.light,
+              primaryColor: kLoginBackgroundColor,
+              primaryContrastingColor: CupertinoColors.white,
+              barBackgroundColor: CupertinoColors.white,
+              scaffoldBackgroundColor: CupertinoColors.white,
+              textTheme: CupertinoTextThemeData(
+                  textStyle: kDefaultTextStyle,
+                  navTitleTextStyle: kMiddleNavigationBarTextStyle,
+                  navLargeTitleTextStyle: kLargeNavigationBarTextStyle,
+                  navActionTextStyle: kActionNavigationBarTextStyle),
+            ),
             debugShowCheckedModeBanner: false,
             initialRoute: NavigationScreen.id,
             onGenerateRoute: RouteGenerator.generateRoute,

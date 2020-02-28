@@ -190,6 +190,7 @@ class ScreenWithAllTabs extends StatelessWidget {
       tabBar: CupertinoTabBar(
         backgroundColor: Colors.white,
         activeColor: kDefaultProfilePicColor,
+        inactiveColor: kSmallTitlesTextColor,
         items: [
           BottomNavigationBarItem(
               icon: Icon(

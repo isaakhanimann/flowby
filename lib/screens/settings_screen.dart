@@ -25,7 +25,9 @@ class SettingsScreen extends StatelessWidget {
           CupertinoSliverNavigationBar(
             backgroundColor: CupertinoColors.white,
             border: null,
-            largeTitle: Text('Settings'),
+            largeTitle: Text(
+              'Settings',
+            ),
           ),
           SliverSafeArea(
             top: false,

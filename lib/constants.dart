@@ -2,20 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Text Styles
+const kDefaultTextStyle = TextStyle(
+    fontFamily: 'MuliRegular', fontSize: 14.0, color: kSmallTitlesTextColor);
+const kLoginPlaceHolderTextStyle = TextStyle(
+    fontFamily: 'MuliRegular', fontSize: 14.0, color: kPlaceHolderColor);
 const kExplanationTitleTextStyle = TextStyle(
-    fontFamily: 'MontserratRegular',
-    fontSize: 30.0,
-    fontWeight: FontWeight.w500,
-    color: kKeywordHeaderColor);
+    fontFamily: 'MontserratBold', fontSize: 30.0, color: kKeywordHeaderColor);
+const kSkipTextStyle = TextStyle(fontFamily: 'MuliBold', fontSize: 16.0);
 const kExplanationMiddleTextStyle = TextStyle(
-    fontFamily: 'MontserratRegular',
-    fontSize: 20.0,
-    fontWeight: FontWeight.w500,
-    color: kKeywordHeaderColor);
+    fontFamily: 'MuliMedium', fontSize: 18.0, color: kKeywordHeaderColor);
 const kUsernameTitleTextStyle = TextStyle(
-    fontFamily: 'MontserratRegular',
-    fontSize: 30.0,
-    fontWeight: FontWeight.w500,
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 35.0,
     color: kLoginBackgroundColor);
 const kRegisterHeaderTextStyle = TextStyle(
     color: Colors.black, fontFamily: 'MontserratRegular', fontSize: 20.0);
@@ -26,56 +24,49 @@ const kHomeSwitchTextStyle = TextStyle(fontSize: 16);
 const kChatScreenHeaderTextStyle =
     TextStyle(fontSize: 20, fontFamily: 'MuliRegular');
 const kSkillsTitleTextStyle = TextStyle(
-    fontFamily: 'MontserratRegular',
+    fontFamily: 'MontserratSemiBold',
     fontSize: 26.0,
-    fontWeight: FontWeight.w500,
     color: kLoginBackgroundColor);
 const kOrTextStyle = TextStyle(
   color: Colors.white,
-  fontFamily: 'MontserratRegular',
+  fontFamily: 'MuliRegular',
   fontSize: 18.0,
 );
 const kSmallTitleTextStyle = TextStyle(
-    fontFamily: 'NotoRegular',
-    fontSize: 16.0,
-    fontWeight: FontWeight.w400,
-    color: kSmallTitlesTextColor);
-const kPrivacyPolicyTextStyle = TextStyle(
-    fontFamily: 'NotoRegular',
-    fontSize: 12.0,
-    fontWeight: FontWeight.w400,
-    color: Colors.white);
+    fontFamily: 'MuliLight', fontSize: 15.0, color: kSmallTitlesTextColor);
+const kDescriptionTextStyle = TextStyle(
+    fontFamily: 'MuliMedium', fontSize: 16.0, color: kSmallTitlesTextColor);
+const kPrivacyPolicyTextStyle =
+    TextStyle(fontFamily: 'MuliRegular', fontSize: 12.0, color: Colors.white);
 const kKeywordHeaderTextStyle = TextStyle(
-    fontFamily: 'NotoMedium',
-    fontSize: 16.0,
-    fontWeight: FontWeight.w400,
-    color: kKeywordHeaderColor);
+    fontFamily: 'MuliBold', fontSize: 16.0, color: kKeywordHeaderColor);
 const kEditProfileTextFieldTextStyle = TextStyle(
-    fontFamily: 'NotoRegular',
-    fontSize: 18.0,
-    fontWeight: FontWeight.w400,
-    color: kTextFieldTextColor);
+    fontFamily: 'MuliRegular', fontSize: 18.0, color: kTextFieldTextColor);
 const kAddSkillsTextStyle = TextStyle(
-    fontFamily: 'NotoRegular',
-    fontSize: 14.0,
-    fontWeight: FontWeight.w400,
-    color: kSmallTitlesTextColor);
-const kNavigationBarTextStyle = TextStyle(fontFamily: 'MontserratRegular');
+    fontFamily: 'MuliRegular', fontSize: 14.0, color: kSmallTitlesTextColor);
+const kActionNavigationBarTextStyle = TextStyle(
+    fontFamily: 'MuliSemiBold', fontSize: 19, color: kLoginBackgroundColor);
+const kLargeNavigationBarTextStyle = TextStyle(
+    fontFamily: 'MontserratBold', fontSize: 33, color: kKeywordHeaderColor);
+const kMiddleNavigationBarTextStyle = TextStyle(
+    fontFamily: 'MuliSemiBold', fontSize: 19, color: kKeywordHeaderColor);
 const kLocationTextStyle =
-    TextStyle(color: kBlueButtonColor, fontSize: 12, fontFamily: 'NotoRegular');
-const kUsernameTextStyle = TextStyle(
-    fontWeight: FontWeight.bold,
-    fontFamily: 'MontserratRegular',
-    color: kKeywordHeaderColor);
+    TextStyle(color: kBlueButtonColor, fontSize: 12, fontFamily: 'MuliRegular');
+const kUsernameTextStyle =
+    TextStyle(fontFamily: 'MontserratRegular', color: kKeywordHeaderColor);
 const kChatTabTimestampTextStyle =
-    TextStyle(color: Colors.black38, fontSize: 10, fontFamily: 'NotoRegular');
+    TextStyle(color: Colors.black38, fontSize: 10, fontFamily: 'MuliRegular');
 const kChatLastMessageTextStyle =
-    TextStyle(fontSize: 13, fontFamily: 'NotoRegular');
+    TextStyle(fontSize: 13, fontFamily: 'MuliRegular');
 const kCardSubtitleTextStyle =
-    TextStyle(fontSize: 12, fontFamily: 'NotoRegular');
+    TextStyle(fontSize: 12, fontFamily: 'MuliRegular');
 const kCupertinoScaffoldTextStyle =
-    TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratRegular');
+    TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratSemiBold');
 const kTabsLargeTitleTextStyle = TextStyle(fontFamily: 'MontserratRegular');
+const kTabTitleTextStyle =
+    TextStyle(fontFamily: 'MontserratBold', fontSize: 33);
+const kSmallTabTitleTextStyle =
+    TextStyle(fontFamily: 'MontserratBold', fontSize: 20);
 const kBlockedTextStyle =
     TextStyle(color: Colors.red, fontFamily: 'MontserratRegular');
 const kSmallBlockedTextStyle =

@@ -95,7 +95,7 @@ class ListViewOfUserInfos extends StatelessWidget {
           if (user.bio != null && user.bio != '')
             Text(
               user.bio,
-              style: kSmallTitleTextStyle,
+              style: kDescriptionTextStyle,
               textAlign: TextAlign.center,
             ),
           SizedBox(

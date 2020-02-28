@@ -12,7 +12,7 @@ class ExplanationProvideSkillTab extends StatelessWidget {
       child: TopMiddleBottomText(
         topText: 'Want to provide a skill?',
         middleText:
-            'Add a skill\nSpecify the topic & description\nHow much you want to get paid for it?',
+            'Add a skill\nSpecify the topic & description\nWhat do you want in exchange?',
         bottomText:
             'Wait to get notified or actively look for people who have wished for it',
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:Flowby/constants.dart';
 
 class LoginInputField extends StatelessWidget {
   final bool isLast;
@@ -32,9 +33,7 @@ class LoginInputField extends StatelessWidget {
           isCapitalized ? TextCapitalization.words : TextCapitalization.none,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       placeholder: placeholder,
-      placeholderStyle: TextStyle(
-        fontFamily: 'MontserratRegular',
-      ),
+      placeholderStyle: kLoginPlaceHolderTextStyle,
       controller: controller,
       focusNode: focusNode,
       onSubmitted: onFieldSubmitted,

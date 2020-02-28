@@ -64,15 +64,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: Colors.transparent,
         leading: CupertinoButton(
           padding: EdgeInsets.all(10),
-          child: Text('Cancel', style: kNavigationBarTextStyle),
+          child: Text('Cancel', style: kActionNavigationBarTextStyle),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        middle: Text('Edit Profile', style: kNavigationBarTextStyle),
+        middle: Text('Edit Profile'),
         trailing: CupertinoButton(
             padding: EdgeInsets.all(10),
-            child: Text('Done', style: kNavigationBarTextStyle),
+            child: Text('Done', style: kActionNavigationBarTextStyle),
             onPressed: () {
               _uploadUserAndNavigate(context);
             }),
