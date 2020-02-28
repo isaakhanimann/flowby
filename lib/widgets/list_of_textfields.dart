@@ -53,8 +53,6 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
 
   @override
   void dispose() {
-    print('list of textfield dispose called');
-
     List<TextEditingController> allControllers =
         keywordControllers + descriptionControllers + priceControllers;
     for (TextEditingController controller in allControllers) {
@@ -215,6 +213,8 @@ class InputFieldWithSuggestions extends StatelessWidget {
       suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8))),
       getImmediateSuggestions: true,
+      hideOnEmpty: true,
+      animationDuration: const Duration(microseconds: 0),
       suggestionsCallback: _getSuggestions,
       itemBuilder: (context, suggestion) {
         return Padding(
@@ -231,6 +231,10 @@ class InputFieldWithSuggestions extends StatelessWidget {
   }
 
   List<String> _getSuggestions(String pattern) {
-    return suggestions;
+    List<String> suggestionResults = suggestions
+        .where((suggestion) =>
+            suggestion.toLowerCase().contains(pattern.toLowerCase()))
+        .toList();
+    return suggestionResults;
   }
 }
