@@ -119,15 +119,35 @@ class SettingsScreen extends StatelessWidget {
                     final authService = Provider.of<FirebaseAuthService>(
                         context,
                         listen: false);
-                    print('delete user called');
-                    await authService.deleteCurrentlyLoggedInUser();
-                    Navigator.of(context, rootNavigator: true)
-                        .pushAndRemoveUntil(
-                      CupertinoPageRoute(
-                          builder: (BuildContext context) =>
-                              ChooseSigninScreen()),
-                      (Route<dynamic> route) => false,
-                    );
+                    bool didDeleteWork =
+                        await authService.deleteCurrentlyLoggedInUser();
+                    if (!didDeleteWork) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                      showCupertinoDialog(
+                        context: context,
+                        builder: (_) => CupertinoAlertDialog(
+                          title: Text('Delete failed'),
+                          content: Text(
+                              '\nYou need to sign out and sign in again to delete your account'),
+                          actions: <Widget>[
+                            CupertinoDialogAction(
+                              child: Text('Ok'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushAndRemoveUntil(
+                        CupertinoPageRoute(
+                            builder: (BuildContext context) =>
+                                ChooseSigninScreen()),
+                        (Route<dynamic> route) => false,
+                      );
+                    }
                   },
                   isDestructiveAction: true,
                 ),
