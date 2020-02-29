@@ -26,21 +26,12 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  bool _isHidden;
   File _profilePic;
-  bool showSpinner = true;
-  Role _role;
-
-  TextEditingController _usernameController;
-  TextEditingController _bioController;
+  bool showSpinner = false;
 
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController(text: widget.user.username);
-    _bioController = TextEditingController(text: widget.user.bio);
-    _isHidden = widget.user.isHidden;
-    _role = widget.user.role;
     widget.user.addEmptySkill();
     widget.user.addEmptyWish();
 
@@ -49,253 +40,47 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   @override
-  void dispose() {
-    _usernameController.dispose();
-    _bioController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: showSpinner,
-      progressIndicator: CenteredLoadingIndicator(),
-      child: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          border: null,
-          backgroundColor: Colors.transparent,
-          leading: CupertinoButton(
-            padding: EdgeInsets.all(10),
-            child: Text('Cancel', style: kActionNavigationBarTextStyle),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          middle: Text('Edit Profile'),
-          trailing: CupertinoButton(
+    return MultiProvider(
+      providers: [
+        Provider<User>.value(value: widget.user),
+        Provider<File>.value(value: _profilePic)
+      ],
+      child: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        progressIndicator: CenteredLoadingIndicator(),
+        child: CupertinoPageScaffold(
+          navigationBar: CupertinoNavigationBar(
+            border: null,
+            backgroundColor: Colors.transparent,
+            leading: CupertinoButton(
               padding: EdgeInsets.all(10),
-              child: Text('Done', style: kActionNavigationBarTextStyle),
+              child: Text('Cancel', style: kActionNavigationBarTextStyle),
               onPressed: () {
-                _uploadUserAndNavigate(context);
-              }),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+                Navigator.of(context).pop();
+              },
+            ),
+            middle: Text('Edit Profile'),
+            trailing: CupertinoButton(
+                padding: EdgeInsets.all(10),
+                child: Text('Done', style: kActionNavigationBarTextStyle),
+                onPressed: () {
+                  _uploadUserAndNavigate(context);
+                }),
+          ),
+          child: SafeArea(
             child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 15),
               children: <Widget>[
-                GestureDetector(
-                  onTap: _changeProfilePic,
-                  child: Center(
-                    heightFactor: 1.2,
-                    child: _profilePic == null
-                        ? Stack(
-                            alignment: AlignmentDirectional.center,
-                            children: <Widget>[
-                              Opacity(
-                                opacity: 0.4,
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                      "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${widget.user.imageFileName}?alt=media&version=${widget.user.imageVersionNumber}",
-                                  imageBuilder: (context, imageProvider) {
-                                    return CircleAvatar(
-                                        radius: 60,
-                                        backgroundColor: Colors.grey,
-                                        backgroundImage: imageProvider);
-                                  },
-                                  placeholder: (context, url) =>
-                                      CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        kDefaultProfilePicColor),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                ),
-                              ),
-                              Icon(
-                                CupertinoIcons.photo_camera_solid,
-                                size: 50,
-                              )
-                            ],
-                          )
-                        : Stack(
-                            alignment: AlignmentDirectional.center,
-                            children: <Widget>[
-                              Opacity(
-                                opacity: 0.4,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.grey,
-                                  backgroundImage: FileImage(_profilePic),
-                                  radius: 60,
-                                ),
-                              ),
-                              Icon(
-                                CupertinoIcons.photo_camera_solid,
-                                size: 50,
-                              )
-                            ],
-                          ),
-                  ),
+                ImageSection(
+                  setProfilePic: _setProfilePic,
                 ),
                 SizedBox(
                   height: 20,
                 ),
-                Card(
-                  elevation: 0,
-                  color: kCardBackgroundColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15))),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 15),
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            SizedBox(
-                              width: 100,
-                              child: Text(
-                                'Name',
-                                style: kAddSkillsTextStyle,
-                              ),
-                            ),
-                            Expanded(
-                              child: CupertinoTextField(
-                                style: kAddSkillsTextStyle,
-                                placeholder: 'Enter your name',
-                                padding: EdgeInsets.only(bottom: 0),
-                                maxLength: 20,
-                                maxLines: 1,
-                                decoration: BoxDecoration(border: null),
-                                controller: _usernameController,
-                                textAlign: TextAlign.start,
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(
-                              width: 100,
-                              child: Text(
-                                'Bio',
-                                style: kAddSkillsTextStyle,
-                              ),
-                            ),
-                            Expanded(
-                              child: CupertinoTextField(
-                                expands: true,
-                                style: kAddSkillsTextStyle,
-                                placeholder: 'Enter your description',
-                                maxLength: 200,
-                                minLines: null,
-                                maxLines: null,
-                                padding: EdgeInsets.only(bottom: 0),
-                                decoration: BoxDecoration(border: null),
-                                controller: _bioController,
-                                textAlign: TextAlign.start,
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          children: <Widget>[
-                            SizedBox(
-                              width: 100,
-                              child: Text(
-                                'Hide Profile',
-                                style: kAddSkillsTextStyle,
-                              ),
-                            ),
-                            CupertinoSwitch(
-                              value: _isHidden,
-                              onChanged: (newBool) {
-                                setState(() {
-                                  _isHidden = newBool;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                NameBioHideSection(),
                 SizedBox(height: 20),
-                CupertinoSegmentedControl(
-                  padding: EdgeInsets.symmetric(horizontal: 0),
-                  groupValue: _role,
-                  onValueChanged: _switchRole,
-                  children: <Role, Widget>{
-                    Role.consumer:
-                        Text('Searcher', style: kHomeSwitchTextStyle),
-                    Role.provider:
-                        Text('Provider', style: kHomeSwitchTextStyle),
-                  },
-                ),
-                SizedBox(height: 20),
-                Card(
-                    elevation: 0,
-                    color: kCardBackgroundColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15))),
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-                      child: _role == Role.provider
-                          ? Column(
-                              children: <Widget>[
-                                Text(
-                                  'Skills',
-                                  style: kSkillsTitleTextStyle,
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                CreateSkillsSection(
-                                  initialSkills: widget.user.skills,
-                                  updateKeywordsAtIndex:
-                                      widget.user.updateSkillKeywordsAtIndex,
-                                  updateDescriptionAtIndex:
-                                      widget.user.updateSkillDescriptionAtIndex,
-                                  updatePriceAtIndex:
-                                      widget.user.updateSkillPriceAtIndex,
-                                  addEmptySkill: widget.user.addEmptySkill,
-                                  deleteSkillAtIndex:
-                                      widget.user.deleteSkillAtIndex,
-                                ),
-                              ],
-                            )
-                          : Column(
-                              children: <Widget>[
-                                Text(
-                                  'Wishes',
-                                  style: kSkillsTitleTextStyle,
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                CreateWishesSection(
-                                  initialWishes: widget.user.wishes,
-                                  updateKeywordsAtIndex:
-                                      widget.user.updateWishKeywordsAtIndex,
-                                  updateDescriptionAtIndex:
-                                      widget.user.updateWishDescriptionAtIndex,
-                                  updatePriceAtIndex:
-                                      widget.user.updateWishPriceAtIndex,
-                                  addEmptyWish: widget.user.addEmptyWish,
-                                  deleteWishAtIndex:
-                                      widget.user.deleteWishAtIndex,
-                                ),
-                              ],
-                            ),
-                    )),
+                ChooseRoleAndSkillSection(),
                 SizedBox(
                   height: 20,
                 ),
@@ -305,12 +90,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
-  }
-
-  _switchRole(Role newRole) {
-    setState(() {
-      _role = newRole;
-    });
   }
 
   Future<void> _uploadUserAndNavigate(BuildContext context) async {
@@ -329,23 +108,93 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             fileName: widget.user.uid, image: _profilePic);
       }
 
-      widget.user.username = _usernameController.text;
-      widget.user.isHidden = _isHidden;
-      widget.user.role = _role;
       widget.user.skills?.removeWhere(
           (skill) => (skill.keywords == null || skill.keywords.isEmpty));
       widget.user.wishes?.removeWhere(
           (wish) => (wish.keywords == null || wish.keywords.isEmpty));
-      widget.user.bio = _bioController.text;
 
       await cloudFirestoreService.uploadUser(user: widget.user);
       Navigator.of(context).pop();
     } catch (e) {
+      print(e);
       print('Could not upload and get on Save');
     }
     setState(() {
       showSpinner = false;
     });
+  }
+
+  _setProfilePic(File newImage) {
+    _profilePic = newImage;
+  }
+}
+
+class ImageSection extends StatefulWidget {
+  final Function setProfilePic;
+
+  ImageSection({@required this.setProfilePic});
+
+  @override
+  _ImageSectionState createState() => _ImageSectionState();
+}
+
+class _ImageSectionState extends State<ImageSection> {
+  File _profilePic;
+
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<User>(context, listen: false);
+    return GestureDetector(
+      onTap: _changeProfilePic,
+      child: Center(
+        heightFactor: 1.2,
+        child: _profilePic == null
+            ? Stack(
+                alignment: AlignmentDirectional.center,
+                children: <Widget>[
+                  Opacity(
+                    opacity: 0.4,
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media&version=${user.imageVersionNumber}",
+                      imageBuilder: (context, imageProvider) {
+                        return CircleAvatar(
+                            radius: 60,
+                            backgroundColor: Colors.grey,
+                            backgroundImage: imageProvider);
+                      },
+                      placeholder: (context, url) => CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            kDefaultProfilePicColor),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ),
+                  Icon(
+                    CupertinoIcons.photo_camera_solid,
+                    size: 50,
+                  )
+                ],
+              )
+            : Stack(
+                alignment: AlignmentDirectional.center,
+                children: <Widget>[
+                  Opacity(
+                    opacity: 0.4,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      backgroundImage: FileImage(_profilePic),
+                      radius: 60,
+                    ),
+                  ),
+                  Icon(
+                    CupertinoIcons.photo_camera_solid,
+                    size: 50,
+                  )
+                ],
+              ),
+      ),
+    );
   }
 
   void _changeProfilePic() async {
@@ -391,8 +240,229 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         iosUiSettings: IOSUiSettings(
           minimumAspectRatio: 1.0,
         ));
+    widget.setProfilePic(croppedImage);
     setState(() {
       _profilePic = croppedImage;
+    });
+  }
+}
+
+class NameBioHideSection extends StatefulWidget {
+  @override
+  _NameBioHideSectionState createState() => _NameBioHideSectionState();
+}
+
+class _NameBioHideSectionState extends State<NameBioHideSection> {
+  TextEditingController _usernameController;
+  TextEditingController _bioController;
+  bool _hideProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = Provider.of<User>(context, listen: false);
+    _usernameController = TextEditingController(text: user.username);
+    _usernameController.addListener(() {
+      user.username = _usernameController.text;
+    });
+    _bioController = TextEditingController(text: user.bio);
+    _bioController.addListener(() {
+      user.bio = _bioController.text;
+    });
+    _hideProfile = user.isHidden;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _usernameController.dispose();
+    _bioController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<User>(context, listen: false);
+    return Card(
+      elevation: 0,
+      color: kCardBackgroundColor,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15))),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        child: Column(
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    'Name',
+                    style: kAddSkillsTextStyle,
+                  ),
+                ),
+                Expanded(
+                  child: CupertinoTextField(
+                    style: kAddSkillsTextStyle,
+                    placeholder: 'Enter your name',
+                    padding: EdgeInsets.only(bottom: 0),
+                    maxLength: 20,
+                    maxLines: 1,
+                    decoration: BoxDecoration(border: null),
+                    controller: _usernameController,
+                    textAlign: TextAlign.start,
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    'Bio',
+                    style: kAddSkillsTextStyle,
+                  ),
+                ),
+                Expanded(
+                  child: CupertinoTextField(
+                    expands: true,
+                    style: kAddSkillsTextStyle,
+                    placeholder: 'Enter your description',
+                    maxLength: 200,
+                    minLines: null,
+                    maxLines: null,
+                    padding: EdgeInsets.only(bottom: 0),
+                    decoration: BoxDecoration(border: null),
+                    controller: _bioController,
+                    textAlign: TextAlign.start,
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    'Hide Profile',
+                    style: kAddSkillsTextStyle,
+                  ),
+                ),
+                CupertinoSwitch(
+                  value: _hideProfile,
+                  onChanged: (newBool) {
+                    setState(() {
+                      user.isHidden = newBool;
+                      _hideProfile = newBool;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ChooseRoleAndSkillSection extends StatefulWidget {
+  @override
+  _ChooseRoleAndSkillSectionState createState() =>
+      _ChooseRoleAndSkillSectionState();
+}
+
+class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
+  Role _role;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = Provider.of<User>(context, listen: false);
+    _role = user.role;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<User>(context, listen: false);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        CupertinoSegmentedControl(
+          padding: EdgeInsets.symmetric(horizontal: 0),
+          groupValue: _role,
+          onValueChanged: _switchRole,
+          children: <Role, Widget>{
+            Role.consumer: Text('Searcher', style: kHomeSwitchTextStyle),
+            Role.provider: Text('Provider', style: kHomeSwitchTextStyle),
+          },
+        ),
+        SizedBox(height: 20),
+        Card(
+          elevation: 0,
+          color: kCardBackgroundColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+            child: _role == Role.provider
+                ? Column(
+                    children: <Widget>[
+                      Text(
+                        'Skills',
+                        style: kSkillsTitleTextStyle,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CreateSkillsSection(
+                        initialSkills: user.skills,
+                        updateKeywordsAtIndex: user.updateSkillKeywordsAtIndex,
+                        updateDescriptionAtIndex:
+                            user.updateSkillDescriptionAtIndex,
+                        updatePriceAtIndex: user.updateSkillPriceAtIndex,
+                        addEmptySkill: user.addEmptySkill,
+                        deleteSkillAtIndex: user.deleteSkillAtIndex,
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: <Widget>[
+                      Text(
+                        'Wishes',
+                        style: kSkillsTitleTextStyle,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CreateWishesSection(
+                        initialWishes: user.wishes,
+                        updateKeywordsAtIndex: user.updateWishKeywordsAtIndex,
+                        updateDescriptionAtIndex:
+                            user.updateWishDescriptionAtIndex,
+                        updatePriceAtIndex: user.updateWishPriceAtIndex,
+                        addEmptyWish: user.addEmptyWish,
+                        deleteWishAtIndex: user.deleteWishAtIndex,
+                      ),
+                    ],
+                  ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  _switchRole(Role newRole) {
+    final user = Provider.of<User>(context, listen: false);
+    user.role = newRole;
+    setState(() {
+      _role = newRole;
     });
   }
 }
