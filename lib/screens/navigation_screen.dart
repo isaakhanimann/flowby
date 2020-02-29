@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:Flowby/constants.dart';
-import 'package:Flowby/screens/chats_tab.dart';
+import 'package:Flowby/screens/tabs/chats_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
-import 'package:Flowby/screens/home_tab.dart';
-import 'package:Flowby/screens/profile_tab.dart';
+import 'package:Flowby/screens/tabs/home_tab.dart';
+import 'package:Flowby/screens/tabs/profile_tab.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_cloud_messaging.dart';

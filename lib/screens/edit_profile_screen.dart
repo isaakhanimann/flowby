@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/role.dart';
 
@@ -56,248 +57,250 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (showSpinner) {
-      return CupertinoPageScaffold(
-          backgroundColor: CupertinoColors.white,
-          child: CenteredLoadingIndicator());
-    }
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        border: null,
-        backgroundColor: Colors.transparent,
-        leading: CupertinoButton(
-          padding: EdgeInsets.all(10),
-          child: Text('Cancel', style: kActionNavigationBarTextStyle),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        middle: Text('Edit Profile'),
-        trailing: CupertinoButton(
+    return ModalProgressHUD(
+      inAsyncCall: showSpinner,
+      progressIndicator: CenteredLoadingIndicator(),
+      child: CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          border: null,
+          backgroundColor: Colors.transparent,
+          leading: CupertinoButton(
             padding: EdgeInsets.all(10),
-            child: Text('Done', style: kActionNavigationBarTextStyle),
+            child: Text('Cancel', style: kActionNavigationBarTextStyle),
             onPressed: () {
-              _uploadUserAndNavigate(context);
-            }),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: ListView(
-            children: <Widget>[
-              GestureDetector(
-                onTap: _changeProfilePic,
-                child: Center(
-                  heightFactor: 1.2,
-                  child: _profilePic == null
-                      ? Stack(
-                          alignment: AlignmentDirectional.center,
-                          children: <Widget>[
-                            Opacity(
-                              opacity: 0.4,
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${widget.user.imageFileName}?alt=media&version=${widget.user.imageVersionNumber}",
-                                imageBuilder: (context, imageProvider) {
-                                  return CircleAvatar(
-                                      radius: 60,
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: imageProvider);
-                                },
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      kDefaultProfilePicColor),
+              Navigator.of(context).pop();
+            },
+          ),
+          middle: Text('Edit Profile'),
+          trailing: CupertinoButton(
+              padding: EdgeInsets.all(10),
+              child: Text('Done', style: kActionNavigationBarTextStyle),
+              onPressed: () {
+                _uploadUserAndNavigate(context);
+              }),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: ListView(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: _changeProfilePic,
+                  child: Center(
+                    heightFactor: 1.2,
+                    child: _profilePic == null
+                        ? Stack(
+                            alignment: AlignmentDirectional.center,
+                            children: <Widget>[
+                              Opacity(
+                                opacity: 0.4,
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${widget.user.imageFileName}?alt=media&version=${widget.user.imageVersionNumber}",
+                                  imageBuilder: (context, imageProvider) {
+                                    return CircleAvatar(
+                                        radius: 60,
+                                        backgroundColor: Colors.grey,
+                                        backgroundImage: imageProvider);
+                                  },
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        kDefaultProfilePicColor),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
                                 ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
                               ),
-                            ),
-                            Icon(
-                              CupertinoIcons.photo_camera_solid,
-                              size: 50,
-                            )
-                          ],
-                        )
-                      : Stack(
-                          alignment: AlignmentDirectional.center,
-                          children: <Widget>[
-                            Opacity(
-                              opacity: 0.4,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                backgroundImage: FileImage(_profilePic),
-                                radius: 60,
+                              Icon(
+                                CupertinoIcons.photo_camera_solid,
+                                size: 50,
+                              )
+                            ],
+                          )
+                        : Stack(
+                            alignment: AlignmentDirectional.center,
+                            children: <Widget>[
+                              Opacity(
+                                opacity: 0.4,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.grey,
+                                  backgroundImage: FileImage(_profilePic),
+                                  radius: 60,
+                                ),
                               ),
-                            ),
-                            Icon(
-                              CupertinoIcons.photo_camera_solid,
-                              size: 50,
-                            )
-                          ],
-                        ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Card(
-                elevation: 0,
-                color: kCardBackgroundColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          SizedBox(
-                            width: 100,
-                            child: Text(
-                              'Name',
-                              style: kAddSkillsTextStyle,
-                            ),
+                              Icon(
+                                CupertinoIcons.photo_camera_solid,
+                                size: 50,
+                              )
+                            ],
                           ),
-                          Expanded(
-                            child: CupertinoTextField(
-                              style: kAddSkillsTextStyle,
-                              placeholder: 'Enter your name',
-                              padding: EdgeInsets.only(bottom: 0),
-                              maxLength: 20,
-                              maxLines: 1,
-                              decoration: BoxDecoration(border: null),
-                              controller: _usernameController,
-                              textAlign: TextAlign.start,
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(
-                            width: 100,
-                            child: Text(
-                              'Bio',
-                              style: kAddSkillsTextStyle,
-                            ),
-                          ),
-                          Expanded(
-                            child: CupertinoTextField(
-                              expands: true,
-                              style: kAddSkillsTextStyle,
-                              placeholder: 'Enter your description',
-                              maxLength: 200,
-                              minLines: null,
-                              maxLines: null,
-                              padding: EdgeInsets.only(bottom: 0),
-                              decoration: BoxDecoration(border: null),
-                              controller: _bioController,
-                              textAlign: TextAlign.start,
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        children: <Widget>[
-                          SizedBox(
-                            width: 100,
-                            child: Text(
-                              'Hide Profile',
-                              style: kAddSkillsTextStyle,
-                            ),
-                          ),
-                          CupertinoSwitch(
-                            value: _isHidden,
-                            onChanged: (newBool) {
-                              setState(() {
-                                _isHidden = newBool;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              CupertinoSegmentedControl(
-                padding: EdgeInsets.symmetric(horizontal: 0),
-                groupValue: _role,
-                onValueChanged: _switchRole,
-                children: <Role, Widget>{
-                  Role.consumer: Text('Searcher', style: kHomeSwitchTextStyle),
-                  Role.provider: Text('Provider', style: kHomeSwitchTextStyle),
-                },
-              ),
-              SizedBox(height: 20),
-              Card(
+                SizedBox(
+                  height: 20,
+                ),
+                Card(
                   elevation: 0,
                   color: kCardBackgroundColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15))),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-                    child: _role == Role.provider
-                        ? Column(
-                            children: <Widget>[
-                              Text(
-                                'Skills',
-                                style: kSkillsTitleTextStyle,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            SizedBox(
+                              width: 100,
+                              child: Text(
+                                'Name',
+                                style: kAddSkillsTextStyle,
                               ),
-                              SizedBox(
-                                height: 20,
+                            ),
+                            Expanded(
+                              child: CupertinoTextField(
+                                style: kAddSkillsTextStyle,
+                                placeholder: 'Enter your name',
+                                padding: EdgeInsets.only(bottom: 0),
+                                maxLength: 20,
+                                maxLines: 1,
+                                decoration: BoxDecoration(border: null),
+                                controller: _usernameController,
+                                textAlign: TextAlign.start,
                               ),
-                              CreateSkillsSection(
-                                initialSkills: widget.user.skills,
-                                updateKeywordsAtIndex:
-                                    widget.user.updateSkillKeywordsAtIndex,
-                                updateDescriptionAtIndex:
-                                    widget.user.updateSkillDescriptionAtIndex,
-                                updatePriceAtIndex:
-                                    widget.user.updateSkillPriceAtIndex,
-                                addEmptySkill: widget.user.addEmptySkill,
-                                deleteSkillAtIndex:
-                                    widget.user.deleteSkillAtIndex,
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(
+                              width: 100,
+                              child: Text(
+                                'Bio',
+                                style: kAddSkillsTextStyle,
                               ),
-                            ],
-                          )
-                        : Column(
-                            children: <Widget>[
-                              Text(
-                                'Wishes',
-                                style: kSkillsTitleTextStyle,
+                            ),
+                            Expanded(
+                              child: CupertinoTextField(
+                                expands: true,
+                                style: kAddSkillsTextStyle,
+                                placeholder: 'Enter your description',
+                                maxLength: 200,
+                                minLines: null,
+                                maxLines: null,
+                                padding: EdgeInsets.only(bottom: 0),
+                                decoration: BoxDecoration(border: null),
+                                controller: _bioController,
+                                textAlign: TextAlign.start,
                               ),
-                              SizedBox(
-                                height: 20,
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          children: <Widget>[
+                            SizedBox(
+                              width: 100,
+                              child: Text(
+                                'Hide Profile',
+                                style: kAddSkillsTextStyle,
                               ),
-                              CreateWishesSection(
-                                initialWishes: widget.user.wishes,
-                                updateKeywordsAtIndex:
-                                    widget.user.updateWishKeywordsAtIndex,
-                                updateDescriptionAtIndex:
-                                    widget.user.updateWishDescriptionAtIndex,
-                                updatePriceAtIndex:
-                                    widget.user.updateWishPriceAtIndex,
-                                addEmptyWish: widget.user.addEmptyWish,
-                                deleteWishAtIndex:
-                                    widget.user.deleteWishAtIndex,
-                              ),
-                            ],
-                          ),
-                  )),
-              SizedBox(
-                height: 20,
-              ),
-            ],
+                            ),
+                            CupertinoSwitch(
+                              value: _isHidden,
+                              onChanged: (newBool) {
+                                setState(() {
+                                  _isHidden = newBool;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                CupertinoSegmentedControl(
+                  padding: EdgeInsets.symmetric(horizontal: 0),
+                  groupValue: _role,
+                  onValueChanged: _switchRole,
+                  children: <Role, Widget>{
+                    Role.consumer:
+                        Text('Searcher', style: kHomeSwitchTextStyle),
+                    Role.provider:
+                        Text('Provider', style: kHomeSwitchTextStyle),
+                  },
+                ),
+                SizedBox(height: 20),
+                Card(
+                    elevation: 0,
+                    color: kCardBackgroundColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15))),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+                      child: _role == Role.provider
+                          ? Column(
+                              children: <Widget>[
+                                Text(
+                                  'Skills',
+                                  style: kSkillsTitleTextStyle,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                CreateSkillsSection(
+                                  initialSkills: widget.user.skills,
+                                  updateKeywordsAtIndex:
+                                      widget.user.updateSkillKeywordsAtIndex,
+                                  updateDescriptionAtIndex:
+                                      widget.user.updateSkillDescriptionAtIndex,
+                                  updatePriceAtIndex:
+                                      widget.user.updateSkillPriceAtIndex,
+                                  addEmptySkill: widget.user.addEmptySkill,
+                                  deleteSkillAtIndex:
+                                      widget.user.deleteSkillAtIndex,
+                                ),
+                              ],
+                            )
+                          : Column(
+                              children: <Widget>[
+                                Text(
+                                  'Wishes',
+                                  style: kSkillsTitleTextStyle,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                CreateWishesSection(
+                                  initialWishes: widget.user.wishes,
+                                  updateKeywordsAtIndex:
+                                      widget.user.updateWishKeywordsAtIndex,
+                                  updateDescriptionAtIndex:
+                                      widget.user.updateWishDescriptionAtIndex,
+                                  updatePriceAtIndex:
+                                      widget.user.updateWishPriceAtIndex,
+                                  addEmptyWish: widget.user.addEmptyWish,
+                                  deleteWishAtIndex:
+                                      widget.user.deleteWishAtIndex,
+                                ),
+                              ],
+                            ),
+                    )),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),
