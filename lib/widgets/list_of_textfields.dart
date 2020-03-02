@@ -1,7 +1,9 @@
 import 'package:Flowby/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_typeahead/cupertino_flutter_typeahead.dart';
 
 class ListOfTextfields extends StatefulWidget {
   final List<SkillOrWish> initialSkillsOrWishes;
@@ -10,6 +12,9 @@ class ListOfTextfields extends StatefulWidget {
   final Function updatePriceAtIndex;
   final Function addEmptySkillOrWish;
   final Function deleteSkillOrWishAtIndex;
+  final List<String> topicSuggestions;
+  final List<String> priceSuggestions;
+  final List<String> descriptionSuggestions;
 
   ListOfTextfields(
       {@required this.initialSkillsOrWishes,
@@ -17,7 +22,10 @@ class ListOfTextfields extends StatefulWidget {
       @required this.updateDescriptionAtIndex,
       @required this.updatePriceAtIndex,
       @required this.addEmptySkillOrWish,
-      @required this.deleteSkillOrWishAtIndex});
+      @required this.deleteSkillOrWishAtIndex,
+      @required this.topicSuggestions,
+      @required this.priceSuggestions,
+      @required this.descriptionSuggestions});
 
   @override
   _ListOfTextfieldsState createState() => _ListOfTextfieldsState();
@@ -28,7 +36,6 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
   List<TextEditingController> keywordControllers = [];
   List<TextEditingController> descriptionControllers = [];
   List<TextEditingController> priceControllers = [];
-  List<FocusNode> focus = [];
 
   @override
   void initState() {
@@ -43,13 +50,6 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
             initialPrice: skillOrWish.price);
       }
     }
-    //controllers for extra skill
-    widget.addEmptySkillOrWish();
-    _addIthControllerToList(
-        index: keywordControllers.length,
-        initialKeywords: '',
-        initialDescription: '',
-        initialPrice: '');
   }
 
   @override
@@ -69,75 +69,54 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
         rowNumber < keywordControllers.length;
         rowNumber++) {
       rows.add(
-        Column(
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Card(
+          elevation: 0,
+          color: kSecondCardBackgroundColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Column(
               children: <Widget>[
-                Expanded(
-                  child: CupertinoTextField(
-                    focusNode: focus[rowNumber],
-                    expands: true,
-                    minLines: null,
-                    maxLines: null,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 20,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "#keywords",
-                    controller: keywordControllers[rowNumber],
-                  ),
+                InputFieldWithSuggestions(
+                  suggestions: widget.topicSuggestions,
+                  maxLength: 20,
+                  controller: keywordControllers[rowNumber],
+                  placeholder: 'Topic',
                 ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: CupertinoTextField(
-                    focusNode: focus[rowNumber],
-                    expands: true,
-                    maxLines: null,
-                    minLines: null,
-                    style: kAddSkillsTextStyle,
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: InputFieldWithSuggestions(
+                        maxLength: 100,
+                        controller: descriptionControllers[rowNumber],
+                        suggestions: widget.descriptionSuggestions,
+                        placeholder: 'Description',
+                        capitalization: TextCapitalization.sentences,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          _deleteIthController(index: rowNumber);
+                        },
+                        child: Icon(Feather.x),
+                      ),
+                    ),
+                  ],
+                ),
+                InputFieldWithSuggestions(
                     maxLength: 10,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "Price",
                     controller: priceControllers[rowNumber],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 0.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      _deleteIthController(index: rowNumber);
-                    },
-                    child: Icon(Feather.x),
-                  ),
-                ),
+                    suggestions: widget.priceSuggestions,
+                    placeholder: 'Price'),
               ],
             ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CupertinoTextField(
-                    focusNode: focus[rowNumber],
-                    expands: true,
-                    maxLines: null,
-                    minLines: null,
-                    textCapitalization: TextCapitalization.sentences,
-                    style: kAddSkillsTextStyle,
-                    maxLength: 100,
-                    decoration: null,
-                    textAlign: TextAlign.start,
-                    placeholder: "Description",
-                    controller: descriptionControllers[rowNumber],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15.0),
-          ],
+          ),
         ),
       );
     }
@@ -200,6 +179,62 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
       widget.updatePriceAtIndex(index: index, text: priceController.text);
     });
     priceControllers.add(priceController);
-    focus.add(FocusNode());
+  }
+}
+
+class InputFieldWithSuggestions extends StatelessWidget {
+  final int maxLength;
+  final TextEditingController controller;
+  final List<String> suggestions;
+  final String placeholder;
+  final TextCapitalization capitalization;
+
+  InputFieldWithSuggestions(
+      {@required this.maxLength,
+      @required this.controller,
+      @required this.suggestions,
+      @required this.placeholder,
+      this.capitalization = TextCapitalization.none});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoTypeAheadField(
+      textFieldConfiguration: CupertinoTextFieldConfiguration(
+        minLines: null,
+        maxLines: null,
+        style: kAddSkillsTextStyle,
+        maxLength: maxLength,
+        decoration: null,
+        textCapitalization: capitalization,
+        textAlign: TextAlign.start,
+        placeholder: placeholder,
+        controller: controller,
+      ),
+      suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      getImmediateSuggestions: true,
+      hideOnEmpty: true,
+      animationDuration: const Duration(microseconds: 0),
+      suggestionsCallback: _getSuggestions,
+      itemBuilder: (context, suggestion) {
+        return Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Text(
+            suggestion,
+          ),
+        );
+      },
+      onSuggestionSelected: (String tappedSuggestion) {
+        controller.text = tappedSuggestion;
+      },
+    );
+  }
+
+  List<String> _getSuggestions(String pattern) {
+    List<String> suggestionResults = suggestions
+        .where((suggestion) =>
+            suggestion.toLowerCase().contains(pattern.toLowerCase()))
+        .toList();
+    return suggestionResults;
   }
 }

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:Flowby/constants.dart';
-import 'package:Flowby/screens/chats_tab.dart';
+import 'package:Flowby/screens/tabs/chats_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
-import 'package:Flowby/screens/home_tab.dart';
-import 'package:Flowby/screens/profile_tab.dart';
+import 'package:Flowby/screens/tabs/home_tab.dart';
+import 'package:Flowby/screens/tabs/profile_tab.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_cloud_messaging.dart';
@@ -16,7 +16,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:Flowby/screens/choose_signin_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Flowby/screens/choose_role_screen.dart';
+import 'package:Flowby/services/preferences_service.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/models/role.dart';
 
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -28,18 +31,15 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
+  Role _role;
+  bool _shouldExplanationBeLoaded = false;
   FirebaseUser loggedInUser;
-  bool shouldExplanationBeLoaded = false;
 
   @override
   void initState() {
     super.initState();
-    _loadPreferences();
-    final locationService =
-        Provider.of<LocationService>(context, listen: false);
-    //asBroadcast because the streamprovider for the homescreen also listens to it
-    positionStream = locationService.getPositionStream().asBroadcastStream();
-    getLoggedInUserUploadLocationAndToken();
+    _setExplanation();
+    _initializeEverything(context);
   }
 
   @override
@@ -52,18 +52,36 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (shouldExplanationBeLoaded) {
-      return ExplanationScreen();
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    if (_role == Role.unassigned) {
+      return StreamProvider<User>.value(
+        value: cloudFirestoreService.getUserStream(uid: loggedInUser?.uid),
+        catchError: (context, object) {
+          return null;
+        },
+        child: ChooseRoleScreen(),
+      );
     }
+
+    if (_shouldExplanationBeLoaded) {
+      return ExplanationScreen(role: _role);
+    }
+
     if (loggedInUser == null) {
       return MultiProvider(
         providers: [
           StreamProvider<Position>.value(
             value: positionStream,
           ),
-          Provider<FirebaseUser>.value(
-            value: loggedInUser,
+          StreamProvider<User>.value(
+            value: cloudFirestoreService.getUserStream(uid: loggedInUser?.uid),
+            catchError: (context, object) {
+              return null;
+            },
           ),
+          Provider<Role>.value(value: _role),
         ],
         child: HomeScreenWithSignin(),
       );
@@ -74,38 +92,64 @@ class _NavigationScreenState extends State<NavigationScreen> {
         StreamProvider<Position>.value(
           value: positionStream,
         ),
-        Provider<FirebaseUser>.value(
-          value: loggedInUser,
+        StreamProvider<User>.value(
+          value: cloudFirestoreService.getUserStream(uid: loggedInUser.uid),
+          catchError: (context, object) {
+            return null;
+          },
         ),
+        Provider<Role>.value(value: _role),
       ],
       child: ScreenWithAllTabs(),
     );
   }
 
-  _loadPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool shouldExplanationBeLoaded =
-        prefs.getBool('shouldExplanationBeLoaded') ?? true;
-    if (shouldExplanationBeLoaded) {
-      setState(() {
-        this.shouldExplanationBeLoaded = true;
-      });
-      await prefs.setBool('shouldExplanationBeLoaded', false);
-    }
-  }
+  _initializeEverything(BuildContext context) async {
+    Future<Role> preferenceRole = _getPreferenceRole();
 
-  Future<void> getLoggedInUserUploadLocationAndToken() async {
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
-    FirebaseUser user = await authService.getCurrentUser();
+
+    FirebaseUser firebaseUser = await authService.getCurrentUser();
+
     setState(() {
-      loggedInUser = user;
+      this.loggedInUser = firebaseUser;
     });
+
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    User currentUser =
+        await cloudFirestoreService.getUser(uid: firebaseUser?.uid);
+
+    Role profileRole = currentUser?.role;
+    _uploadLocationAndPushToken(loggedInUser: firebaseUser);
+
+    Role finalRole = profileRole ?? await preferenceRole;
+    setState(() {
+      _role = finalRole;
+    });
+  }
+
+  Future<Role> _getPreferenceRole() async {
+    final preferencesService =
+        Provider.of<PreferencesService>(context, listen: false);
+
+    Role preferenceRole = await preferencesService.getRole();
+    return preferenceRole;
+  }
+
+  _uploadLocationAndPushToken({@required FirebaseUser loggedInUser}) async {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
     final firebaseMessaging =
         Provider.of<FirebaseCloudMessaging>(context, listen: false);
+
+    final locationService =
+        Provider.of<LocationService>(context, listen: false);
+    //asBroadcast because the streamprovider for the homescreen also listens to it
+    positionStream = locationService.getPositionStream().asBroadcastStream();
 
     if (loggedInUser != null) {
       positionStreamSubscription = positionStream.listen((Position position) {
@@ -114,9 +158,23 @@ class _NavigationScreenState extends State<NavigationScreen> {
       });
       firebaseMessaging.firebaseCloudMessagingListeners(context);
       firebaseMessaging.getToken().then((token) {
-        cloudFirestoreService.uploadPushToken(
+        cloudFirestoreService.uploadUsersPushToken(
             uid: loggedInUser.uid, pushToken: token);
       });
+    }
+  }
+
+  _setExplanation() async {
+    final preferencesService =
+        Provider.of<PreferencesService>(context, listen: false);
+
+    bool shouldExplain = await preferencesService.getExplanationBool();
+
+    if (shouldExplain) {
+      setState(() {
+        _shouldExplanationBeLoaded = true;
+      });
+      await preferencesService.setExplanationBoolToFalse();
     }
   }
 }
@@ -132,6 +190,7 @@ class ScreenWithAllTabs extends StatelessWidget {
       tabBar: CupertinoTabBar(
         backgroundColor: Colors.white,
         activeColor: kDefaultProfilePicColor,
+        inactiveColor: kSmallTitlesTextColor,
         items: [
           BottomNavigationBarItem(
               icon: Icon(

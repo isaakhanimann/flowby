@@ -5,7 +5,7 @@ void showAlert({BuildContext context, String title, String description}) {
     context: context,
     builder: (_) => CupertinoAlertDialog(
       title: Text(title),
-      content: Text(description),
+      content: Text('\n' + description),
       actions: <Widget>[
         CupertinoDialogAction(
           child: Text('Ok'),

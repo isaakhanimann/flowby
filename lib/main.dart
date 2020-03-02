@@ -6,6 +6,7 @@ import 'package:Flowby/services/firebase_cloud_messaging.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:Flowby/services/image_picker_service.dart';
 import 'package:Flowby/services/location_service.dart';
+import 'package:Flowby/services/preferences_service.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,9 @@ class Flowby extends StatelessWidget {
         Provider<FirebaseCloudMessaging>(
           create: (_) => FirebaseCloudMessaging(),
         ),
+        Provider<PreferencesService>(
+          create: (_) => PreferencesService(),
+        ),
       ],
       child: GestureDetector(
         onTap: () {
@@ -60,12 +64,22 @@ class Flowby extends StatelessWidget {
             currentFocus.unfocus();
           }
         },
-        child: BotToastInit( // widget that pops up toasts (used to notify users when they copy a message)
+        child: BotToastInit(
+          // widget that pops up toasts (used to notify users when they copy a message)
           child: CupertinoApp(
             navigatorObservers: [BotToastNavigatorObserver()],
             theme: CupertinoThemeData(
-                brightness: Brightness.light,
-                primaryColor: kLoginBackgroundColor),
+              brightness: Brightness.light,
+              primaryColor: kLoginBackgroundColor,
+              primaryContrastingColor: CupertinoColors.white,
+              barBackgroundColor: CupertinoColors.white,
+              scaffoldBackgroundColor: CupertinoColors.white,
+              textTheme: CupertinoTextThemeData(
+                  textStyle: kDefaultTextStyle,
+                  navTitleTextStyle: kMiddleNavigationBarTextStyle,
+                  navLargeTitleTextStyle: kLargeNavigationBarTextStyle,
+                  navActionTextStyle: kActionNavigationBarTextStyle),
+            ),
             debugShowCheckedModeBanner: false,
             initialRoute: NavigationScreen.id,
             onGenerateRoute: RouteGenerator.generateRoute,

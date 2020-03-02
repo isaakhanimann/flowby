@@ -30,7 +30,7 @@ class TopMiddleBottomText extends StatelessWidget {
           Text(
             middleText,
             style: kExplanationMiddleTextStyle,
-            textAlign: TextAlign.start,
+            textAlign: TextAlign.center,
           ),
           Icon(
             Feather.arrow_down,
@@ -39,7 +39,7 @@ class TopMiddleBottomText extends StatelessWidget {
           Text(
             bottomText,
             style: kExplanationMiddleTextStyle,
-            textAlign: TextAlign.start,
+            textAlign: TextAlign.center,
           ),
         ],
       ),

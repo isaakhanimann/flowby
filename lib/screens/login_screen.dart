@@ -141,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: kOrTextStyle,
                 ),
                 GoogleLoginButton(
-                  text: 'Log In with Google',
+                  text: 'Sign In with Google',
                   color: Color(0xFFDD4B39),
                   textColor: Colors.white,
                   onPressed: () {
@@ -183,8 +183,8 @@ class _LoginScreenState extends State<LoginScreen> {
             context: context,
             builder: (_) => CupertinoAlertDialog(
               title: Text('Verify your email'),
-              content: Text(
-                  'It seems that you haven\'t verified your email yet.'),
+              content:
+                  Text('\nIt seems that you haven\'t verified your email yet.'),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text('Cancel'),
@@ -216,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
         //press the back button in Android
         Navigator.of(context).pushNamedAndRemoveUntil(
           NavigationScreen.id,
-              (Route<dynamic> route) => false,
+          (Route<dynamic> route) => false,
           arguments: user,
         );
       }

@@ -308,7 +308,7 @@ class ChatHeader extends StatelessWidget {
                         builder: (_) => CupertinoAlertDialog(
                           title: Text('Block ${screenInfo.otherUsername}?'),
                           content: Text(
-                              'Blocked contacts will no longer be able to send you messages'),
+                              '\nBlocked contacts will no longer be able to send you messages'),
                           actions: <Widget>[
                             CupertinoDialogAction(
                               child: Text('Cancel'),
@@ -546,52 +546,29 @@ class MessageBubble extends StatelessWidget {
       color: isMe ? kMessageBubbleColor : kCardBackgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-        child: (text.length > 20)
-            ? Stack(
-                alignment: Alignment.bottomRight,
-                children: <Widget>[
-                  CopyableText(
-                    text,
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: isMe ? Colors.white : kKeywordHeaderColor,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    timestamp,
-                    style: TextStyle(
-                        fontSize: 10.0,
-                        color: isMe ? Colors.white70 : Colors.black54),
-                  ),
-                ],
-              )
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment:
-                    isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  CopyableText(
-                    text,
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: isMe ? Colors.white : kKeywordHeaderColor,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    timestamp,
-                    style: TextStyle(
-                        fontSize: 10.0,
-                        color: isMe ? Colors.white70 : Colors.black54),
-                  ),
-                ],
+        child: Wrap(
+          direction: Axis.horizontal,
+          alignment: WrapAlignment.end,
+          crossAxisAlignment: WrapCrossAlignment.end,
+          children: <Widget>[
+            CopyableText(
+              text,
+              style: TextStyle(
+                fontSize: 15.0,
+                color: isMe ? Colors.white : kKeywordHeaderColor,
               ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Text(
+              timestamp,
+              style: TextStyle(
+                  fontSize: 10.0,
+                  color: isMe ? Colors.white70 : Colors.black54),
+            ),
+          ],
+        ),
       ),
     );
   }

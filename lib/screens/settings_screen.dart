@@ -25,7 +25,9 @@ class SettingsScreen extends StatelessWidget {
           CupertinoSliverNavigationBar(
             backgroundColor: CupertinoColors.white,
             border: null,
-            largeTitle: Text('Settings'),
+            largeTitle: Text(
+              'Settings',
+            ),
           ),
           SliverSafeArea(
             top: false,
@@ -69,7 +71,7 @@ class SettingsScreen extends StatelessWidget {
         leading: Icon(Feather.share_2, color: kLoginBackgroundColor),
         title: Text('Invite a friend'),
         onTap: () => Share.share(
-            'Flowby is the largest skill-sharing community. The more the merrier. Join the adventure: https://flowby.apps'),
+            'Flowby is the largest skill-sharing community. The more the merrier. Join the adventure: https://flowby.app. Tell your friends about it, the more the merrier.'),
       ),
       SettingsItem(
           leading: Icon(Feather.message_circle, color: kLoginBackgroundColor),
@@ -103,7 +105,7 @@ class SettingsScreen extends StatelessWidget {
             context: context,
             builder: (_) => CupertinoAlertDialog(
               title: Text('Are you sure?'),
-              content: Text('Do you really want to delete all your info?'),
+              content: Text('\nDo you really want to delete all your info?'),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text('Cancel'),
@@ -117,15 +119,35 @@ class SettingsScreen extends StatelessWidget {
                     final authService = Provider.of<FirebaseAuthService>(
                         context,
                         listen: false);
-                    print('delete user called');
-                    await authService.deleteCurrentlyLoggedInUser();
-                    Navigator.of(context, rootNavigator: true)
-                        .pushAndRemoveUntil(
-                      CupertinoPageRoute(
-                          builder: (BuildContext context) =>
-                              ChooseSigninScreen()),
-                      (Route<dynamic> route) => false,
-                    );
+                    bool didDeleteWork =
+                        await authService.deleteCurrentlyLoggedInUser();
+                    if (!didDeleteWork) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                      showCupertinoDialog(
+                        context: context,
+                        builder: (_) => CupertinoAlertDialog(
+                          title: Text('Delete failed'),
+                          content: Text(
+                              '\nYou need to sign out and sign in again to delete your account'),
+                          actions: <Widget>[
+                            CupertinoDialogAction(
+                              child: Text('Ok'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushAndRemoveUntil(
+                        CupertinoPageRoute(
+                            builder: (BuildContext context) =>
+                                ChooseSigninScreen()),
+                        (Route<dynamic> route) => false,
+                      );
+                    }
                   },
                   isDestructiveAction: true,
                 ),

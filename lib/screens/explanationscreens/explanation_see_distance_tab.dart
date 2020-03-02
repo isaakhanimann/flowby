@@ -1,3 +1,4 @@
+import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/constants.dart';
@@ -26,6 +27,7 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
             Text(
               'See how far away other users are',
               style: kExplanationMiddleTextStyle,
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 50),
             RoundedButton(
@@ -53,12 +55,19 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
           context: context,
           builder: (_) => CupertinoAlertDialog(
             title: Text('Location is enabled'),
-            content: Text('You have got all you need'),
+            content: Text('\nYou have got all you need'),
             actions: <Widget>[
               CupertinoDialogAction(
                 child: Text('Ok'),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
+                  Navigator.of(context, rootNavigator: true).push(
+                    CupertinoPageRoute<void>(
+                      builder: (context) {
+                        return NavigationScreen();
+                      },
+                    ),
+                  );
                 },
               )
             ],
@@ -74,7 +83,7 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
         context: context,
         builder: (_) => CupertinoAlertDialog(
           title: Text('Location Permissions Denied'),
-          content: Text('Enable Location Permissions in your Settings'),
+          content: Text('\nEnable Location Permissions in your Settings'),
           actions: <Widget>[
             CupertinoDialogAction(
               child: Text('Ok'),

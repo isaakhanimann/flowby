@@ -93,14 +93,16 @@ class FirebaseAuthService {
         email: email, password: password);
   }
 
-  Future<void> deleteCurrentlyLoggedInUser() async {
+  Future<bool> deleteCurrentlyLoggedInUser() async {
     try {
       final user = await _auth.currentUser();
       // this also signs out the user
       await user.delete();
+      return true;
     } catch (e) {
       print('Isaak could not delete the user');
       print(e);
+      return false;
     }
   }
 }

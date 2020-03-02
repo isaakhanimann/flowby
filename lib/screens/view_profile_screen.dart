@@ -4,7 +4,6 @@ import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/widgets/listview_of_user_infos.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -13,7 +12,7 @@ class ViewProfileScreen extends StatelessWidget {
   static const String id = 'view_profile_screen';
   final User user;
   final String heroTag;
-  final FirebaseUser loggedInUser;
+  final User loggedInUser;
   final bool showSkills;
 
   ViewProfileScreen(
@@ -29,11 +28,7 @@ class ViewProfileScreen extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: <Widget>[
-            ListViewOfUserInfos(
-              user: user,
-              heroTag: heroTag,
-              isProfileTab: false,
-            ),
+            ListViewOfUserInfos(user: user, heroTag: heroTag),
             Positioned(
               bottom: 20,
               child: RoundedButton(

@@ -15,7 +15,7 @@ import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:Flowby/services/apple_sign_in_available.dart';
 import 'package:Flowby/widgets/google_login_button.dart';
-import 'add_username_registration_screen.dart';
+import 'add_image_username_and_bio_registration_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -27,15 +27,11 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen>
     with SingleTickerProviderStateMixin {
   bool showSpinner = false;
-  String name;
   String email;
   String password;
 
-  var _nameController = TextEditingController();
-
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
-  final FocusNode _nameFocus = FocusNode();
 
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
@@ -88,22 +84,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
               children: <Widget>[
                 SizedBox(
                   height: 48.0,
-                ),
-                LoginInputField(
-                  isCapitalized: true,
-                  placeholder: 'Name',
-                  controller: _nameController,
-                  focusNode: _nameFocus,
-                  onFieldSubmitted: (term) {
-                    FocusScope.of(context).requestFocus(_emailFocus);
-                  },
-                  isLast: false,
-                  setText: (value) {
-                    name = value;
-                  },
-                ),
-                SizedBox(
-                  height: 8.0,
                 ),
                 LoginInputField(
                   placeholder: 'Email address',
@@ -184,7 +164,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       CupertinoPageRoute(
           builder: (BuildContext context) =>
-              AddUsernameRegistrationScreen(user: user)),
+              AddImageUsernameAndBioRegistrationScreen(user: user)),
       (Route<dynamic> route) => false,
     );
   }
@@ -214,7 +194,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
 
       if (authResult != null) {
         User user = User(
-          username: name,
           uid: authResult.user.uid,
         );
         await cloudFirestoreService.uploadUser(user: user);

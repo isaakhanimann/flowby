@@ -1,30 +1,31 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/show_profile_picture_screen.dart';
+import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/route_transitions/scale_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:Flowby/models/role.dart';
 
 class ListViewOfUserInfos extends StatelessWidget {
   final User user;
   final String heroTag;
-  final bool isProfileTab;
 
-  ListViewOfUserInfos({@required this.user, this.heroTag, this.isProfileTab = true});
+  ListViewOfUserInfos({@required this.user, this.heroTag});
 
   @override
   Widget build(BuildContext context) {
-    bool canShowSkills =
-        !user.isHidden && user.skills != null && user.skills.isNotEmpty;
-    bool canShowWishes =
-        !user.isHidden && user.wishes != null && user.wishes.isNotEmpty;
+    bool areSkillsEmpty = user.skills == null || user.skills.isEmpty;
+
+    bool areWishesEmpty = user.wishes == null || user.wishes.isEmpty;
+
+    bool isProvider = user.role == Role.provider;
+    bool isConsumer = user.role == Role.consumer;
 
     return Padding(
-      padding: isProfileTab
-          ? const EdgeInsets.only(left: 15, right: 15, top: 35)
-          : const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: ListView(
         children: <Widget>[
           SizedBox(
@@ -54,9 +55,9 @@ class ListViewOfUserInfos extends StatelessWidget {
                         backgroundImage: imageProvider),
                   );
                 },
-                placeholder: (context, url) => CircularProgressIndicator(
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+                placeholder: (context, url) => SizedBox(
+                  height: 120,
+                  child: CenteredLoadingIndicator(),
                 ),
                 errorWidget: (context, url, error) => Icon(Icons.error),
               ),
@@ -76,6 +77,7 @@ class ListViewOfUserInfos extends StatelessWidget {
                   ),
                   Text(
                     ' ' + user.distanceInKm.toString() + 'km',
+                    style: kDistanceTextStyle,
                   ),
                 ],
               ),
@@ -95,24 +97,33 @@ class ListViewOfUserInfos extends StatelessWidget {
           if (user.bio != null && user.bio != '')
             Text(
               user.bio,
-              style: kSmallTitleTextStyle,
+              style: kDescriptionTextStyle,
               textAlign: TextAlign.center,
             ),
           SizedBox(
             height: 15,
           ),
-          if (!canShowSkills && !canShowWishes)
+          if (user.isHidden)
             Text(
-              '(Your profile is invisible)',
+              '(Your profile is hidden)',
               textAlign: TextAlign.center,
             ),
-          if (canShowSkills)
+          if (!user.isHidden && isProvider && areSkillsEmpty)
+            Text(
+              '(Your profile is invisible because you have no skills)',
+              textAlign: TextAlign.center,
+            ),
+          if (!user.isHidden && isProvider && !areSkillsEmpty)
             SkillOrWishSection(
               skillsOrWishes: user.skills,
               title: 'Skills',
             ),
-          SizedBox(height: 15),
-          if (canShowWishes)
+          if (!user.isHidden && isConsumer && areWishesEmpty)
+            Text(
+              '(Your profile is invisible because you have no wishes)',
+              textAlign: TextAlign.center,
+            ),
+          if (!user.isHidden && isConsumer && !areWishesEmpty)
             SkillOrWishSection(
               skillsOrWishes: user.wishes,
               title: 'Wishes',

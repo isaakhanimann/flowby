@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:Flowby/models/chat_without_last_message.dart';
+import 'package:Flowby/models/role.dart';
 
 class FirebaseCloudFirestoreService {
   final _fireStore = Firestore.instance;
@@ -249,13 +250,25 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  Future<void> uploadPushToken(
+  Future<void> uploadUsersPushToken(
       {@required String uid, @required String pushToken}) async {
     try {
       _fireStore
           .collection('users')
           .document(uid)
           .updateData({'pushToken': pushToken});
+    } catch (e) {
+      print('Isaak could not upload Push Token');
+    }
+  }
+
+  Future<void> uploadUsersRole(
+      {@required String uid, @required Role role}) async {
+    try {
+      _fireStore
+          .collection('users')
+          .document(uid)
+          .updateData({'role': convertRoleToString(role: role)});
     } catch (e) {
       print('Isaak could not upload Push Token');
     }

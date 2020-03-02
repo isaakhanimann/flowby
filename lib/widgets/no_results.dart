@@ -39,7 +39,7 @@ class _NoResultsState extends State<NoResults> {
         child: Padding(
           padding: const EdgeInsets.only(left: 15.0, right: 15.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SizedBox(height: 15.0),
               Image.asset(
@@ -84,7 +84,8 @@ class _NoResultsState extends State<NoResults> {
                         );
                       })
                   : RoundedButton(
-                      text: 'Help us spread the word',
+                      text: 'Invite a friend',
+                      paddingInsideHorizontal: 39,
                       textColor: Colors.white,
                       color: kBlueButtonColor,
                       onPressed: () => Share.share(
