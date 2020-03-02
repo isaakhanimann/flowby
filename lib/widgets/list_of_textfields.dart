@@ -28,6 +28,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
   List<TextEditingController> keywordControllers = [];
   List<TextEditingController> descriptionControllers = [];
   List<TextEditingController> priceControllers = [];
+  List<FocusNode> focus = [];
 
   @override
   void initState() {
@@ -76,6 +77,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
               children: <Widget>[
                 Expanded(
                   child: CupertinoTextField(
+                    focusNode: focus[rowNumber],
                     expands: true,
                     minLines: null,
                     maxLines: null,
@@ -90,6 +92,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                 SizedBox(width: 20),
                 Expanded(
                   child: CupertinoTextField(
+                    focusNode: focus[rowNumber],
                     expands: true,
                     maxLines: null,
                     minLines: null,
@@ -118,6 +121,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
               children: <Widget>[
                 Expanded(
                   child: CupertinoTextField(
+                    focusNode: focus[rowNumber],
                     expands: true,
                     maxLines: null,
                     minLines: null,
@@ -196,5 +200,6 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
       widget.updatePriceAtIndex(index: index, text: priceController.text);
     });
     priceControllers.add(priceController);
+    focus.add(FocusNode());
   }
 }
