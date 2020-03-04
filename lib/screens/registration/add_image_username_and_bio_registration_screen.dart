@@ -16,6 +16,7 @@ import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:Flowby/services/preferences_service.dart';
 import 'package:Flowby/models/role.dart';
+import 'package:Flowby/widgets/centered_loading_indicator.dart';
 
 class AddImageUsernameAndBioRegistrationScreen extends StatefulWidget {
   static const String id = 'add_username_registration_screen';
@@ -152,11 +153,9 @@ class _AddImageUsernameAndBioRegistrationScreenState
                                               backgroundColor: Colors.grey,
                                               backgroundImage: imageProvider);
                                         },
-                                        placeholder: (context, url) =>
-                                            CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  kDefaultProfilePicColor),
+                                        placeholder: (context, url) => SizedBox(
+                                          height: 120,
+                                          child: CenteredLoadingIndicator(),
                                         ),
                                         errorWidget: (context, url, error) =>
                                             Icon(Icons.error),
