@@ -38,6 +38,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
   List<TextEditingController> priceControllers = [];
   List<Map<String, FocusNode>> focusNodes = [];
   int indexWithFocus = -1;
+  FocusNode currentFocus = FocusNode();
 
   @override
   void initState() {
@@ -192,35 +193,31 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
     });
     priceControllers.add(priceController);
     // focus
-    FocusNode keywordsFocus = FocusNode();
-    FocusNode descriptionFocus = FocusNode();
-    FocusNode priceFocus = FocusNode();
-
     Map<String, FocusNode> map = {
-      'keywords': keywordsFocus,
-      'description': descriptionFocus,
-      'price': priceFocus,
+      'keywords': FocusNode(),
+      'description': FocusNode(),
+      'price': FocusNode(),
     };
-
-    keywordsFocus.addListener(() {
-      debugPrint('Keywords Focus at index ' +
-          index.toString() +
-          ' : ' +
-          keywordsFocus.hasFocus.toString());
-      setState(() {
-        keywordsFocus.hasFocus ? indexWithFocus = index : indexWithFocus = -1;
-        debugPrint('index with Focus: ' + indexWithFocus.toString());
-      });
-    });
-    descriptionFocus.addListener(() => debugPrint(
-        'Description Focus at index ' +
+    map.forEach((k, v) {
+      v.addListener(() {
+        debugPrint(k +
+            ' FocusNode at index ' +
             index.toString() +
             ' : ' +
-            descriptionFocus.hasFocus.toString()));
-    priceFocus.addListener(() => debugPrint('Price Focus at index ' +
-        index.toString() +
-        ' : ' +
-        priceFocus.hasFocus.toString()));
+            v.hasFocus.toString());
+        if (v.hasFocus)
+          setState(() {
+            currentFocus = v;
+            indexWithFocus = index;
+            debugPrint('index with Focus: ' + indexWithFocus.toString());
+          });
+        else if (!v.hasFocus && v == currentFocus)
+          setState(() {
+            indexWithFocus = -1;
+          });
+
+      });
+    });
     focusNodes.add(map);
   }
 }
@@ -243,37 +240,42 @@ class InputFieldWithSuggestions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTypeAheadField(
-      textFieldConfiguration: CupertinoTextFieldConfiguration(
-        minLines: null,
-        maxLines: null,
-        style: kAddSkillsTextStyle,
-        maxLength: maxLength,
-        decoration: null,
-        textCapitalization: capitalization,
-        textAlign: TextAlign.start,
-        placeholder: placeholder,
-        controller: controller,
-        focusNode: focus,
-      ),
-      suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8))),
-      getImmediateSuggestions: true,
-      hideOnEmpty: true,
-      animationDuration: const Duration(microseconds: 0),
-      suggestionsCallback: _getSuggestions,
-      itemBuilder: (context, suggestion) {
-        return Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Text(
-            suggestion,
-          ),
-        );
-      },
-      onSuggestionSelected: (String tappedSuggestion) {
-        controller.text = tappedSuggestion;
-      },
-    );
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      return CupertinoTypeAheadField(
+        textFieldConfiguration: CupertinoTextFieldConfiguration(
+          minLines: null,
+          maxLines: null,
+          style: kAddSkillsTextStyle,
+          maxLength: maxLength,
+          decoration: null,
+          textCapitalization: capitalization,
+          textAlign: TextAlign.start,
+          placeholder: placeholder,
+          controller: controller,
+          focusNode: focus,
+        ),
+        suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          constraints: BoxConstraints(maxWidth: constraints.maxWidth - 34),
+        ),
+        getImmediateSuggestions: true,
+        hideOnEmpty: true,
+        animationDuration: const Duration(microseconds: 0),
+        suggestionsCallback: _getSuggestions,
+        itemBuilder: (context, suggestion) {
+          return Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              suggestion,
+            ),
+          );
+        },
+        onSuggestionSelected: (String tappedSuggestion) {
+          controller.text = tappedSuggestion;
+        },
+      );
+    });
   }
 
   List<String> _getSuggestions(String pattern) {
