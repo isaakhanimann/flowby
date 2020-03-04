@@ -45,13 +45,15 @@ class _LoginScreenState extends State<LoginScreen> {
     // This prevents the user to be logged in without having verified the email.
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
+        /*
     WidgetsBinding.instance
         .addObserver(LifecycleEventHandler(detachedCallBack: () async {
-      debugPrint('detached...');
+      //debugPrint('detached...');
       authService.signOut();
     }, resumeCallBack: () async {
-      debugPrint('resume...');
+      //debugPrint('resume...');
     }));
+*/
 
     final appleSignInAvailable =
         Provider.of<AppleSignInAvailable>(context, listen: false);

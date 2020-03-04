@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:async';
+
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_skills_or_wishes_registration_screen.dart';
@@ -5,12 +8,12 @@ import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -51,8 +54,15 @@ class _AddImageUsernameAndBioRegistrationScreenState
       backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
         inAsyncCall: showSpinner,
-        progressIndicator: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+        progressIndicator: SizedBox(
+          width: 200,
+          child: FlareActor(
+            'assets/animations/liquid_loader.flr',
+            alignment: Alignment.center,
+            color: kDefaultProfilePicColor,
+            fit: BoxFit.contain,
+            animation: "Untitled",
+          ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -235,20 +245,31 @@ class _AddImageUsernameAndBioRegistrationScreenState
   }
 
   void _setImage(ImageSource source) async {
-    var selectedImage =
-        await ImagePicker.pickImage(source: source, imageQuality: 15);
-    File croppedImage = await ImageCropper.cropImage(
-        sourcePath: selectedImage.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        androidUiSettings: AndroidUiSettings(
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
-    setState(() {
-      _profilePic = croppedImage;
-    });
+    var selectedImage = await ImagePicker.pickImage(source: source);
+    File croppedImage;
+    // This do-while loop allows the user to return back to the camera or the gallery if he presses the back button in the image_cropperjj
+    do {
+      if (selectedImage != null) {
+        croppedImage = await ImageCropper.cropImage(
+            sourcePath: selectedImage.path,
+            aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+            cropStyle: CropStyle.circle,
+            androidUiSettings: AndroidUiSettings(
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            iosUiSettings: IOSUiSettings(
+              minimumAspectRatio: 1.0,
+            ));
+      }
+      if(croppedImage != null)
+        break;
+      selectedImage = await ImagePicker.pickImage(source: source);
+    } while ((croppedImage == null && selectedImage != null));
+    if (croppedImage != null) {
+      setState(() {
+        _profilePic = croppedImage;
+      });
+    }
   }
 
   Future<void> _uploadImageAndUserAndNavigate(BuildContext context) async {
@@ -275,12 +296,21 @@ class _AddImageUsernameAndBioRegistrationScreenState
     final preferencesService =
         Provider.of<PreferencesService>(context, listen: false);
 
+
     Role preferenceRole = await preferencesService.getRole();
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    final storageService =
+    Provider.of<FirebaseStorageService>(context, listen: false);
+    if (_profilePic != null) {
+      await storageService.uploadImage(
+          fileName: widget.user.uid, image: _profilePic);
+      widget.user.imageFileName = widget.user.uid;
+    }
     widget.user.role = preferenceRole;
     widget.user.username = _username;
     widget.user.bio = _bio;
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    print(widget.user);
     await cloudFirestoreService.uploadUser(user: widget.user);
     setState(() {
       showSpinner = false;

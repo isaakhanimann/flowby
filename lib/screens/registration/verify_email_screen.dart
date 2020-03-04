@@ -32,14 +32,18 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     // If the user quits the app on the verify email screen then it will be signed out.
     // This prevents the user to be logged in without having verified the email.
     final authService =
-    Provider.of<FirebaseAuthService>(context, listen: false);
+        Provider.of<FirebaseAuthService>(context, listen: false);
+/*
     WidgetsBinding.instance.addObserver(LifecycleEventHandler(
-        detachedCallBack: () async {debugPrint('detached...');
-        authService.signOut();
-        },
-        resumeCallBack: () async {
-          debugPrint('resume...');
-        }));
+      detachedCallBack: () async {
+        debugPrint('detached...');
+        //authService.signOut();
+      },
+      resumeCallBack: () async {
+        debugPrint('resume...');
+      },
+    ));
+*/
 
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
@@ -104,7 +108,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   Future<void> _uploadUserAndNavigate(BuildContext context) async {
     final authService =
-    Provider.of<FirebaseAuthService>(context, listen: false);
+        Provider.of<FirebaseAuthService>(context, listen: false);
     FirebaseUser user = await authService.getCurrentUser();
     await user.reload();
     // The reload() function is not working as intended. See here: https://github.com/FirebaseExtended/flutterfire/issues/717
@@ -112,14 +116,13 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     // https://pub.dev/packages/firebase_user_stream
     user = await authService.getCurrentUser();
 
-
     if (user.isEmailVerified == false) {
       showCupertinoDialog(
           context: context,
           builder: (_) => VerifyEmailAlert(
-            authService: authService,
-            firebaseUser: user,
-          ));
+                authService: authService,
+                firebaseUser: user,
+              ));
 /*
       setState(() {
         showSpinner = false;
