@@ -21,23 +21,7 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  FocusNode _focusNode;
-
-  TextEditingController _controller;
   String _searchTerm = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode = new FocusNode();
-    _controller = TextEditingController()..addListener(_onTextChanged);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,16 +78,11 @@ class _HomeTabState extends State<HomeTab> {
                   role: role,
                 ),
               ),
-              GestureDetector(
-                onTap: setFocus,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: SearchBar(
-                    focusNode: _focusNode,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: SearchBar(
                     isSkillSearch: role == Role.consumer,
-                    controller: _controller,
-                  ),
-                ),
+                    onSearchChanged: _onSearchChanged),
               ),
               Expanded(
                 child: searchResultUsers.length == 0 && loggedInUser != null
@@ -128,14 +107,10 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 
-  void _onTextChanged() {
+  void _onSearchChanged(String newSearchTerm) {
     setState(() {
-      _searchTerm = _controller.text;
+      _searchTerm = newSearchTerm;
     });
-  }
-
-  void setFocus() {
-    FocusScope.of(context).requestFocus(_focusNode);
   }
 }
 
@@ -267,15 +242,11 @@ class ProfileItem extends StatelessWidget {
 }
 
 class SearchBar extends StatelessWidget {
-  const SearchBar({
-    @required this.controller,
-    @required this.isSkillSearch,
-    @required this.focusNode,
-  });
+  const SearchBar(
+      {@required this.isSkillSearch, @required this.onSearchChanged});
 
-  final TextEditingController controller;
   final isSkillSearch;
-  final focusNode;
+  final Function onSearchChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +257,6 @@ class SearchBar extends StatelessWidget {
             color: kCardBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-        focusNode: focusNode,
         placeholder: isSkillSearch ? 'Search Skills' : 'Search Wishes',
         placeholderStyle: kSearchPlaceHolderTextStyle,
         prefix: Padding(
@@ -296,7 +266,7 @@ class SearchBar extends StatelessWidget {
             color: CupertinoColors.black,
           ),
         ),
-        controller: controller,
+        onChanged: onSearchChanged,
         style: kSearchTextStyle,
         clearButtonMode: OverlayVisibilityMode.editing,
       ),
