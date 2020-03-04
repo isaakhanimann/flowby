@@ -2,14 +2,15 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_image_username_and_bio_registration_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
-import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:Flowby/widgets/verify_email_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:Flowby/services/lifecycle_event_handler.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
   static const String id = 'verify_email_screen';
@@ -27,6 +28,19 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Observes the life cycle of the app.
+    // If the user quits the app on the verify email screen then it will be signed out.
+    // This prevents the user to be logged in without having verified the email.
+    final authService =
+    Provider.of<FirebaseAuthService>(context, listen: false);
+    WidgetsBinding.instance.addObserver(LifecycleEventHandler(
+        detachedCallBack: () async {debugPrint('detached...');
+        authService.signOut();
+        },
+        resumeCallBack: () async {
+          debugPrint('resume...');
+        }));
+
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
@@ -34,43 +48,54 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
         progressIndicator: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
         ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Stack(children: [
-              Hero(
-                child: ProgressBar(progress: 0),
-                transitionOnUserGestures: true,
-                tag: 'progress_bar',
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Text(
-                        'Thank you for joining us! 👋 \n\n A verification link has been sent to your email account. 💌 \n \n Click on the link to continue the registration process. ✅',
-                        textAlign: TextAlign.center,
-                        style: kRegisterHeaderTextStyle,
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      RoundedButton(
-                        paddingInsideHorizontal: 45,
-                        text: 'I\'ve verified my email',
-                        color: kBlueButtonColor,
-                        textColor: Colors.white,
-                        onPressed: () {
-                          _uploadUserAndNavigate(context);
-                        },
-                      ),
-                    ]),
-              ),
-            ]),
+        child: WillPopScope(
+          onWillPop: () async {
+            authService.signOut();
+            return true;
+          },
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Stack(children: [
+                Hero(
+                  child: ProgressBar(progress: 0),
+                  transitionOnUserGestures: true,
+                  tag: 'progress_bar',
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          'Thank you for joining us! 👋 \n\n A verification link has been sent to your email account. 💌 \n \n Click on the link to continue the registration process. ✅',
+                          textAlign: TextAlign.center,
+                          style: kRegisterHeaderTextStyle,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        RoundedButton(
+                          paddingInsideHorizontal: 45,
+                          text: 'I\'ve verified my email',
+                          color: kBlueButtonColor,
+                          textColor: Colors.white,
+                          onPressed: () {
+/*
+                            setState(() {
+                              showSpinner = true;
+                            });
+*/
+                            _uploadUserAndNavigate(context);
+                          },
+                        ),
+                      ]),
+                ),
+              ]),
+            ),
           ),
         ),
       ),
@@ -79,7 +104,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   Future<void> _uploadUserAndNavigate(BuildContext context) async {
     final authService =
-        Provider.of<FirebaseAuthService>(context, listen: false);
+    Provider.of<FirebaseAuthService>(context, listen: false);
     FirebaseUser user = await authService.getCurrentUser();
     await user.reload();
     // The reload() function is not working as intended. See here: https://github.com/FirebaseExtended/flutterfire/issues/717
@@ -87,11 +112,19 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     // https://pub.dev/packages/firebase_user_stream
     user = await authService.getCurrentUser();
 
+
     if (user.isEmailVerified == false) {
-      showAlert(
+      showCupertinoDialog(
           context: context,
-          title: "Verify your email",
-          description: 'It seems that you haven\'t verified your email yet.');
+          builder: (_) => VerifyEmailAlert(
+            authService: authService,
+            firebaseUser: user,
+          ));
+/*
+      setState(() {
+        showSpinner = false;
+      });
+*/
       return;
     }
     Navigator.of(context, rootNavigator: true).push(
