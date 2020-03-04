@@ -57,11 +57,13 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
 
   @override
   void dispose() {
+    // dispose all controllers
     List<TextEditingController> allControllers =
         keywordControllers + descriptionControllers + priceControllers;
     for (TextEditingController controller in allControllers) {
       controller.dispose();
     }
+    // dispose all focus nodes
     for (Map<String, FocusNode> map in focusNodes) {
       map.forEach((k, v) => v.dispose());
     }
@@ -89,7 +91,9 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                   maxLength: 20,
                   controller: keywordControllers[rowNumber],
                   placeholder: 'Topic',
+                  capitalization: TextCapitalization.words,
                   focus: focusNodes[rowNumber]['keywords'],
+                  style: kAddSkillsTopicTextStyle,
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -134,7 +138,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
     }
     rows.add(
       Container(
-        alignment: Alignment.bottomLeft,
+        alignment: Alignment.bottomCenter,
         child: GestureDetector(
           child: Icon(Feather.plus),
           onTap: () {
@@ -200,22 +204,15 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
     };
     map.forEach((k, v) {
       v.addListener(() {
-        debugPrint(k +
-            ' FocusNode at index ' +
-            index.toString() +
-            ' : ' +
-            v.hasFocus.toString());
         if (v.hasFocus)
           setState(() {
             currentFocus = v;
             indexWithFocus = index;
-            debugPrint('index with Focus: ' + indexWithFocus.toString());
           });
         else if (!v.hasFocus && v == currentFocus)
           setState(() {
             indexWithFocus = -1;
           });
-
       });
     });
     focusNodes.add(map);
@@ -229,6 +226,7 @@ class InputFieldWithSuggestions extends StatelessWidget {
   final String placeholder;
   final TextCapitalization capitalization;
   final FocusNode focus;
+  final TextStyle style;
 
   InputFieldWithSuggestions(
       {@required this.maxLength,
@@ -236,7 +234,8 @@ class InputFieldWithSuggestions extends StatelessWidget {
       @required this.suggestions,
       @required this.placeholder,
       this.capitalization = TextCapitalization.none,
-      this.focus});
+      this.focus,
+      this.style = kAddSkillsTextStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +245,7 @@ class InputFieldWithSuggestions extends StatelessWidget {
         textFieldConfiguration: CupertinoTextFieldConfiguration(
           minLines: null,
           maxLines: null,
-          style: kAddSkillsTextStyle,
+          style: style,
           maxLength: maxLength,
           decoration: null,
           textCapitalization: capitalization,

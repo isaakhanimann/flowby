@@ -46,6 +46,8 @@ const kEditProfileTextFieldTextStyle = TextStyle(
     fontFamily: 'MuliRegular', fontSize: 18.0, color: kTextFieldTextColor);
 const kAddSkillsTextStyle = TextStyle(
     fontFamily: 'MuliRegular', fontSize: 14.0, color: kSmallTitlesTextColor);
+const kAddSkillsTopicTextStyle = TextStyle(
+    fontFamily: 'MuliBold', fontSize: 14.0, color: kSmallTitlesTextColor);
 const kActionNavigationBarTextStyle = TextStyle(
     fontFamily: 'MuliSemiBold', fontSize: 19, color: kLoginBackgroundColor);
 const kLargeNavigationBarTextStyle = TextStyle(
