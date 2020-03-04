@@ -36,6 +36,8 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
   List<TextEditingController> keywordControllers = [];
   List<TextEditingController> descriptionControllers = [];
   List<TextEditingController> priceControllers = [];
+  List<Map<String, FocusNode>> focusNodes = [];
+  int indexWithFocus = -1;
 
   @override
   void initState() {
@@ -58,6 +60,9 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
         keywordControllers + descriptionControllers + priceControllers;
     for (TextEditingController controller in allControllers) {
       controller.dispose();
+    }
+    for (Map<String, FocusNode> map in focusNodes) {
+      map.forEach((k, v) => v.dispose());
     }
     super.dispose();
   }
@@ -83,6 +88,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                   maxLength: 20,
                   controller: keywordControllers[rowNumber],
                   placeholder: 'Topic',
+                  focus: focusNodes[rowNumber]['keywords'],
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -96,24 +102,29 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                         suggestions: widget.descriptionSuggestions,
                         placeholder: 'Description',
                         capitalization: TextCapitalization.sentences,
+                        focus: focusNodes[rowNumber]['description'],
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 0.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          _deleteIthController(index: rowNumber);
-                        },
-                        child: Icon(Feather.x),
-                      ),
+                      child: indexWithFocus == rowNumber
+                          ? GestureDetector(
+                              onTap: () {
+                                _deleteIthController(index: rowNumber);
+                              },
+                              child: Icon(Feather.x),
+                            )
+                          : Container(),
                     ),
                   ],
                 ),
                 InputFieldWithSuggestions(
-                    maxLength: 10,
-                    controller: priceControllers[rowNumber],
-                    suggestions: widget.priceSuggestions,
-                    placeholder: 'Price'),
+                  maxLength: 10,
+                  controller: priceControllers[rowNumber],
+                  suggestions: widget.priceSuggestions,
+                  placeholder: 'Price',
+                  focus: focusNodes[rowNumber]['price'],
+                ),
               ],
             ),
           ),
@@ -148,6 +159,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
       keywordControllers.removeAt(index);
       descriptionControllers.removeAt(index);
       priceControllers.removeAt(index);
+      focusNodes.removeAt(index);
     });
     widget.deleteSkillOrWishAtIndex(index: index);
   }
@@ -179,6 +191,37 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
       widget.updatePriceAtIndex(index: index, text: priceController.text);
     });
     priceControllers.add(priceController);
+    // focus
+    FocusNode keywordsFocus = FocusNode();
+    FocusNode descriptionFocus = FocusNode();
+    FocusNode priceFocus = FocusNode();
+
+    Map<String, FocusNode> map = {
+      'keywords': keywordsFocus,
+      'description': descriptionFocus,
+      'price': priceFocus,
+    };
+
+    keywordsFocus.addListener(() {
+      debugPrint('Keywords Focus at index ' +
+          index.toString() +
+          ' : ' +
+          keywordsFocus.hasFocus.toString());
+      setState(() {
+        keywordsFocus.hasFocus ? indexWithFocus = index : indexWithFocus = -1;
+        debugPrint('index with Focus: ' + indexWithFocus.toString());
+      });
+    });
+    descriptionFocus.addListener(() => debugPrint(
+        'Description Focus at index ' +
+            index.toString() +
+            ' : ' +
+            descriptionFocus.hasFocus.toString()));
+    priceFocus.addListener(() => debugPrint('Price Focus at index ' +
+        index.toString() +
+        ' : ' +
+        priceFocus.hasFocus.toString()));
+    focusNodes.add(map);
   }
 }
 
@@ -188,13 +231,15 @@ class InputFieldWithSuggestions extends StatelessWidget {
   final List<String> suggestions;
   final String placeholder;
   final TextCapitalization capitalization;
+  final FocusNode focus;
 
   InputFieldWithSuggestions(
       {@required this.maxLength,
       @required this.controller,
       @required this.suggestions,
       @required this.placeholder,
-      this.capitalization = TextCapitalization.none});
+      this.capitalization = TextCapitalization.none,
+      this.focus});
 
   @override
   Widget build(BuildContext context) {
@@ -209,6 +254,7 @@ class InputFieldWithSuggestions extends StatelessWidget {
         textAlign: TextAlign.start,
         placeholder: placeholder,
         controller: controller,
+        focusNode: focus,
       ),
       suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8))),
