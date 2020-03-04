@@ -10,8 +10,8 @@ class User {
   bool isHidden;
   GeoPoint location;
   int distanceInKm;
-  String imageFileName;
-  int imageVersionNumber;
+  String imageFileName = kDefaultProfilePicName;
+  int imageVersionNumber = 1;
   String skillKeywords;
   String wishKeywords;
   List<SkillOrWish> skills = [];

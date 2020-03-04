@@ -4,13 +4,13 @@ import 'package:flutter/cupertino.dart';
 class Chat {
   String uid1;
   String username1;
-  String user1ImageFileName;
-  int user1ImageVersionNumber;
+  String user1ImageFileName = kDefaultProfilePicName;
+  int user1ImageVersionNumber = 1;
   bool hasUser1Blocked;
   String uid2;
   String username2;
-  String user2ImageFileName;
-  int user2ImageVersionNumber;
+  String user2ImageFileName = kDefaultProfilePicName;
+  int user2ImageVersionNumber = 1;
   bool hasUser2Blocked;
   String chatpath;
   String lastMessageText;
@@ -33,13 +33,25 @@ class Chat {
   Chat.fromMap({Map<String, dynamic> map}) {
     this.uid1 = map['uid1'];
     this.username1 = map['username1'] ?? 'Default username1';
-    this.user1ImageFileName = map['user1ImageFileName'] ?? kDefaultProfilePicName;
-    this.user1ImageVersionNumber = map['user1ImageVersionNumber'] ?? 1;
+    this.user1ImageFileName =
+        map['user1ImageFileName'] ?? kDefaultProfilePicName;
+    try {
+      this.user1ImageVersionNumber = map['user1ImageVersionNumber'].round();
+    } catch (e) {
+      //could not convert double to int (because its infinity or NaN)
+      this.user1ImageVersionNumber = 1;
+    }
     this.hasUser1Blocked = map['hasUser1Blocked'] ?? false;
     this.uid2 = map['uid2'];
     this.username2 = map['username2'] ?? 'Default username2';
-    this.user2ImageFileName = map['user2ImageFileName'] ?? kDefaultProfilePicName;
-    this.user2ImageVersionNumber = map['user2ImageVersionNumber'] ?? 1;
+    this.user2ImageFileName =
+        map['user2ImageFileName'] ?? kDefaultProfilePicName;
+    try {
+      this.user2ImageVersionNumber = map['user2ImageVersionNumber'].round();
+    } catch (e) {
+      //could not convert double to int (because its infinity or NaN)
+      this.user2ImageVersionNumber = 1;
+    }
     this.hasUser2Blocked = map['hasUser2Blocked'] ?? false;
     this.lastMessageText = map['lastMessageText'] ?? 'No messages';
     this.lastMessageTimestamp =
