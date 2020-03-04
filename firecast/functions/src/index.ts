@@ -322,7 +322,9 @@ exports.sendNotification = functions.firestore
             otherUid: senderUid,
             otherUsername: senderUsername,
             otherImageFileName: sender?.imageFileName,
-            otherImageVersionNumber: sender?.imageVersionNumber ? (sender?.imageVersionNumber).toString() : '1',
+            otherImageVersionNumber: sender?.imageVersionNumber
+              ? (sender?.imageVersionNumber).toString()
+              : "1",
             chatPath: "chats/" + chatId
           }
         };
