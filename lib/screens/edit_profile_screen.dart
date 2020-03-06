@@ -164,9 +164,9 @@ class _ImageSectionState extends State<ImageSection> {
                             backgroundColor: Colors.grey,
                             backgroundImage: imageProvider);
                       },
-                      placeholder: (context, url) => CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            kDefaultProfilePicColor),
+                      placeholder: (context, url) => SizedBox(
+                        height: 120,
+                        child: CenteredLoadingIndicator(),
                       ),
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     ),

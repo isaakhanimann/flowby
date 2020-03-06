@@ -23,18 +23,15 @@ class FirebaseCloudMessaging {
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> mapMessage) async {
-        print('on message $mapMessage');
         this.context = context;
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         showNotification(message: message);
       },
       onResume: (Map<String, dynamic> mapMessage) async {
-        print('on resume $mapMessage');
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         navigateToChat(context, message);
       },
       onLaunch: (Map<String, dynamic> mapMessage) async {
-        print('on launch $mapMessage');
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         navigateToChat(context, message);
       },

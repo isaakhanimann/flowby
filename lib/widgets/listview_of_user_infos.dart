@@ -89,6 +89,7 @@ class ListViewOfUserInfos extends StatelessWidget {
             child: Text(
               user.username,
               style: kUsernameTitleTextStyle,
+              textAlign: TextAlign.center,
             ),
           ),
           SizedBox(
