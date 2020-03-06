@@ -5,6 +5,13 @@ import functions = require("firebase-functions");
 import admin = require("firebase-admin");
 import { EventContext } from "firebase-functions";
 const path = require("path");
+const algoliasearch = require("algoliasearch");
+
+const APP_ID = functions.config().algolia.app;
+const ADMIN_KEY = functions.config().algolia.key;
+
+const client = algoliasearch(APP_ID, ADMIN_KEY);
+const index = client.initIndex("users");
 
 admin.initializeApp();
 
@@ -12,6 +19,30 @@ const db = admin.firestore();
 const fcm = admin.messaging();
 
 // erstelle cloud function
+
+//add user to algolia users index when a user is added to firestore
+exports.addToIndex = functions.firestore
+  .document("users/{userId}")
+  .onCreate(snapshot => {
+    const data = snapshot.data();
+    const objectID = snapshot.id;
+    return index.addObject({ ...data, objectID });
+  });
+
+//update user in algolia users index when a user is updated in firestore
+exports.updateIndex = functions.firestore
+  .document("users/{userId}")
+  .onUpdate(change => {
+    const newData = change.after.data();
+    const objectID = change.after.id;
+    return index.saveObject({ ...newData, objectID });
+  });
+
+//delete user in algolia users index when a user is deleted in firestore
+exports.deleteFromIndex = functions.firestore
+  .document("users/{userId}")
+  .onDelete(snapshot => index.deleteObject());
+
 // when a message is added scan it for the string "pizza" and replace it with the emoji
 exports.createMessageWithPizza = functions.firestore
   .document("/chats/{chatId}/messages/{messageId}")
