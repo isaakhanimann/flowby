@@ -2,6 +2,7 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/login_screen.dart';
 import 'package:Flowby/screens/registration/registration_screen.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:Flowby/widgets/tab_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -130,6 +131,8 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                 ),
               ),
               if (widget.canGoBack)
+                TabHeader(backgroundColor: Colors.transparent,),
+/*
                 Positioned(
                   top: 0,
                   left: 0,
@@ -144,6 +147,7 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                     },
                   ),
                 ),
+*/
             ]),
           ),
         ],

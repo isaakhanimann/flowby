@@ -6,12 +6,16 @@ class TabHeader extends StatelessWidget {
   final Widget leftAction;
   final Widget rightIcon;
   final Widget rightAction;
+  final Color backgroundColor;
+  final bool whiteLogo;
 
   TabHeader({
     this.leftIcon,
     this.leftAction,
     this.rightIcon,
     this.rightAction,
+    this.backgroundColor = Colors.white,
+    this.whiteLogo = false,
   });
 
   @override
@@ -19,10 +23,10 @@ class TabHeader extends StatelessWidget {
     return SizedBox(
       height: 40,
       child: Container(
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: BoxDecoration(color: backgroundColor),
         child: Stack(fit: StackFit.expand, children: [
           Image(
-            image: AssetImage("assets/images/logo_flowby.png"),
+            image: whiteLogo ? AssetImage("assets/images/logo_flowby_white.png") : AssetImage("assets/images/logo_flowby.png"),
           ),
           Positioned(
             left: 0,
