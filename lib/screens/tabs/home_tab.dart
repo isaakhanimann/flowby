@@ -105,21 +105,32 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                 ),
               ),
-              Expanded(
-                child: searchResultUsers.length == 0 && loggedInUser != null
-                    ? NoResults(
-                        isSkillSelected: role == Role.consumer,
-                        uidOfLoggedInUser: loggedInUser.uid,
-                      )
-                    : ListView.builder(
-                        itemBuilder: (context, index) {
-                          return ProfileItem(
-                            user: searchResultUsers[index],
-                            isSkillSearch: role == Role.consumer,
-                          );
-                        },
-                        itemCount: searchResultUsers.length,
-                      ),
+              NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  if (notification is ScrollUpdateNotification) {
+                    if (notification.scrollDelta.abs() > 10 &&
+                        notification.dragDetails != null)
+                      FocusScope.of(context).unfocus();
+                  }
+                  //debugPrint('$notification');
+                  return true;
+                },
+                child: Expanded(
+                  child: searchResultUsers.length == 0 && loggedInUser != null
+                      ? NoResults(
+                          isSkillSelected: role == Role.consumer,
+                          uidOfLoggedInUser: loggedInUser.uid,
+                        )
+                      : ListView.builder(
+                          itemBuilder: (context, index) {
+                            return ProfileItem(
+                              user: searchResultUsers[index],
+                              isSkillSearch: role == Role.consumer,
+                            );
+                          },
+                          itemCount: searchResultUsers.length,
+                        ),
+                ),
               ),
             ],
           ),
