@@ -140,22 +140,6 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                   ),
                   leftOnPressed: () => Navigator.of(context).pop(),
                 ),
-/*
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: CupertinoButton(
-                    child: Icon(
-                      Feather.chevron_left,
-                      size: 40,
-                      color: kDefaultProfilePicColor,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-*/
             ]),
           ),
         ],
