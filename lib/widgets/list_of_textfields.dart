@@ -86,14 +86,25 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: Column(
               children: <Widget>[
-                InputFieldWithSuggestions(
-                  suggestions: widget.topicSuggestions,
-                  maxLength: 20,
-                  controller: keywordControllers[rowNumber],
-                  placeholder: 'Topic',
-                  capitalization: TextCapitalization.words,
-                  focus: focusNodes[rowNumber]['keywords'],
-                  style: kAddSkillsTopicTextStyle,
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 11,
+                      child: InputFieldWithSuggestions(
+                        suggestions: widget.topicSuggestions,
+                        maxLength: 20,
+                        controller: keywordControllers[rowNumber],
+                        placeholder: 'Topic',
+                        capitalization: TextCapitalization.words,
+                        focus: focusNodes[rowNumber]['keywords'],
+                        style: kAddSkillsTopicTextStyle,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
+                  ],
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -101,6 +112,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
+                      flex: 11,
                       child: InputFieldWithSuggestions(
                         maxLength: 100,
                         controller: descriptionControllers[rowNumber],
@@ -110,25 +122,39 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                         focus: focusNodes[rowNumber]['description'],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0.0),
-                      child: indexWithFocus == rowNumber
-                          ? GestureDetector(
-                              onTap: () {
-                                _deleteIthController(index: rowNumber);
-                              },
-                              child: Icon(Feather.x),
-                            )
-                          : Container(),
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: indexWithFocus == rowNumber
+                            ? GestureDetector(
+                                onTap: () {
+                                  _deleteIthController(index: rowNumber);
+                                },
+                                child: Icon(Feather.x),
+                              )
+                            : Container(),
+                      ),
                     ),
                   ],
                 ),
-                InputFieldWithSuggestions(
-                  maxLength: 10,
-                  controller: priceControllers[rowNumber],
-                  suggestions: widget.priceSuggestions,
-                  placeholder: 'Price',
-                  focus: focusNodes[rowNumber]['price'],
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 11,
+                      child: InputFieldWithSuggestions(
+                        maxLength: 10,
+                        controller: priceControllers[rowNumber],
+                        suggestions: widget.priceSuggestions,
+                        placeholder: 'Price',
+                        focus: focusNodes[rowNumber]['price'],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -253,6 +279,7 @@ class InputFieldWithSuggestions extends StatelessWidget {
           placeholder: placeholder,
           controller: controller,
           focusNode: focus,
+          suffix: focus.hasFocus ? Text('${maxLength - controller.text.length}') : Container(),
         ),
         suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),
