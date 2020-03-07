@@ -131,7 +131,15 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                 ),
               ),
               if (widget.canGoBack)
-                TabHeader(backgroundColor: Colors.transparent,),
+                TabHeader(
+                  backgroundColor: Colors.transparent,
+                  whiteLogo: true,
+                  leftIcon: Icon(
+                    Feather.chevron_left,
+                    size: 30,
+                  ),
+                  leftOnPressed: () => Navigator.of(context).pop(),
+                ),
 /*
                 Positioned(
                   top: 0,

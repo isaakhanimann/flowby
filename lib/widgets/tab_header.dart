@@ -4,16 +4,20 @@ import 'package:flutter/material.dart';
 class TabHeader extends StatelessWidget {
   final Widget leftIcon;
   final Widget leftAction;
+  final Function leftOnPressed;
   final Widget rightIcon;
   final Widget rightAction;
+  final Function rightOnPressed;
   final Color backgroundColor;
   final bool whiteLogo;
 
   TabHeader({
     this.leftIcon,
     this.leftAction,
+    this.leftOnPressed,
     this.rightIcon,
     this.rightAction,
+    this.rightOnPressed,
     this.backgroundColor = Colors.white,
     this.whiteLogo = false,
   });
@@ -33,7 +37,7 @@ class TabHeader extends StatelessWidget {
             child: CupertinoButton(
                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: leftIcon == null ? Container() : leftIcon,
-                onPressed: () {
+                onPressed: leftOnPressed ?? () {
                   Navigator.of(context, rootNavigator: true).push(
                     CupertinoPageRoute<void>(
                       builder: (context) {
@@ -49,7 +53,7 @@ class TabHeader extends StatelessWidget {
             child: CupertinoButton(
               padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
               child: rightIcon == null ? Container() : rightIcon,
-              onPressed: () {
+              onPressed: rightOnPressed ?? () {
                 Navigator.of(context, rootNavigator: true).push(
                   CupertinoPageRoute<void>(
                     builder: (context) {
