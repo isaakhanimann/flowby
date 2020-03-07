@@ -82,3 +82,43 @@ class ViewProfileScreen extends StatelessWidget {
     );
   }
 }
+
+class ViewProfileScreenFromChat extends StatelessWidget {
+  static const String id = 'view_profile_screen_from_chat';
+  final User user;
+  final String heroTag;
+  final bool showSkills;
+
+  ViewProfileScreenFromChat({
+    @required this.user,
+    @required this.heroTag,
+    this.showSkills = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      child: SafeArea(
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: <Widget>[
+            ListViewOfUserInfos(user: user, heroTag: heroTag),
+            Positioned(
+              top: 5,
+              left: 6,
+              child: CupertinoButton(
+                child: Icon(
+                  Feather.chevron_left,
+                  size: 30,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

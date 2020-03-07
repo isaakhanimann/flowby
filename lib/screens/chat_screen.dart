@@ -2,6 +2,7 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/models/message.dart';
 import 'package:Flowby/screens/show_profile_picture_screen.dart';
+import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/copyable_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -282,10 +283,23 @@ class ChatHeader extends StatelessWidget {
                       SizedBox(
                         width: 10,
                       ),
-                      Text(
-                        screenInfo.otherUsername,
-                        overflow: TextOverflow.ellipsis,
-                        style: kChatScreenHeaderTextStyle,
+                      GestureDetector(
+                        onTap: () {
+                          cloudFirestoreService
+                              .getUser(uid: screenInfo.otherUid)
+                              .then((user) =>
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(ScaleRoute(
+                                          page: ViewProfileScreenFromChat(
+                                    heroTag: screenInfo.heroTag,
+                                    user: user,
+                                  ))));
+                        },
+                        child: Text(
+                          screenInfo.otherUsername,
+                          overflow: TextOverflow.ellipsis,
+                          style: kChatScreenHeaderTextStyle,
+                        ),
                       )
                     ],
                   ),
