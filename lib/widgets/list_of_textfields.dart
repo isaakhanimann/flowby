@@ -36,6 +36,9 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
   List<TextEditingController> keywordControllers = [];
   List<TextEditingController> descriptionControllers = [];
   List<TextEditingController> priceControllers = [];
+  List<Map<String, FocusNode>> focusNodes = [];
+  int indexWithFocus = -1;
+  FocusNode currentFocus = FocusNode();
 
   @override
   void initState() {
@@ -54,10 +57,15 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
 
   @override
   void dispose() {
+    // dispose all controllers
     List<TextEditingController> allControllers =
         keywordControllers + descriptionControllers + priceControllers;
     for (TextEditingController controller in allControllers) {
       controller.dispose();
+    }
+    // dispose all focus nodes
+    for (Map<String, FocusNode> map in focusNodes) {
+      map.forEach((k, v) => v.dispose());
     }
     super.dispose();
   }
@@ -83,6 +91,9 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                   maxLength: 20,
                   controller: keywordControllers[rowNumber],
                   placeholder: 'Topic',
+                  capitalization: TextCapitalization.words,
+                  focus: focusNodes[rowNumber]['keywords'],
+                  style: kAddSkillsTopicTextStyle,
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -96,24 +107,29 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                         suggestions: widget.descriptionSuggestions,
                         placeholder: 'Description',
                         capitalization: TextCapitalization.sentences,
+                        focus: focusNodes[rowNumber]['description'],
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 0.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          _deleteIthController(index: rowNumber);
-                        },
-                        child: Icon(Feather.x),
-                      ),
+                      child: indexWithFocus == rowNumber
+                          ? GestureDetector(
+                              onTap: () {
+                                _deleteIthController(index: rowNumber);
+                              },
+                              child: Icon(Feather.x),
+                            )
+                          : Container(),
                     ),
                   ],
                 ),
                 InputFieldWithSuggestions(
-                    maxLength: 10,
-                    controller: priceControllers[rowNumber],
-                    suggestions: widget.priceSuggestions,
-                    placeholder: 'Price'),
+                  maxLength: 10,
+                  controller: priceControllers[rowNumber],
+                  suggestions: widget.priceSuggestions,
+                  placeholder: 'Price',
+                  focus: focusNodes[rowNumber]['price'],
+                ),
               ],
             ),
           ),
@@ -122,7 +138,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
     }
     rows.add(
       Container(
-        alignment: Alignment.bottomLeft,
+        alignment: Alignment.bottomCenter,
         child: GestureDetector(
           child: Icon(Feather.plus),
           onTap: () {
@@ -148,6 +164,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
       keywordControllers.removeAt(index);
       descriptionControllers.removeAt(index);
       priceControllers.removeAt(index);
+      focusNodes.removeAt(index);
     });
     widget.deleteSkillOrWishAtIndex(index: index);
   }
@@ -179,6 +196,26 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
       widget.updatePriceAtIndex(index: index, text: priceController.text);
     });
     priceControllers.add(priceController);
+    // focus
+    Map<String, FocusNode> map = {
+      'keywords': FocusNode(),
+      'description': FocusNode(),
+      'price': FocusNode(),
+    };
+    map.forEach((k, v) {
+      v.addListener(() {
+        if (v.hasFocus)
+          setState(() {
+            currentFocus = v;
+            indexWithFocus = index;
+          });
+        else if (!v.hasFocus && v == currentFocus)
+          setState(() {
+            indexWithFocus = -1;
+          });
+      });
+    });
+    focusNodes.add(map);
   }
 }
 
@@ -188,46 +225,56 @@ class InputFieldWithSuggestions extends StatelessWidget {
   final List<String> suggestions;
   final String placeholder;
   final TextCapitalization capitalization;
+  final FocusNode focus;
+  final TextStyle style;
 
   InputFieldWithSuggestions(
       {@required this.maxLength,
       @required this.controller,
       @required this.suggestions,
       @required this.placeholder,
-      this.capitalization = TextCapitalization.none});
+      this.capitalization = TextCapitalization.none,
+      this.focus,
+      this.style = kAddSkillsTextStyle});
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTypeAheadField(
-      textFieldConfiguration: CupertinoTextFieldConfiguration(
-        minLines: null,
-        maxLines: null,
-        style: kAddSkillsTextStyle,
-        maxLength: maxLength,
-        decoration: null,
-        textCapitalization: capitalization,
-        textAlign: TextAlign.start,
-        placeholder: placeholder,
-        controller: controller,
-      ),
-      suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8))),
-      getImmediateSuggestions: true,
-      hideOnEmpty: true,
-      animationDuration: const Duration(microseconds: 0),
-      suggestionsCallback: _getSuggestions,
-      itemBuilder: (context, suggestion) {
-        return Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Text(
-            suggestion,
-          ),
-        );
-      },
-      onSuggestionSelected: (String tappedSuggestion) {
-        controller.text = tappedSuggestion;
-      },
-    );
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      return CupertinoTypeAheadField(
+        textFieldConfiguration: CupertinoTextFieldConfiguration(
+          minLines: null,
+          maxLines: null,
+          style: style,
+          maxLength: maxLength,
+          decoration: null,
+          textCapitalization: capitalization,
+          textAlign: TextAlign.start,
+          placeholder: placeholder,
+          controller: controller,
+          focusNode: focus,
+        ),
+        suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          constraints: BoxConstraints(maxWidth: constraints.maxWidth - 34),
+        ),
+        getImmediateSuggestions: true,
+        hideOnEmpty: true,
+        animationDuration: const Duration(microseconds: 0),
+        suggestionsCallback: _getSuggestions,
+        itemBuilder: (context, suggestion) {
+          return Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              suggestion,
+            ),
+          );
+        },
+        onSuggestionSelected: (String tappedSuggestion) {
+          controller.text = tappedSuggestion;
+        },
+      );
+    });
   }
 
   List<String> _getSuggestions(String pattern) {

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
@@ -228,22 +229,31 @@ class _ImageSectionState extends State<ImageSection> {
   }
 
   void _setImage(ImageSource source) async {
-    var selectedImage =
-        await ImagePicker.pickImage(source: source, imageQuality: 20);
-
-    File croppedImage = await ImageCropper.cropImage(
-        sourcePath: selectedImage.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        androidUiSettings: AndroidUiSettings(
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
-    widget.setProfilePic(croppedImage);
-    setState(() {
-      _profilePic = croppedImage;
-    });
+    var selectedImage = await ImagePicker.pickImage(source: source);
+    File croppedImage;
+    do {
+      if (selectedImage != null) {
+        croppedImage = await ImageCropper.cropImage(
+            sourcePath: selectedImage.path,
+            aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+            cropStyle: CropStyle.circle,
+            androidUiSettings: AndroidUiSettings(
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            iosUiSettings: IOSUiSettings(
+              minimumAspectRatio: 1.0,
+            ));
+      }
+      if(croppedImage != null)
+        break;
+      selectedImage = await ImagePicker.pickImage(source: source);
+    } while ((croppedImage == null && selectedImage != null));
+    if (croppedImage != null) {
+      widget.setProfilePic(croppedImage);
+      setState(() {
+        _profilePic = croppedImage;
+      });
+    }
   }
 }
 

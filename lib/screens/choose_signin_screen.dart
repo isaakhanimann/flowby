@@ -2,6 +2,7 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/login_screen.dart';
 import 'package:Flowby/screens/registration/registration_screen.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:Flowby/widgets/tab_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -130,19 +131,14 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                 ),
               ),
               if (widget.canGoBack)
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: CupertinoButton(
-                    child: Icon(
-                      Feather.chevron_left,
-                      size: 40,
-                      color: kDefaultProfilePicColor,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                TabHeader(
+                  backgroundColor: Colors.transparent,
+                  whiteLogo: true,
+                  leftIcon: Icon(
+                    Feather.chevron_left,
+                    size: 30,
                   ),
+                  leftOnPressed: () => Navigator.of(context).pop(),
                 ),
             ]),
           ),

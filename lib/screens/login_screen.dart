@@ -2,9 +2,11 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/screens/reset_password_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/services/lifecycle_event_handler.dart';
 import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:Flowby/widgets/verify_email_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +18,7 @@ import 'package:Flowby/services/apple_sign_in_available.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/google_login_button.dart';
+
 //TODO: change box border when the user doesn't enter an input
 
 class LoginScreen extends StatefulWidget {
@@ -37,8 +40,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Observes the life cycle of the app.
+    // If the user quits the app on the login screen then it will be signed out.
+    // This prevents the user to be logged in without having verified the email.
+    final authService =
+        Provider.of<FirebaseAuthService>(context, listen: false);
+        /*
+    WidgetsBinding.instance
+        .addObserver(LifecycleEventHandler(detachedCallBack: () async {
+      //debugPrint('detached...');
+      authService.signOut();
+    }, resumeCallBack: () async {
+      //debugPrint('resume...');
+    }));
+*/
+
     final appleSignInAvailable =
         Provider.of<AppleSignInAvailable>(context, listen: false);
+
     return ModalProgressHUD(
       inAsyncCall: showSpinner,
       progressIndicator: SizedBox(
@@ -51,112 +70,118 @@ class _LoginScreenState extends State<LoginScreen> {
           animation: "Untitled",
         ),
       ),
-      child: CupertinoPageScaffold(
-        resizeToAvoidBottomInset: false,
-        navigationBar: CupertinoNavigationBar(
-          border: null,
-          leading: CupertinoButton(
-            child: Icon(CupertinoIcons.back, color: CupertinoColors.white),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          middle: Padding(
-            padding: const EdgeInsets.only(top: 13.0),
-            child: Text(
-              'Log In',
-              style: kCupertinoScaffoldTextStyle,
+      child: WillPopScope(
+        onWillPop: () async {
+          authService.signOut();
+          return true;
+        },
+        child: CupertinoPageScaffold(
+          resizeToAvoidBottomInset: false,
+          navigationBar: CupertinoNavigationBar(
+            border: null,
+            leading: CupertinoButton(
+              child: Icon(CupertinoIcons.back, color: CupertinoColors.white),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
+            middle: Padding(
+              padding: const EdgeInsets.only(top: 13.0),
+              child: Text(
+                'Log In',
+                style: kCupertinoScaffoldTextStyle,
+              ),
+            ),
+            backgroundColor: Colors.transparent,
           ),
-          backgroundColor: Colors.transparent,
-        ),
-        backgroundColor: kLoginScreenBackgroundColor,
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                SizedBox(
-                  height: 48.0,
-                ),
-                LoginInputField(
-                  controller: _emailController,
-                  focusNode: _emailFocus,
-                  onFieldSubmitted: (term) {
-                    FocusScope.of(context).requestFocus(_passwordFocus);
-                  },
-                  isLast: false,
-                  keyboardType: TextInputType.emailAddress,
-                  placeholder: 'Email address',
-                  setText: (value) {
-                    email = value;
-                  },
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),
-                LoginInputField(
-                  controller: _passwordController,
-                  focusNode: _passwordFocus,
-                  onFieldSubmitted: (term) {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  isLast: true,
-                  obscureText: true,
-                  placeholder: 'Password',
-                  setText: (value) {
-                    password = value;
-                  },
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => ResetPasswordScreen()));
-                  },
-                  child: Text(
-                    'Forgot your password?',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Colors.white,
+          backgroundColor: kLoginScreenBackgroundColor,
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(
+                    height: 48.0,
+                  ),
+                  LoginInputField(
+                    controller: _emailController,
+                    focusNode: _emailFocus,
+                    onFieldSubmitted: (term) {
+                      FocusScope.of(context).requestFocus(_passwordFocus);
+                    },
+                    isLast: false,
+                    keyboardType: TextInputType.emailAddress,
+                    placeholder: 'Email address',
+                    setText: (value) {
+                      email = value;
+                    },
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  LoginInputField(
+                    controller: _passwordController,
+                    focusNode: _passwordFocus,
+                    onFieldSubmitted: (term) {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    isLast: true,
+                    obscureText: true,
+                    placeholder: 'Password',
+                    setText: (value) {
+                      password = value;
+                    },
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => ResetPasswordScreen()));
+                    },
+                    child: Text(
+                      'Forgot your password?',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-                RoundedButton(
-                    color: kBlueButtonColor,
+                  RoundedButton(
+                      color: kBlueButtonColor,
+                      textColor: Colors.white,
+                      onPressed: () async {
+                        _signInWithEmail(context);
+                      },
+                      text: 'Log In'),
+                  Text(
+                    'OR',
+                    textAlign: TextAlign.center,
+                    style: kOrTextStyle,
+                  ),
+                  GoogleLoginButton(
+                    text: 'Sign In with Google',
+                    color: Color(0xFFDD4B39),
                     textColor: Colors.white,
-                    onPressed: () async {
-                      _signInWithEmail(context);
-                    },
-                    text: 'Log In'),
-                Text(
-                  'OR',
-                  textAlign: TextAlign.center,
-                  style: kOrTextStyle,
-                ),
-                GoogleLoginButton(
-                  text: 'Sign In with Google',
-                  color: Color(0xFFDD4B39),
-                  textColor: Colors.white,
-                  onPressed: () {
-                    _signInWithGoogle(context);
-                  },
-                ),
-                if (appleSignInAvailable.isAvailable)
-                  AppleSignInButton(
-                    style: ButtonStyle.black,
-                    type: ButtonType.signIn,
                     onPressed: () {
-                      _signInWithApple(context);
+                      _signInWithGoogle(context);
                     },
                   ),
-              ],
+                  if (appleSignInAvailable.isAvailable)
+                    AppleSignInButton(
+                      style: ButtonStyle.black,
+                      type: ButtonType.signIn,
+                      onPressed: () {
+                        _signInWithApple(context);
+                      },
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -180,36 +205,14 @@ class _LoginScreenState extends State<LoginScreen> {
       if (user != null) {
         if (user.isEmailVerified == false) {
           showCupertinoDialog(
-            context: context,
-            builder: (_) => CupertinoAlertDialog(
-              title: Text('Verify your email'),
-              content:
-                  Text('\nIt seems that you haven\'t verified your email yet.'),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  child: Text('Cancel'),
-                  onPressed: () {
-                    authService.signOut();
-                    Navigator.pop(context);
-                    setState(() {
-                      showSpinner = false;
-                    });
-                  },
-                ),
-                CupertinoDialogAction(
-                  child: Text('Send verification'),
-                  onPressed: () async {
-                    await authResult.user.sendEmailVerification();
-                    authService.signOut();
-                    Navigator.pop(context);
-                    setState(() {
-                      showSpinner = false;
-                    });
-                  },
-                ),
-              ],
-            ),
-          );
+              context: context,
+              builder: (_) => VerifyEmailAlert(
+                    authService: authService,
+                    authResult: authResult,
+                  ));
+          setState(() {
+            showSpinner = false;
+          });
           return;
         }
         //cleans the navigation stack, so we don't come back to the login page if we
