@@ -21,7 +21,14 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  String _searchTerm = '';
+  Future<List<User>> usersFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    final algoliaService = Provider.of<AlgoliaService>(context, listen: false);
+    usersFuture = algoliaService.getUsers(searchTerm: '');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +36,6 @@ class _HomeTabState extends State<HomeTab> {
     final localRole = Provider.of<Role>(context);
 
     final role = loggedInUser?.role ?? localRole;
-
-    final algoliaService = Provider.of<AlgoliaService>(context, listen: false);
 
     return SafeArea(
       bottom: false,
@@ -50,7 +55,7 @@ class _HomeTabState extends State<HomeTab> {
           ),
           Expanded(
             child: FutureBuilder(
-                future: algoliaService.getUsers(searchTerm: _searchTerm),
+                future: usersFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return CenteredLoadingIndicator();
@@ -103,8 +108,9 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   void _onSearchChanged(String newSearchTerm) {
+    final algoliaService = Provider.of<AlgoliaService>(context, listen: false);
     setState(() {
-      _searchTerm = newSearchTerm;
+      usersFuture = algoliaService.getUsers(searchTerm: newSearchTerm);
     });
   }
 }
@@ -261,7 +267,7 @@ class SearchBar extends StatelessWidget {
             color: CupertinoColors.black,
           ),
         ),
-        onChanged: onSearchChanged,
+        onSubmitted: onSearchChanged,
         style: kSearchTextStyle,
         clearButtonMode: OverlayVisibilityMode.editing,
       ),
