@@ -1,4 +1,5 @@
 import 'package:Flowby/screens/navigation_screen.dart';
+import 'package:Flowby/services/algolia_service.dart';
 import 'package:Flowby/services/apple_sign_in_available.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
@@ -54,6 +55,9 @@ class Flowby extends StatelessWidget {
         ),
         Provider<PreferencesService>(
           create: (_) => PreferencesService(),
+        ),
+        Provider<AlgoliaService>(
+          create: (_) => AlgoliaService(),
         ),
       ],
       child: GestureDetector(
