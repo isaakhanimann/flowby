@@ -72,8 +72,10 @@ class _HomeTabState extends State<HomeTab> {
 
                   List<User> allMatchedUsers =
                       List.from(snapshot.data); // to convert it editable list
-                  List<User> allVisibleUsers =
-                      allMatchedUsers.where((u) => !u.isHidden).toList();
+                  List<User> allVisibleUsers = allMatchedUsers
+                      .where(
+                          (u) => !u.isHidden && !(u.uid == loggedInUser?.uid))
+                      .toList();
                   List<User> searchResultUsers;
 
                   if (role == Role.consumer) {

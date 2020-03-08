@@ -161,7 +161,12 @@ class User {
 
   GeoPoint _convertLocationToGeopoint({dynamic location}) {
     try {
-      GeoPoint point = GeoPoint(location['_latitude'], location['longitude']);
+      if (location == null || location == []) {
+        return null;
+      }
+      double latitude = location['_latitude'];
+      double longitude = location['_longitude'];
+      GeoPoint point = GeoPoint(latitude, longitude);
       return point;
     } catch (e) {
       print('Could not convert location to geopoint');
