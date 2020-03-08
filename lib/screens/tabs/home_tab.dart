@@ -51,6 +51,7 @@ class _HomeTabState extends State<HomeTab> {
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: SearchBar(
                 isSkillSearch: role == Role.consumer,
+                onSearchSubmitted: _onSearchSubmitted,
                 onSearchChanged: _onSearchChanged),
           ),
           Expanded(
@@ -107,11 +108,21 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 
-  void _onSearchChanged(String newSearchTerm) {
+  _onSearchSubmitted(String submittedSearchTerm) {
     final algoliaService = Provider.of<AlgoliaService>(context, listen: false);
     setState(() {
-      usersFuture = algoliaService.getUsers(searchTerm: newSearchTerm);
+      usersFuture = algoliaService.getUsers(searchTerm: submittedSearchTerm);
     });
+  }
+
+  _onSearchChanged(String newSearchTerm) {
+    if (newSearchTerm == '') {
+      final algoliaService =
+          Provider.of<AlgoliaService>(context, listen: false);
+      setState(() {
+        usersFuture = algoliaService.getUsers(searchTerm: newSearchTerm);
+      });
+    }
   }
 }
 
@@ -243,11 +254,14 @@ class ProfileItem extends StatelessWidget {
 }
 
 class SearchBar extends StatelessWidget {
-  const SearchBar(
-      {@required this.isSkillSearch, @required this.onSearchChanged});
+  SearchBar(
+      {@required this.isSkillSearch,
+      @required this.onSearchChanged,
+      @required this.onSearchSubmitted});
 
   final isSkillSearch;
   final Function onSearchChanged;
+  final Function onSearchSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +272,7 @@ class SearchBar extends StatelessWidget {
             color: kCardBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-        placeholder: isSkillSearch ? 'Search Skills' : 'Search Wishes',
+        placeholder: 'Search Skills',
         placeholderStyle: kSearchPlaceHolderTextStyle,
         prefix: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -267,7 +281,8 @@ class SearchBar extends StatelessWidget {
             color: CupertinoColors.black,
           ),
         ),
-        onSubmitted: onSearchChanged,
+        onChanged: onSearchChanged,
+        onSubmitted: onSearchSubmitted,
         style: kSearchTextStyle,
         clearButtonMode: OverlayVisibilityMode.editing,
       ),
