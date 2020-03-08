@@ -12,15 +12,26 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/user.dart';
 
-class ChatsTab extends StatelessWidget {
+class ChatsTab extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
+  _ChatsTabState createState() => _ChatsTabState();
+}
+
+class _ChatsTabState extends State<ChatsTab> {
+  Stream<List<Chat>> chatsStream;
+
+  @override
+  void initState() {
+    super.initState();
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-
-    //listening to loggedInUser (so it rebuilds) is not necessary as the navigationscreen provides it and always has the up to date value because it is rebuilt whenever we navigate to it
     final loggedInUser = Provider.of<User>(context, listen: false);
+    chatsStream =
+        cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -28,8 +39,7 @@ class ChatsTab extends StatelessWidget {
           TabHeader(),
           Expanded(
               child: StreamBuilder(
-                  stream: cloudFirestoreService.getChatsStream(
-                      loggedInUid: loggedInUser.uid),
+                  stream: chatsStream,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting ||
                         snapshot.connectionState == ConnectionState.none) {
