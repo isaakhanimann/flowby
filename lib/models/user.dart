@@ -49,6 +49,26 @@ class User {
     this.wishKeywords = _getKeywordString(wishes);
   }
 
+  User.fromMapAlgolia({Map<String, dynamic> map}) {
+    this.username = map['username'] ?? '';
+    this.uid = map['uid'] ?? '';
+    this.bio = map['bio'] ?? '';
+    this.role = convertStringToRole(roleString: map['role']);
+    this.isHidden = map['isHidden'] ?? false;
+    this.location = _convertLocationToGeopoint(location: map['location']);
+    this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
+    try {
+      this.imageVersionNumber = map['imageVersionNumber'].round();
+    } catch (e) {
+      //could not convert double to int (because its infinity or NaN)
+      this.imageVersionNumber = 1;
+    }
+    this.skills = _convertFirebaseToDart(skillsOrWishes: map['skills']);
+    this.wishes = _convertFirebaseToDart(skillsOrWishes: map['wishes']);
+    this.skillKeywords = _getKeywordString(skills);
+    this.wishKeywords = _getKeywordString(wishes);
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'username': username,
@@ -137,6 +157,17 @@ class User {
       list.add(SkillOrWish.fromDynamic(skillOrWish));
     }
     return list;
+  }
+
+  GeoPoint _convertLocationToGeopoint({dynamic location}) {
+    try {
+      GeoPoint point = GeoPoint(location['_latitude'], location['longitude']);
+      return point;
+    } catch (e) {
+      print('Could not convert location to geopoint');
+      print(e);
+      return null;
+    }
   }
 
   String _getKeywordString(List<SkillOrWish> skillsOrWishes) {

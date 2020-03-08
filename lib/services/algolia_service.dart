@@ -14,10 +14,12 @@ class AlgoliaService {
     AlgoliaQuery query = algolia.instance.index('users');
     query = query.search(searchTerm);
 
-    List<User> users = (await query.getObjects())
-        .hits
-        .map((snap) => User.fromMap(map: snap.data));
+    AlgoliaQuerySnapshot querySnap = await query.getObjects();
+    List<AlgoliaObjectSnapshot> myhits = querySnap.hits;
 
+    List<User> users = myhits.map((AlgoliaObjectSnapshot snap) {
+      return User.fromMapAlgolia(map: snap.data);
+    }).toList();
     return users;
   }
 }

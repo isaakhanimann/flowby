@@ -2,7 +2,7 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
-import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/services/algolia_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/no_results.dart';
 import 'package:Flowby/widgets/tab_header.dart';
@@ -30,80 +30,75 @@ class _HomeTabState extends State<HomeTab> {
 
     final role = loggedInUser?.role ?? localRole;
 
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    final algoliaService = Provider.of<AlgoliaService>(context, listen: false);
 
-    return StreamBuilder<List<User>>(
-      stream:
-          cloudFirestoreService.getUsersStream(uidToExclude: loggedInUser?.uid),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return CenteredLoadingIndicator();
-        }
-        List<User> allUsers =
-            List.from(snapshot.data); // to convert it editable list
-        List<User> allNotHiddenUsers =
-            allUsers.where((u) => !u.isHidden).toList();
-        List<User> searchResultUsers;
-
-        if (role == Role.consumer) {
-          searchResultUsers = allNotHiddenUsers
-              .where((u) =>
-                  u.role == Role.provider &&
-                  u.skillKeywords != '' &&
-                  u.skillKeywords
-                      .toString()
-                      .toLowerCase()
-                      .contains(_searchTerm.toLowerCase()))
-              .toList();
-        } else {
-          searchResultUsers = allNotHiddenUsers
-              .where((u) =>
-                  u.role == Role.consumer &&
-                  u.wishKeywords != '' &&
-                  u.wishKeywords
-                      .toString()
-                      .toLowerCase()
-                      .contains(_searchTerm.toLowerCase()))
-              .toList();
-        }
-
-        return SafeArea(
-          bottom: false,
-          child: Column(
-            children: <Widget>[
-              TabHeader(
-                rightIcon: Icon(Feather.info),
-                rightAction: ExplanationScreen(
-                  role: role,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: SearchBar(
-                    isSkillSearch: role == Role.consumer,
-                    onSearchChanged: _onSearchChanged),
-              ),
-              Expanded(
-                child: searchResultUsers.length == 0 && loggedInUser != null
-                    ? NoResults(
-                        isSkillSelected: role == Role.consumer,
-                        uidOfLoggedInUser: loggedInUser.uid,
-                      )
-                    : ListView.builder(
-                        itemBuilder: (context, index) {
-                          return ProfileItem(
-                            user: searchResultUsers[index],
-                            isSkillSearch: role == Role.consumer,
-                          );
-                        },
-                        itemCount: searchResultUsers.length,
-                      ),
-              ),
-            ],
+    return SafeArea(
+      bottom: false,
+      child: Column(
+        children: <Widget>[
+          TabHeader(
+            rightIcon: Icon(Feather.info),
+            rightAction: ExplanationScreen(
+              role: role,
+            ),
           ),
-        );
-      },
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: SearchBar(
+                isSkillSearch: role == Role.consumer,
+                onSearchChanged: _onSearchChanged),
+          ),
+          Expanded(
+            child: FutureBuilder(
+                future: algoliaService.getUsers(searchTerm: _searchTerm),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return CenteredLoadingIndicator();
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Container(
+                        color: Colors.red,
+                        child: const Text('Something went wrong'),
+                      ),
+                    );
+                  }
+
+                  List<User> allMatchedUsers =
+                      List.from(snapshot.data); // to convert it editable list
+                  List<User> allVisibleUsers =
+                      allMatchedUsers.where((u) => !u.isHidden).toList();
+                  List<User> searchResultUsers;
+
+                  if (role == Role.consumer) {
+                    searchResultUsers = allVisibleUsers
+                        .where((u) => u.role == Role.provider)
+                        .toList();
+                  } else {
+                    searchResultUsers = allVisibleUsers
+                        .where((u) => u.role == Role.consumer)
+                        .toList();
+                  }
+
+                  if (searchResultUsers.length == 0 && loggedInUser != null) {
+                    return NoResults(
+                      isSkillSelected: role == Role.consumer,
+                      uidOfLoggedInUser: loggedInUser.uid,
+                    );
+                  }
+                  return ListView.builder(
+                    itemBuilder: (context, index) {
+                      return ProfileItem(
+                        user: searchResultUsers[index],
+                        isSkillSearch: role == Role.consumer,
+                      );
+                    },
+                    itemCount: searchResultUsers.length,
+                  );
+                }),
+          ),
+        ],
+      ),
     );
   }
 
