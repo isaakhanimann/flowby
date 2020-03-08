@@ -25,6 +25,7 @@ exports.addToIndex = functions.firestore
   .document("users/{userId}")
   .onCreate(snapshot => {
     const data = snapshot.data();
+    //every algolia object needs an objectID (written exactly like this), we choose objectID == uid so we have an easy 1-1 mapping
     const objectID = snapshot.id;
     return index.addObject({ ...data, objectID });
   });
@@ -41,7 +42,7 @@ exports.updateIndex = functions.firestore
 //delete user in algolia users index when a user is deleted in firestore
 exports.deleteFromIndex = functions.firestore
   .document("users/{userId}")
-  .onDelete(snapshot => index.deleteObject());
+  .onDelete(snapshot => index.deleteObject(snapshot.id));
 
 // when a message is added scan it for the string "pizza" and replace it with the emoji
 exports.createMessageWithPizza = functions.firestore
