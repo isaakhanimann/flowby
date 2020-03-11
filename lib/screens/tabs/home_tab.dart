@@ -29,59 +29,62 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            TabHeader(),
-            Expanded(
-                child: FutureBuilder(
-                    future: anouncementsFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState != ConnectionState.done) {
-                        return CenteredLoadingIndicator();
-                      }
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: Container(
-                            color: Colors.red,
-                            child: const Text('Something went wrong'),
-                          ),
-                        );
-                      }
-                      List<Announcement> announcements = List.from(
-                          snapshot.data); // to convert it to editable list
-                      return ListView.builder(
-                          itemCount: announcements.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                                child: Text(
-                                  'Announcements',
-                                  style: kTabTitleTextStyle,
-                                  textAlign: TextAlign.start,
-                                ),
+    return SafeArea(
+      bottom: false,
+      child: Stack(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              TabHeader(),
+              Expanded(
+                  child: FutureBuilder(
+                      future: anouncementsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState != ConnectionState.done) {
+                          return CenteredLoadingIndicator();
+                        }
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Container(
+                              color: Colors.red,
+                              child: const Text('Something went wrong'),
+                            ),
+                          );
+                        }
+                        List<Announcement> announcements = List.from(
+                            snapshot.data); // to convert it to editable list
+                        return ListView.builder(
+                            itemCount: announcements.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index == 0) {
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                                  child: Text(
+                                    'Announcements',
+                                    style: kTabTitleTextStyle,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                );
+                              }
+                              return AnnouncementItem(
+                                announcement: announcements[index - 1],
                               );
-                            }
-                            return AnnouncementItem(
-                              announcement: announcements[index - 1],
-                            );
-                          });
-                    }))
-          ],
-        ),
-        Positioned(
-          bottom: 20,
-          right: 20,
-          child: FloatingActionButton(
-            onPressed: _addAnnouncement,
-            child: Icon(Feather.plus),
+                            });
+                      }))
+            ],
           ),
-        )
-      ],
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: _addAnnouncement,
+              child: Icon(Feather.plus),
+            ),
+          )
+        ],
+      ),
     );
   }
 

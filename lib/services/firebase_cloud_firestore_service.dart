@@ -50,8 +50,9 @@ class FirebaseCloudFirestoreService {
           .collection('announcements')
           .orderBy('timestamp', descending: true)
           .getDocuments();
-      List<Announcement> announcements =
-          snap.documents.map((doc) => Announcement.fromMap(map: doc.data));
+      List<Announcement> announcements = snap.documents
+          .map((doc) => Announcement.fromMap(map: doc.data))
+          .toList();
       return announcements;
     } catch (e) {
       print('Isaak could not get announcements');

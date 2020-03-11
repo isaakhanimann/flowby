@@ -33,6 +33,7 @@ class _ChatsTabState extends State<ChatsTab> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
