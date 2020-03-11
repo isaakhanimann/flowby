@@ -176,11 +176,14 @@ class ProfileItem extends StatelessWidget {
                     backgroundImage: imageProvider),
               );
             },
-            placeholder: (context, url) => CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+            placeholder: (context, url) => SizedBox(
+              width: 60,
+              child: CenteredLoadingIndicator(),
             ),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+            errorWidget: (context, url, error) => SizedBox(
+              width: 60,
+              child: Icon(Icons.error),
+            ),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
