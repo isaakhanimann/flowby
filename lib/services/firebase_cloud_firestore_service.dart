@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Flowby/models/announcement.dart';
 import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/message.dart';
 import 'package:Flowby/models/user.dart';
@@ -38,7 +39,32 @@ class FirebaseCloudFirestoreService {
       return User.fromMap(map: userDocument.data);
     } catch (e) {
       print('Isaak could not get user info2');
+      print(e);
       return null;
+    }
+  }
+
+  Future<List<Announcement>> getAnnouncements() async {
+    try {
+      QuerySnapshot snap = await _fireStore
+          .collection('announcements')
+          .orderBy('timestamp', descending: true)
+          .getDocuments();
+      List<Announcement> announcements =
+          snap.documents.map((doc) => Announcement.fromMap(map: doc.data));
+      return announcements;
+    } catch (e) {
+      print('Isaak could not get announcements');
+      print(e);
+      return null;
+    }
+  }
+
+  uploadAnnouncement({@required Announcement announcement}) async {
+    try {
+      await _fireStore.collection('announcements').add(announcement.toMap());
+    } catch (e) {
+      print('Isaak could not announcement');
     }
   }
 

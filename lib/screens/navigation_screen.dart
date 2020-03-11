@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/tabs/chats_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
-import 'package:Flowby/screens/tabs/home_tab.dart';
+import 'package:Flowby/screens/tabs/search_tab.dart';
 import 'package:Flowby/screens/tabs/profile_tab.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
@@ -20,6 +20,7 @@ import 'package:Flowby/screens/choose_role_screen.dart';
 import 'package:Flowby/services/preferences_service.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/models/role.dart';
+import 'tabs/home_tab.dart';
 
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -193,9 +194,15 @@ class ScreenWithAllTabs extends StatelessWidget {
         inactiveColor: kSmallTitlesTextColor,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(
-            Feather.search,
-          )),
+            icon: Icon(
+              Feather.home,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Feather.search,
+            ),
+          ),
           BottomNavigationBarItem(
             icon: Icon(
               Feather.mail,
@@ -222,11 +229,18 @@ class ScreenWithAllTabs extends StatelessWidget {
           case 1:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
-                child: ChatsTab(),
+                child: SearchTab(),
               );
             });
             break;
           case 2:
+            returnValue = CupertinoTabView(builder: (context) {
+              return CupertinoPageScaffold(
+                child: ChatsTab(),
+              );
+            });
+            break;
+          case 3:
             returnValue = CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
                 child: ProfileTab(),
@@ -252,7 +266,7 @@ class HomeScreenWithSignin extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: <Widget>[
-          HomeTab(),
+          SearchTab(),
           Positioned(
             bottom: 50,
             child: RoundedButton(

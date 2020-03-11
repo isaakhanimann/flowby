@@ -76,10 +76,11 @@ class User {
       'bio': bio,
       'role': convertRoleToString(role: role),
       'isHidden': isHidden,
+      'location': location,
       'imageFileName': imageFileName ?? 'default-profile-pic.jpg',
       'imageVersionNumber': imageVersionNumber ?? 1,
       'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
-      'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList()
+      'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList(),
     };
   }
 
