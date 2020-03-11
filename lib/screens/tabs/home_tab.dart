@@ -21,13 +21,29 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   Future<List<Announcement>> announcementsFuture;
+  bool isFetchingAnnouncements = true;
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    scrollController.addListener(() {
+      if (scrollController.position.pixels < -60 && !isFetchingAnnouncements) {
+        isFetchingAnnouncements = true;
+        setState(() {
+          announcementsFuture = cloudFirestoreService.getAnnouncements();
+        });
+      }
+    });
     announcementsFuture = cloudFirestoreService.getAnnouncements();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -67,7 +83,9 @@ class _HomeTabState extends State<HomeTab> {
                     }
                     List<Announcement> announcements = List.from(
                         snapshot.data); // to convert it to editable list
+                    isFetchingAnnouncements = false;
                     return ListView.builder(
+                        controller: scrollController,
                         itemCount: announcements.length + 1,
                         itemBuilder: (context, index) {
                           if (index == 0) {
