@@ -82,23 +82,6 @@ class FirebaseCloudFirestoreService {
     return Stream.empty();
   }
 
-  Stream<List<User>> getUsersStream({@required String uidToExclude}) {
-    try {
-      Stream<List<User>> usersStream = _fireStore
-          .collection('users')
-          .snapshots()
-          .map((snap) => snap.documents
-              .map((doc) => User.fromMap(map: doc.data))
-              .where((user) =>
-                  (uidToExclude != null) ? user.uid != uidToExclude : true)
-              .toList());
-      return usersStream;
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-
   Stream<ChatWithoutLastMessage> getChatStreamWithoutLastMessageField(
       {@required String chatPath}) {
     try {
@@ -252,14 +235,10 @@ class FirebaseCloudFirestoreService {
   Future<void> uploadMessage(
       {@required String chatPath, @required Message message}) async {
     try {
-      await _fireStore.document(chatPath).collection('messages').add(
-        {
-          'text': message.text,
-          'senderUid': message.senderUid,
-          'receiverUid': message.receiverUid,
-          'timestamp': message.timestamp,
-        },
-      );
+      await _fireStore
+          .document(chatPath)
+          .collection('messages')
+          .add(message.toMap());
     } catch (e) {
       print('Isaak could not upload message');
     }
@@ -268,10 +247,8 @@ class FirebaseCloudFirestoreService {
   Future<void> uploadUsersLocation(
       {@required uid, @required Position position}) async {
     try {
-      await _fireStore.collection('users').document(uid).updateData({
-        'location': GeoPoint(position.latitude, position.longitude)
-//        , 'locationTimestamp': position.timestamp
-      });
+      await _fireStore.collection('users').document(uid).updateData(
+          {'location': GeoPoint(position.latitude, position.longitude)});
     } catch (e) {
       print('Isaak could not upload position info');
     }
