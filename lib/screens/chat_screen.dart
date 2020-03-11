@@ -41,8 +41,8 @@ class ChatScreen extends StatelessWidget {
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: SafeArea(
-        child: Provider<GlobalChatScreenInfo>.value(
-          value: GlobalChatScreenInfo(
+        child: Provider<GlobalChatScreenInfo>(
+          create: (_) => GlobalChatScreenInfo(
               loggedInUid: loggedInUid,
               otherUid: otherUid,
               otherUsername: otherUsername,
