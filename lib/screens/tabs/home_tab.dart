@@ -2,8 +2,8 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
+import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/tab_header.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -128,24 +128,11 @@ class AnnouncementItem extends StatelessWidget {
               ),
             );
           },
-          leading: CachedNetworkImage(
-            imageUrl:
-                "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${announcement.imageFileName}?alt=media&version=${announcement.imageVersionNumber}",
-            imageBuilder: (context, imageProvider) {
-              return Hero(
-                transitionOnUserGestures: true,
-                tag: heroTag,
-                child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: imageProvider),
-              );
-            },
-            placeholder: (context, url) => CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-            ),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+          leading: ProfilePicture(
+            imageFileName: announcement.imageFileName,
+            imageVersionNumber: announcement.imageVersionNumber,
+            radius: 30,
+            heroTag: heroTag,
           ),
           title: Text(
             announcement.username,

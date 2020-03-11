@@ -5,8 +5,8 @@ import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/algolia_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/no_results.dart';
+import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/tab_header.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -163,28 +163,11 @@ class ProfileItem extends StatelessWidget {
               ),
             );
           },
-          leading: CachedNetworkImage(
-            imageUrl:
-                "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media&version=${user.imageVersionNumber}",
-            imageBuilder: (context, imageProvider) {
-              return Hero(
-                transitionOnUserGestures: true,
-                tag: heroTag,
-                child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: imageProvider),
-              );
-            },
-            placeholder: (context, url) => SizedBox(
-              width: 60,
-              child: CenteredLoadingIndicator(),
-            ),
-            errorWidget: (context, url, error) => SizedBox(
-              width: 60,
-              child: Icon(Icons.error),
-            ),
-          ),
+          leading: ProfilePicture(
+              imageFileName: user.imageFileName,
+              imageVersionNumber: user.imageVersionNumber,
+              radius: 30,
+              heroTag: heroTag),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
