@@ -22,7 +22,7 @@ class FirebaseCloudFirestoreService {
           .document(user.uid)
           .setData(user.toMap(), merge: true);
     } catch (e) {
-      print('Isaak could not upload user info');
+      print('Could not upload user info');
       debugPrint('error: $e');
     }
   }
@@ -32,13 +32,13 @@ class FirebaseCloudFirestoreService {
       var userDocument =
           await _fireStore.collection('users').document(uid).get();
       if (userDocument.data == null) {
-        print('Isaak could not get user info1');
+        print('Could not get user info1');
         return null;
       }
 
       return User.fromMap(map: userDocument.data);
     } catch (e) {
-      print('Isaak could not get user info2');
+      print('Could not get user info2');
       print(e);
       return null;
     }
@@ -55,7 +55,7 @@ class FirebaseCloudFirestoreService {
           .toList();
       return announcements;
     } catch (e) {
-      print('Isaak could not get announcements');
+      print('Could not get announcements');
       print(e);
       return null;
     }
@@ -65,7 +65,7 @@ class FirebaseCloudFirestoreService {
     try {
       await _fireStore.collection('announcements').add(announcement.toMap());
     } catch (e) {
-      print('Isaak could not announcement');
+      print('Could not upload announcement');
     }
   }
 
@@ -77,7 +77,7 @@ class FirebaseCloudFirestoreService {
           .snapshots()
           .map((doc) => User.fromMap(map: doc.data));
     } catch (e) {
-      print('Isaak could not get the user stream');
+      print('Could not get the user stream');
     }
     return Stream.empty();
   }
@@ -101,7 +101,7 @@ class FirebaseCloudFirestoreService {
       }).distinct(); //use distinct to avoid unnecessary rebuilds
       return chatStream;
     } catch (e) {
-      print('Isaak could not get the chat stream');
+      print('Could not get the chat stream');
     }
     return Stream.empty();
   }
@@ -184,7 +184,7 @@ class FirebaseCloudFirestoreService {
       }
       return chatPath;
     } catch (e) {
-      print('Isaak could not get chatpath');
+      print('Could not get chatpath');
       return null;
     }
   }
@@ -210,7 +210,7 @@ class FirebaseCloudFirestoreService {
       var docReference = await _fireStore.collection('chats').add(chat.toMap());
       return docReference.path;
     } catch (e) {
-      print('Isaak could not createChat');
+      print('Could not createChat');
       return null;
     }
   }
@@ -227,7 +227,7 @@ class FirebaseCloudFirestoreService {
               .toList());
       return messageStream;
     } catch (e) {
-      print('Isaak could not get the message stream');
+      print('Could not get the message stream');
     }
     return Stream.empty();
   }
@@ -240,7 +240,7 @@ class FirebaseCloudFirestoreService {
           .collection('messages')
           .add(message.toMap());
     } catch (e) {
-      print('Isaak could not upload message');
+      print('Could not upload message');
     }
   }
 
@@ -250,7 +250,7 @@ class FirebaseCloudFirestoreService {
       await _fireStore.collection('users').document(uid).updateData(
           {'location': GeoPoint(position.latitude, position.longitude)});
     } catch (e) {
-      print('Isaak could not upload position info');
+      print('Could not upload position info');
     }
   }
 
@@ -262,7 +262,7 @@ class FirebaseCloudFirestoreService {
           .document(uid)
           .updateData({'pushToken': pushToken});
     } catch (e) {
-      print('Isaak could not upload Push Token');
+      print('Could not upload push token');
     }
   }
 
@@ -274,7 +274,7 @@ class FirebaseCloudFirestoreService {
           .document(uid)
           .updateData({'role': convertRoleToString(role: role)});
     } catch (e) {
-      print('Isaak could not upload Push Token');
+      print('Could not upload role');
     }
   }
 }

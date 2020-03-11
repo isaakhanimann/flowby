@@ -35,27 +35,11 @@ class User {
     this.bio = map['bio'] ?? '';
     this.role = convertStringToRole(roleString: map['role']);
     this.isHidden = map['isHidden'] ?? false;
-    this.location = map['location'];
-    this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
     try {
-      this.imageVersionNumber = map['imageVersionNumber'].round();
+      this.location = map['location'];
     } catch (e) {
-      //could not convert double to int (because its infinity or NaN)
-      this.imageVersionNumber = 1;
+      this.location = _convertLocationToGeopoint(location: map['location']);
     }
-    this.skills = _convertFirebaseToDart(skillsOrWishes: map['skills']);
-    this.wishes = _convertFirebaseToDart(skillsOrWishes: map['wishes']);
-    this.skillKeywords = _getKeywordString(skills);
-    this.wishKeywords = _getKeywordString(wishes);
-  }
-
-  User.fromMapAlgolia({Map<String, dynamic> map}) {
-    this.username = map['username'] ?? '';
-    this.uid = map['uid'] ?? '';
-    this.bio = map['bio'] ?? '';
-    this.role = convertStringToRole(roleString: map['role']);
-    this.isHidden = map['isHidden'] ?? false;
-    this.location = _convertLocationToGeopoint(location: map['location']);
     this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
     try {
       this.imageVersionNumber = map['imageVersionNumber'].round();
