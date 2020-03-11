@@ -2,22 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TabHeader extends StatelessWidget {
-  final Widget leftIcon;
-  final Widget leftAction;
-  final Function leftOnPressed;
-  final Widget rightIcon;
-  final Widget rightAction;
-  final Function rightOnPressed;
+  final Icon leftIcon;
+  final Widget screenToNavigateToLeft;
+  final Function onPressedLeft;
+  final Icon rightIcon;
+  final Widget screenToNavigateToRight;
+  final Function onPressedRight;
   final Color backgroundColor;
   final bool whiteLogo;
 
   TabHeader({
     this.leftIcon,
-    this.leftAction,
-    this.leftOnPressed,
+    this.screenToNavigateToLeft,
+    this.onPressedLeft,
     this.rightIcon,
-    this.rightAction,
-    this.rightOnPressed,
+    this.screenToNavigateToRight,
+    this.onPressedRight,
     this.backgroundColor = Colors.white,
     this.whiteLogo = false,
   });
@@ -30,38 +30,41 @@ class TabHeader extends StatelessWidget {
         decoration: BoxDecoration(color: backgroundColor),
         child: Stack(fit: StackFit.expand, children: [
           Image(
-            image: whiteLogo ? AssetImage("assets/images/logo_flowby_white.png") : AssetImage("assets/images/logo_flowby.png"),
+            image: whiteLogo
+                ? AssetImage("assets/images/logo_flowby_white.png")
+                : AssetImage("assets/images/logo_flowby.png"),
           ),
           Positioned(
             left: 0,
             child: CupertinoButton(
                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: leftIcon == null ? Container() : leftIcon,
-                onPressed: leftOnPressed ?? () {
-                  Navigator.of(context, rootNavigator: true).push(
-                    CupertinoPageRoute<void>(
-                      builder: (context) {
-                        return leftAction;
-                      },
-                    ),
-                  );
-                }
-            ),
+                onPressed: onPressedLeft ??
+                    () {
+                      Navigator.of(context, rootNavigator: true).push(
+                        CupertinoPageRoute<void>(
+                          builder: (context) {
+                            return screenToNavigateToLeft;
+                          },
+                        ),
+                      );
+                    }),
           ),
           Positioned(
             right: 0,
             child: CupertinoButton(
               padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
               child: rightIcon == null ? Container() : rightIcon,
-              onPressed: rightOnPressed ?? () {
-                Navigator.of(context, rootNavigator: true).push(
-                  CupertinoPageRoute<void>(
-                    builder: (context) {
-                      return rightAction;
-                    },
-                  ),
-                );
-              },
+              onPressed: onPressedRight ??
+                  () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      CupertinoPageRoute<void>(
+                        builder: (context) {
+                          return screenToNavigateToRight;
+                        },
+                      ),
+                    );
+                  },
             ),
           ),
         ]),
@@ -69,4 +72,3 @@ class TabHeader extends StatelessWidget {
     );
   }
 }
-

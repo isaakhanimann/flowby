@@ -10,6 +10,9 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/models/announcement.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:Flowby/models/role.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -17,79 +20,138 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  Future<List<Announcement>> anouncementsFuture;
+  Future<List<Announcement>> announcementsFuture;
 
   @override
   void initState() {
     super.initState();
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    anouncementsFuture = cloudFirestoreService.getAnnouncements();
+    announcementsFuture = cloudFirestoreService.getAnnouncements();
   }
 
   @override
   Widget build(BuildContext context) {
+    final loggedInUser = Provider.of<User>(context);
+    final localRole = Provider.of<Role>(context);
+
+    final role = loggedInUser?.role ?? localRole;
+
     return SafeArea(
       bottom: false,
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              TabHeader(),
-              Expanded(
-                  child: FutureBuilder(
-                      future: anouncementsFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState != ConnectionState.done) {
-                          return CenteredLoadingIndicator();
-                        }
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Container(
-                              color: Colors.red,
-                              child: const Text('Something went wrong'),
-                            ),
-                          );
-                        }
-                        List<Announcement> announcements = List.from(
-                            snapshot.data); // to convert it to editable list
-                        return ListView.builder(
-                            itemCount: announcements.length + 1,
-                            itemBuilder: (context, index) {
-                              if (index == 0) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                                  child: Text(
-                                    'Announcements',
-                                    style: kTabTitleTextStyle,
-                                    textAlign: TextAlign.start,
-                                  ),
-                                );
-                              }
-                              return AnnouncementItem(
-                                announcement: announcements[index - 1],
-                              );
-                            });
-                      }))
-            ],
-          ),
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: FloatingActionButton(
-              onPressed: _addAnnouncement,
-              child: Icon(Feather.plus),
+          TabHeader(
+            leftIcon: Icon(Feather.info),
+            screenToNavigateToLeft: ExplanationScreen(
+              role: role,
             ),
-          )
+            rightIcon: Icon(Feather.plus),
+            onPressedRight: _addAnnouncement,
+          ),
+          Expanded(
+              child: FutureBuilder(
+                  future: announcementsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return CenteredLoadingIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Container(
+                          color: Colors.red,
+                          child: const Text('Something went wrong'),
+                        ),
+                      );
+                    }
+                    List<Announcement> announcements = List.from(
+                        snapshot.data); // to convert it to editable list
+                    return ListView.builder(
+                        itemCount: announcements.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                              child: Text(
+                                'Announcements',
+                                style: kTabTitleTextStyle,
+                                textAlign: TextAlign.start,
+                              ),
+                            );
+                          }
+                          return AnnouncementItem(
+                            announcement: announcements[index - 1],
+                          );
+                        });
+                  }))
         ],
       ),
     );
   }
 
   _addAnnouncement() async {
-    //create and upload an announcement here
+    final loggedInUser = Provider.of<User>(context, listen: false);
+    showCupertinoDialog(
+      context: context,
+      builder: (_) => Dialog(
+        loggedInUser: loggedInUser,
+      ),
+    );
+  }
+}
+
+class Dialog extends StatefulWidget {
+  final User loggedInUser;
+
+  Dialog({this.loggedInUser});
+
+  @override
+  _DialogState createState() => _DialogState();
+}
+
+class _DialogState extends State<Dialog> {
+  String announcementText = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+      title: Text('What do you want to announce?'),
+      content: CupertinoTextField(
+        onChanged: (newText) {
+          announcementText = newText;
+        },
+      ),
+      actions: <Widget>[
+        CupertinoDialogAction(
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+        ),
+        CupertinoDialogAction(
+          child: Text('Add'),
+          onPressed: () async {
+            final cloudFirestoreService =
+                Provider.of<FirebaseCloudFirestoreService>(context,
+                    listen: false);
+            Announcement announcement = Announcement(
+              uid: widget.loggedInUser.uid,
+              username: widget.loggedInUser.username,
+              imageFileName: widget.loggedInUser.imageFileName,
+              imageVersionNumber: widget.loggedInUser.imageVersionNumber,
+              timestamp: FieldValue.serverTimestamp(),
+              location: widget.loggedInUser.location,
+              text: announcementText,
+            );
+            await cloudFirestoreService.uploadAnnouncement(
+                announcement: announcement);
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+          isDefaultAction: true,
+        ),
+      ],
+    );
   }
 }
 

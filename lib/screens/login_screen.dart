@@ -204,11 +204,12 @@ class _LoginScreenState extends State<LoginScreen> {
       if (user != null) {
         if (user.isEmailVerified == false) {
           showCupertinoDialog(
-              context: context,
-              builder: (_) => VerifyEmailAlert(
-                    authService: authService,
-                    authResult: authResult,
-                  ));
+            context: context,
+            builder: (_) => VerifyEmailAlert(
+              authService: authService,
+              authResult: authResult,
+            ),
+          );
           setState(() {
             showSpinner = false;
           });

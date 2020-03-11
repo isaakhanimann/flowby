@@ -16,6 +16,7 @@ class Announcement {
       this.imageFileName,
       this.imageVersionNumber,
       this.timestamp,
+      this.location,
       this.text});
 
   Announcement.fromMap({Map<String, dynamic> map}) {

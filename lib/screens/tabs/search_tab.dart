@@ -42,8 +42,8 @@ class _SearchTabState extends State<SearchTab> {
       child: Column(
         children: <Widget>[
           TabHeader(
-            rightIcon: Icon(Feather.info),
-            rightAction: ExplanationScreen(
+            leftIcon: Icon(Feather.info),
+            screenToNavigateToLeft: ExplanationScreen(
               role: role,
             ),
           ),
