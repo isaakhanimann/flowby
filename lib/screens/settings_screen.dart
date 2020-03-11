@@ -23,6 +23,15 @@ class SettingsScreen extends StatelessWidget {
       child: CustomScrollView(
         slivers: <Widget>[
           CupertinoSliverNavigationBar(
+            leading: CupertinoButton(
+                padding: EdgeInsets.all(0),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Icon(
+                  Feather.chevron_left,
+                  size: 35,
+                )),
             backgroundColor: CupertinoColors.white,
             border: null,
             largeTitle: Text(

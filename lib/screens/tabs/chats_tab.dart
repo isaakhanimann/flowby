@@ -4,6 +4,7 @@ import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
+import 'package:Flowby/widgets/tab_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,70 +12,71 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/user.dart';
 
-class ChatsTab extends StatelessWidget {
+class ChatsTab extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
+  _ChatsTabState createState() => _ChatsTabState();
+}
+
+class _ChatsTabState extends State<ChatsTab> {
+  Stream<List<Chat>> chatsStream;
+
+  @override
+  void initState() {
+    super.initState();
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-
-    //listening to loggedInUser (so it rebuilds) is not necessary as the navigationscreen provides it and always has the up to date value because it is rebuilt whenever we navigate to it
     final loggedInUser = Provider.of<User>(context, listen: false);
+    chatsStream =
+        cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
+  }
 
-    return StreamBuilder(
-        stream:
-            cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting ||
-              snapshot.connectionState == ConnectionState.none) {
-            return CenteredLoadingIndicator();
-          }
-          List<Chat> chats =
-              List.from(snapshot.data); // to convert it to editable list
-          chats.sort((chat1, chat2) => (chat2.lastMessageTimestamp)
-              .compareTo(chat1.lastMessageTimestamp));
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          TabHeader(),
+          Expanded(
+              child: StreamBuilder(
+                  stream: chatsStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting ||
+                        snapshot.connectionState == ConnectionState.none) {
+                      return CenteredLoadingIndicator();
+                    }
+                    List<Chat> chats = List.from(
+                        snapshot.data); // to convert it to editable list
+                    chats.sort((chat1, chat2) => (chat2.lastMessageTimestamp)
+                        .compareTo(chat1.lastMessageTimestamp));
 
-          if (chats.isEmpty) {
-            return Center(
-              child:
-                  Text('You have no open chats', style: kCardSubtitleTextStyle),
-            );
-          }
-          return CustomScrollView(
-            semanticChildCount: chats.length,
-            slivers: <Widget>[
-              CupertinoSliverNavigationBar(
-                backgroundColor: CupertinoColors.white,
-                border: null,
-                middle: Padding(
-                    padding: EdgeInsets.only(bottom: 4),
-                    child: Image(
-                      image: AssetImage("assets/images/logo_flowby.png"),
-                    )),
-                largeTitle: Text(
-                  'Chats',
-                  style: kTabTitleTextStyle,
-                ),
-              ),
-              SliverSafeArea(
-                top: false,
-                sliver: SliverFixedExtentList(
-                  itemExtent: 90,
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      if (index < chats.length) {
-                        return ChatItem(
-                          chat: chats[index],
-                        );
-                      }
-                      return null;
-                    },
-                    childCount: chats.length,
-                  ),
-                ),
-              )
-            ],
-          );
-        });
+                    if (chats.isEmpty) {
+                      return Center(
+                        child: Text('You have no open chats',
+                            style: kCardSubtitleTextStyle),
+                      );
+                    }
+                    return ListView.builder(
+                        itemCount: chats.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                              child: Text(
+                                'Chats',
+                                style: kTabTitleTextStyle,
+                                textAlign: TextAlign.start,
+                              ),
+                            );
+                          }
+                          return ChatItem(
+                            chat: chats[index - 1],
+                          );
+                        });
+                  }))
+        ],
+      ),
+    );
   }
 }
 
