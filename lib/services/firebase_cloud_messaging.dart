@@ -57,80 +57,34 @@ class FirebaseCloudMessaging {
   }
 
   void showNotification({@required CloudMessage message}) async {
+    String groupKey = 'co.flowby';
+    String groupChannelId = 'grouped channel id';
+    String groupChannelName = 'grouped channel name';
+    String groupChannelDescription = 'grouped channel description';
+
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'co.flowby',
-      'Flowby',
-      'Flowby is a close by community of people that share their skills in person.',
+      groupChannelId,
+      groupChannelName,
+      groupChannelDescription,
       playSound: true,
       enableVibration: true,
       importance: Importance.Max,
       priority: Priority.High,
-      setAsGroupSummary: true,
-      groupKey: message.data['otherUid']
+      groupKey: groupKey,
     );
+
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
     await flutterLocalNotificationsPlugin.show(
-      5,
+      message.string.hashCode,
       message.title,
       message.body,
       platformChannelSpecifics,
       payload: message.string,
     );
-
-
-
-    String groupKey = 'com.android.example.WORK_EMAIL';
-    String groupChannelId = 'grouped channel id';
-    String groupChannelName = 'grouped channel name';
-    String groupChannelDescription = 'grouped channel description';
-
-// example based on https://developer.android.com/training/notify-user/group.html
-    AndroidNotificationDetails firstNotificationAndroidSpecifics =
-    AndroidNotificationDetails(
-        groupChannelId, groupChannelName, groupChannelDescription,
-        importance: Importance.Max,
-        priority: Priority.High,
-        groupKey: groupKey);
-    NotificationDetails firstNotificationPlatformSpecifics =
-    NotificationDetails(firstNotificationAndroidSpecifics, null);
-    await flutterLocalNotificationsPlugin.show(1, 'Alex Faarborg',
-        'You will not believe...', firstNotificationPlatformSpecifics);
-    AndroidNotificationDetails secondNotificationAndroidSpecifics =
-    AndroidNotificationDetails(
-        groupChannelId, groupChannelName, groupChannelDescription,
-        importance: Importance.Max,
-        priority: Priority.High,
-        groupKey: groupKey);
-    NotificationDetails secondNotificationPlatformSpecifics =
-    NotificationDetails(secondNotificationAndroidSpecifics, null);
-    await flutterLocalNotificationsPlugin.show(
-        2,
-        'Jeff Chang',
-        'Please join us to celebrate the...',
-        secondNotificationPlatformSpecifics);
-
-// create the summary notification required for older devices that pre-date Android 7.0 (API level 24)
-    List<String> lines = List<String>();
-    lines.add('Alex Faarborg  Check this out');
-    lines.add('Jeff Chang    Launch Party');
-    InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
-        lines,
-        contentTitle: '2 new messages',
-        summaryText: 'janedoe@example.com');
-
-
-    AndroidNotificationDetails androidPlatformChannelSpecifics2 =
-    AndroidNotificationDetails(
-        groupChannelId, groupChannelName, groupChannelDescription,
-        styleInformation: inboxStyleInformation,
-        groupKey: groupKey,
-        setAsGroupSummary: true);
-    NotificationDetails platformChannelSpecifics2 =
-    NotificationDetails(androidPlatformChannelSpecifics2, null);
-    await flutterLocalNotificationsPlugin.show(
-        10, 'Attention', 'Two new messages', platformChannelSpecifics2);
+    print(message.string.hashCode);
   }
 
   Future onSelectNotification(String payload) async {
@@ -156,8 +110,9 @@ class FirebaseCloudMessaging {
             otherUsername: message.data['otherUsername'],
             heroTag: message.data['otherUid'] + 'chats',
             otherImageFileName: message.data['otherImageFileName'],
-            otherImageVersionNumber: int.parse(message.data[
-                'otherImageVersionNumber']), // this is a random number for now, it should be otherImageVersionNumber
+            otherImageVersionNumber:
+                int.parse(message.data['otherImageVersionNumber']),
+            // this is a random number for now, it should be otherImageVersionNumber
             chatPath: message.data['chatPath'],
           );
         },
