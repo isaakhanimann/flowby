@@ -28,6 +28,7 @@ class _HomeTabState extends State<HomeTab> {
     super.initState();
     final algoliaService = Provider.of<AlgoliaService>(context, listen: false);
     usersFuture = algoliaService.getUsers(searchTerm: '');
+    print('algolia usersFuture: $usersFuture');
   }
 
   @override
@@ -59,6 +60,7 @@ class _HomeTabState extends State<HomeTab> {
                 future: usersFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
+                    print('snapshot of userFuture: ${snapshot.data}');
                     return CenteredLoadingIndicator();
                   }
                   if (snapshot.hasError) {

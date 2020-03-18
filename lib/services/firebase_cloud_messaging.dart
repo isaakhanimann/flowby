@@ -58,24 +58,79 @@ class FirebaseCloudMessaging {
 
   void showNotification({@required CloudMessage message}) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      Platform.isAndroid ? 'co.flowby' : 'co.flowby',
+      'co.flowby',
       'Flowby',
       'Flowby is a close by community of people that share their skills in person.',
       playSound: true,
       enableVibration: true,
       importance: Importance.Max,
       priority: Priority.High,
+      setAsGroupSummary: true,
+      groupKey: message.data['otherUid']
     );
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-      0,
+      5,
       message.title,
       message.body,
       platformChannelSpecifics,
       payload: message.string,
     );
+
+
+
+    String groupKey = 'com.android.example.WORK_EMAIL';
+    String groupChannelId = 'grouped channel id';
+    String groupChannelName = 'grouped channel name';
+    String groupChannelDescription = 'grouped channel description';
+
+// example based on https://developer.android.com/training/notify-user/group.html
+    AndroidNotificationDetails firstNotificationAndroidSpecifics =
+    AndroidNotificationDetails(
+        groupChannelId, groupChannelName, groupChannelDescription,
+        importance: Importance.Max,
+        priority: Priority.High,
+        groupKey: groupKey);
+    NotificationDetails firstNotificationPlatformSpecifics =
+    NotificationDetails(firstNotificationAndroidSpecifics, null);
+    await flutterLocalNotificationsPlugin.show(1, 'Alex Faarborg',
+        'You will not believe...', firstNotificationPlatformSpecifics);
+    AndroidNotificationDetails secondNotificationAndroidSpecifics =
+    AndroidNotificationDetails(
+        groupChannelId, groupChannelName, groupChannelDescription,
+        importance: Importance.Max,
+        priority: Priority.High,
+        groupKey: groupKey);
+    NotificationDetails secondNotificationPlatformSpecifics =
+    NotificationDetails(secondNotificationAndroidSpecifics, null);
+    await flutterLocalNotificationsPlugin.show(
+        2,
+        'Jeff Chang',
+        'Please join us to celebrate the...',
+        secondNotificationPlatformSpecifics);
+
+// create the summary notification required for older devices that pre-date Android 7.0 (API level 24)
+    List<String> lines = List<String>();
+    lines.add('Alex Faarborg  Check this out');
+    lines.add('Jeff Chang    Launch Party');
+    InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
+        lines,
+        contentTitle: '2 new messages',
+        summaryText: 'janedoe@example.com');
+
+
+    AndroidNotificationDetails androidPlatformChannelSpecifics2 =
+    AndroidNotificationDetails(
+        groupChannelId, groupChannelName, groupChannelDescription,
+        styleInformation: inboxStyleInformation,
+        groupKey: groupKey,
+        setAsGroupSummary: true);
+    NotificationDetails platformChannelSpecifics2 =
+    NotificationDetails(androidPlatformChannelSpecifics2, null);
+    await flutterLocalNotificationsPlugin.show(
+        10, 'Attention', 'Two new messages', platformChannelSpecifics2);
   }
 
   Future onSelectNotification(String payload) async {

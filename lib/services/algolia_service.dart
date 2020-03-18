@@ -20,6 +20,7 @@ class AlgoliaService {
     List<User> users = myhits.map((AlgoliaObjectSnapshot snap) {
       return User.fromMapAlgolia(map: snap.data);
     }).toList();
+    print('algolia users: $users');
     return users;
   }
 }

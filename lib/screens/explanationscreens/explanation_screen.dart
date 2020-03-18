@@ -62,7 +62,7 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
           onPageChangeCallback: _onPageChangeCallback,
         ),
         Positioned(
-          top: 25,
+          top: 50,
           right: 0,
           child: CupertinoButton(
             padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
