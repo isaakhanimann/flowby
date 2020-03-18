@@ -1,4 +1,5 @@
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
@@ -30,7 +31,7 @@ class _HomeTabState extends State<HomeTab> {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     scrollController.addListener(() {
-      if (scrollController.position.pixels < -60 && !isFetchingAnnouncements) {
+      if (scrollController.position.pixels < -250 && !isFetchingAnnouncements) {
         isFetchingAnnouncements = true;
         setState(() {
           announcementsFuture = cloudFirestoreService.getAnnouncements();
@@ -214,10 +215,24 @@ class AnnouncementItem extends StatelessWidget {
             radius: 30,
             heroTag: heroTag,
           ),
-          title: Text(
-            announcement.username,
-            overflow: TextOverflow.ellipsis,
-            style: kUsernameTextStyle,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Flexible(
+                flex: 2,
+                child: Text(
+                  announcement.username,
+                  overflow: TextOverflow.ellipsis,
+                  style: kUsernameTextStyle,
+                ),
+              ),
+              Text(
+                HelperFunctions.getTimestampAsString(
+                    timestamp: announcement.timestamp),
+                overflow: TextOverflow.ellipsis,
+                style: kChatTabTimestampTextStyle,
+              ),
+            ],
           ),
           subtitle: Text(
             announcement.text,
