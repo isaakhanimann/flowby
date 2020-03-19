@@ -4,11 +4,11 @@ import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
+import 'package:Flowby/widgets/custom_card.dart';
 import 'package:Flowby/widgets/tab_header.dart';
 import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/user.dart';
 
@@ -114,37 +114,16 @@ class ChatItem extends StatelessWidget {
       hasOtherBlocked = chat.hasUser1Blocked;
     }
 
-    return Card(
-      elevation: 0,
-      color: kCardBackgroundColor,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15))),
-      child: Center(
-        child: ListTile(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              CupertinoPageRoute<void>(
-                builder: (context) {
-                  return ChatScreen(
-                    loggedInUid: loggedInUser.uid,
-                    otherUid: otherUid,
-                    otherUsername: otherUsername,
-                    otherImageFileName: otherImageFileName,
-                    otherImageVersionNumber: otherImageVersionNumber,
-                    heroTag: heroTag,
-                    chatPath: chat.chatpath,
-                  );
-                },
-              ),
-            );
-          },
-          leading: ProfilePicture(
-              imageFileName: otherImageFileName,
-              imageVersionNumber: otherImageVersionNumber,
-              radius: 30,
-              heroTag: heroTag),
-          title: Row(
+    return CustomCard(
+      leading: ProfilePicture(
+          imageFileName: otherImageFileName,
+          imageVersionNumber: otherImageVersionNumber,
+          radius: 30,
+          heroTag: heroTag),
+      middle: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Flexible(
@@ -163,7 +142,10 @@ class ChatItem extends StatelessWidget {
               ),
             ],
           ),
-          subtitle: Row(
+          SizedBox(
+            height: 6,
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Expanded(
@@ -184,9 +166,25 @@ class ChatItem extends StatelessWidget {
                 )
             ],
           ),
-          trailing: Icon(Feather.chevron_right),
-        ),
+        ],
       ),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).push(
+          CupertinoPageRoute<void>(
+            builder: (context) {
+              return ChatScreen(
+                loggedInUid: loggedInUser.uid,
+                otherUid: otherUid,
+                otherUsername: otherUsername,
+                otherImageFileName: otherImageFileName,
+                otherImageVersionNumber: otherImageVersionNumber,
+                heroTag: heroTag,
+                chatPath: chat.chatpath,
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

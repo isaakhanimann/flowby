@@ -74,6 +74,8 @@ const kBlockedTextStyle =
     TextStyle(color: Colors.red, fontFamily: 'MuliRegular');
 const kSmallBlockedTextStyle =
     TextStyle(color: Colors.red, fontSize: 10, fontFamily: 'MontserratRegular');
+const kSettingsTextStyle =
+    TextStyle(fontSize: 15, fontFamily: 'MuliRegular', color: Colors.black);
 
 // Colors
 const kLoginBackgroundColor = Color(0xFF0D4FF7);

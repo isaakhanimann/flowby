@@ -2,6 +2,7 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
+import 'package:Flowby/widgets/custom_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -64,7 +65,10 @@ class SettingsScreen extends StatelessWidget {
     return [
       SettingsItem(
         leading: Icon(Feather.log_out, color: kLoginBackgroundColor),
-        title: Text('Sign Out'),
+        title: Text(
+          'Sign Out',
+          style: kSettingsTextStyle,
+        ),
         onTap: () {
           final authService =
               Provider.of<FirebaseAuthService>(context, listen: false);
@@ -78,37 +82,55 @@ class SettingsScreen extends StatelessWidget {
       ),
       SettingsItem(
         leading: Icon(Feather.share_2, color: kLoginBackgroundColor),
-        title: Text('Invite a friend'),
+        title: Text(
+          'Invite a friend',
+          style: kSettingsTextStyle,
+        ),
         onTap: () => Share.share(
             'Flowby is a close by community of people that share their skills in person. Join the adventure: https://flowby.app. Tell your friends about it, the more the merrier.'),
       ),
       SettingsItem(
           leading: Icon(Feather.message_circle, color: kLoginBackgroundColor),
-          title: Text('Feedback'),
+          title: Text(
+            'Feedback',
+            style: kSettingsTextStyle,
+          ),
           onTap: () {
             _launchURL(url: 'mailto:support@flowby.co?subject=Feedback');
           }),
       SettingsItem(
           leading: Icon(Feather.paperclip, color: kLoginBackgroundColor),
-          title: Text('Terms & Conditions'),
+          title: Text(
+            'Terms & Conditions',
+            style: kSettingsTextStyle,
+          ),
           onTap: () {
             _launchURL(url: 'https://flowby.co/terms-and-conditions.pdf');
           }),
       SettingsItem(
           leading: Icon(Feather.info, color: kLoginBackgroundColor),
-          title: Text('Privacy Policy'),
+          title: Text(
+            'Privacy Policy',
+            style: kSettingsTextStyle,
+          ),
           onTap: () {
             _launchURL(url: 'https://flowby.co/privacy-policy.pdf');
           }),
       SettingsItem(
           leading: Icon(Feather.user, color: kLoginBackgroundColor),
-          title: Text('Acceptable Use Policy'),
+          title: Text(
+            'Acceptable Use Policy',
+            style: kSettingsTextStyle,
+          ),
           onTap: () {
             _launchURL(url: 'https://flowby.co/acceptable-use-policy.pdf');
           }),
       SettingsItem(
         leading: Icon(Feather.trash, color: kLoginBackgroundColor),
-        title: Text('Delete Account'),
+        title: Text(
+          'Delete Account',
+          style: kSettingsTextStyle,
+        ),
         onTap: () {
           showCupertinoDialog(
             context: context,
@@ -179,18 +201,11 @@ class SettingsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: kCardBackgroundColor,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15))),
-      child: ListTile(
-        onTap: onTap,
-        leading: leading,
-        title: title,
-        trailing: Icon(Feather.chevron_right),
-      ),
+    return CustomCard(
+      leading: leading,
+      middle: title,
+      onPressed: onTap,
+      paddingInsideVertical: 20,
     );
   }
 }
