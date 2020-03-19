@@ -158,6 +158,9 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
             CupertinoTextField(
               autofocus: true,
               showCursor: true,
+              expands: true,
+              minLines: null,
+              maxLines: null,
               decoration: BoxDecoration(color: kCardBackgroundColor),
               onChanged: (newText) {
                 announcementText = newText;
