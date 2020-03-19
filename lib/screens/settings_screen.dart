@@ -70,6 +70,7 @@ class SettingsScreen extends StatelessWidget {
           style: kSettingsTextStyle,
         ),
         onTap: () {
+          print('sign out pressssssssssssssssssed');
           final authService =
               Provider.of<FirebaseAuthService>(context, listen: false);
           authService.signOut();

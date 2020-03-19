@@ -126,13 +126,10 @@ class ChatItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Flexible(
-                flex: 2,
-                child: Text(
-                  otherUsername,
-                  overflow: TextOverflow.ellipsis,
-                  style: kUsernameTextStyle,
-                ),
+              Text(
+                otherUsername,
+                overflow: TextOverflow.ellipsis,
+                style: kUsernameTextStyle,
               ),
               Text(
                 HelperFunctions.getTimestampAsString(

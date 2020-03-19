@@ -234,13 +234,10 @@ class AnnouncementItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Flexible(
-                flex: 2,
-                child: Text(
-                  announcement.user.username,
-                  overflow: TextOverflow.ellipsis,
-                  style: kUsernameTextStyle,
-                ),
+              Text(
+                announcement.user.username,
+                overflow: TextOverflow.ellipsis,
+                style: kUsernameTextStyle,
               ),
               Text(
                 HelperFunctions.getTimestampAsString(
@@ -262,7 +259,9 @@ class AnnouncementItem extends StatelessWidget {
           ),
         ],
       ),
-      onPressed: _onPressed,
+      onPressed: () {
+        _onPressed(context);
+      },
     );
   }
 

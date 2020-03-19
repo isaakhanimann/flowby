@@ -41,9 +41,7 @@ class CustomCard extends StatelessWidget {
               ),
             ],
           ),
-          onPressed: () {
-            onPressed(context);
-          }),
+          onPressed: onPressed),
     );
   }
 }
