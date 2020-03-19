@@ -99,7 +99,7 @@ class _HomeTabState extends State<HomeTab> {
                               ),
                             );
                           }
-                          return AnnouncementItem(
+                          return AnnounceItem(
                             announcement: announcements[index - 1],
                           );
                         });
@@ -236,7 +236,7 @@ class AnnouncementItem extends StatelessWidget {
           ),
           subtitle: Text(
             announcement.text,
-            maxLines: 1,
+            maxLines: 5,
             overflow: TextOverflow.ellipsis,
             style: kChatLastMessageTextStyle,
           ),
@@ -244,5 +244,120 @@ class AnnouncementItem extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class AnnounceItem extends StatelessWidget {
+  final Announcement announcement;
+
+  AnnounceItem({@required this.announcement});
+
+  @override
+  Widget build(BuildContext context) {
+    final heroTag = announcement.uid + 'announcements';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      child: CustomCard(
+        leading: ProfilePicture(
+          imageFileName: announcement.imageFileName,
+          imageVersionNumber: announcement.imageVersionNumber,
+          radius: 30,
+          heroTag: heroTag,
+        ),
+        middle: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  flex: 2,
+                  child: Text(
+                    announcement.username,
+                    overflow: TextOverflow.ellipsis,
+                    style: kUsernameTextStyle,
+                  ),
+                ),
+                Text(
+                  HelperFunctions.getTimestampAsString(
+                      timestamp: announcement.timestamp),
+                  overflow: TextOverflow.ellipsis,
+                  style: kChatTabTimestampTextStyle,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              announcement.text,
+              textAlign: TextAlign.start,
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
+              style: kChatLastMessageTextStyle,
+            ),
+          ],
+        ),
+        onPressed: _onPressed,
+      ),
+    );
+  }
+
+  _onPressed(BuildContext context) {
+    final loggedInUser = Provider.of<User>(context, listen: false);
+    User announcementUser = User(
+        uid: announcement.uid,
+        username: announcement.username,
+        imageFileName: announcement.imageFileName,
+        imageVersionNumber: announcement.imageVersionNumber);
+    final heroTag = announcement.uid + 'announcements';
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return ViewProfileScreen(
+              user: announcementUser,
+              heroTag: heroTag,
+              loggedInUser: loggedInUser);
+        },
+      ),
+    );
+  }
+}
+
+class CustomCard extends StatelessWidget {
+  final Widget leading;
+  final Widget middle;
+  final Function onPressed;
+
+  CustomCard(
+      {@required this.leading,
+      @required this.middle,
+      @required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        color: kCardBackgroundColor,
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        borderRadius: BorderRadius.circular(15),
+        child: Row(
+          children: <Widget>[
+            leading,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: middle,
+              ),
+            ),
+            Icon(
+              Feather.chevron_right,
+              color: kDefaultProfilePicColor,
+            ),
+          ],
+        ),
+        onPressed: () {
+          onPressed(context);
+        });
   }
 }
