@@ -4,6 +4,7 @@ import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/algolia_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
+import 'package:Flowby/widgets/custom_card.dart';
 import 'package:Flowby/widgets/no_results.dart';
 import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/tab_header.dart';
@@ -142,33 +143,16 @@ class ProfileItem extends StatelessWidget {
     final locationService =
         Provider.of<LocationService>(context, listen: false);
 
-    return Card(
-      elevation: 0,
-      color: kCardBackgroundColor,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15))),
-      child: Center(
-        child: ListTile(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              CupertinoPageRoute<void>(
-                builder: (context) {
-                  return ViewProfileScreen(
-                      user: user,
-                      heroTag: heroTag,
-                      loggedInUser: loggedInUser,
-                      showSkills: isSkillSearch);
-                },
-              ),
-            );
-          },
-          leading: ProfilePicture(
-              imageFileName: user.imageFileName,
-              imageVersionNumber: user.imageVersionNumber,
-              radius: 30,
-              heroTag: heroTag),
-          title: Row(
+    return CustomCard(
+      leading: ProfilePicture(
+          imageFileName: user.imageFileName,
+          imageVersionNumber: user.imageVersionNumber,
+          radius: 30,
+          heroTag: heroTag),
+      middle: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Flexible(
@@ -180,63 +164,74 @@ class ProfileItem extends StatelessWidget {
                   style: kUsernameTextStyle,
                 ),
               ),
-              Flexible(
-                fit: FlexFit.loose,
-                flex: 1,
-                child: FutureBuilder(
-                  future: locationService.distanceBetween(
-                      startLatitude: currentPosition?.latitude,
-                      startLongitude: currentPosition?.longitude,
-                      endLatitude: user.location?.latitude,
-                      endLongitude: user.location?.longitude),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done ||
-                        snapshot.hasError) {
-                      return Text('');
-                    }
+              FutureBuilder(
+                future: locationService.distanceBetween(
+                    startLatitude: currentPosition?.latitude,
+                    startLongitude: currentPosition?.longitude,
+                    endLatitude: user.location?.latitude,
+                    endLongitude: user.location?.longitude),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done ||
+                      snapshot.hasError) {
+                    return Text('');
+                  }
 
-                    int distanceInKm = snapshot.data;
-                    user.distanceInKm = distanceInKm;
-                    if (distanceInKm == null) {
-                      return Text('');
-                    }
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 1,
-                          child: Icon(
-                            Feather.navigation,
-                            size: 12,
-                          ),
+                  int distanceInKm = snapshot.data;
+                  user.distanceInKm = distanceInKm;
+                  if (distanceInKm == null) {
+                    return Text('');
+                  }
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: <Widget>[
+                      Flexible(
+                        flex: 1,
+                        child: Icon(
+                          Feather.navigation,
+                          size: 12,
                         ),
-                        Flexible(
-                          flex: 3,
-                          child: Text(
-                            ' ' + distanceInKm.toString() + 'km',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: kLocationTextStyle,
-                          ),
+                      ),
+                      Flexible(
+                        flex: 3,
+                        child: Text(
+                          ' ' + distanceInKm.toString() + 'km',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: kLocationTextStyle,
                         ),
-                      ],
-                    );
-                  },
-                ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
           ),
-          subtitle: Text(
+          SizedBox(
+            height: 6,
+          ),
+          Text(
             isSkillSearch ? user.skillKeywords : user.wishKeywords,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: kCardSubtitleTextStyle,
           ),
-          trailing: Icon(Feather.chevron_right),
-        ),
+        ],
       ),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).push(
+          CupertinoPageRoute<void>(
+            builder: (context) {
+              return ViewProfileScreen(
+                  user: user,
+                  heroTag: heroTag,
+                  loggedInUser: loggedInUser,
+                  showSkills: isSkillSearch);
+            },
+          ),
+        );
+      },
     );
   }
 }

@@ -62,8 +62,8 @@ const kChatTabTimestampTextStyle =
     TextStyle(color: Colors.black38, fontSize: 10, fontFamily: 'MuliRegular');
 const kChatLastMessageTextStyle = TextStyle(
     fontSize: 13, fontFamily: 'MuliRegular', color: kTextFieldTextColor);
-const kCardSubtitleTextStyle =
-    TextStyle(fontSize: 12, fontFamily: 'MuliRegular');
+const kCardSubtitleTextStyle = TextStyle(
+    fontSize: 12, fontFamily: 'MuliRegular', color: kTextFieldTextColor);
 const kCupertinoScaffoldTextStyle =
     TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratSemiBold');
 const kTabTitleTextStyle =

@@ -184,51 +184,48 @@ class AnnouncementItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: CustomCard(
-        leading: ProfilePicture(
-          imageFileName: announcement.user.imageFileName,
-          imageVersionNumber: announcement.user.imageVersionNumber,
-          radius: 30,
-          heroTag: heroTag,
-        ),
-        middle: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Flexible(
-                  flex: 2,
-                  child: Text(
-                    announcement.user.username,
-                    overflow: TextOverflow.ellipsis,
-                    style: kUsernameTextStyle,
-                  ),
-                ),
-                Text(
-                  HelperFunctions.getTimestampAsString(
-                      timestamp: announcement.timestamp),
-                  overflow: TextOverflow.ellipsis,
-                  style: kChatTabTimestampTextStyle,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Text(
-              announcement.text,
-              textAlign: TextAlign.start,
-              maxLines: 5,
-              overflow: TextOverflow.ellipsis,
-              style: kChatLastMessageTextStyle,
-            ),
-          ],
-        ),
-        onPressed: _onPressed,
+    return CustomCard(
+      leading: ProfilePicture(
+        imageFileName: announcement.user.imageFileName,
+        imageVersionNumber: announcement.user.imageVersionNumber,
+        radius: 30,
+        heroTag: heroTag,
       ),
+      middle: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Flexible(
+                flex: 2,
+                child: Text(
+                  announcement.user.username,
+                  overflow: TextOverflow.ellipsis,
+                  style: kUsernameTextStyle,
+                ),
+              ),
+              Text(
+                HelperFunctions.getTimestampAsString(
+                    timestamp: announcement.timestamp),
+                overflow: TextOverflow.ellipsis,
+                style: kChatTabTimestampTextStyle,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Text(
+            announcement.text,
+            textAlign: TextAlign.start,
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+            style: kChatLastMessageTextStyle,
+          ),
+        ],
+      ),
+      onPressed: _onPressed,
     );
   }
 
