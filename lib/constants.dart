@@ -67,7 +67,7 @@ const kCardSubtitleTextStyle =
 const kCupertinoScaffoldTextStyle =
     TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratSemiBold');
 const kTabTitleTextStyle =
-    TextStyle(fontFamily: 'MontserratBold', fontSize: 33);
+    TextStyle(fontFamily: 'MontserratBold', fontSize: 33, color: Colors.black);
 const kSmallTabTitleTextStyle =
     TextStyle(fontFamily: 'MontserratBold', fontSize: 20);
 const kBlockedTextStyle =

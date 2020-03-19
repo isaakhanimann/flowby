@@ -66,6 +66,7 @@ class FirebaseCloudFirestoreService {
       await _fireStore.collection('announcements').add(announcement.toMap());
     } catch (e) {
       print('Could not upload announcement');
+      print(e);
     }
   }
 

@@ -14,6 +14,7 @@ import 'package:Flowby/models/announcement.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Flowby/models/role.dart';
+import 'package:Flowby/widgets/custom_card.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -99,8 +100,12 @@ class _HomeTabState extends State<HomeTab> {
                               ),
                             );
                           }
-                          return AnnounceItem(
-                            announcement: announcements[index - 1],
+                          Announcement announcement = announcements[index - 1];
+                          return AnnouncementItem(
+                            announcement: announcement,
+                            heroTag: announcement.user.uid +
+                                announcement.timestamp.toString() +
+                                'announcements',
                           );
                         });
                   }))
@@ -154,13 +159,10 @@ class _DialogState extends State<Dialog> {
             final cloudFirestoreService =
                 Provider.of<FirebaseCloudFirestoreService>(context,
                     listen: false);
+
             Announcement announcement = Announcement(
-              uid: widget.loggedInUser.uid,
-              username: widget.loggedInUser.username,
-              imageFileName: widget.loggedInUser.imageFileName,
-              imageVersionNumber: widget.loggedInUser.imageVersionNumber,
+              user: widget.loggedInUser,
               timestamp: FieldValue.serverTimestamp(),
-              location: widget.loggedInUser.location,
               text: announcementText,
             );
             await cloudFirestoreService.uploadAnnouncement(
@@ -176,92 +178,18 @@ class _DialogState extends State<Dialog> {
 
 class AnnouncementItem extends StatelessWidget {
   final Announcement announcement;
+  final String heroTag;
 
-  AnnouncementItem({@required this.announcement});
-
-  @override
-  Widget build(BuildContext context) {
-    final heroTag = announcement.uid + 'announcements';
-    final loggedInUser = Provider.of<User>(context, listen: false);
-
-    return Card(
-      elevation: 0,
-      color: kCardBackgroundColor,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15))),
-      child: Center(
-        child: ListTile(
-          onTap: () {
-            User announcementUser = User(
-                uid: announcement.uid,
-                username: announcement.username,
-                imageFileName: announcement.imageFileName,
-                imageVersionNumber: announcement.imageVersionNumber);
-            Navigator.of(context, rootNavigator: true).push(
-              CupertinoPageRoute<void>(
-                builder: (context) {
-                  return ViewProfileScreen(
-                      user: announcementUser,
-                      heroTag: heroTag,
-                      loggedInUser: loggedInUser);
-                },
-              ),
-            );
-          },
-          leading: ProfilePicture(
-            imageFileName: announcement.imageFileName,
-            imageVersionNumber: announcement.imageVersionNumber,
-            radius: 30,
-            heroTag: heroTag,
-          ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Flexible(
-                flex: 2,
-                child: Text(
-                  announcement.username,
-                  overflow: TextOverflow.ellipsis,
-                  style: kUsernameTextStyle,
-                ),
-              ),
-              Text(
-                HelperFunctions.getTimestampAsString(
-                    timestamp: announcement.timestamp),
-                overflow: TextOverflow.ellipsis,
-                style: kChatTabTimestampTextStyle,
-              ),
-            ],
-          ),
-          subtitle: Text(
-            announcement.text,
-            maxLines: 5,
-            overflow: TextOverflow.ellipsis,
-            style: kChatLastMessageTextStyle,
-          ),
-          trailing: Icon(Feather.chevron_right),
-        ),
-      ),
-    );
-  }
-}
-
-class AnnounceItem extends StatelessWidget {
-  final Announcement announcement;
-
-  AnnounceItem({@required this.announcement});
+  AnnouncementItem({@required this.announcement, @required this.heroTag});
 
   @override
   Widget build(BuildContext context) {
-    final heroTag = announcement.uid + 'announcements';
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: CustomCard(
         leading: ProfilePicture(
-          imageFileName: announcement.imageFileName,
-          imageVersionNumber: announcement.imageVersionNumber,
+          imageFileName: announcement.user.imageFileName,
+          imageVersionNumber: announcement.user.imageVersionNumber,
           radius: 30,
           heroTag: heroTag,
         ),
@@ -274,7 +202,7 @@ class AnnounceItem extends StatelessWidget {
                 Flexible(
                   flex: 2,
                   child: Text(
-                    announcement.username,
+                    announcement.user.username,
                     overflow: TextOverflow.ellipsis,
                     style: kUsernameTextStyle,
                   ),
@@ -306,12 +234,7 @@ class AnnounceItem extends StatelessWidget {
 
   _onPressed(BuildContext context) {
     final loggedInUser = Provider.of<User>(context, listen: false);
-    User announcementUser = User(
-        uid: announcement.uid,
-        username: announcement.username,
-        imageFileName: announcement.imageFileName,
-        imageVersionNumber: announcement.imageVersionNumber);
-    final heroTag = announcement.uid + 'announcements';
+    User announcementUser = announcement.user;
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
@@ -322,42 +245,5 @@ class AnnounceItem extends StatelessWidget {
         },
       ),
     );
-  }
-}
-
-class CustomCard extends StatelessWidget {
-  final Widget leading;
-  final Widget middle;
-  final Function onPressed;
-
-  CustomCard(
-      {@required this.leading,
-      @required this.middle,
-      @required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoButton(
-        color: kCardBackgroundColor,
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        borderRadius: BorderRadius.circular(15),
-        child: Row(
-          children: <Widget>[
-            leading,
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: middle,
-              ),
-            ),
-            Icon(
-              Feather.chevron_right,
-              color: kDefaultProfilePicColor,
-            ),
-          ],
-        ),
-        onPressed: () {
-          onPressed(context);
-        });
   }
 }
