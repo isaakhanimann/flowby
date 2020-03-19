@@ -3,6 +3,7 @@ import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
+import 'package:Flowby/widgets/custom_dialog.dart';
 import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/tab_header.dart';
 import 'package:flutter/cupertino.dart';
@@ -117,27 +118,12 @@ class _HomeTabState extends State<HomeTab> {
   _addAnnouncement() async {
     final loggedInUser = Provider.of<User>(context, listen: false);
 
-    showGeneralDialog(
-        barrierColor: Colors.white.withOpacity(0.3),
-        transitionBuilder: (context, a1, a2, widget) {
-          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
-          return Transform(
-            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
-            child: Opacity(
-              opacity: a1.value,
-              child: widget,
-            ),
-          );
-        },
-        transitionDuration: Duration(milliseconds: 150),
-        barrierDismissible: true,
-        barrierLabel: '',
-        context: context,
-        pageBuilder: (context, animation1, animation2) {
-          return AddAnnouncementDialog(
-            loggedInUser: loggedInUser,
-          );
-        });
+    HelperFunctions.showCustomDialog(
+      context: context,
+      dialog: AddAnnouncementDialog(
+        loggedInUser: loggedInUser,
+      ),
+    );
   }
 }
 
@@ -155,8 +141,7 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      elevation: 5,
+    return CustomDialog(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         child: Column(
@@ -223,9 +208,6 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
           ],
         ),
       ),
-      backgroundColor: kCardBackgroundColor,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20))),
     );
   }
 }
