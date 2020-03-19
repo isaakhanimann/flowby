@@ -116,62 +116,116 @@ class _HomeTabState extends State<HomeTab> {
 
   _addAnnouncement() async {
     final loggedInUser = Provider.of<User>(context, listen: false);
-    showCupertinoDialog(
-      context: context,
-      builder: (_) => Dialog(
-        loggedInUser: loggedInUser,
-      ),
-    );
+
+    showGeneralDialog(
+        barrierColor: Colors.white.withOpacity(0.3),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: Opacity(
+              opacity: a1.value,
+              child: widget,
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 150),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {
+          return AddAnnouncementDialog(
+            loggedInUser: loggedInUser,
+          );
+        });
   }
 }
 
-class Dialog extends StatefulWidget {
+class AddAnnouncementDialog extends StatefulWidget {
   final User loggedInUser;
 
-  Dialog({this.loggedInUser});
+  AddAnnouncementDialog({this.loggedInUser});
 
   @override
-  _DialogState createState() => _DialogState();
+  _AddAnnouncementDialogState createState() => _AddAnnouncementDialogState();
 }
 
-class _DialogState extends State<Dialog> {
+class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
   String announcementText = '';
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Text('What do you want to announce?'),
-      content: CupertinoTextField(
-        onChanged: (newText) {
-          announcementText = newText;
-        },
-      ),
-      actions: <Widget>[
-        CupertinoDialogAction(
-          child: Text('Cancel'),
-          onPressed: () {
-            Navigator.of(context, rootNavigator: true).pop();
-          },
-        ),
-        CupertinoDialogAction(
-          child: Text('Add'),
-          onPressed: () async {
-            final cloudFirestoreService =
-                Provider.of<FirebaseCloudFirestoreService>(context,
-                    listen: false);
+    return Dialog(
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              'What do you want to announce?',
+              style: kDialogTitleTextStyle,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            CupertinoTextField(
+              autofocus: true,
+              showCursor: true,
+              decoration: BoxDecoration(color: kCardBackgroundColor),
+              onChanged: (newText) {
+                announcementText = newText;
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                CupertinoButton(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'MuliRegular',
+                      color: Colors.black,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                ),
+                CupertinoButton(
+                  child: Text(
+                    'Add',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'MuliBold',
+                      color: kDefaultProfilePicColor,
+                    ),
+                  ),
+                  onPressed: () async {
+                    final cloudFirestoreService =
+                        Provider.of<FirebaseCloudFirestoreService>(context,
+                            listen: false);
 
-            Announcement announcement = Announcement(
-              user: widget.loggedInUser,
-              timestamp: FieldValue.serverTimestamp(),
-              text: announcementText,
-            );
-            await cloudFirestoreService.uploadAnnouncement(
-                announcement: announcement);
-            Navigator.of(context, rootNavigator: true).pop();
-          },
-          isDefaultAction: true,
+                    Announcement announcement = Announcement(
+                      user: widget.loggedInUser,
+                      timestamp: FieldValue.serverTimestamp(),
+                      text: announcementText,
+                    );
+                    await cloudFirestoreService.uploadAnnouncement(
+                        announcement: announcement);
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                ),
+              ],
+            )
+          ],
         ),
-      ],
+      ),
+      backgroundColor: kCardBackgroundColor,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20))),
     );
   }
 }
@@ -185,6 +239,7 @@ class AnnouncementItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
+      paddingInsideVertical: 15,
       leading: ProfilePicture(
         imageFileName: announcement.user.imageFileName,
         imageVersionNumber: announcement.user.imageVersionNumber,
