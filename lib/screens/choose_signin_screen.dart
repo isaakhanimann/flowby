@@ -138,7 +138,7 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                     Feather.chevron_left,
                     size: 30,
                   ),
-                  leftOnPressed: () => Navigator.of(context).pop(),
+                  onPressedLeft: () => Navigator.of(context).pop(),
                 ),
             ]),
           ),

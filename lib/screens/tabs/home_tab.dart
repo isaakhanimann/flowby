@@ -1,19 +1,21 @@
 import 'package:Flowby/constants.dart';
-import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
+import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
-import 'package:Flowby/services/algolia_service.dart';
+import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
-import 'package:Flowby/widgets/no_results.dart';
+import 'package:Flowby/widgets/custom_dialog.dart';
+import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/tab_header.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:Flowby/services/location_service.dart';
+import 'package:Flowby/models/user.dart';
+import 'package:Flowby/models/announcement.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Flowby/models/role.dart';
+import 'package:Flowby/widgets/custom_card.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -21,13 +23,30 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  Future<List<User>> usersFuture;
+  Future<List<Announcement>> announcementsFuture;
+  bool isFetchingAnnouncements = true;
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    final algoliaService = Provider.of<AlgoliaService>(context, listen: false);
-    usersFuture = algoliaService.getUsers(searchTerm: '');
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    scrollController.addListener(() {
+      if (scrollController.position.pixels < -250 && !isFetchingAnnouncements) {
+        isFetchingAnnouncements = true;
+        setState(() {
+          announcementsFuture = cloudFirestoreService.getAnnouncements();
+        });
+      }
+    });
+    announcementsFuture = cloudFirestoreService.getAnnouncements();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -40,253 +59,226 @@ class _HomeTabState extends State<HomeTab> {
     return SafeArea(
       bottom: false,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           TabHeader(
-            rightIcon: Icon(Feather.info),
-            rightAction: ExplanationScreen(
+            leftIcon: Icon(Feather.info),
+            screenToNavigateToLeft: ExplanationScreen(
               role: role,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: SearchBar(
-                isSkillSearch: role == Role.consumer,
-                onSearchSubmitted: _onSearchSubmitted,
-                onSearchChanged: _onSearchChanged),
+            rightIcon: Icon(Feather.plus),
+            onPressedRight: _addAnnouncement,
           ),
           Expanded(
-            child: FutureBuilder(
-                future: usersFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return CenteredLoadingIndicator();
-                  }
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Container(
-                        color: Colors.red,
-                        child: const Text('Something went wrong'),
-                      ),
-                    );
-                  }
-
-                  List<User> allMatchedUsers =
-                      List.from(snapshot.data); // to convert it editable list
-                  List<User> allVisibleUsers = allMatchedUsers
-                      .where(
-                          (u) => !u.isHidden && !(u.uid == loggedInUser?.uid))
-                      .toList();
-                  List<User> searchResultUsers;
-
-                  if (role == Role.consumer) {
-                    searchResultUsers = allVisibleUsers
-                        .where((u) => u.role == Role.provider)
-                        .toList();
-                  } else {
-                    searchResultUsers = allVisibleUsers
-                        .where((u) => u.role == Role.consumer)
-                        .toList();
-                  }
-
-                  if (searchResultUsers.length == 0 && loggedInUser != null) {
-                    return NoResults(
-                      isSkillSelected: role == Role.consumer,
-                      uidOfLoggedInUser: loggedInUser.uid,
-                    );
-                  }
-                  return ListView.builder(
-                    itemBuilder: (context, index) {
-                      return ProfileItem(
-                        user: searchResultUsers[index],
-                        isSkillSearch: role == Role.consumer,
+              child: FutureBuilder(
+                  future: announcementsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return CenteredLoadingIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Container(
+                          color: Colors.red,
+                          child: const Text('Something went wrong'),
+                        ),
                       );
-                    },
-                    itemCount: searchResultUsers.length,
-                  );
-                }),
-          ),
+                    }
+                    List<Announcement> announcements = List.from(
+                        snapshot.data); // to convert it to editable list
+                    isFetchingAnnouncements = false;
+                    return ListView.builder(
+                        controller: scrollController,
+                        itemCount: announcements.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                              child: Text(
+                                'Announcements',
+                                style: kTabTitleTextStyle,
+                                textAlign: TextAlign.start,
+                              ),
+                            );
+                          }
+                          Announcement announcement = announcements[index - 1];
+                          return AnnouncementItem(
+                            announcement: announcement,
+                            heroTag: announcement.user.uid +
+                                announcement.timestamp.toString() +
+                                'announcements',
+                          );
+                        });
+                  }))
         ],
       ),
     );
   }
 
-  _onSearchSubmitted(String submittedSearchTerm) {
-    final algoliaService = Provider.of<AlgoliaService>(context, listen: false);
-    setState(() {
-      usersFuture = algoliaService.getUsers(searchTerm: submittedSearchTerm);
-    });
-  }
+  _addAnnouncement() async {
+    final loggedInUser = Provider.of<User>(context, listen: false);
 
-  _onSearchChanged(String newSearchTerm) {
-    if (newSearchTerm == '') {
-      final algoliaService =
-          Provider.of<AlgoliaService>(context, listen: false);
-      setState(() {
-        usersFuture = algoliaService.getUsers(searchTerm: newSearchTerm);
-      });
-    }
+    HelperFunctions.showCustomDialog(
+      context: context,
+      dialog: AddAnnouncementDialog(
+        loggedInUser: loggedInUser,
+      ),
+    );
   }
 }
 
-class ProfileItem extends StatelessWidget {
-  final isSkillSearch;
-  final User user;
+class AddAnnouncementDialog extends StatefulWidget {
+  final User loggedInUser;
 
-  ProfileItem({@required this.user, this.isSkillSearch = true});
+  AddAnnouncementDialog({this.loggedInUser});
+
+  @override
+  _AddAnnouncementDialogState createState() => _AddAnnouncementDialogState();
+}
+
+class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
+  String announcementText = '';
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUser = Provider.of<User>(context);
-    final String heroTag = user.uid + 'home';
-    var currentPosition = Provider.of<Position>(context);
-    final locationService =
-        Provider.of<LocationService>(context, listen: false);
-
-    return Card(
-      elevation: 0,
-      color: kCardBackgroundColor,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15))),
-      child: Center(
-        child: ListTile(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              CupertinoPageRoute<void>(
-                builder: (context) {
-                  return ViewProfileScreen(
-                      user: user,
-                      heroTag: heroTag,
-                      loggedInUser: loggedInUser,
-                      showSkills: isSkillSearch);
-                },
-              ),
-            );
-          },
-          leading: CachedNetworkImage(
-            imageUrl:
-                "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media&version=${user.imageVersionNumber}",
-            imageBuilder: (context, imageProvider) {
-              return Hero(
-                transitionOnUserGestures: true,
-                tag: heroTag,
-                child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: imageProvider),
-              );
-            },
-            placeholder: (context, url) => CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+    return CustomDialog(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              'What do you want to announce?',
+              style: kDialogTitleTextStyle,
+              textAlign: TextAlign.center,
             ),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Flexible(
-                flex: 1,
-                child: Text(
-                  user.username,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: kUsernameTextStyle,
-                ),
-              ),
-              Flexible(
-                fit: FlexFit.loose,
-                flex: 1,
-                child: FutureBuilder(
-                  future: locationService.distanceBetween(
-                      startLatitude: currentPosition?.latitude,
-                      startLongitude: currentPosition?.longitude,
-                      endLatitude: user.location?.latitude,
-                      endLongitude: user.location?.longitude),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done ||
-                        snapshot.hasError) {
-                      return Text('');
-                    }
-
-                    int distanceInKm = snapshot.data;
-                    user.distanceInKm = distanceInKm;
-                    if (distanceInKm == null) {
-                      return Text('');
-                    }
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 1,
-                          child: Icon(
-                            Feather.navigation,
-                            size: 12,
-                          ),
-                        ),
-                        Flexible(
-                          flex: 3,
-                          child: Text(
-                            ' ' + distanceInKm.toString() + 'km',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: kLocationTextStyle,
-                          ),
-                        ),
-                      ],
-                    );
+            SizedBox(
+              height: 15,
+            ),
+            CupertinoTextField(
+              autofocus: true,
+              showCursor: true,
+              expands: true,
+              minLines: null,
+              maxLines: null,
+              decoration: BoxDecoration(color: kCardBackgroundColor),
+              onChanged: (newText) {
+                announcementText = newText;
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                CupertinoButton(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'MuliRegular',
+                      color: Colors.black,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
                   },
                 ),
-              ),
-            ],
-          ),
-          subtitle: Text(
-            isSkillSearch ? user.skillKeywords : user.wishKeywords,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: kCardSubtitleTextStyle,
-          ),
-          trailing: Icon(Feather.chevron_right),
+                CupertinoButton(
+                  child: Text(
+                    'Add',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'MuliBold',
+                      color: kDefaultProfilePicColor,
+                    ),
+                  ),
+                  onPressed: () async {
+                    final cloudFirestoreService =
+                        Provider.of<FirebaseCloudFirestoreService>(context,
+                            listen: false);
+
+                    Announcement announcement = Announcement(
+                      user: widget.loggedInUser,
+                      timestamp: FieldValue.serverTimestamp(),
+                      text: announcementText,
+                    );
+                    await cloudFirestoreService.uploadAnnouncement(
+                        announcement: announcement);
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );
   }
 }
 
-class SearchBar extends StatelessWidget {
-  SearchBar(
-      {@required this.isSkillSearch,
-      @required this.onSearchChanged,
-      @required this.onSearchSubmitted});
+class AnnouncementItem extends StatelessWidget {
+  final Announcement announcement;
+  final String heroTag;
 
-  final isSkillSearch;
-  final Function onSearchChanged;
-  final Function onSearchSubmitted;
+  AnnouncementItem({@required this.announcement, @required this.heroTag});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-      child: CupertinoTextField(
-        decoration: BoxDecoration(
-            color: kCardBackgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-        placeholder: 'Search Skills',
-        placeholderStyle: kSearchPlaceHolderTextStyle,
-        prefix: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Icon(
-            Feather.search,
-            color: CupertinoColors.black,
+    return CustomCard(
+      paddingInsideVertical: 15,
+      leading: ProfilePicture(
+        imageFileName: announcement.user.imageFileName,
+        imageVersionNumber: announcement.user.imageVersionNumber,
+        radius: 30,
+        heroTag: heroTag,
+      ),
+      middle: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                announcement.user.username,
+                overflow: TextOverflow.ellipsis,
+                style: kUsernameTextStyle,
+              ),
+              Text(
+                HelperFunctions.getTimestampAsString(
+                    timestamp: announcement.timestamp),
+                overflow: TextOverflow.ellipsis,
+                style: kChatTabTimestampTextStyle,
+              ),
+            ],
           ),
-        ),
-        onChanged: onSearchChanged,
-        onSubmitted: onSearchSubmitted,
-        style: kSearchTextStyle,
-        clearButtonMode: OverlayVisibilityMode.editing,
+          SizedBox(
+            height: 5,
+          ),
+          Text(
+            announcement.text,
+            textAlign: TextAlign.start,
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+            style: kChatLastMessageTextStyle,
+          ),
+        ],
+      ),
+      onPressed: () {
+        _onPressed(context);
+      },
+    );
+  }
+
+  _onPressed(BuildContext context) {
+    final loggedInUser = Provider.of<User>(context, listen: false);
+    User announcementUser = announcement.user;
+    Navigator.of(context, rootNavigator: true).push(
+      CupertinoPageRoute<void>(
+        builder: (context) {
+          return ViewProfileScreen(
+              user: announcementUser,
+              heroTag: heroTag,
+              loggedInUser: loggedInUser);
+        },
       ),
     );
   }

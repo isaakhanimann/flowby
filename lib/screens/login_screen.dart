@@ -2,7 +2,6 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/screens/reset_password_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
-import 'package:Flowby/services/lifecycle_event_handler.dart';
 import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
@@ -45,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // This prevents the user to be logged in without having verified the email.
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
-        /*
+    /*
     WidgetsBinding.instance
         .addObserver(LifecycleEventHandler(detachedCallBack: () async {
       //debugPrint('detached...');
@@ -205,11 +204,12 @@ class _LoginScreenState extends State<LoginScreen> {
       if (user != null) {
         if (user.isEmailVerified == false) {
           showCupertinoDialog(
-              context: context,
-              builder: (_) => VerifyEmailAlert(
-                    authService: authService,
-                    authResult: authResult,
-                  ));
+            context: context,
+            builder: (_) => VerifyEmailAlert(
+              authService: authService,
+              authResult: authResult,
+            ),
+          );
           setState(() {
             showSpinner = false;
           });
