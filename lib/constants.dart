@@ -60,20 +60,28 @@ const kUsernameTextStyle =
     TextStyle(fontFamily: 'MuliBold', color: kKeywordHeaderColor);
 const kChatTabTimestampTextStyle =
     TextStyle(color: Colors.black38, fontSize: 10, fontFamily: 'MuliRegular');
-const kChatLastMessageTextStyle =
-    TextStyle(fontSize: 13, fontFamily: 'MuliRegular');
-const kCardSubtitleTextStyle =
-    TextStyle(fontSize: 12, fontFamily: 'MuliRegular');
+const kChatLastMessageTextStyle = TextStyle(
+    fontSize: 13, fontFamily: 'MuliRegular', color: kTextFieldTextColor);
+const kCardSubtitleTextStyle = TextStyle(
+    fontSize: 12, fontFamily: 'MuliRegular', color: kTextFieldTextColor);
 const kCupertinoScaffoldTextStyle =
     TextStyle(color: CupertinoColors.white, fontFamily: 'MontserratSemiBold');
 const kTabTitleTextStyle =
-    TextStyle(fontFamily: 'MontserratBold', fontSize: 33);
+    TextStyle(fontFamily: 'MontserratBold', fontSize: 33, color: Colors.black);
 const kSmallTabTitleTextStyle =
     TextStyle(fontFamily: 'MontserratBold', fontSize: 20);
 const kBlockedTextStyle =
     TextStyle(color: Colors.red, fontFamily: 'MuliRegular');
 const kSmallBlockedTextStyle =
     TextStyle(color: Colors.red, fontSize: 10, fontFamily: 'MontserratRegular');
+const kSettingsTextStyle =
+    TextStyle(fontSize: 15, fontFamily: 'MuliRegular', color: Colors.black);
+const kDialogTitleTextStyle = TextStyle(
+  fontSize: 25,
+  fontFamily: 'MontserratBold',
+  height: 1.3,
+  color: Colors.black,
+);
 
 // Colors
 const kLoginBackgroundColor = Color(0xFF0D4FF7);

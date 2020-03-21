@@ -1,9 +1,8 @@
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/show_profile_picture_screen.dart';
-import 'package:Flowby/widgets/centered_loading_indicator.dart';
+import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/route_transitions/scale_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -42,25 +41,11 @@ class ListViewOfUserInfos extends StatelessWidget {
                   heroTag: heroTag ?? user.imageFileName,
                 )));
               },
-              child: CachedNetworkImage(
-                imageUrl:
-                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media&version=${user.imageVersionNumber}",
-                imageBuilder: (context, imageProvider) {
-                  return Hero(
-                    transitionOnUserGestures: true,
-                    tag: heroTag ?? user.imageFileName,
-                    child: CircleAvatar(
-                        radius: 60,
-                        backgroundColor: Colors.grey,
-                        backgroundImage: imageProvider),
-                  );
-                },
-                placeholder: (context, url) => SizedBox(
-                  height: 120,
-                  child: CenteredLoadingIndicator(),
-                ),
-                errorWidget: (context, url, error) => Icon(Icons.error),
-              ),
+              child: ProfilePicture(
+                  imageFileName: user.imageFileName,
+                  imageVersionNumber: user.imageVersionNumber,
+                  radius: 60,
+                  heroTag: heroTag ?? user.imageFileName),
             ),
           ),
           if (user.distanceInKm != null)

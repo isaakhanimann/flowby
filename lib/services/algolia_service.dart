@@ -18,7 +18,7 @@ class AlgoliaService {
     List<AlgoliaObjectSnapshot> myhits = querySnap.hits;
 
     List<User> users = myhits.map((AlgoliaObjectSnapshot snap) {
-      return User.fromMapAlgolia(map: snap.data);
+      return User.fromMap(map: snap.data);
     }).toList();
     print('algolia users: $users');
     return users;

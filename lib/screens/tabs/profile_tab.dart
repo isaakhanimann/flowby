@@ -18,9 +18,9 @@ class ProfileTab extends StatelessWidget {
       child: Column(children: <Widget>[
         TabHeader(
           leftIcon: Icon(Feather.settings),
-          leftAction: SettingsScreen(user: loggedInUser),
+          screenToNavigateToLeft: SettingsScreen(user: loggedInUser),
           rightIcon: Icon(Feather.edit),
-          rightAction: EditProfileScreen(user: loggedInUser),
+          screenToNavigateToRight: EditProfileScreen(user: loggedInUser),
         ),
         Expanded(child: ListViewOfUserInfos(user: loggedInUser)),
       ]),
