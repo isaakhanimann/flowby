@@ -71,6 +71,14 @@ class _HomeTabState extends State<HomeTab> {
             rightIcon: Icon(Feather.plus),
             onPressedRight: _addAnnouncement,
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+            child: Text(
+              'Announcements',
+              style: kTabTitleTextStyle,
+              textAlign: TextAlign.start,
+            ),
+          ),
           Expanded(
               child: FutureBuilder(
                   future: announcementsFuture,
@@ -91,19 +99,9 @@ class _HomeTabState extends State<HomeTab> {
                     isFetchingAnnouncements = false;
                     return ListView.builder(
                         controller: scrollController,
-                        itemCount: announcements.length + 1,
+                        itemCount: announcements.length,
                         itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                              child: Text(
-                                'Announcements',
-                                style: kTabTitleTextStyle,
-                                textAlign: TextAlign.start,
-                              ),
-                            );
-                          }
-                          Announcement announcement = announcements[index - 1];
+                          Announcement announcement = announcements[index];
                           return AnnouncementItem(
                             announcement: announcement,
                             heroTag: announcement.user.uid +
