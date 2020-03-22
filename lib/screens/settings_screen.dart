@@ -157,7 +157,7 @@ class SettingsItem extends StatelessWidget {
     return CustomCard(
       leading: leading,
       middle: title,
-      onPressed: onTap,
+      onPress: onTap,
       paddingInsideVertical: 20,
     );
   }

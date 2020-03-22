@@ -5,6 +5,7 @@ class Announcement {
   User user;
   var timestamp;
   String text;
+  String docId;
 
   Announcement({
     @required this.user,

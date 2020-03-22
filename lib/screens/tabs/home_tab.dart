@@ -171,8 +171,103 @@ class _ListOfAnnouncementsState extends State<ListOfAnnouncements> {
             heroTag: announcement.user.uid +
                 announcement.timestamp.toString() +
                 'announcements',
+            onLongPress: _deleteAnnouncement,
           );
         });
+  }
+
+  _deleteAnnouncement({BuildContext context, Announcement announcement}) async {
+    final loggedInUser = Provider.of<User>(context, listen: false);
+    if (announcement.user.uid == loggedInUser.uid) {
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: DeleteAnnouncementDialog(
+          announcement: announcement,
+          reloadAnnouncements: widget.fetchNewAnnouncements,
+        ),
+      );
+    } else {
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: BasicDialog(
+            title: 'Cannot delete',
+            text: 'You can only delete your own announcements'),
+      );
+    }
+  }
+}
+
+class DeleteAnnouncementDialog extends StatelessWidget {
+  final Announcement announcement;
+  final Function reloadAnnouncements;
+
+  DeleteAnnouncementDialog(
+      {@required this.announcement, @required this.reloadAnnouncements});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomDialog(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Delete announcement?',
+            style: kDialogTitleTextStyle,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Text(
+            'Do you really want to delete this announcement?',
+            style: TextStyle(
+              fontSize: 15,
+              fontFamily: 'MuliRegular',
+              color: kTextFieldTextColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              CupertinoButton(
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontFamily: 'MuliRegular',
+                    color: Colors.black,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              ),
+              CupertinoButton(
+                child: Text(
+                  'Delete',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'MuliBold',
+                    color: Colors.red,
+                  ),
+                ),
+                onPressed: () async {
+                  final cloudFirestoreService =
+                      Provider.of<FirebaseCloudFirestoreService>(context,
+                          listen: false);
+                  await cloudFirestoreService.deleteAnnouncement(
+                      announcement: announcement);
+                  reloadAnnouncements();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -267,13 +362,23 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
 class AnnouncementItem extends StatelessWidget {
   final Announcement announcement;
   final String heroTag;
+  final Function onLongPress;
 
-  AnnouncementItem({@required this.announcement, @required this.heroTag});
+  AnnouncementItem(
+      {@required this.announcement,
+      @required this.heroTag,
+      @required this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
     final User loggedInUser = Provider.of<User>(context);
     return CustomCard(
+      onPress: () {
+        _onPressed(context: context);
+      },
+      onLongPress: () {
+        onLongPress(context: context, announcement: announcement);
+      },
       paddingInsideVertical: 15,
       leading: ProfilePicture(
         imageFileName: announcement.user.imageFileName,
@@ -319,13 +424,10 @@ class AnnouncementItem extends StatelessWidget {
           ),
         ],
       ),
-      onPressed: () {
-        _onPressed(context);
-      },
     );
   }
 
-  _onPressed(BuildContext context) {
+  _onPressed({BuildContext context}) {
     final loggedInUser = Provider.of<User>(context, listen: false);
     User announcementUser = announcement.user;
     Navigator.of(context, rootNavigator: true).push(

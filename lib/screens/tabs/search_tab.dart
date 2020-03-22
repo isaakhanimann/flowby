@@ -177,7 +177,7 @@ class ProfileItem extends StatelessWidget {
           ),
         ],
       ),
-      onPressed: () {
+      onPress: () {
         Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
