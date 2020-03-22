@@ -1,8 +1,9 @@
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/screens/reset_password_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
-import 'package:Flowby/widgets/alert.dart';
+import 'package:Flowby/widgets/basic_dialog.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:Flowby/widgets/verify_email_alert.dart';
@@ -230,50 +231,57 @@ class _LoginScreenState extends State<LoginScreen> {
       switch (e.code) {
         case 'ERROR_INVALID_EMAIL':
           {
-            showAlert(
-                context: context,
-                title: "Invalid Email",
-                description: "Please input a valid email address");
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(
+                  title: 'Invalid Email',
+                  text: 'Please input a valid email address'),
+            );
             break;
           }
         case 'ERROR_WRONG_PASSWORD':
           {
-            showAlert(
-                context: context,
-                title: "Wrong Password",
-                description: "The password is invalid");
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(
+                  title: 'Wrong Password', text: 'The password is invalid'),
+            );
             break;
           }
         case 'ERROR_USER_NOT_FOUND':
           {
-            showAlert(
-                context: context,
-                title: "User not found",
-                description: "There is no user with this email address");
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(
+                  title: 'User not found',
+                  text: 'There is no user with this email address'),
+            );
             break;
           }
         case 'ERROR_USER_DISABLED':
           {
-            showAlert(
-                context: context,
-                title: "User Disabled",
-                description: "This user is disabled");
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(
+                  title: 'User Disabled', text: 'This user is disabled'),
+            );
             break;
           }
         case 'ERROR_TOO_MANY_REQUESTS':
           {
-            showAlert(
-                context: context,
-                title: "Too Many Requests",
-                description: e.message);
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(title: 'Too Many Requests', text: e.message),
+            );
             break;
           }
         case 'ERROR_OPERATION_NOT_ALLOWED':
           {
-            showAlert(
-                context: context,
-                title: "Operation Not Allowed",
-                description: e.message);
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog:
+                  BasicDialog(title: 'Operation Not Allowed', text: e.message),
+            );
             break;
           }
         default:
@@ -310,10 +318,12 @@ class _LoginScreenState extends State<LoginScreen> {
           arguments: firebaseUser,
         );
       } else {
-        showAlert(
-            context: context,
-            title: "Couldn't log in with Google",
-            description: "Please sign up before you log in");
+        HelperFunctions.showCustomDialog(
+          context: context,
+          dialog: BasicDialog(
+              title: "Couldn't log in with Google",
+              text: 'Please sign up before you log in'),
+        );
       }
     } catch (e) {
       print(e);
@@ -346,27 +356,33 @@ class _LoginScreenState extends State<LoginScreen> {
           arguments: firebaseUser,
         );
       } else {
-        showAlert(
-            context: context,
-            title: "Couldn't log in with Apple",
-            description: "Please sign up before you log in");
+        HelperFunctions.showCustomDialog(
+          context: context,
+          dialog: BasicDialog(
+              title: "Couldn't log in with Apple",
+              text: 'Please sign up before you log in'),
+        );
       }
     } catch (e) {
       switch (e.code) {
         case 'ERROR_AUTHORIZATION_DENIED':
           {
-            showAlert(
-                context: context,
-                title: "Authorization Denied",
-                description: "Please sign up with email");
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(
+                  title: 'Authorization Denied',
+                  text: 'Please sign up with email'),
+            );
             break;
           }
         default:
           {
-            showAlert(
-                context: context,
-                title: "Apple Sign In didn't work",
-                description: "Apple Sign In didn't work");
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(
+                  title: "Apple Sign In didn't work",
+                  text: "Apple Sign In didn't work"),
+            );
             print(e);
           }
       }

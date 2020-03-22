@@ -11,7 +11,7 @@ class CustomDialog extends StatelessWidget {
     return Dialog(
       elevation: 5,
       child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0), child: child),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 10), child: child),
       backgroundColor: kCardBackgroundColor,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20))),

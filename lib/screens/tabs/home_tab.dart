@@ -2,6 +2,7 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/basic_dialog.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/custom_dialog.dart';
 import 'package:Flowby/widgets/distance_text.dart';
@@ -122,7 +123,10 @@ class _HomeTabState extends State<HomeTab> {
     if (loggedInUser.isHidden) {
       HelperFunctions.showCustomDialog(
         context: context,
-        dialog: YourProfileIsHiddenDialog(),
+        dialog: BasicDialog(
+            title: 'Your profile is hidden',
+            text:
+                'You cannot add announcements because your profile is hidden'),
       );
     } else {
       HelperFunctions.showCustomDialog(
@@ -132,52 +136,6 @@ class _HomeTabState extends State<HomeTab> {
         ),
       );
     }
-  }
-}
-
-class YourProfileIsHiddenDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return CustomDialog(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              'Your profile is hidden',
-              style: kDialogTitleTextStyle,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              'You cannot add announcements because your profile is hidden',
-              style: TextStyle(
-                fontSize: 15,
-                fontFamily: 'MuliRegular',
-                color: kTextFieldTextColor,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            CupertinoButton(
-              child: Text(
-                'Ok',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: 'MuliBold',
-                  color: kDefaultProfilePicColor,
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 
