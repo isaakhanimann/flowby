@@ -119,10 +119,63 @@ class _HomeTabState extends State<HomeTab> {
   _addAnnouncement() async {
     final loggedInUser = Provider.of<User>(context, listen: false);
 
-    HelperFunctions.showCustomDialog(
-      context: context,
-      dialog: AddAnnouncementDialog(
-        loggedInUser: loggedInUser,
+    if (loggedInUser.isHidden) {
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: YourProfileIsHiddenDialog(),
+      );
+    } else {
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: AddAnnouncementDialog(
+          loggedInUser: loggedInUser,
+        ),
+      );
+    }
+  }
+}
+
+class YourProfileIsHiddenDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CustomDialog(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              'Your profile is hidden',
+              style: kDialogTitleTextStyle,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              'You cannot add announcements because your profile is hidden',
+              style: TextStyle(
+                fontSize: 15,
+                fontFamily: 'MuliRegular',
+                color: kTextFieldTextColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            CupertinoButton(
+              child: Text(
+                'Ok',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'MuliBold',
+                  color: kDefaultProfilePicColor,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
