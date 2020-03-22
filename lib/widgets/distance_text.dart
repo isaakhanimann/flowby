@@ -4,7 +4,7 @@ import 'package:Flowby/services/location_service.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:Flowby/constants.dart';
 
-class DistanceText extends StatelessWidget {
+class DistanceText extends StatefulWidget {
   final latitude1;
   final longitude1;
   final latitude2;
@@ -19,15 +19,28 @@ class DistanceText extends StatelessWidget {
       this.fontSize = 12});
 
   @override
-  Widget build(BuildContext context) {
+  _DistanceTextState createState() => _DistanceTextState();
+}
+
+class _DistanceTextState extends State<DistanceText> {
+  Future<int> distanceFuture;
+
+  @override
+  void initState() {
+    super.initState();
     final locationService =
         Provider.of<LocationService>(context, listen: false);
+    distanceFuture = locationService.distanceBetween(
+        startLatitude: widget.latitude1,
+        startLongitude: widget.longitude1,
+        endLatitude: widget.latitude2,
+        endLongitude: widget.longitude2);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder(
-      future: locationService.distanceBetween(
-          startLatitude: latitude1,
-          startLongitude: longitude1,
-          endLatitude: latitude2,
-          endLongitude: longitude2),
+      future: distanceFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done ||
             snapshot.hasError) {
@@ -48,7 +61,7 @@ class DistanceText extends StatelessWidget {
               flex: 1,
               child: Icon(
                 Feather.navigation,
-                size: fontSize,
+                size: widget.fontSize,
                 color: kBlueButtonColor,
               ),
             ),
@@ -60,7 +73,7 @@ class DistanceText extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                     color: kBlueButtonColor,
-                    fontSize: fontSize,
+                    fontSize: widget.fontSize,
                     fontFamily: 'MuliRegular'),
               ),
             ),
