@@ -27,28 +27,13 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   Future<List<Announcement>> announcementsFuture;
   bool isFetchingAnnouncements = true;
-  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    scrollController.addListener(() {
-      if (scrollController.position.pixels < -250 && !isFetchingAnnouncements) {
-        isFetchingAnnouncements = true;
-        setState(() {
-          announcementsFuture = cloudFirestoreService.getAnnouncements();
-        });
-      }
-    });
     announcementsFuture = cloudFirestoreService.getAnnouncements();
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
   }
 
   @override
@@ -97,22 +82,24 @@ class _HomeTabState extends State<HomeTab> {
                     List<Announcement> announcements = List.from(
                         snapshot.data); // to convert it to editable list
                     isFetchingAnnouncements = false;
-                    return ListView.builder(
-                        controller: scrollController,
-                        itemCount: announcements.length,
-                        itemBuilder: (context, index) {
-                          Announcement announcement = announcements[index];
-                          return AnnouncementItem(
-                            announcement: announcement,
-                            heroTag: announcement.user.uid +
-                                announcement.timestamp.toString() +
-                                'announcements',
-                          );
-                        });
+                    return ListOfAnnouncements(
+                      announcements: announcements,
+                      isFetchingAnnouncements: isFetchingAnnouncements,
+                      fetchNewAnnouncements: _fetchAnnouncements,
+                    );
                   }))
         ],
       ),
     );
+  }
+
+  _fetchAnnouncements() async {
+    isFetchingAnnouncements = true;
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    setState(() {
+      announcementsFuture = cloudFirestoreService.getAnnouncements();
+    });
   }
 
   _addAnnouncement() async {
@@ -134,6 +121,58 @@ class _HomeTabState extends State<HomeTab> {
         ),
       );
     }
+  }
+}
+
+class ListOfAnnouncements extends StatefulWidget {
+  final List<Announcement> announcements;
+  final bool isFetchingAnnouncements;
+  final Function fetchNewAnnouncements;
+
+  ListOfAnnouncements(
+      {@required this.announcements,
+      @required this.isFetchingAnnouncements,
+      @required this.fetchNewAnnouncements});
+
+  @override
+  _ListOfAnnouncementsState createState() => _ListOfAnnouncementsState();
+}
+
+class _ListOfAnnouncementsState extends State<ListOfAnnouncements> {
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels < -150 &&
+          !widget.isFetchingAnnouncements) {
+        widget.fetchNewAnnouncements();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        controller: scrollController,
+        itemCount: widget.announcements.length,
+        itemBuilder: (context, index) {
+          Announcement announcement = widget.announcements[index];
+
+          return AnnouncementItem(
+            announcement: announcement,
+            heroTag: announcement.user.uid +
+                announcement.timestamp.toString() +
+                'announcements',
+          );
+        });
   }
 }
 
@@ -234,9 +273,6 @@ class AnnouncementItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User loggedInUser = Provider.of<User>(context);
-
-    print('currentPosition: ${loggedInUser.location}');
-    print('announcementPosition: ${announcement.user?.location}');
     return CustomCard(
       paddingInsideVertical: 15,
       leading: ProfilePicture(
