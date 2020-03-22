@@ -13,8 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:Flowby/services/location_service.dart';
 import 'package:Flowby/models/role.dart';
+import 'package:Flowby/widgets/distance_text.dart';
 
 class SearchTab extends StatefulWidget {
   @override
@@ -139,9 +139,7 @@ class ProfileItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context);
     final String heroTag = user.uid + 'home';
-    var currentPosition = Provider.of<Position>(context);
-    final locationService =
-        Provider.of<LocationService>(context, listen: false);
+    Position currentPosition = Provider.of<Position>(context);
 
     return CustomCard(
       leading: ProfilePicture(
@@ -161,50 +159,11 @@ class ProfileItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: kUsernameTextStyle,
               ),
-              Expanded(
-                child: FutureBuilder(
-                  future: locationService.distanceBetween(
-                      startLatitude: currentPosition?.latitude,
-                      startLongitude: currentPosition?.longitude,
-                      endLatitude: user.location?.latitude,
-                      endLongitude: user.location?.longitude),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done ||
-                        snapshot.hasError) {
-                      return Text('');
-                    }
-
-                    int distanceInKm = snapshot.data;
-                    user.distanceInKm = distanceInKm;
-                    if (distanceInKm == null) {
-                      return Text('');
-                    }
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 1,
-                          child: Icon(
-                            Feather.navigation,
-                            size: 12,
-                          ),
-                        ),
-                        Flexible(
-                          flex: 3,
-                          child: Text(
-                            ' ' + distanceInKm.toString() + 'km',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: kLocationTextStyle,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
+              DistanceText(
+                  latitude1: currentPosition?.latitude,
+                  longitude1: currentPosition?.longitude,
+                  latitude2: user.location?.latitude,
+                  longitude2: user.location?.latitude),
             ],
           ),
           SizedBox(

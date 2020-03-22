@@ -4,6 +4,7 @@ import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/custom_dialog.dart';
+import 'package:Flowby/widgets/distance_text.dart';
 import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/tab_header.dart';
 import 'package:flutter/cupertino.dart';
@@ -223,6 +224,10 @@ class AnnouncementItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final User loggedInUser = Provider.of<User>(context);
+
+    print('currentPosition: ${loggedInUser.location}');
+    print('announcementPosition: ${announcement.user?.location}');
     return CustomCard(
       paddingInsideVertical: 15,
       leading: ProfilePicture(
@@ -241,6 +246,13 @@ class AnnouncementItem extends StatelessWidget {
                 announcement.user.username,
                 overflow: TextOverflow.ellipsis,
                 style: kUsernameTextStyle,
+              ),
+              DistanceText(
+                latitude1: loggedInUser.location?.latitude,
+                longitude1: loggedInUser.location?.longitude,
+                latitude2: announcement.user?.location?.latitude,
+                longitude2: announcement.user?.location?.longitude,
+                fontSize: 10,
               ),
               Text(
                 HelperFunctions.getTimestampAsString(
