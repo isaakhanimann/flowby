@@ -11,7 +11,6 @@ import 'package:Flowby/widgets/tab_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/role.dart';
 import 'package:Flowby/widgets/distance_text.dart';
@@ -139,7 +138,6 @@ class ProfileItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context);
     final String heroTag = user.uid + 'home';
-    Position currentPosition = Provider.of<Position>(context);
 
     return CustomCard(
       leading: ProfilePicture(
@@ -160,10 +158,12 @@ class ProfileItem extends StatelessWidget {
                 style: kUsernameTextStyle,
               ),
               DistanceText(
-                  latitude1: currentPosition?.latitude,
-                  longitude1: currentPosition?.longitude,
-                  latitude2: user.location?.latitude,
-                  longitude2: user.location?.latitude),
+                latitude1: loggedInUser.location?.latitude,
+                longitude1: loggedInUser.location?.longitude,
+                latitude2: user.location?.latitude,
+                longitude2: user.location?.latitude,
+                fontSize: 10,
+              ),
             ],
           ),
           SizedBox(

@@ -38,35 +38,33 @@ class DistanceText extends StatelessWidget {
         if (distanceInKm == null) {
           return Text('');
         }
-        return Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            textBaseline: TextBaseline.alphabetic,
-            children: <Widget>[
-              Flexible(
-                flex: 1,
-                child: Icon(
-                  Feather.navigation,
-                  size: fontSize,
-                  color: kBlueButtonColor,
-                ),
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          textBaseline: TextBaseline.alphabetic,
+          children: <Widget>[
+            Flexible(
+              flex: 1,
+              child: Icon(
+                Feather.navigation,
+                size: fontSize,
+                color: kBlueButtonColor,
               ),
-              Flexible(
-                flex: 3,
-                child: Text(
-                  ' ' + distanceInKm.toString() + 'km',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      color: kBlueButtonColor,
-                      fontSize: fontSize,
-                      fontFamily: 'MuliRegular'),
-                ),
+            ),
+            Flexible(
+              flex: 3,
+              child: Text(
+                ' ' + distanceInKm.toString() + 'km',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: kBlueButtonColor,
+                    fontSize: fontSize,
+                    fontFamily: 'MuliRegular'),
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
