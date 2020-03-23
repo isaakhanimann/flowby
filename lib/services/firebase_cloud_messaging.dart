@@ -57,20 +57,32 @@ class FirebaseCloudMessaging {
   }
 
   void showNotification({@required CloudMessage message}) async {
+    List<String> lines = List<String>();
+    lines.add('Alex Faarborg  Check this out');
+    lines.add('Jeff Chang    Launch Party');
+
+    InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
+        lines,
+        contentTitle: '2 new messages',
+        summaryText: 'janedoe@example.com');
     String groupKey = 'co.flowby';
-    String groupChannelId = 'grouped channel id';
-    String groupChannelName = 'grouped channel name';
-    String groupChannelDescription = 'grouped channel description';
+    String groupChannelId = 'message_notifications';
+    String groupChannelName = 'Message notifications';
+    String groupChannelDescription = 'Sound and pop-up';
 
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       groupChannelId,
       groupChannelName,
       groupChannelDescription,
+      styleInformation: inboxStyleInformation,
+      style: AndroidNotificationStyle.Inbox,
       playSound: true,
       enableVibration: true,
       importance: Importance.Max,
       priority: Priority.High,
       groupKey: groupKey,
+      category: "Chats",
+      setAsGroupSummary: true,
     );
 
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
@@ -78,13 +90,12 @@ class FirebaseCloudMessaging {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
-      message.string.hashCode,
+      message.title.hashCode,
       message.title,
       message.body,
       platformChannelSpecifics,
       payload: message.string,
     );
-    print(message.string.hashCode);
   }
 
   Future onSelectNotification(String payload) async {
