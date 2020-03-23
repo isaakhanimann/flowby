@@ -34,16 +34,7 @@ class _SearchTabState extends State<SearchTab> {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context);
-    final position = Provider.of<Position>(context);
 
-    Position currentUsersLocation;
-    if (loggedInUser == null) {
-      currentUsersLocation = position;
-    } else {
-      currentUsersLocation = Position(
-          latitude: loggedInUser.location?.latitude,
-          longitude: loggedInUser.location?.latitude);
-    }
     final localRole = Provider.of<Role>(context);
     final role = loggedInUser?.role ?? localRole;
 
@@ -97,17 +88,6 @@ class _SearchTabState extends State<SearchTab> {
                         .where((u) => u.role == Role.consumer)
                         .toList();
                   }
-                  final locationService =
-                      Provider.of<LocationService>(context, listen: false);
-
-                  searchResultUsers.map((user) {
-                    user.distanceFuture = locationService.distanceBetween(
-                        startLatitude: currentUsersLocation?.latitude,
-                        startLongitude: currentUsersLocation?.longitude,
-                        endLatitude: user?.location?.latitude,
-                        endLongitude: user?.location?.longitude);
-                    return user;
-                  }).toList();
 
                   if (searchResultUsers.length == 0 && loggedInUser != null) {
                     return NoResults(
@@ -151,7 +131,8 @@ class ListOfSortedUsers extends StatelessWidget {
     final localRole = Provider.of<Role>(context);
     final role = loggedInUser?.role ?? localRole;
     return FutureBuilder(
-      future: _waitAndSortUsersByDistance(users: unsortedUsers),
+      future:
+          _waitAndSortUsersByDistance(context: context, users: unsortedUsers),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return CenteredLoadingIndicator();
@@ -177,15 +158,33 @@ class ListOfSortedUsers extends StatelessWidget {
     );
   }
 
-  Future<List<User>> _waitAndSortUsersByDistance({List<User> users}) async {
-    List<User> resolvedUsers = [];
-    for (User user in users) {
-      user.distanceInKm = await user.distanceFuture;
-      resolvedUsers.add(user);
+  Future<List<User>> _waitAndSortUsersByDistance(
+      {@required BuildContext context, @required List<User> users}) async {
+    final loggedInUser = Provider.of<User>(context);
+    final locationService =
+        Provider.of<LocationService>(context, listen: false);
+    final position = Provider.of<Position>(context);
+
+    Position currentUsersLocation;
+    if (loggedInUser == null) {
+      currentUsersLocation = position;
+    } else {
+      currentUsersLocation = Position(
+          latitude: loggedInUser.location?.latitude,
+          longitude: loggedInUser.location?.latitude);
     }
-    resolvedUsers
+    List<User> usersWithDistance = [];
+    for (User user in users) {
+      user.distanceInKm = await locationService.distanceBetween(
+          startLatitude: currentUsersLocation?.latitude,
+          startLongitude: currentUsersLocation?.longitude,
+          endLatitude: user?.location?.latitude,
+          endLongitude: user?.location?.longitude);
+      usersWithDistance.add(user);
+    }
+    usersWithDistance
         .sort((user1, user2) => user1.distanceInKm - user2.distanceInKm);
-    return resolvedUsers;
+    return usersWithDistance;
   }
 }
 
