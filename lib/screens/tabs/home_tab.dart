@@ -118,6 +118,7 @@ class _HomeTabState extends State<HomeTab> {
         context: context,
         dialog: AddAnnouncementDialog(
           loggedInUser: loggedInUser,
+          reloadAnnouncements: _fetchAnnouncements,
         ),
       );
     }
@@ -273,8 +274,10 @@ class DeleteAnnouncementDialog extends StatelessWidget {
 
 class AddAnnouncementDialog extends StatefulWidget {
   final User loggedInUser;
+  final Function reloadAnnouncements;
 
-  AddAnnouncementDialog({this.loggedInUser});
+  AddAnnouncementDialog(
+      {@required this.loggedInUser, @required this.reloadAnnouncements});
 
   @override
   _AddAnnouncementDialogState createState() => _AddAnnouncementDialogState();
@@ -347,6 +350,7 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
                     );
                     await cloudFirestoreService.uploadAnnouncement(
                         announcement: announcement);
+                    widget.reloadAnnouncements();
                     Navigator.of(context, rootNavigator: true).pop();
                   },
                 ),
