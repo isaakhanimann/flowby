@@ -6,7 +6,6 @@ import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/widgets/basic_dialog.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
-import 'package:Flowby/widgets/verify_email_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +17,7 @@ import 'package:Flowby/services/apple_sign_in_available.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/google_login_button.dart';
+import 'package:Flowby/widgets/two_options_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -201,10 +201,14 @@ class _LoginScreenState extends State<LoginScreen> {
         if (user.isEmailVerified == false) {
           HelperFunctions.showCustomDialog(
             context: context,
-            dialog: VerifyEmailAlert(
-              authService: authService,
-              authResult: authResult,
-            ),
+            dialog: TwoOptionsDialog(
+                title: 'Verify your email',
+                text: 'It seems that you haven\'t verified your email yet.',
+                rightActionText: 'Send verification',
+                rightAction: () async {
+                  await user?.sendEmailVerification();
+                  Navigator.pop(context);
+                }),
           );
           setState(() {
             showSpinner = false;

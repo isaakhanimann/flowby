@@ -5,7 +5,7 @@ import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/widgets/basic_dialog.dart';
 import 'package:Flowby/widgets/custom_card.dart';
-import 'package:Flowby/widgets/custom_dialog.dart';
+import 'package:Flowby/widgets/two_options_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -166,80 +166,27 @@ class SettingsItem extends StatelessWidget {
 class DeleteDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CustomDialog(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(5, 20, 5, 0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              'Are you sure?',
-              style: kDialogTitleTextStyle,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              'Do you really want to delete all your info?',
-              style: TextStyle(
-                fontSize: 15,
-                fontFamily: 'MuliRegular',
-                color: kTextFieldTextColor,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                CupertinoButton(
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontFamily: 'MuliRegular',
-                      color: Colors.black,
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true).pop();
-                  },
-                ),
-                CupertinoButton(
-                  child: Text(
-                    'Delete',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'MuliBold',
-                      color: Colors.red,
-                    ),
-                  ),
-                  onPressed: () async {
-                    final authService = Provider.of<FirebaseAuthService>(
-                        context,
-                        listen: false);
-                    bool didDeleteWork =
-                        await authService.deleteCurrentlyLoggedInUser();
-                    if (!didDeleteWork) {
-                      Navigator.of(context, rootNavigator: true).pop();
-                      HelperFunctions.showCustomDialog(
-                          context: context, dialog: DeleteFailedDialog());
-                    } else {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushAndRemoveUntil(
-                        CupertinoPageRoute(
-                            builder: (BuildContext context) =>
-                                ChooseSigninScreen()),
-                        (Route<dynamic> route) => false,
-                      );
-                    }
-                  },
-                ),
-              ],
-            )
-          ],
-        ),
-      ),
+    return TwoOptionsDialog(
+      title: 'Are you sure?',
+      text: 'Do you really want to delete all your info?',
+      rightActionText: 'Delete',
+      rightAction: () async {
+        final authService =
+            Provider.of<FirebaseAuthService>(context, listen: false);
+        bool didDeleteWork = await authService.deleteCurrentlyLoggedInUser();
+        if (!didDeleteWork) {
+          Navigator.of(context, rootNavigator: true).pop();
+          HelperFunctions.showCustomDialog(
+              context: context, dialog: DeleteFailedDialog());
+        } else {
+          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+            CupertinoPageRoute(
+                builder: (BuildContext context) => ChooseSigninScreen()),
+            (Route<dynamic> route) => false,
+          );
+        }
+      },
+      rightActionColor: Colors.red,
     );
   }
 }

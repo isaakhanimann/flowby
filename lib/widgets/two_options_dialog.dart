@@ -1,18 +1,20 @@
-import 'package:Flowby/constants.dart';
-import 'package:Flowby/services/firebase_auth_service.dart';
-import 'package:Flowby/widgets/custom_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'custom_dialog.dart';
+import 'package:Flowby/constants.dart';
 
-class VerifyEmailAlert extends StatelessWidget {
-  final FirebaseAuthService authService;
-  final AuthResult authResult;
-  final FirebaseUser firebaseUser;
+class TwoOptionsDialog extends StatelessWidget {
+  final String title;
+  final String text;
+  final String rightActionText;
+  final Color rightActionColor;
+  final Function rightAction;
 
-  VerifyEmailAlert({
-    this.authService,
-    this.authResult,
-    this.firebaseUser,
+  TwoOptionsDialog({
+    @required this.title,
+    @required this.text,
+    @required this.rightActionText,
+    @required this.rightAction,
+    this.rightActionColor = kDefaultProfilePicColor,
   });
 
   @override
@@ -24,7 +26,7 @@ class VerifyEmailAlert extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              'Verify your email',
+              title,
               style: kDialogTitleTextStyle,
               textAlign: TextAlign.center,
             ),
@@ -32,7 +34,7 @@ class VerifyEmailAlert extends StatelessWidget {
               height: 15,
             ),
             Text(
-              'It seems that you haven\'t verified your email yet.',
+              text,
               style: TextStyle(
                 fontSize: 15,
                 fontFamily: 'MuliRegular',
@@ -58,18 +60,14 @@ class VerifyEmailAlert extends StatelessWidget {
                 ),
                 CupertinoButton(
                   child: Text(
-                    'Send verification',
+                    rightActionText,
                     style: TextStyle(
                       fontSize: 20,
                       fontFamily: 'MuliBold',
-                      color: kDefaultProfilePicColor,
+                      color: rightActionColor,
                     ),
                   ),
-                  onPressed: () async {
-                    await authResult.user?.sendEmailVerification();
-                    await firebaseUser?.sendEmailVerification();
-                    Navigator.pop(context);
-                  },
+                  onPressed: rightAction,
                 ),
               ],
             )

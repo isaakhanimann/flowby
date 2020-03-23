@@ -1,4 +1,6 @@
+import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
+import 'package:Flowby/widgets/basic_dialog.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/constants.dart';
@@ -51,26 +53,21 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
       GeolocationStatus status =
           await locationService.checkGeolocationPermissionStatus();
       if (status == GeolocationStatus.granted) {
-        showCupertinoDialog(
+        HelperFunctions.showCustomDialog(
           context: context,
-          builder: (_) => CupertinoAlertDialog(
-            title: Text('Location is enabled'),
-            content: Text('\nYou have got all you need'),
-            actions: <Widget>[
-              CupertinoDialogAction(
-                child: Text('Ok'),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                  Navigator.of(context, rootNavigator: true).push(
-                    CupertinoPageRoute<void>(
-                      builder: (context) {
-                        return NavigationScreen();
-                      },
-                    ),
-                  );
-                },
-              )
-            ],
+          dialog: BasicDialog(
+            title: 'Location is enabled',
+            text: 'You have got all you need',
+            onOkPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+              Navigator.of(context, rootNavigator: true).push(
+                CupertinoPageRoute<void>(
+                  builder: (context) {
+                    return NavigationScreen();
+                  },
+                ),
+              );
+            },
           ),
         );
       } else {
@@ -79,19 +76,11 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
       }
     } catch (e) {
       print(e);
-      showCupertinoDialog(
+      HelperFunctions.showCustomDialog(
         context: context,
-        builder: (_) => CupertinoAlertDialog(
-          title: Text('Location Permissions Denied'),
-          content: Text('\nEnable Location Permissions in your Settings'),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text('Ok'),
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop();
-              },
-            )
-          ],
+        dialog: BasicDialog(
+          title: 'Location Permissions Denied',
+          text: 'Enable Location Permissions in your Settings',
         ),
       );
     }

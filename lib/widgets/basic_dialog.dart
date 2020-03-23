@@ -5,8 +5,9 @@ import 'custom_dialog.dart';
 class BasicDialog extends StatelessWidget {
   final String title;
   final String text;
+  final Function onOkPressed;
 
-  BasicDialog({@required this.title, @required this.text});
+  BasicDialog({@required this.title, @required this.text, this.onOkPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,11 @@ class BasicDialog extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop();
+                if (onOkPressed != null) {
+                  onOkPressed();
+                } else {
+                  Navigator.of(context, rootNavigator: true).pop();
+                }
               },
             )
           ],

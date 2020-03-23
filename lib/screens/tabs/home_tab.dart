@@ -8,6 +8,7 @@ import 'package:Flowby/widgets/custom_dialog.dart';
 import 'package:Flowby/widgets/distance_text.dart';
 import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/tab_header.dart';
+import 'package:Flowby/widgets/two_options_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -207,67 +208,19 @@ class DeleteAnnouncementDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomDialog(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            'Delete announcement?',
-            style: kDialogTitleTextStyle,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Text(
-            'Do you really want to delete this announcement?',
-            style: TextStyle(
-              fontSize: 15,
-              fontFamily: 'MuliRegular',
-              color: kTextFieldTextColor,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              CupertinoButton(
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'MuliRegular',
-                    color: Colors.black,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-              ),
-              CupertinoButton(
-                child: Text(
-                  'Delete',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'MuliBold',
-                    color: Colors.red,
-                  ),
-                ),
-                onPressed: () async {
-                  final cloudFirestoreService =
-                      Provider.of<FirebaseCloudFirestoreService>(context,
-                          listen: false);
-                  await cloudFirestoreService.deleteAnnouncement(
-                      announcement: announcement);
-                  reloadAnnouncements();
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          )
-        ],
-      ),
+    return TwoOptionsDialog(
+      title: 'Delete announcement?',
+      text: 'Do you really want to delete this announcement?',
+      rightActionText: 'Delete',
+      rightAction: () async {
+        final cloudFirestoreService =
+            Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        await cloudFirestoreService.deleteAnnouncement(
+            announcement: announcement);
+        reloadAnnouncements();
+        Navigator.of(context).pop();
+      },
+      rightActionColor: Colors.red,
     );
   }
 }
