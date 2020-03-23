@@ -13,8 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/role.dart';
-import 'package:Flowby/widgets/distance_text.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:Flowby/services/location_service.dart';
 
 class SearchTab extends StatefulWidget {
   @override
@@ -34,8 +34,17 @@ class _SearchTabState extends State<SearchTab> {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context);
-    final localRole = Provider.of<Role>(context);
+    final position = Provider.of<Position>(context);
 
+    Position currentUsersLocation;
+    if (loggedInUser == null) {
+      currentUsersLocation = position;
+    } else {
+      currentUsersLocation = Position(
+          latitude: loggedInUser.location?.latitude,
+          longitude: loggedInUser.location?.latitude);
+    }
+    final localRole = Provider.of<Role>(context);
     final role = loggedInUser?.role ?? localRole;
 
     return SafeArea(
@@ -88,22 +97,28 @@ class _SearchTabState extends State<SearchTab> {
                         .where((u) => u.role == Role.consumer)
                         .toList();
                   }
+                  final locationService =
+                      Provider.of<LocationService>(context, listen: false);
 
-                  if (searchResultUsers.length == 0 && loggedInUser != null) {
+                  List<User> usersWithDistanceFuture = [];
+                  for (User user in searchResultUsers) {
+                    user.distanceFuture = locationService.distanceBetween(
+                        startLatitude: currentUsersLocation?.latitude,
+                        startLongitude: currentUsersLocation?.longitude,
+                        endLatitude: user?.location?.latitude,
+                        endLongitude: user?.location?.longitude);
+                    usersWithDistanceFuture.add(user);
+                  }
+
+                  if (usersWithDistanceFuture.length == 0 &&
+                      loggedInUser != null) {
                     return NoResults(
                       isSkillSelected: role == Role.consumer,
                       uidOfLoggedInUser: loggedInUser.uid,
                     );
                   }
-                  return ListView.builder(
-                    itemBuilder: (context, index) {
-                      return ProfileItem(
-                        user: searchResultUsers[index],
-                        isSkillSearch: role == Role.consumer,
-                      );
-                    },
-                    itemCount: searchResultUsers.length,
-                  );
+                  return ListOfSortedUsers(
+                      unsortedUsers: usersWithDistanceFuture);
                 }),
           ),
         ],
@@ -129,6 +144,54 @@ class _SearchTabState extends State<SearchTab> {
   }
 }
 
+class ListOfSortedUsers extends StatelessWidget {
+  final List<User> unsortedUsers;
+  ListOfSortedUsers({@required this.unsortedUsers});
+
+  @override
+  Widget build(BuildContext context) {
+    final loggedInUser = Provider.of<User>(context);
+    final localRole = Provider.of<Role>(context);
+    final role = loggedInUser?.role ?? localRole;
+    return FutureBuilder(
+      future: _waitAndSortUsersByDistance(users: unsortedUsers),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return CenteredLoadingIndicator();
+        }
+        if (snapshot.hasError) {
+          return Container(
+            color: Colors.red,
+            child: const Text('Something went wrong'),
+          );
+        }
+        List<User> sortedUsers = snapshot.data;
+
+        return ListView.builder(
+          itemBuilder: (context, index) {
+            return ProfileItem(
+              user: sortedUsers[index],
+              isSkillSearch: role == Role.consumer,
+            );
+          },
+          itemCount: sortedUsers.length,
+        );
+      },
+    );
+  }
+
+  Future<List<User>> _waitAndSortUsersByDistance({List<User> users}) async {
+    List<User> resolvedUsers = [];
+    for (User user in users) {
+      user.distanceInKm = await user.distanceFuture;
+      resolvedUsers.add(user);
+    }
+    resolvedUsers
+        .sort((user1, user2) => user1.distanceInKm - user2.distanceInKm);
+    return resolvedUsers;
+  }
+}
+
 class ProfileItem extends StatelessWidget {
   final isSkillSearch;
   final User user;
@@ -138,14 +201,6 @@ class ProfileItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context);
-    final position = Provider.of<Position>(context);
-    Position location = position;
-    if (loggedInUser != null) {
-      location = Position(
-          latitude: loggedInUser.location?.latitude,
-          longitude: loggedInUser.location?.longitude);
-    }
-
     final String heroTag = user.uid + 'home';
 
     return CustomCard(
@@ -166,13 +221,35 @@ class ProfileItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: kUsernameTextStyle,
               ),
-              DistanceText(
-                latitude1: location?.latitude,
-                longitude1: location?.longitude,
-                latitude2: user?.location?.latitude,
-                longitude2: user?.location?.latitude,
-                fontSize: 10,
-              ),
+              if (user.distanceInKm != kDistanceInKm)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 1,
+                      child: Icon(
+                        Feather.navigation,
+                        size: 10,
+                        color: kBlueButtonColor,
+                      ),
+                    ),
+                    Flexible(
+                      flex: 3,
+                      child: Text(
+                        ' ' + user.distanceInKm.toString() + 'km',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: kBlueButtonColor,
+                            fontSize: 10,
+                            fontFamily: 'MuliRegular'),
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
           SizedBox(

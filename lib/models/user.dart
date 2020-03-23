@@ -10,6 +10,7 @@ class User {
   bool isHidden;
   GeoPoint location;
   int distanceInKm;
+  Future<int> distanceFuture;
   String imageFileName = kDefaultProfilePicName;
   int imageVersionNumber = 1;
   String skillKeywords;

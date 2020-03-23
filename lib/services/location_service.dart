@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:Flowby/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -49,7 +49,7 @@ class LocationService {
         startLongitude == null ||
         endLatitude == null ||
         endLongitude == null) {
-      return null;
+      return kDistanceInKm;
     }
     double distanceInMeters = await Geolocator().distanceBetween(
         startLatitude, startLongitude, endLatitude, endLongitude);
