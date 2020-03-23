@@ -1,4 +1,5 @@
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_image_username_and_bio_registration_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
@@ -32,17 +33,6 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     // This prevents the user to be logged in without having verified the email.
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
-/*
-    WidgetsBinding.instance.addObserver(LifecycleEventHandler(
-      detachedCallBack: () async {
-        debugPrint('detached...');
-        //authService.signOut();
-      },
-      resumeCallBack: () async {
-        debugPrint('resume...');
-      },
-    ));
-*/
 
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
@@ -87,11 +77,6 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           color: kBlueButtonColor,
                           textColor: Colors.white,
                           onPressed: () {
-/*
-                            setState(() {
-                              showSpinner = true;
-                            });
-*/
                             _uploadUserAndNavigate(context);
                           },
                         ),
@@ -116,17 +101,12 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     user = await authService.getCurrentUser();
 
     if (user.isEmailVerified == false) {
-      showCupertinoDialog(
+      HelperFunctions.showCustomDialog(
           context: context,
-          builder: (_) => VerifyEmailAlert(
-                authService: authService,
-                firebaseUser: user,
-              ));
-/*
-      setState(() {
-        showSpinner = false;
-      });
-*/
+          dialog: VerifyEmailAlert(
+            authService: authService,
+            firebaseUser: user,
+          ));
       return;
     }
     Navigator.of(context, rootNavigator: true).push(
