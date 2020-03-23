@@ -14,6 +14,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/role.dart';
 import 'package:Flowby/widgets/distance_text.dart';
+import 'package:geolocator/geolocator.dart';
 
 class SearchTab extends StatefulWidget {
   @override
@@ -137,6 +138,14 @@ class ProfileItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context);
+    final position = Provider.of<Position>(context);
+    Position location = position;
+    if (loggedInUser != null) {
+      location = Position(
+          latitude: loggedInUser.location?.latitude,
+          longitude: loggedInUser.location?.longitude);
+    }
+
     final String heroTag = user.uid + 'home';
 
     return CustomCard(
@@ -158,10 +167,10 @@ class ProfileItem extends StatelessWidget {
                 style: kUsernameTextStyle,
               ),
               DistanceText(
-                latitude1: loggedInUser.location?.latitude,
-                longitude1: loggedInUser.location?.longitude,
-                latitude2: user.location?.latitude,
-                longitude2: user.location?.latitude,
+                latitude1: location?.latitude,
+                longitude1: location?.longitude,
+                latitude2: user?.location?.latitude,
+                longitude2: user?.location?.latitude,
                 fontSize: 10,
               ),
             ],
