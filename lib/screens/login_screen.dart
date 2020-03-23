@@ -19,8 +19,6 @@ import 'package:Flowby/models/user.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/google_login_button.dart';
 
-//TODO: change box border when the user doesn't enter an input
-
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
 
@@ -30,8 +28,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool showSpinner = false;
-  String email;
-  String password;
+  String email = '';
+  String password = '';
 
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
@@ -193,9 +191,6 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       showSpinner = true;
     });
-    if (email == null || password == null) {
-      return;
-    }
     try {
       final authService =
           Provider.of<FirebaseAuthService>(context, listen: false);
@@ -204,9 +199,9 @@ class _LoginScreenState extends State<LoginScreen> {
       final user = authResult?.user;
       if (user != null) {
         if (user.isEmailVerified == false) {
-          showCupertinoDialog(
+          HelperFunctions.showCustomDialog(
             context: context,
-            builder: (_) => VerifyEmailAlert(
+            dialog: VerifyEmailAlert(
               authService: authService,
               authResult: authResult,
             ),
@@ -286,6 +281,12 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         default:
           {
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(
+                  title: 'An error occured',
+                  text: 'Please try a different login method'),
+            );
             print(e);
           }
       }
