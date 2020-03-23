@@ -100,25 +100,22 @@ class _SearchTabState extends State<SearchTab> {
                   final locationService =
                       Provider.of<LocationService>(context, listen: false);
 
-                  List<User> usersWithDistanceFuture = [];
-                  for (User user in searchResultUsers) {
+                  searchResultUsers.map((user) {
                     user.distanceFuture = locationService.distanceBetween(
                         startLatitude: currentUsersLocation?.latitude,
                         startLongitude: currentUsersLocation?.longitude,
                         endLatitude: user?.location?.latitude,
                         endLongitude: user?.location?.longitude);
-                    usersWithDistanceFuture.add(user);
-                  }
+                    return user;
+                  }).toList();
 
-                  if (usersWithDistanceFuture.length == 0 &&
-                      loggedInUser != null) {
+                  if (searchResultUsers.length == 0 && loggedInUser != null) {
                     return NoResults(
                       isSkillSelected: role == Role.consumer,
                       uidOfLoggedInUser: loggedInUser.uid,
                     );
                   }
-                  return ListOfSortedUsers(
-                      unsortedUsers: usersWithDistanceFuture);
+                  return ListOfSortedUsers(unsortedUsers: searchResultUsers);
                 }),
           ),
         ],
