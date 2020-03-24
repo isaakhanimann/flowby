@@ -8,20 +8,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class FirebaseCloudMessaging {
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  Map<String, List<String>> messages = {
+    "alex": ["yo"]
+  };
 
   BuildContext context;
 
   Future<String> getToken() {
-    return _firebaseMessaging.getToken();
+    return firebaseMessaging.getToken();
   }
 
   void firebaseCloudMessagingListeners(BuildContext context) {
     if (Platform.isIOS) iOSPermission();
 
-    _firebaseMessaging.configure(
+    firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> mapMessage) async {
         this.context = context;
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
@@ -41,7 +44,7 @@ class FirebaseCloudMessaging {
   }
 
   void iOSPermission() {
-    _firebaseMessaging.requestNotificationPermissions(
+    firebaseMessaging.requestNotificationPermissions(
         IosNotificationSettings(sound: true, badge: true, alert: true));
   }
 
@@ -57,14 +60,22 @@ class FirebaseCloudMessaging {
   }
 
   void showNotification({@required CloudMessage message}) async {
-    List<String> lines = List<String>();
-    lines.add('Alex Faarborg  Check this out');
-    lines.add('Jeff Chang    Launch Party');
+    String contentTitle;
 
+    if (messages[message.title] == null) {
+      messages[message.title] = [];
+    }
+    messages[message.title].add(message.body);
+    messages[message.title].length == 1
+        ? contentTitle = message.title
+        : contentTitle =
+            '${message.title} (${messages[message.title].length} messages)';
+    print(messages);
     InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
-        lines,
-        contentTitle: '2 new messages',
-        summaryText: 'janedoe@example.com');
+        messages[message.title],
+        contentTitle: contentTitle,
+        summaryText: message.title);
+
     String groupKey = 'co.flowby';
     String groupChannelId = 'message_notifications';
     String groupChannelName = 'Message notifications';
@@ -91,7 +102,7 @@ class FirebaseCloudMessaging {
 
     await flutterLocalNotificationsPlugin.show(
       message.title.hashCode,
-      message.title,
+      '${message.title} (${messages[message.title].length} messages)',
       message.body,
       platformChannelSpecifics,
       payload: message.string,
@@ -112,6 +123,7 @@ class FirebaseCloudMessaging {
     BuildContext context,
     CloudMessage message,
   ) {
+    messages[message.title].clear();
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
