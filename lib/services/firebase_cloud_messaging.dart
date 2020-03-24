@@ -14,8 +14,10 @@ class FirebaseCloudMessaging {
   Map<String, List<String>> messages = {
     "empty": ["empty"]
   };
-  int nbrOfUnreadMessages= 0;
-  StreamController<int> controller = StreamController<int>();
+  int nbrOfUnreadMessages = 0;
+  StreamController<int> ctrlUnreadMessages = StreamController<int>();
+  StreamController<Map<String, List<String>>> ctrlListOfMessages =
+      StreamController<Map<String, List<String>>>();
 
   BuildContext context;
 
@@ -23,11 +25,15 @@ class FirebaseCloudMessaging {
     return firebaseMessaging.getToken();
   }
 
-  Stream getUnreadMessagesStream (){
-    return controller.stream;
+  Stream getUnreadMessagesStream() {
+    return ctrlUnreadMessages.stream;
   }
 
-  int getUnreadMessages (){
+  Stream getListOfMessagesStream() {
+    return ctrlListOfMessages.stream;
+  }
+
+  int getUnreadMessages() {
     return nbrOfUnreadMessages;
   }
 
@@ -38,7 +44,7 @@ class FirebaseCloudMessaging {
       onMessage: (Map<String, dynamic> mapMessage) async {
         this.context = context;
         nbrOfUnreadMessages += 1;
-        controller.add(nbrOfUnreadMessages);
+        ctrlUnreadMessages.add(nbrOfUnreadMessages);
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         showNotification(message: message);
       },
@@ -83,6 +89,7 @@ class FirebaseCloudMessaging {
         : contentTitle =
             '${message.title} (${messages[message.data['otherUid']].length} messages)';
     print(messages);
+    ctrlListOfMessages.add(messages);
     InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
         messages[message.data['otherUid']],
         contentTitle: contentTitle,
@@ -121,14 +128,14 @@ class FirebaseCloudMessaging {
     );
   }
 
-  void clearNotificationMessagesOf({@required String uid}){
-    if(messages[uid] != null){
+  void clearNotificationMessagesOf({@required String uid}) {
+    if (messages[uid] != null) {
       nbrOfUnreadMessages -= messages[uid].length;
-      messages[uid].clear();
-      controller.add(nbrOfUnreadMessages);
+      ctrlUnreadMessages.add(nbrOfUnreadMessages);
+      messages[uid].removeRange(0, messages[uid].length - 1);
+      ctrlListOfMessages.add(messages);
     }
   }
-
 
   Future onSelectNotification(String payload) async {
     if (payload != null) {

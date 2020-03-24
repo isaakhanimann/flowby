@@ -4,7 +4,6 @@ import 'package:Flowby/models/message.dart';
 import 'package:Flowby/screens/show_profile_picture_screen.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
-import 'package:Flowby/services/firebase_cloud_messaging.dart';
 import 'package:Flowby/widgets/copyable_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -41,9 +40,6 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firebaseMessaging =
-    Provider.of<FirebaseCloudMessaging>(context, listen: false);
-    firebaseMessaging.clearNotificationMessagesOf(uid:otherUid);
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: SafeArea(

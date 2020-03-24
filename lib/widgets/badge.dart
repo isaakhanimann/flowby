@@ -9,24 +9,26 @@ class Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(1),
-      decoration: new BoxDecoration(
-        color: badgeColor,
-        borderRadius: BorderRadius.circular(7.5),
-      ),
-      constraints: BoxConstraints(
-        minWidth: 15,
-        minHeight: 15,
-      ),
-      child: Text(
-        count.toString(),
-        style: new TextStyle(
-          color: Colors.white,
-          fontSize: 10,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
+    return count > 0
+        ? Container(
+            padding: EdgeInsets.all(1),
+            decoration: new BoxDecoration(
+              color: badgeColor,
+              borderRadius: BorderRadius.circular(7.5),
+            ),
+            constraints: BoxConstraints(
+              minWidth: 15,
+              minHeight: 15,
+            ),
+            child: Text(
+              count.toString(),
+              style: new TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          )
+        : Container();
   }
 }

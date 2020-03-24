@@ -34,6 +34,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
   Stream<int> unreadMessagesStream;
+  Stream<Map<String, List<String>>> listOfMessagesStream;
   Role _role;
   bool _shouldExplanationBeLoaded = false;
   FirebaseUser loggedInUser;
@@ -106,6 +107,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
           initialData: 0,
           value: unreadMessagesStream,
         ),
+        StreamProvider<Map<String, List<String>>>.value(
+          initialData: {
+            "": [""]
+          },
+          value: listOfMessagesStream,
+        ),
       ],
       child: ScreenWithAllTabs(),
     );
@@ -153,11 +160,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     final firebaseMessaging =
         Provider.of<FirebaseCloudMessaging>(context, listen: false);
     unreadMessagesStream = firebaseMessaging.getUnreadMessagesStream();
-    /*
-    unreadMessagesStream.listen((value) {
-      print('Unread messages: $value');
-    });
-*/
+    listOfMessagesStream = firebaseMessaging.getListOfMessagesStream();
 
     final locationService =
         Provider.of<LocationService>(context, listen: false);

@@ -21,7 +21,6 @@ class ChatsTab extends StatefulWidget {
 
 class _ChatsTabState extends State<ChatsTab> {
   Stream<List<Chat>> chatsStream;
-  Stream unreadMessages;
 
   @override
   void initState() {
@@ -36,9 +35,8 @@ class _ChatsTabState extends State<ChatsTab> {
   @override
   Widget build(BuildContext context) {
     final firebaseMessaging =
-    Provider.of<FirebaseCloudMessaging>(context, listen: false);
-     firebaseMessaging.flutterLocalNotificationsPlugin.cancelAll();
-     
+        Provider.of<FirebaseCloudMessaging>(context, listen: false);
+    firebaseMessaging.flutterLocalNotificationsPlugin.cancelAll();
 
     return SafeArea(
       bottom: false,
@@ -106,7 +104,6 @@ class ChatItem extends StatelessWidget {
     int otherImageVersionNumber = user1IsLoggedInUser
         ? chat.user2ImageVersionNumber
         : chat.user1ImageVersionNumber;
-
     if (otherImageFileName == null) otherImageFileName = kDefaultProfilePicName;
 
     final heroTag = otherUid + 'chats';
@@ -120,6 +117,30 @@ class ChatItem extends StatelessWidget {
     } else {
       haveIBlocked = chat.hasUser2Blocked;
       hasOtherBlocked = chat.hasUser1Blocked;
+    }
+
+    int badgeCount = 0;
+    bool unread = false;
+    String lastMessage;
+    bool hasLastMessage = false;
+
+    final listOfMessages = Provider.of<Map<String, List<String>>>(context);
+    print(listOfMessages);
+    if (listOfMessages.containsKey(otherUid)) {
+      badgeCount = listOfMessages[otherUid].length;
+      unread = true;
+      lastMessage = listOfMessages[otherUid].last;
+      hasLastMessage = true;
+      if (listOfMessages[otherUid].isEmpty) {
+        unread = false;
+/*
+        hasLastMessage = false ;
+        badgeCount = 0;
+*/
+      }
+    } else {
+      badgeCount = 0;
+      unread = false;
     }
 
     return CustomCard(
@@ -142,14 +163,16 @@ class ChatItem extends StatelessWidget {
                     style: kUsernameTextStyle,
                   ),
                   SizedBox(width: 10),
-                  Badge(count: 2, badgeColor: Colors.red),
+                  Badge(count: badgeCount, badgeColor: Colors.red),
                 ],
               ),
               Text(
                 HelperFunctions.getTimestampAsString(
                     timestamp: chat.lastMessageTimestamp),
                 overflow: TextOverflow.ellipsis,
-                style: kChatTabTimestampTextStyle,
+                style: unread
+                    ? kChatTabTimestampTextUnreadMessagesStyle
+                    : kChatTabTimestampTextStyle,
               ),
             ],
           ),
@@ -162,7 +185,7 @@ class ChatItem extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Text(
-                  chat.lastMessageText,
+                  hasLastMessage ? lastMessage : chat.lastMessageText,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: kChatLastMessageTextStyle,
@@ -183,6 +206,11 @@ class ChatItem extends StatelessWidget {
         Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
+              final firebaseMessaging =
+              Provider.of<FirebaseCloudMessaging>(context, listen: false);
+              firebaseMessaging.clearNotificationMessagesOf(uid:otherUid);
+              unread = false;
+              badgeCount = 0;
               return ChatScreen(
                 loggedInUid: loggedInUser.uid,
                 otherUid: otherUid,

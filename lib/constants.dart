@@ -58,6 +58,8 @@ const kUsernameTextStyle =
     TextStyle(fontFamily: 'MuliBold', color: kKeywordHeaderColor);
 const kChatTabTimestampTextStyle =
     TextStyle(color: Colors.black38, fontSize: 10, fontFamily: 'MuliRegular');
+const kChatTabTimestampTextUnreadMessagesStyle =
+TextStyle(color: Colors.red, fontSize: 10, fontFamily: 'MuliRegular');
 const kChatLastMessageTextStyle = TextStyle(
     fontSize: 13, fontFamily: 'MuliRegular', color: kTextFieldTextColor);
 const kCardSubtitleTextStyle = TextStyle(
