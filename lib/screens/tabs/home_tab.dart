@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
@@ -60,7 +61,7 @@ class _HomeTabState extends State<HomeTab> {
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
             child: Text(
-              'Announcements',
+              AppLocalizations.of(context).translate('first_string'),
               style: kTabTitleTextStyle,
               textAlign: TextAlign.start,
             ),
