@@ -11,10 +11,10 @@ import 'package:Flowby/widgets/tab_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:Flowby/services/location_service.dart';
 import 'package:Flowby/models/role.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:Flowby/services/location_service.dart';
 
 class SearchTab extends StatefulWidget {
   @override
@@ -34,8 +34,8 @@ class _SearchTabState extends State<SearchTab> {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context);
-    final localRole = Provider.of<Role>(context);
 
+    final localRole = Provider.of<Role>(context);
     final role = loggedInUser?.role ?? localRole;
 
     return SafeArea(
@@ -95,15 +95,7 @@ class _SearchTabState extends State<SearchTab> {
                       uidOfLoggedInUser: loggedInUser.uid,
                     );
                   }
-                  return ListView.builder(
-                    itemBuilder: (context, index) {
-                      return ProfileItem(
-                        user: searchResultUsers[index],
-                        isSkillSearch: role == Role.consumer,
-                      );
-                    },
-                    itemCount: searchResultUsers.length,
-                  );
+                  return ListOfSortedUsers(unsortedUsers: searchResultUsers);
                 }),
           ),
         ],
@@ -129,6 +121,73 @@ class _SearchTabState extends State<SearchTab> {
   }
 }
 
+class ListOfSortedUsers extends StatelessWidget {
+  final List<User> unsortedUsers;
+  ListOfSortedUsers({@required this.unsortedUsers});
+
+  @override
+  Widget build(BuildContext context) {
+    final loggedInUser = Provider.of<User>(context);
+    final localRole = Provider.of<Role>(context);
+    final role = loggedInUser?.role ?? localRole;
+    return FutureBuilder(
+      future:
+          _waitAndSortUsersByDistance(context: context, users: unsortedUsers),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return CenteredLoadingIndicator();
+        }
+        if (snapshot.hasError) {
+          return Container(
+            color: Colors.red,
+            child: const Text('Something went wrong'),
+          );
+        }
+        List<User> sortedUsers = snapshot.data;
+
+        return ListView.builder(
+          itemBuilder: (context, index) {
+            return ProfileItem(
+              user: sortedUsers[index],
+              isSkillSearch: role == Role.consumer,
+            );
+          },
+          itemCount: sortedUsers.length,
+        );
+      },
+    );
+  }
+
+  Future<List<User>> _waitAndSortUsersByDistance(
+      {@required BuildContext context, @required List<User> users}) async {
+    final loggedInUser = Provider.of<User>(context);
+    final locationService =
+        Provider.of<LocationService>(context, listen: false);
+    final position = Provider.of<Position>(context);
+
+    Position currentUsersLocation;
+    if (loggedInUser == null) {
+      currentUsersLocation = position;
+    } else {
+      currentUsersLocation = Position(
+          latitude: loggedInUser.location?.latitude,
+          longitude: loggedInUser.location?.latitude);
+    }
+    List<User> usersWithDistance = [];
+    for (User user in users) {
+      user.distanceInKm = await locationService.distanceBetween(
+          startLatitude: currentUsersLocation?.latitude,
+          startLongitude: currentUsersLocation?.longitude,
+          endLatitude: user?.location?.latitude,
+          endLongitude: user?.location?.longitude);
+      usersWithDistance.add(user);
+    }
+    usersWithDistance
+        .sort((user1, user2) => user1.distanceInKm - user2.distanceInKm);
+    return usersWithDistance;
+  }
+}
+
 class ProfileItem extends StatelessWidget {
   final isSkillSearch;
   final User user;
@@ -139,9 +198,6 @@ class ProfileItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context);
     final String heroTag = user.uid + 'home';
-    var currentPosition = Provider.of<Position>(context);
-    final locationService =
-        Provider.of<LocationService>(context, listen: false);
 
     return CustomCard(
       leading: ProfilePicture(
@@ -161,50 +217,35 @@ class ProfileItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: kUsernameTextStyle,
               ),
-              Expanded(
-                child: FutureBuilder(
-                  future: locationService.distanceBetween(
-                      startLatitude: currentPosition?.latitude,
-                      startLongitude: currentPosition?.longitude,
-                      endLatitude: user.location?.latitude,
-                      endLongitude: user.location?.longitude),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done ||
-                        snapshot.hasError) {
-                      return Text('');
-                    }
-
-                    int distanceInKm = snapshot.data;
-                    user.distanceInKm = distanceInKm;
-                    if (distanceInKm == null) {
-                      return Text('');
-                    }
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 1,
-                          child: Icon(
-                            Feather.navigation,
-                            size: 12,
-                          ),
-                        ),
-                        Flexible(
-                          flex: 3,
-                          child: Text(
-                            ' ' + distanceInKm.toString() + 'km',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: kLocationTextStyle,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+              if (user.distanceInKm != kDistanceInKm)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 1,
+                      child: Icon(
+                        Feather.navigation,
+                        size: 10,
+                        color: kBlueButtonColor,
+                      ),
+                    ),
+                    Flexible(
+                      flex: 3,
+                      child: Text(
+                        ' ' + user.distanceInKm.toString() + 'km',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: kBlueButtonColor,
+                            fontSize: 10,
+                            fontFamily: 'MuliRegular'),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
             ],
           ),
           SizedBox(
@@ -218,7 +259,7 @@ class ProfileItem extends StatelessWidget {
           ),
         ],
       ),
-      onPressed: () {
+      onPress: () {
         Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
