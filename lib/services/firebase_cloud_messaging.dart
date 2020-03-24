@@ -62,17 +62,17 @@ class FirebaseCloudMessaging {
   void showNotification({@required CloudMessage message}) async {
     String contentTitle;
 
-    if (messages[message.title] == null) {
-      messages[message.title] = [];
+    if (messages[message.data['otherUid']] == null) {
+      messages[message.data['otherUid']] = [];
     }
-    messages[message.title].add(message.body);
-    messages[message.title].length == 1
+    messages[message.data['otherUid']].add(message.body);
+    messages[message.data['otherUid']].length == 1
         ? contentTitle = message.title
         : contentTitle =
-            '${message.title} (${messages[message.title].length} messages)';
+            '${message.title} (${messages[message.data['otherUid']].length} messages)';
     print(messages);
     InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
-        messages[message.title],
+        messages[message.data['otherUid']],
         contentTitle: contentTitle,
         summaryText: message.title);
 
@@ -101,12 +101,15 @@ class FirebaseCloudMessaging {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
-      message.title.hashCode,
-      '${message.title} (${messages[message.title].length} messages)',
+      message.data['otherUid'].hashCode,
+      contentTitle,
       message.body,
       platformChannelSpecifics,
       payload: message.string,
     );
+  }
+  void clearNotificationMessagesOf({@required String uid}){
+    messages[uid].clear();
   }
 
   Future onSelectNotification(String payload) async {
