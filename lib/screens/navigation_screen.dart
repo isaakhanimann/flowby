@@ -152,7 +152,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     final firebaseMessaging =
         Provider.of<FirebaseCloudMessaging>(context, listen: false);
-    unreadMessagesStream = firebaseMessaging.getUnreadMessages();
+    unreadMessagesStream = firebaseMessaging.getUnreadMessagesStream();
     unreadMessagesStream.listen((value) {
       print('Unread messages: $value');
     });

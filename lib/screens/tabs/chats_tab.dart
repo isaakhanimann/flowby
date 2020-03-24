@@ -4,6 +4,7 @@ import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_cloud_messaging.dart';
+import 'package:Flowby/widgets/badge.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/custom_card.dart';
 import 'package:Flowby/widgets/tab_header.dart';
@@ -132,10 +133,16 @@ class ChatItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                otherUsername,
-                overflow: TextOverflow.ellipsis,
-                style: kUsernameTextStyle,
+              Row(
+                children: <Widget>[
+                  Text(
+                    otherUsername,
+                    overflow: TextOverflow.ellipsis,
+                    style: kUsernameTextStyle,
+                  ),
+                  SizedBox(width: 10),
+                  Badge(count: 2, badgeColor: Colors.red),
+                ],
               ),
               Text(
                 HelperFunctions.getTimestampAsString(

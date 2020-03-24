@@ -23,8 +23,12 @@ class FirebaseCloudMessaging {
     return firebaseMessaging.getToken();
   }
 
-  Stream getUnreadMessages (){
+  Stream getUnreadMessagesStream (){
     return controller.stream;
+  }
+
+  int getUnreadMessages (){
+    return nbrOfUnreadMessages;
   }
 
   void firebaseCloudMessagingListeners(BuildContext context) {
