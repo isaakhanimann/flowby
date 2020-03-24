@@ -153,9 +153,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
     final firebaseMessaging =
         Provider.of<FirebaseCloudMessaging>(context, listen: false);
     unreadMessagesStream = firebaseMessaging.getUnreadMessagesStream();
+    /*
     unreadMessagesStream.listen((value) {
       print('Unread messages: $value');
     });
+*/
 
     final locationService =
         Provider.of<LocationService>(context, listen: false);
@@ -197,6 +199,7 @@ class ScreenWithAllTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int unreadMessages = Provider.of<int>(context);
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         backgroundColor: Colors.white,
@@ -218,7 +221,7 @@ class ScreenWithAllTabs extends StatelessWidget {
               icon: Icon(
                 Feather.mail,
               ),
-              badgeCount: 2,
+              badgeCount: unreadMessages,
             ),
           ),
           BottomNavigationBarItem(

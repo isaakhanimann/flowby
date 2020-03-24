@@ -38,6 +38,7 @@ class _ChatsTabState extends State<ChatsTab> {
     final firebaseMessaging =
     Provider.of<FirebaseCloudMessaging>(context, listen: false);
      firebaseMessaging.flutterLocalNotificationsPlugin.cancelAll();
+     
 
     return SafeArea(
       bottom: false,
