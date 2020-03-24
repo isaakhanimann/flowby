@@ -2,10 +2,13 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/basic_dialog.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/custom_dialog.dart';
+import 'package:Flowby/widgets/distance_text.dart';
 import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/tab_header.dart';
+import 'package:Flowby/widgets/two_options_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -25,28 +28,13 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   Future<List<Announcement>> announcementsFuture;
   bool isFetchingAnnouncements = true;
-  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    scrollController.addListener(() {
-      if (scrollController.position.pixels < -250 && !isFetchingAnnouncements) {
-        isFetchingAnnouncements = true;
-        setState(() {
-          announcementsFuture = cloudFirestoreService.getAnnouncements();
-        });
-      }
-    });
     announcementsFuture = cloudFirestoreService.getAnnouncements();
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
   }
 
   @override
@@ -69,6 +57,14 @@ class _HomeTabState extends State<HomeTab> {
             rightIcon: Icon(Feather.plus),
             onPressedRight: _addAnnouncement,
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+            child: Text(
+              'Announcements',
+              style: kTabTitleTextStyle,
+              textAlign: TextAlign.start,
+            ),
+          ),
           Expanded(
               child: FutureBuilder(
                   future: announcementsFuture,
@@ -87,50 +83,154 @@ class _HomeTabState extends State<HomeTab> {
                     List<Announcement> announcements = List.from(
                         snapshot.data); // to convert it to editable list
                     isFetchingAnnouncements = false;
-                    return ListView.builder(
-                        controller: scrollController,
-                        itemCount: announcements.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                              child: Text(
-                                'Announcements',
-                                style: kTabTitleTextStyle,
-                                textAlign: TextAlign.start,
-                              ),
-                            );
-                          }
-                          Announcement announcement = announcements[index - 1];
-                          return AnnouncementItem(
-                            announcement: announcement,
-                            heroTag: announcement.user.uid +
-                                announcement.timestamp.toString() +
-                                'announcements',
-                          );
-                        });
+                    return ListOfAnnouncements(
+                      announcements: announcements,
+                      isFetchingAnnouncements: isFetchingAnnouncements,
+                      fetchNewAnnouncements: _fetchAnnouncements,
+                    );
                   }))
         ],
       ),
     );
   }
 
+  _fetchAnnouncements() async {
+    isFetchingAnnouncements = true;
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    setState(() {
+      announcementsFuture = cloudFirestoreService.getAnnouncements();
+    });
+  }
+
   _addAnnouncement() async {
     final loggedInUser = Provider.of<User>(context, listen: false);
 
-    HelperFunctions.showCustomDialog(
-      context: context,
-      dialog: AddAnnouncementDialog(
-        loggedInUser: loggedInUser,
-      ),
+    if (loggedInUser.isHidden) {
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: BasicDialog(
+            title: 'Your profile is hidden',
+            text:
+                'You cannot add announcements because your profile is hidden'),
+      );
+    } else {
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: AddAnnouncementDialog(
+          loggedInUser: loggedInUser,
+          reloadAnnouncements: _fetchAnnouncements,
+        ),
+      );
+    }
+  }
+}
+
+class ListOfAnnouncements extends StatefulWidget {
+  final List<Announcement> announcements;
+  final bool isFetchingAnnouncements;
+  final Function fetchNewAnnouncements;
+
+  ListOfAnnouncements(
+      {@required this.announcements,
+      @required this.isFetchingAnnouncements,
+      @required this.fetchNewAnnouncements});
+
+  @override
+  _ListOfAnnouncementsState createState() => _ListOfAnnouncementsState();
+}
+
+class _ListOfAnnouncementsState extends State<ListOfAnnouncements> {
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels < -150 &&
+          !widget.isFetchingAnnouncements) {
+        widget.fetchNewAnnouncements();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        controller: scrollController,
+        itemCount: widget.announcements.length,
+        itemBuilder: (context, index) {
+          Announcement announcement = widget.announcements[index];
+
+          return AnnouncementItem(
+            announcement: announcement,
+            heroTag: announcement.user.uid +
+                announcement.timestamp.toString() +
+                'announcements',
+            onLongPress: _deleteAnnouncement,
+          );
+        });
+  }
+
+  _deleteAnnouncement({BuildContext context, Announcement announcement}) async {
+    final loggedInUser = Provider.of<User>(context, listen: false);
+    if (announcement.user.uid == loggedInUser.uid) {
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: DeleteAnnouncementDialog(
+          announcement: announcement,
+          reloadAnnouncements: widget.fetchNewAnnouncements,
+        ),
+      );
+    } else {
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: BasicDialog(
+            title: 'Cannot delete',
+            text: 'You can only delete your own announcements'),
+      );
+    }
+  }
+}
+
+class DeleteAnnouncementDialog extends StatelessWidget {
+  final Announcement announcement;
+  final Function reloadAnnouncements;
+
+  DeleteAnnouncementDialog(
+      {@required this.announcement, @required this.reloadAnnouncements});
+
+  @override
+  Widget build(BuildContext context) {
+    return TwoOptionsDialog(
+      title: 'Delete announcement?',
+      text: 'Do you really want to delete this announcement?',
+      rightActionText: 'Delete',
+      rightAction: () async {
+        final cloudFirestoreService =
+            Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        await cloudFirestoreService.deleteAnnouncement(
+            announcement: announcement);
+        reloadAnnouncements();
+        Navigator.of(context).pop();
+      },
+      rightActionColor: Colors.red,
     );
   }
 }
 
 class AddAnnouncementDialog extends StatefulWidget {
   final User loggedInUser;
+  final Function reloadAnnouncements;
 
-  AddAnnouncementDialog({this.loggedInUser});
+  AddAnnouncementDialog(
+      {@required this.loggedInUser, @required this.reloadAnnouncements});
 
   @override
   _AddAnnouncementDialogState createState() => _AddAnnouncementDialogState();
@@ -203,6 +303,7 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
                     );
                     await cloudFirestoreService.uploadAnnouncement(
                         announcement: announcement);
+                    widget.reloadAnnouncements();
                     Navigator.of(context, rootNavigator: true).pop();
                   },
                 ),
@@ -218,12 +319,23 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
 class AnnouncementItem extends StatelessWidget {
   final Announcement announcement;
   final String heroTag;
+  final Function onLongPress;
 
-  AnnouncementItem({@required this.announcement, @required this.heroTag});
+  AnnouncementItem(
+      {@required this.announcement,
+      @required this.heroTag,
+      @required this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
+    final User loggedInUser = Provider.of<User>(context);
     return CustomCard(
+      onPress: () {
+        _onPressed(context: context);
+      },
+      onLongPress: () {
+        onLongPress(context: context, announcement: announcement);
+      },
       paddingInsideVertical: 15,
       leading: ProfilePicture(
         imageFileName: announcement.user.imageFileName,
@@ -241,6 +353,13 @@ class AnnouncementItem extends StatelessWidget {
                 announcement.user.username,
                 overflow: TextOverflow.ellipsis,
                 style: kUsernameTextStyle,
+              ),
+              DistanceText(
+                latitude1: loggedInUser.location?.latitude,
+                longitude1: loggedInUser.location?.longitude,
+                latitude2: announcement.user?.location?.latitude,
+                longitude2: announcement.user?.location?.longitude,
+                fontSize: 10,
               ),
               Text(
                 HelperFunctions.getTimestampAsString(
@@ -262,13 +381,10 @@ class AnnouncementItem extends StatelessWidget {
           ),
         ],
       ),
-      onPressed: () {
-        _onPressed(context);
-      },
     );
   }
 
-  _onPressed(BuildContext context) {
+  _onPressed({BuildContext context}) {
     final loggedInUser = Provider.of<User>(context, listen: false);
     User announcementUser = announcement.user;
     Navigator.of(context, rootNavigator: true).push(

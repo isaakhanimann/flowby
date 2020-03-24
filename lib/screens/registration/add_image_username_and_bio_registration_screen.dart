@@ -5,7 +5,6 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_skills_or_wishes_registration_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
-import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -20,6 +19,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:Flowby/services/preferences_service.dart';
 import 'package:Flowby/models/role.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
+import 'package:Flowby/models/helper_functions.dart';
+import 'package:Flowby/widgets/basic_dialog.dart';
 
 class AddImageUsernameAndBioRegistrationScreen extends StatefulWidget {
   static const String id = 'add_username_registration_screen';
@@ -260,8 +261,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
               minimumAspectRatio: 1.0,
             ));
       }
-      if(croppedImage != null)
-        break;
+      if (croppedImage != null) break;
       selectedImage = await ImagePicker.pickImage(source: source);
     } while ((croppedImage == null && selectedImage != null));
     if (croppedImage != null) {
@@ -273,10 +273,11 @@ class _AddImageUsernameAndBioRegistrationScreenState
 
   Future<void> _uploadImageAndUserAndNavigate(BuildContext context) async {
     if (_username == null) {
-      showAlert(
-          context: context,
-          title: "Name is missing",
-          description: 'Enter your name. Thank you.');
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: BasicDialog(
+            title: "Name is missing", text: "Enter your name. Thank you."),
+      );
       return;
     }
     setState(() {
@@ -295,12 +296,11 @@ class _AddImageUsernameAndBioRegistrationScreenState
     final preferencesService =
         Provider.of<PreferencesService>(context, listen: false);
 
-
     Role preferenceRole = await preferencesService.getRole();
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     final storageService =
-    Provider.of<FirebaseStorageService>(context, listen: false);
+        Provider.of<FirebaseStorageService>(context, listen: false);
     if (_profilePic != null) {
       await storageService.uploadImage(
           fileName: widget.user.uid, image: _profilePic);

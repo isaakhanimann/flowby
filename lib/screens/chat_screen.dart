@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:Flowby/models/chat_without_last_message.dart';
 import 'package:Flowby/widgets/route_transitions/scale_route.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
+import 'package:Flowby/widgets/two_options_dialog.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
@@ -303,35 +304,26 @@ class ChatHeader extends StatelessWidget {
                   child: haveIBlocked ? Text('Unblock') : Text('Block'),
                   onPressed: () {
                     if (!haveIBlocked) {
-                      showCupertinoDialog(
+                      HelperFunctions.showCustomDialog(
                         context: context,
-                        builder: (_) => CupertinoAlertDialog(
-                          title: Text('Block ${screenInfo.otherUsername}?'),
-                          content: Text(
-                              '\nBlocked contacts will no longer be able to send you messages'),
-                          actions: <Widget>[
-                            CupertinoDialogAction(
-                              child: Text('Cancel'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            CupertinoDialogAction(
-                              child: Text('Block'),
-                              onPressed: () {
-                                if (amIUser1) {
-                                  cloudFirestoreService.uploadChatBlocked(
-                                      chatpath: chat.chatpath,
-                                      hasUser1Blocked: !haveIBlocked);
-                                } else {
-                                  cloudFirestoreService.uploadChatBlocked(
-                                      chatpath: chat.chatpath,
-                                      hasUser2Blocked: !haveIBlocked);
-                                }
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
+                        dialog: TwoOptionsDialog(
+                          title: 'Block ${screenInfo.otherUsername}?',
+                          text:
+                              'Blocked contacts will no longer be able to send you messages',
+                          rightActionText: 'Block',
+                          rightActionColor: Colors.red,
+                          rightAction: () {
+                            if (amIUser1) {
+                              cloudFirestoreService.uploadChatBlocked(
+                                  chatpath: chat.chatpath,
+                                  hasUser1Blocked: !haveIBlocked);
+                            } else {
+                              cloudFirestoreService.uploadChatBlocked(
+                                  chatpath: chat.chatpath,
+                                  hasUser2Blocked: !haveIBlocked);
+                            }
+                            Navigator.pop(context);
+                          },
                         ),
                       );
                     } else {

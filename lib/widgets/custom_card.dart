@@ -5,14 +5,16 @@ import 'package:flutter_icons/flutter_icons.dart';
 class CustomCard extends StatelessWidget {
   final Widget leading;
   final Widget middle;
-  final Function onPressed;
+  final Function onPress;
+  final Function onLongPress;
   final double paddingInsideHorizontal;
   final double paddingInsideVertical;
 
   CustomCard(
       {@required this.leading,
       @required this.middle,
-      @required this.onPressed,
+      @required this.onPress,
+      this.onLongPress,
       this.paddingInsideHorizontal = 15,
       this.paddingInsideVertical = 10});
 
@@ -20,12 +22,17 @@ class CustomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: CupertinoButton(
-          color: kCardBackgroundColor,
+      child: GestureDetector(
+        onTap: onPress,
+        onLongPress: onLongPress,
+        child: Container(
           padding: EdgeInsets.symmetric(
               horizontal: paddingInsideHorizontal,
               vertical: paddingInsideVertical),
-          borderRadius: BorderRadius.circular(15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: kCardBackgroundColor,
+          ),
           child: Row(
             children: <Widget>[
               leading,
@@ -41,7 +48,8 @@ class CustomCard extends StatelessWidget {
               ),
             ],
           ),
-          onPressed: onPressed),
+        ),
+      ),
     );
   }
 }

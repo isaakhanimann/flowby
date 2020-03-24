@@ -7,6 +7,8 @@ import 'package:Flowby/services/firebase_cloud_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/models/user.dart';
+import 'package:Flowby/models/helper_functions.dart';
+import 'package:Flowby/widgets/basic_dialog.dart';
 
 class EnableNotificationScreen extends StatelessWidget {
   final User user;
@@ -67,23 +69,18 @@ class EnableNotificationScreen extends StatelessWidget {
       );
     } catch (e) {
       print(e);
-      showCupertinoDialog(
+      HelperFunctions.showCustomDialog(
         context: context,
-        builder: (_) => CupertinoAlertDialog(
-          title: Text('Notification Permissions Denied'),
-          content: Text('\nEnable Notification Permissions in your Settings'),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text('Ok'),
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop();
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  NavigationScreen.id,
-                  (Route<dynamic> route) => false,
-                );
-              },
-            )
-          ],
+        dialog: BasicDialog(
+          title: 'Notification Permissions Denied',
+          text: 'Enable Notifications for Flowby in your Settings',
+          onOkPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              NavigationScreen.id,
+              (Route<dynamic> route) => false,
+            );
+          },
         ),
       );
     }

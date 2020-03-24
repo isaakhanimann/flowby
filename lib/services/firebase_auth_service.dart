@@ -83,13 +83,25 @@ class FirebaseAuthService {
 
   Future<AuthResult> signInWithEmail(
       {@required String email, @required String password}) async {
-    return _auth.signInWithEmailAndPassword(email: email, password: password);
+    try {
+      return _auth.signInWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
+      print('Could not sign in with email');
+      print(e);
+      return null;
+    }
   }
 
   Future<AuthResult> registerWithEmail(
       {@required String email, @required String password}) async {
-    return _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
+    try {
+      return _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+    } catch (e) {
+      print('Could not register with email');
+      print(e);
+      return null;
+    }
   }
 
   Future<bool> deleteCurrentlyLoggedInUser() async {

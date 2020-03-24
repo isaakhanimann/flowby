@@ -2,7 +2,6 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/verify_email_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
-import 'package:Flowby/widgets/alert.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,6 +15,8 @@ import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:Flowby/services/apple_sign_in_available.dart';
 import 'package:Flowby/widgets/google_login_button.dart';
 import 'add_image_username_and_bio_registration_screen.dart';
+import 'package:Flowby/models/helper_functions.dart';
+import 'package:Flowby/widgets/basic_dialog.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -175,10 +176,12 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         showSpinner = true;
       });
       if (email == null || password == null) {
-        showAlert(
-            context: context,
-            title: "Missing email or password",
-            description: 'Enter an email and an password. Thank you.');
+        HelperFunctions.showCustomDialog(
+          context: context,
+          dialog: BasicDialog(
+              title: "Missing email or password",
+              text: "Enter an email and an password. Thank you."),
+        );
         setState(() {
           showSpinner = false;
         });
@@ -211,26 +214,29 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       switch (e.code) {
         case 'ERROR_WEAK_PASSWORD':
           {
-            showAlert(
-                context: context,
-                title: "Weak Password",
-                description: e.message);
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(title: "Weak Password", text: e.message),
+            );
             break;
           }
         case 'ERROR_INVALID_EMAIL':
           {
-            showAlert(
-                context: context,
-                title: "Invalid Email",
-                description: "Please enter a valid email address");
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(
+                  title: "Invalid Email",
+                  text: "Please enter a valid email address"),
+            );
             break;
           }
         case 'ERROR_EMAIL_ALREADY_IN_USE':
           {
-            showAlert(
-                context: context,
-                title: "Email Already in Use",
-                description: e.message);
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog:
+                  BasicDialog(title: "Email Already in Use", text: e.message),
+            );
             break;
           }
         default:
@@ -288,18 +294,22 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       switch (e.code) {
         case 'ERROR_AUTHORIZATION_DENIED':
           {
-            showAlert(
-                context: context,
-                title: "Authorization Denied",
-                description: "Please sign up with email");
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(
+                  title: "Authorization Denied",
+                  text: "Please sign up with email"),
+            );
             break;
           }
         default:
           {
-            showAlert(
-                context: context,
-                title: "Apple Sign In didn't work",
-                description: "Apple Sign In didn't work");
+            HelperFunctions.showCustomDialog(
+              context: context,
+              dialog: BasicDialog(
+                  title: "Apple Sign In didn't work",
+                  text: "Sign in with a different method"),
+            );
             print(e);
           }
       }

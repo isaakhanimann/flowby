@@ -1,15 +1,16 @@
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_image_username_and_bio_registration_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
-import 'package:Flowby/widgets/verify_email_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:Flowby/widgets/two_options_dialog.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
   static const String id = 'verify_email_screen';
@@ -32,17 +33,6 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     // This prevents the user to be logged in without having verified the email.
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
-/*
-    WidgetsBinding.instance.addObserver(LifecycleEventHandler(
-      detachedCallBack: () async {
-        debugPrint('detached...');
-        //authService.signOut();
-      },
-      resumeCallBack: () async {
-        debugPrint('resume...');
-      },
-    ));
-*/
 
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
@@ -87,11 +77,6 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           color: kBlueButtonColor,
                           textColor: Colors.white,
                           onPressed: () {
-/*
-                            setState(() {
-                              showSpinner = true;
-                            });
-*/
                             _uploadUserAndNavigate(context);
                           },
                         ),
@@ -116,17 +101,17 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     user = await authService.getCurrentUser();
 
     if (user.isEmailVerified == false) {
-      showCupertinoDialog(
-          context: context,
-          builder: (_) => VerifyEmailAlert(
-                authService: authService,
-                firebaseUser: user,
-              ));
-/*
-      setState(() {
-        showSpinner = false;
-      });
-*/
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: TwoOptionsDialog(
+            title: 'Verify your email',
+            text: 'It seems that you haven\'t verified your email yet.',
+            rightActionText: 'Send verification',
+            rightAction: () async {
+              await user?.sendEmailVerification();
+              Navigator.pop(context);
+            }),
+      );
       return;
     }
     Navigator.of(context, rootNavigator: true).push(

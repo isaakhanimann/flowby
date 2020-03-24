@@ -50,9 +50,11 @@ class FirebaseCloudFirestoreService {
           .collection('announcements')
           .orderBy('timestamp', descending: true)
           .getDocuments();
-      List<Announcement> announcements = snap.documents
-          .map((doc) => Announcement.fromMap(map: doc.data))
-          .toList();
+      List<Announcement> announcements = snap.documents.map((doc) {
+        Announcement announcement = Announcement.fromMap(map: doc.data);
+        announcement.docId = doc.documentID;
+        return announcement;
+      }).toList();
       return announcements;
     } catch (e) {
       print('Could not get announcements');
@@ -66,6 +68,18 @@ class FirebaseCloudFirestoreService {
       await _fireStore.collection('announcements').add(announcement.toMap());
     } catch (e) {
       print('Could not upload announcement');
+      print(e);
+    }
+  }
+
+  deleteAnnouncement({@required Announcement announcement}) async {
+    try {
+      await _fireStore
+          .collection('announcements')
+          .document(announcement.docId)
+          .delete();
+    } catch (e) {
+      print('Could not delete announcement');
       print(e);
     }
   }

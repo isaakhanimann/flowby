@@ -54,8 +54,6 @@ const kLargeNavigationBarTextStyle = TextStyle(
     fontFamily: 'MontserratBold', fontSize: 33, color: kKeywordHeaderColor);
 const kMiddleNavigationBarTextStyle = TextStyle(
     fontFamily: 'MuliSemiBold', fontSize: 19, color: kKeywordHeaderColor);
-const kLocationTextStyle =
-    TextStyle(color: kBlueButtonColor, fontSize: 12, fontFamily: 'MuliRegular');
 const kUsernameTextStyle =
     TextStyle(fontFamily: 'MuliBold', color: kKeywordHeaderColor);
 const kChatTabTimestampTextStyle =
@@ -102,3 +100,4 @@ const kSecondCardBackgroundColor = Color(0xFFE8E8E9);
 
 // Other
 const String kDefaultProfilePicName = 'default-profile-pic.jpg';
+const int kDistanceInKm = 100000000000000;

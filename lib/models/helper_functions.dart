@@ -20,6 +20,29 @@ class HelperFunctions {
     }
   }
 
+  static showCustomDialog(
+      {@required BuildContext context, @required Widget dialog}) {
+    showGeneralDialog(
+        barrierColor: CupertinoColors.white.withOpacity(0.3),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: Opacity(
+              opacity: a1.value,
+              child: widget,
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 150),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {
+          return dialog;
+        });
+  }
+
   static String _makeInt2Digits(int number) {
     if (number < 10) {
       return '0${number.toString()}';
@@ -77,28 +100,5 @@ class HelperFunctions {
       default:
         return 'Error';
     }
-  }
-
-  static showCustomDialog(
-      {@required BuildContext context, @required Widget dialog}) {
-    showGeneralDialog(
-        barrierColor: CupertinoColors.white.withOpacity(0.3),
-        transitionBuilder: (context, a1, a2, widget) {
-          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
-          return Transform(
-            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
-            child: Opacity(
-              opacity: a1.value,
-              child: widget,
-            ),
-          );
-        },
-        transitionDuration: Duration(milliseconds: 150),
-        barrierDismissible: true,
-        barrierLabel: '',
-        context: context,
-        pageBuilder: (context, animation1, animation2) {
-          return dialog;
-        });
   }
 }
