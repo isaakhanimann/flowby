@@ -12,13 +12,19 @@ class FirebaseCloudMessaging {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   Map<String, List<String>> messages = {
-    "alex": ["yo"]
+    "empty": ["empty"]
   };
+  int nbrOfUnreadMessages= 0;
+  StreamController<int> controller = StreamController<int>();
 
   BuildContext context;
 
   Future<String> getToken() {
     return firebaseMessaging.getToken();
+  }
+
+  Stream getUnreadMessages (){
+    return controller.stream;
   }
 
   void firebaseCloudMessagingListeners(BuildContext context) {
@@ -27,6 +33,8 @@ class FirebaseCloudMessaging {
     firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> mapMessage) async {
         this.context = context;
+        nbrOfUnreadMessages += 1;
+        controller.add(nbrOfUnreadMessages);
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         showNotification(message: message);
       },
@@ -108,9 +116,15 @@ class FirebaseCloudMessaging {
       payload: message.string,
     );
   }
+
   void clearNotificationMessagesOf({@required String uid}){
-    messages[uid].clear();
+    if(messages[uid] != null){
+      nbrOfUnreadMessages -= messages[uid].length;
+      messages[uid].clear();
+      controller.add(nbrOfUnreadMessages);
+    }
   }
+
 
   Future onSelectNotification(String payload) async {
     if (payload != null) {

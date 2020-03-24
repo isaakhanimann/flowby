@@ -20,6 +20,7 @@ class ChatsTab extends StatefulWidget {
 
 class _ChatsTabState extends State<ChatsTab> {
   Stream<List<Chat>> chatsStream;
+  Stream unreadMessages;
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _ChatsTabState extends State<ChatsTab> {
     final firebaseMessaging =
     Provider.of<FirebaseCloudMessaging>(context, listen: false);
      firebaseMessaging.flutterLocalNotificationsPlugin.cancelAll();
+
     return SafeArea(
       bottom: false,
       child: Column(

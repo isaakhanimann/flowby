@@ -8,6 +8,7 @@ import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_cloud_messaging.dart';
 import 'package:Flowby/services/location_service.dart';
+import 'package:Flowby/widgets/badge_icon.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
+  Stream<int> unreadMessagesStream;
   Role _role;
   bool _shouldExplanationBeLoaded = false;
   FirebaseUser loggedInUser;
@@ -100,6 +102,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
           },
         ),
         Provider<Role>.value(value: _role),
+        StreamProvider<int>.value(
+          initialData: 0,
+          value: unreadMessagesStream,
+        ),
       ],
       child: ScreenWithAllTabs(),
     );
@@ -146,6 +152,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     final firebaseMessaging =
         Provider.of<FirebaseCloudMessaging>(context, listen: false);
+    unreadMessagesStream = firebaseMessaging.getUnreadMessages();
+    unreadMessagesStream.listen((value) {
+      print('Unread messages: $value');
+    });
 
     final locationService =
         Provider.of<LocationService>(context, listen: false);
@@ -204,8 +214,11 @@ class ScreenWithAllTabs extends StatelessWidget {
             ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Feather.mail,
+            icon: BadgeIcon(
+              icon: Icon(
+                Feather.mail,
+              ),
+              badgeCount: 2,
             ),
           ),
           BottomNavigationBarItem(
