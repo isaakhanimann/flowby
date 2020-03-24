@@ -218,33 +218,35 @@ class ProfileItem extends StatelessWidget {
                 style: kUsernameTextStyle,
               ),
               if (user.distanceInKm != kDistanceInKm)
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: <Widget>[
-                    Flexible(
-                      flex: 1,
-                      child: Icon(
-                        Feather.navigation,
-                        size: 10,
-                        color: kBlueButtonColor,
+                Flexible(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: <Widget>[
+                      Flexible(
+                        flex: 1,
+                        child: Icon(
+                          Feather.navigation,
+                          size: 10,
+                          color: kBlueButtonColor,
+                        ),
                       ),
-                    ),
-                    Flexible(
-                      flex: 3,
-                      child: Text(
-                        ' ' + user.distanceInKm.toString() + 'km',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: kBlueButtonColor,
-                            fontSize: 10,
-                            fontFamily: 'MuliRegular'),
+                      Flexible(
+                        flex: 3,
+                        child: Text(
+                          ' ' + user.distanceInKm.toString() + 'km',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: kBlueButtonColor,
+                              fontSize: 10,
+                              fontFamily: 'MuliRegular'),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
             ],
           ),

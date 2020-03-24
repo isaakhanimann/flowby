@@ -166,13 +166,13 @@ class ChatItem extends StatelessWidget {
                   Badge(count: badgeCount, badgeColor: Colors.red),
                 ],
               ),
-              Text(
-                HelperFunctions.getTimestampAsString(
-                    timestamp: chat.lastMessageTimestamp),
-                overflow: TextOverflow.ellipsis,
-                style: unread
-                    ? kChatTabTimestampTextUnreadMessagesStyle
-                    : kChatTabTimestampTextStyle,
+              Flexible(
+                child: Text(
+                  HelperFunctions.getTimestampAsString(
+                      timestamp: chat.lastMessageTimestamp),
+                  overflow: TextOverflow.ellipsis,
+                  style: kChatTabTimestampTextStyle,
+                ),
               ),
             ],
           ),
