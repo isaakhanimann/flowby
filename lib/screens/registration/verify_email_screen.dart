@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/models/user.dart';
@@ -64,7 +65,20 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           height: 10.0,
                         ),
                         Text(
-                          'Thank you for joining us! 👋 \n\n A verification link has been sent to your email account. 💌 \n \n Click on the link to continue the registration process. ✅',
+                          AppLocalizations.of(context)
+                              .translate('thanks_for_joining'),
+                          textAlign: TextAlign.center,
+                          style: kRegisterHeaderTextStyle,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)
+                              .translate('verification_sent'),
+                          textAlign: TextAlign.center,
+                          style: kRegisterHeaderTextStyle,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)
+                              .translate('click_link_to_continue'),
                           textAlign: TextAlign.center,
                           style: kRegisterHeaderTextStyle,
                         ),
@@ -73,7 +87,8 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                         ),
                         RoundedButton(
                           paddingInsideHorizontal: 45,
-                          text: 'I\'ve verified my email',
+                          text: AppLocalizations.of(context)
+                              .translate('i_have_verified'),
                           color: kBlueButtonColor,
                           textColor: Colors.white,
                           onPressed: () {
@@ -104,9 +119,11 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       HelperFunctions.showCustomDialog(
         context: context,
         dialog: TwoOptionsDialog(
-            title: 'Verify your email',
-            text: 'It seems that you haven\'t verified your email yet.',
-            rightActionText: 'Send verification',
+            title: AppLocalizations.of(context).translate('verify_your_email'),
+            text: AppLocalizations.of(context)
+                .translate('you_havent_verified_yet'),
+            rightActionText:
+                AppLocalizations.of(context).translate('send_verification'),
             rightAction: () async {
               await user?.sendEmailVerification();
               Navigator.pop(context);

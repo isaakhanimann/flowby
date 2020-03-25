@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/view_profile_screen.dart';
@@ -60,7 +61,7 @@ class _HomeTabState extends State<HomeTab> {
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
             child: Text(
-              'Announcements',
+              AppLocalizations.of(context).translate('announcements'),
               style: kTabTitleTextStyle,
               textAlign: TextAlign.start,
             ),
@@ -76,7 +77,10 @@ class _HomeTabState extends State<HomeTab> {
                       return Center(
                         child: Container(
                           color: Colors.red,
-                          child: const Text('Something went wrong'),
+                          child: Text(
+                            AppLocalizations.of(context)
+                                .translate('something_went_wrong'),
+                          ),
                         ),
                       );
                     }
@@ -110,9 +114,11 @@ class _HomeTabState extends State<HomeTab> {
       HelperFunctions.showCustomDialog(
         context: context,
         dialog: BasicDialog(
-            title: 'Your profile is hidden',
-            text:
-                'You cannot add announcements because your profile is hidden'),
+          title:
+              AppLocalizations.of(context).translate('your_profile_is_hidden'),
+          text: AppLocalizations.of(context)
+              .translate('you_cannot_add_announcements'),
+        ),
       );
     } else {
       HelperFunctions.showCustomDialog(
@@ -192,8 +198,9 @@ class _ListOfAnnouncementsState extends State<ListOfAnnouncements> {
       HelperFunctions.showCustomDialog(
         context: context,
         dialog: BasicDialog(
-            title: 'Cannot delete',
-            text: 'You can only delete your own announcements'),
+          title: AppLocalizations.of(context).translate('cannot_delete'),
+          text: AppLocalizations.of(context).translate('can_only_delete_own'),
+        ),
       );
     }
   }
@@ -209,9 +216,10 @@ class DeleteAnnouncementDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TwoOptionsDialog(
-      title: 'Delete announcement?',
-      text: 'Do you really want to delete this announcement?',
-      rightActionText: 'Delete',
+      title: AppLocalizations.of(context).translate('delete_announcement'),
+      text: AppLocalizations.of(context)
+          .translate('really_want_to_delete_announcement'),
+      rightActionText: AppLocalizations.of(context).translate('delete'),
       rightAction: () async {
         final cloudFirestoreService =
             Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
@@ -243,12 +251,12 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
   Widget build(BuildContext context) {
     return CustomDialog(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              'What do you want to announce?',
+              AppLocalizations.of(context).translate('what_to_announce'),
               style: kDialogTitleTextStyle,
               textAlign: TextAlign.center,
             ),
@@ -270,10 +278,11 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 CupertinoButton(
+                  padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
                   child: Text(
-                    'Cancel',
+                    AppLocalizations.of(context).translate('cancel'),
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       fontFamily: 'MuliRegular',
                       color: Colors.black,
                     ),
@@ -283,10 +292,11 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
                   },
                 ),
                 CupertinoButton(
+                  padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                   child: Text(
-                    'Add',
+                    AppLocalizations.of(context).translate('add'),
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 16,
                       fontFamily: 'MuliBold',
                       color: kDefaultProfilePicColor,
                     ),
@@ -363,7 +373,7 @@ class AnnouncementItem extends StatelessWidget {
               ),
               Text(
                 HelperFunctions.getTimestampAsString(
-                    timestamp: announcement.timestamp),
+                    context: context, timestamp: announcement.timestamp),
                 overflow: TextOverflow.ellipsis,
                 style: kChatTabTimestampTextStyle,
               ),

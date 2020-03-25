@@ -49,7 +49,7 @@ const kAddSkillsTextStyle = TextStyle(
 const kAddSkillsTopicTextStyle = TextStyle(
     fontFamily: 'MuliBold', fontSize: 14.0, color: kSmallTitlesTextColor);
 const kActionNavigationBarTextStyle = TextStyle(
-    fontFamily: 'MuliSemiBold', fontSize: 19, color: kLoginBackgroundColor);
+    fontFamily: 'MuliSemiBold', fontSize: 17, color: kLoginBackgroundColor);
 const kLargeNavigationBarTextStyle = TextStyle(
     fontFamily: 'MontserratBold', fontSize: 33, color: kKeywordHeaderColor);
 const kMiddleNavigationBarTextStyle = TextStyle(
@@ -83,7 +83,10 @@ const kDialogTitleTextStyle = TextStyle(
 
 // Colors
 const kLoginBackgroundColor = Color(0xFF0D4FF7);
+const kLightBlueColor = Color(0xffb4f2ff);
 const kDefaultProfilePicColor = Color(0xff00ffab);
+const kLightDefaultProfilePicColor = Color(0xffa3ffe1);
+const kLightYellowColor = Color(0xfffffcb4);
 const kKeywordHeaderColor = Color(0xff110133);
 const kBlueButtonColor = Color(0xFF294FED);
 const kMessageBubbleColor = Color(0xFF2862F7);

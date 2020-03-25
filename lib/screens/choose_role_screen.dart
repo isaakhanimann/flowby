@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
@@ -34,7 +35,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Do you want to search for skills or provide some?',
+              AppLocalizations.of(context).translate('want_search_or_provide'),
               style: kExplanationTitleTextStyle,
               textAlign: TextAlign.center,
             ),
@@ -42,23 +43,25 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
               height: MediaQuery.of(context).size.height * 1 / 5,
             ),
             RoundedButton(
-                color: kBlueButtonColor,
-                textColor: CupertinoColors.white,
-                onPressed: () {
-                  Role role = Role.consumer;
-                  _setRoleAndNavigate(
-                      context: context, role: role, user: loggedInUser);
-                },
-                text: 'Search'),
+              color: kBlueButtonColor,
+              textColor: CupertinoColors.white,
+              onPressed: () {
+                Role role = Role.consumer;
+                _setRoleAndNavigate(
+                    context: context, role: role, user: loggedInUser);
+              },
+              text: AppLocalizations.of(context).translate('search'),
+            ),
             RoundedButton(
-                color: kBlueButtonColor,
-                textColor: CupertinoColors.white,
-                onPressed: () {
-                  Role role = Role.provider;
-                  _setRoleAndNavigate(
-                      context: context, role: role, user: loggedInUser);
-                },
-                text: 'Provide')
+              color: kBlueButtonColor,
+              textColor: CupertinoColors.white,
+              onPressed: () {
+                Role role = Role.provider;
+                _setRoleAndNavigate(
+                    context: context, role: role, user: loggedInUser);
+              },
+              text: AppLocalizations.of(context).translate('provide'),
+            )
           ],
         ),
       ),

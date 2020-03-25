@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,18 +33,20 @@ class EnableNotificationScreen extends StatelessWidget {
             ),
             SizedBox(height: 50),
             Text(
-              'Enable notifications to get notified when someone messages you',
+              AppLocalizations.of(context)
+                  .translate('enable_notifications_to_get_notified'),
               style: kExplanationMiddleTextStyle,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 50),
             RoundedButton(
-                color: kBlueButtonColor,
-                textColor: CupertinoColors.white,
-                onPressed: () {
-                  _checkAndHandleNotificationPermissions(context);
-                },
-                text: 'Continue'),
+              color: kBlueButtonColor,
+              textColor: CupertinoColors.white,
+              onPressed: () {
+                _checkAndHandleNotificationPermissions(context);
+              },
+              text: AppLocalizations.of(context).translate('continue'),
+            ),
           ],
         ),
       ),
@@ -72,8 +75,10 @@ class EnableNotificationScreen extends StatelessWidget {
       HelperFunctions.showCustomDialog(
         context: context,
         dialog: BasicDialog(
-          title: 'Notification Permissions Denied',
-          text: 'Enable Notifications for Flowby in your Settings',
+          title: AppLocalizations.of(context)
+              .translate('notification_permissions_denied'),
+          text: AppLocalizations.of(context)
+              .translate('enable_notifications_in_settings'),
           onOkPressed: () {
             Navigator.of(context, rootNavigator: true).pop();
             Navigator.of(context).pushNamedAndRemoveUntil(

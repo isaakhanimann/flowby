@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:Flowby/widgets/basic_dialog.dart';
@@ -16,7 +17,7 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
       height: double.infinity,
-      color: CupertinoColors.activeOrange,
+      color: kLightYellowColor,
       child: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -27,18 +28,19 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
             ),
             SizedBox(height: 50),
             Text(
-              'See how far away other users are',
+              AppLocalizations.of(context).translate('see_how_far_away'),
               style: kExplanationMiddleTextStyle,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 50),
             RoundedButton(
-                color: kBlueButtonColor,
-                textColor: CupertinoColors.white,
-                onPressed: () {
-                  _checkAndHandleLocationPermissions(context);
-                },
-                text: 'Enable Location')
+              color: kBlueButtonColor,
+              textColor: CupertinoColors.white,
+              onPressed: () {
+                _checkAndHandleLocationPermissions(context);
+              },
+              text: AppLocalizations.of(context).translate('enable_location'),
+            )
           ],
         ),
       ),
@@ -56,8 +58,10 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
         HelperFunctions.showCustomDialog(
           context: context,
           dialog: BasicDialog(
-            title: 'Location is enabled',
-            text: 'You have got all you need',
+            title:
+                AppLocalizations.of(context).translate('location_is_enabled'),
+            text:
+                AppLocalizations.of(context).translate('you_have_all_you_need'),
             onOkPressed: () {
               Navigator.of(context, rootNavigator: true).pop();
               Navigator.of(context, rootNavigator: true).push(
@@ -79,8 +83,10 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
       HelperFunctions.showCustomDialog(
         context: context,
         dialog: BasicDialog(
-          title: 'Location Permissions Denied',
-          text: 'Enable Location Permissions in your Settings',
+          title: AppLocalizations.of(context)
+              .translate('location_permission_denied'),
+          text: AppLocalizations.of(context)
+              .translate('enable_location_in_settings'),
         ),
       );
     }
