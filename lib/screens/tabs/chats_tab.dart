@@ -21,13 +21,15 @@ class ChatsTab extends StatefulWidget {
 
 class _ChatsTabState extends State<ChatsTab> {
   Stream<List<Chat>> chatsStream;
+  FirebaseCloudFirestoreService cloudFirestoreService;
+  User loggedInUser;
 
   @override
   void initState() {
     super.initState();
-    final cloudFirestoreService =
+    cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    final loggedInUser = Provider.of<User>(context, listen: false);
+    loggedInUser = Provider.of<User>(context, listen: false);
     chatsStream =
         cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
   }
@@ -37,6 +39,10 @@ class _ChatsTabState extends State<ChatsTab> {
     final firebaseMessaging =
         Provider.of<FirebaseCloudMessaging>(context, listen: false);
     firebaseMessaging.flutterLocalNotificationsPlugin.cancelAll();
+    setState(() {
+      chatsStream =
+          cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
+    });
 
     return SafeArea(
       bottom: false,
@@ -59,8 +65,10 @@ class _ChatsTabState extends State<ChatsTab> {
 
                     if (chats.isEmpty) {
                       return Center(
-                        child: Text('You have no open chats',
-                            style: kCardSubtitleTextStyle),
+                        child: Text(
+                          'You have no open chats',
+                          style: kCardSubtitleTextStyle,
+                        ),
                       );
                     }
                     return ListView.builder(
@@ -120,7 +128,6 @@ class ChatItem extends StatelessWidget {
     }
 
     int badgeCount = 0;
-    bool unread = false;
     String lastMessage;
     bool hasLastMessage = false;
 
@@ -128,19 +135,15 @@ class ChatItem extends StatelessWidget {
     print(listOfMessages);
     if (listOfMessages.containsKey(otherUid)) {
       badgeCount = listOfMessages[otherUid].length;
-      unread = true;
       lastMessage = listOfMessages[otherUid].last;
       hasLastMessage = true;
-      if (listOfMessages[otherUid].isEmpty) {
-        unread = false;
-/*
-        hasLastMessage = false ;
+      if (listOfMessages[otherUid].last == "empty") {
         badgeCount = 0;
-*/
+        hasLastMessage = false ;
       }
     } else {
       badgeCount = 0;
-      unread = false;
+      hasLastMessage = false ;
     }
 
     return CustomCard(
@@ -207,9 +210,8 @@ class ChatItem extends StatelessWidget {
           CupertinoPageRoute<void>(
             builder: (context) {
               final firebaseMessaging =
-              Provider.of<FirebaseCloudMessaging>(context, listen: false);
-              firebaseMessaging.clearNotificationMessagesOf(uid:otherUid);
-              unread = false;
+                  Provider.of<FirebaseCloudMessaging>(context, listen: false);
+              firebaseMessaging.clearNotificationMessagesOf(uid: otherUid);
               badgeCount = 0;
               return ChatScreen(
                 loggedInUid: loggedInUser.uid,

@@ -80,7 +80,7 @@ class FirebaseCloudMessaging {
   void showNotification({@required CloudMessage message}) async {
     String contentTitle;
 
-    if (messages[message.data['otherUid']] == null) {
+    if (messages[message.data['otherUid']] == null || messages[message.data['otherUid']].last == "empty") {
       messages[message.data['otherUid']] = [];
     }
     messages[message.data['otherUid']].add(message.body);
@@ -132,7 +132,8 @@ class FirebaseCloudMessaging {
     if (messages[uid] != null) {
       nbrOfUnreadMessages -= messages[uid].length;
       ctrlUnreadMessages.add(nbrOfUnreadMessages);
-      messages[uid].removeRange(0, messages[uid].length - 1);
+      messages[uid].clear();
+      messages[uid].add("empty");
       ctrlListOfMessages.add(messages);
     }
   }
