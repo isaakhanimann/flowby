@@ -76,6 +76,7 @@ class Flowby extends StatelessWidget {
             supportedLocales: [
               const Locale('en'),
               const Locale('de'),
+              const Locale('fr'),
             ],
             localizationsDelegates: [
               AppLocalizations.delegate,
@@ -83,8 +84,6 @@ class Flowby extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
             ],
             localeResolutionCallback: (locale, supportedLocales) {
-              print('locale.languageCode = ${locale.languageCode}');
-              print('supportedLocales = $supportedLocales');
               for (var supportedLocale in supportedLocales) {
                 if (supportedLocale.languageCode == locale.languageCode) {
                   return supportedLocale;

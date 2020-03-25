@@ -59,6 +59,7 @@ flutter:
     - assets/animations/
     - languages/en.json
     - languages/de.json
+    - languages/fr.json
 
   fonts:
     - family: MontserratBlack

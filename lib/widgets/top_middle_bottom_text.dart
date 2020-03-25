@@ -41,6 +41,9 @@ class TopMiddleBottomText extends StatelessWidget {
             style: kExplanationMiddleTextStyle,
             textAlign: TextAlign.center,
           ),
+          SizedBox(
+            height: 20,
+          ),
         ],
       ),
     );

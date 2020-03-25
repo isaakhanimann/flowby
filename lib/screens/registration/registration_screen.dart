@@ -139,6 +139,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 GoogleLoginButton(
                   text: AppLocalizations.of(context)
                       .translate('sign_up_with_google'),
+                  paddingInsideHorizontal: 20,
                   color: Color(0xFFDD4B39),
                   textColor: Colors.white,
                   onPressed: () {
