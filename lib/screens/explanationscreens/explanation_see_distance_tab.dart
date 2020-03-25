@@ -16,7 +16,7 @@ class ExplanationSeeDistanceTab extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
       height: double.infinity,
-      color: CupertinoColors.activeOrange,
+      color: kLightYellowColor,
       child: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

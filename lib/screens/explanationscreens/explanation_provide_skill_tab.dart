@@ -1,3 +1,4 @@
+import 'package:Flowby/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/widgets/top_middle_bottom_text.dart';
 
@@ -8,7 +9,7 @@ class ExplanationProvideSkillTab extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
       height: double.infinity,
-      color: CupertinoColors.systemYellow,
+      color: kLightBlueColor,
       child: TopMiddleBottomText(
         topText: 'Want to provide a skill?',
         middleText:

@@ -7,6 +7,7 @@ import 'package:Flowby/screens/explanationscreens/explanation_provide_skill_tab.
 import 'package:Flowby/screens/explanationscreens/explanation_looking_for_skill_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_didnt_find_skill_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_see_distance_tab.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_announcements_tab.dart';
 
 class ExplanationScreen extends StatefulWidget {
   static const String id = 'explanation_screen';
@@ -37,19 +38,21 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
         )
       ];
     } else if (widget.role == Role.consumer) {
-      numberOfPages = 3;
+      numberOfPages = 4;
       pages = [
         Container(child: ExplanationLookingForSkillTab()),
         Container(child: ExplanationDidntFindSkillTab()),
+        Container(child: ExplanationAnnouncementsTab()),
         Container(child: ExplanationSeeDistanceTab())
       ];
     } else {
       // loggedInUsersRole == null
-      numberOfPages = 4;
+      numberOfPages = 5;
       pages = [
         Container(child: ExplanationProvideSkillTab()),
         Container(child: ExplanationLookingForSkillTab()),
         Container(child: ExplanationDidntFindSkillTab()),
+        Container(child: ExplanationAnnouncementsTab()),
         Container(child: ExplanationSeeDistanceTab())
       ];
     }

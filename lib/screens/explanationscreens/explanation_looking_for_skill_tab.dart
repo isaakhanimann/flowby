@@ -9,7 +9,7 @@ class ExplanationLookingForSkillTab extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
       height: double.infinity,
-      color: kDefaultProfilePicColor,
+      color: kLightDefaultProfilePicColor,
       child: TopMiddleBottomText(
           topText:
               'Looking for a certain skill (ex. tutor, tandem, fitnessbuddy,...)?',
