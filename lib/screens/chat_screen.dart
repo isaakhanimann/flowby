@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/models/message.dart';
@@ -80,7 +81,9 @@ class ChatScreenThatHasToGetPath extends StatelessWidget {
         if (snapshot.hasError) {
           return Container(
             color: Colors.red,
-            child: const Text('Something went wrong'),
+            child: Text(
+              AppLocalizations.of(context).translate('something_went_wrong'),
+            ),
           );
         }
         String foundChatPath = snapshot.data;
@@ -301,16 +304,24 @@ class ChatHeader extends StatelessWidget {
             if (chat != null)
               Flexible(
                 child: CupertinoButton(
-                  child: haveIBlocked ? Text('Unblock') : Text('Block'),
+                  child: haveIBlocked
+                      ? Text(
+                          AppLocalizations.of(context).translate('unblock'),
+                        )
+                      : Text(
+                          AppLocalizations.of(context).translate('block'),
+                        ),
                   onPressed: () {
                     if (!haveIBlocked) {
                       HelperFunctions.showCustomDialog(
                         context: context,
                         dialog: TwoOptionsDialog(
-                          title: 'Block ${screenInfo.otherUsername}?',
-                          text:
-                              'Blocked contacts will no longer be able to send you messages',
-                          rightActionText: 'Block',
+                          title: AppLocalizations.of(context)
+                              .translate('are_you_sure'),
+                          text: AppLocalizations.of(context)
+                              .translate('blocked_contacts_cant_send'),
+                          rightActionText:
+                              AppLocalizations.of(context).translate('block'),
                           rightActionColor: Colors.red,
                           rightAction: () {
                             if (amIUser1) {
@@ -372,7 +383,9 @@ class MessagesStream extends StatelessWidget {
           return Container(
             color: Colors.white,
             child: Center(
-              child: Text('No messages yet'),
+              child: Text(
+                AppLocalizations.of(context).translate('no_messages_yet'),
+              ),
             ),
           );
         }
@@ -427,7 +440,8 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
         height: 80,
         child: Center(
           child: Text(
-              'You have blocked ${amIUser1 ? widget.chat.username2 : widget.chat.username1}',
+              AppLocalizations.of(context)
+                  .translate('you_have_blocked_this_person'),
               overflow: TextOverflow.ellipsis,
               style: kBlockedTextStyle),
         ),
@@ -438,7 +452,9 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
         height: 80,
         child: Center(
           child: Text(
-            '${amIUser1 ? widget.chat.username2 : widget.chat.username1} has blocked you',
+            (amIUser1 ? widget.chat.username2 : widget.chat.username1) +
+                ' ' +
+                AppLocalizations.of(context).translate('has_blocked_you'),
             style: kBlockedTextStyle,
           ),
         ),
@@ -458,7 +474,8 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
               expands: true,
               maxLines: null,
               minLines: null,
-              placeholder: 'Type a message',
+              placeholder:
+                  AppLocalizations.of(context).translate('type_message'),
               padding: EdgeInsets.symmetric(horizontal: 18, vertical: 13),
               decoration: BoxDecoration(
                   color: kCardBackgroundColor,

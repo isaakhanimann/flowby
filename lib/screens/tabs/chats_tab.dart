@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/helper_functions.dart';
@@ -53,7 +54,9 @@ class _ChatsTabState extends State<ChatsTab> {
 
                     if (chats.isEmpty) {
                       return Center(
-                        child: Text('You have no open chats',
+                        child: Text(
+                            AppLocalizations.of(context)
+                                .translate('no_open_chats'),
                             style: kCardSubtitleTextStyle),
                       );
                     }
@@ -64,7 +67,7 @@ class _ChatsTabState extends State<ChatsTab> {
                             return Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                               child: Text(
-                                'Chats',
+                                AppLocalizations.of(context).translate('chats'),
                                 style: kTabTitleTextStyle,
                                 textAlign: TextAlign.start,
                               ),
@@ -159,7 +162,7 @@ class ChatItem extends StatelessWidget {
               if (haveIBlocked || hasOtherBlocked)
                 Expanded(
                   child: Text(
-                    'blocked',
+                    AppLocalizations.of(context).translate('blocked'),
                     style: kSmallBlockedTextStyle,
                   ),
                 )

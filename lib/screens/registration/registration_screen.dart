@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/verify_email_screen.dart';
@@ -69,7 +70,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
           middle: Padding(
             padding: const EdgeInsets.only(top: 13.0),
             child: Text(
-              'Sign Up',
+              AppLocalizations.of(context).translate('sign_up'),
               style: kCupertinoScaffoldTextStyle,
             ),
           ),
@@ -87,7 +88,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   height: 48.0,
                 ),
                 LoginInputField(
-                  placeholder: 'Email address',
+                  placeholder:
+                      AppLocalizations.of(context).translate('email_address'),
                   controller: _emailController,
                   focusNode: _emailFocus,
                   onFieldSubmitted: (term) {
@@ -103,7 +105,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   height: 8.0,
                 ),
                 LoginInputField(
-                  placeholder: 'Password',
+                  placeholder:
+                      AppLocalizations.of(context).translate('password'),
                   controller: _passwordController,
                   focusNode: _passwordFocus,
                   onFieldSubmitted: (term) {
@@ -121,18 +124,20 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 RoundedButton(
                   textColor: Colors.white,
                   color: kBlueButtonColor,
-                  text: 'Sign Up with Email',
+                  text: AppLocalizations.of(context)
+                      .translate('sign_up_with_email'),
                   onPressed: () {
                     _signInWithEmail(context);
                   },
                 ),
                 Text(
-                  'OR',
+                  AppLocalizations.of(context).translate('or'),
                   textAlign: TextAlign.center,
                   style: kOrTextStyle,
                 ),
                 GoogleLoginButton(
-                  text: 'Sign Up with Google',
+                  text: AppLocalizations.of(context)
+                      .translate('sign_up_with_google'),
                   color: Color(0xFFDD4B39),
                   textColor: Colors.white,
                   onPressed: () {
@@ -179,8 +184,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         HelperFunctions.showCustomDialog(
           context: context,
           dialog: BasicDialog(
-              title: "Missing email or password",
-              text: "Enter an email and an password. Thank you."),
+              title: AppLocalizations.of(context)
+                  .translate('missing_email_or_password'),
+              text: AppLocalizations.of(context)
+                  .translate('please_enter_an_email_and_password')),
         );
         setState(() {
           showSpinner = false;
@@ -216,7 +223,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
           {
             HelperFunctions.showCustomDialog(
               context: context,
-              dialog: BasicDialog(title: "Weak Password", text: e.message),
+              dialog: BasicDialog(
+                title: AppLocalizations.of(context).translate('weak_password'),
+                text: AppLocalizations.of(context)
+                    .translate('choose_more_secure_password'),
+              ),
             );
             break;
           }
@@ -225,8 +236,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
             HelperFunctions.showCustomDialog(
               context: context,
               dialog: BasicDialog(
-                  title: "Invalid Email",
-                  text: "Please enter a valid email address"),
+                title: AppLocalizations.of(context).translate('invalid_email'),
+                text: AppLocalizations.of(context)
+                    .translate('please_input_valid_email'),
+              ),
             );
             break;
           }
@@ -234,8 +247,12 @@ class _RegistrationScreenState extends State<RegistrationScreen>
           {
             HelperFunctions.showCustomDialog(
               context: context,
-              dialog:
-                  BasicDialog(title: "Email Already in Use", text: e.message),
+              dialog: BasicDialog(
+                title: AppLocalizations.of(context)
+                    .translate('email_already_in_use'),
+                text: AppLocalizations.of(context)
+                    .translate('please_use_different_email'),
+              ),
             );
             break;
           }
@@ -261,7 +278,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       User user = User(
           username: firebaseUser.displayName,
           uid: firebaseUser.uid,
-          imageFileName: 'default-profile-pic.jpg');
+          imageFileName: kDefaultProfilePicName);
       _uploadUserAndNavigate(context: context, user: user);
       setState(() {
         showSpinner = false;
@@ -297,8 +314,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
             HelperFunctions.showCustomDialog(
               context: context,
               dialog: BasicDialog(
-                  title: "Authorization Denied",
-                  text: "Please sign up with email"),
+                title: AppLocalizations.of(context)
+                    .translate('authorization_denied'),
+                text: AppLocalizations.of(context)
+                    .translate('please_use_different_signup_method'),
+              ),
             );
             break;
           }
@@ -307,8 +327,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
             HelperFunctions.showCustomDialog(
               context: context,
               dialog: BasicDialog(
-                  title: "Apple Sign In didn't work",
-                  text: "Sign in with a different method"),
+                title: AppLocalizations.of(context)
+                    .translate('apple_sign_up_didnt_work'),
+                text: AppLocalizations.of(context)
+                    .translate('please_use_different_signup_method'),
+              ),
             );
             print(e);
           }

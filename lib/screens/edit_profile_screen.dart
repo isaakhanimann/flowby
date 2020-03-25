@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
@@ -56,15 +57,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             backgroundColor: Colors.transparent,
             leading: CupertinoButton(
               padding: EdgeInsets.all(10),
-              child: Text('Cancel', style: kActionNavigationBarTextStyle),
+              child: Text(AppLocalizations.of(context).translate('cancel'),
+                  style: kActionNavigationBarTextStyle),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
-            middle: Text('Edit Profile'),
+            middle:
+                Text(AppLocalizations.of(context).translate('edit_profile')),
             trailing: CupertinoButton(
                 padding: EdgeInsets.all(10),
-                child: Text('Done', style: kActionNavigationBarTextStyle),
+                child: Text(AppLocalizations.of(context).translate('done'),
+                    style: kActionNavigationBarTextStyle),
                 onPressed: () {
                   _uploadUserAndNavigate(context);
                 }),
@@ -204,14 +208,15 @@ class _ImageSectionState extends State<ImageSection> {
       builder: (BuildContext context) => CupertinoActionSheet(
           actions: <Widget>[
             CupertinoActionSheetAction(
-              child: Text('Take Photo'),
+              child: Text(AppLocalizations.of(context).translate('take_photo')),
               onPressed: () {
                 Navigator.pop(context);
                 _setImage(ImageSource.camera);
               },
             ),
             CupertinoActionSheetAction(
-              child: Text('Choose Photo'),
+              child:
+                  Text(AppLocalizations.of(context).translate('choose_photo')),
               onPressed: () {
                 Navigator.pop(context);
                 _setImage(ImageSource.gallery);
@@ -219,7 +224,7 @@ class _ImageSectionState extends State<ImageSection> {
             )
           ],
           cancelButton: CupertinoActionSheetAction(
-            child: Text('Cancel'),
+            child: Text(AppLocalizations.of(context).translate('cancel')),
             isDefaultAction: true,
             onPressed: () {
               Navigator.pop(context);
@@ -244,8 +249,7 @@ class _ImageSectionState extends State<ImageSection> {
               minimumAspectRatio: 1.0,
             ));
       }
-      if(croppedImage != null)
-        break;
+      if (croppedImage != null) break;
       selectedImage = await ImagePicker.pickImage(source: source);
     } while ((croppedImage == null && selectedImage != null));
     if (croppedImage != null) {
@@ -307,14 +311,15 @@ class _NameBioHideSectionState extends State<NameBioHideSection> {
                 SizedBox(
                   width: 100,
                   child: Text(
-                    'Name',
+                    AppLocalizations.of(context).translate('name'),
                     style: kAddSkillsTextStyle,
                   ),
                 ),
                 Expanded(
                   child: CupertinoTextField(
                     style: kAddSkillsTextStyle,
-                    placeholder: 'Enter your name',
+                    placeholder: AppLocalizations.of(context)
+                        .translate('enter_your_name'),
                     padding: EdgeInsets.only(bottom: 0),
                     maxLength: 20,
                     maxLines: 1,
@@ -334,7 +339,7 @@ class _NameBioHideSectionState extends State<NameBioHideSection> {
                 SizedBox(
                   width: 100,
                   child: Text(
-                    'Bio',
+                    AppLocalizations.of(context).translate('bio'),
                     style: kAddSkillsTextStyle,
                   ),
                 ),
@@ -342,7 +347,8 @@ class _NameBioHideSectionState extends State<NameBioHideSection> {
                   child: CupertinoTextField(
                     expands: true,
                     style: kAddSkillsTextStyle,
-                    placeholder: 'Enter your description',
+                    placeholder: AppLocalizations.of(context)
+                        .translate('enter_description'),
                     maxLength: 200,
                     minLines: null,
                     maxLines: null,
@@ -360,7 +366,7 @@ class _NameBioHideSectionState extends State<NameBioHideSection> {
                 SizedBox(
                   width: 100,
                   child: Text(
-                    'Hide Profile',
+                    AppLocalizations.of(context).translate('hide_profile'),
                     style: kAddSkillsTextStyle,
                   ),
                 ),
@@ -409,8 +415,12 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
           groupValue: _role,
           onValueChanged: _switchRole,
           children: <Role, Widget>{
-            Role.consumer: Text('Searcher', style: kHomeSwitchTextStyle),
-            Role.provider: Text('Provider', style: kHomeSwitchTextStyle),
+            Role.consumer: Text(
+                AppLocalizations.of(context).translate('searcher'),
+                style: kHomeSwitchTextStyle),
+            Role.provider: Text(
+                AppLocalizations.of(context).translate('provider'),
+                style: kHomeSwitchTextStyle),
           },
         ),
         SizedBox(height: 20),
@@ -425,7 +435,7 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
                 ? Column(
                     children: <Widget>[
                       Text(
-                        'Skills',
+                        AppLocalizations.of(context).translate('skills'),
                         style: kSkillsTitleTextStyle,
                       ),
                       SizedBox(
@@ -445,7 +455,7 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
                 : Column(
                     children: <Widget>[
                       Text(
-                        'Wishes',
+                        AppLocalizations.of(context).translate('wishes'),
                         style: kSkillsTitleTextStyle,
                       ),
                       SizedBox(

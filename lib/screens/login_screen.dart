@@ -400,7 +400,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 title: AppLocalizations.of(context)
                     .translate('authorization_denied'),
                 text: AppLocalizations.of(context)
-                    .translate('sign_up_with_email'),
+                    .translate('please_sign_up_with_email'),
               ),
             );
             break;

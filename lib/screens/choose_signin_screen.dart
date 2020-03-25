@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/login_screen.dart';
 import 'package:Flowby/screens/registration/registration_screen.dart';
@@ -76,7 +77,7 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       RoundedButton(
-                        text: 'Sign Up',
+                        text: AppLocalizations.of(context).translate('sign_up'),
                         color: kBlueButtonColor,
                         textColor: Colors.white,
                         onPressed: () {
@@ -88,7 +89,8 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                         },
                       ),
                       RoundedButton(
-                        text: 'I already have an account',
+                        text: AppLocalizations.of(context)
+                            .translate('already_have_account'),
                         color: Colors.white,
                         textColor: kBlueButtonColor,
                         paddingInsideHorizontal: 25,
@@ -105,7 +107,8 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                         children: <Widget>[
                           FlatButton(
                             child: Text(
-                              'Privacy Policy',
+                              AppLocalizations.of(context)
+                                  .translate('privacy_policy'),
                               style: kPrivacyPolicyTextStyle,
                             ),
                             onPressed: () => _launchURL(
@@ -117,7 +120,8 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                           ),
                           FlatButton(
                             child: Text(
-                              'Terms & Conditions',
+                              AppLocalizations.of(context)
+                                  .translate('terms_and_conditions'),
                               style: kPrivacyPolicyTextStyle,
                             ),
                             onPressed: () => _launchURL(
