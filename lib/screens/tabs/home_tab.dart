@@ -109,8 +109,17 @@ class _HomeTabState extends State<HomeTab> {
 
   _addAnnouncement() async {
     final loggedInUser = Provider.of<User>(context, listen: false);
+    bool areSkillsEmpty =
+        loggedInUser.skills == null || loggedInUser.skills.isEmpty;
 
-    if (loggedInUser.isHidden) {
+    bool areWishesEmpty =
+        loggedInUser.wishes == null || loggedInUser.wishes.isEmpty;
+
+    bool isProvider = loggedInUser.role == Role.provider;
+    bool isConsumer = loggedInUser.role == Role.consumer;
+    if (loggedInUser.isHidden ||
+        (isProvider && areSkillsEmpty) ||
+        (isConsumer && areWishesEmpty)) {
       HelperFunctions.showCustomDialog(
         context: context,
         dialog: BasicDialog(
