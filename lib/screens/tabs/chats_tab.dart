@@ -33,6 +33,11 @@ class _ChatsTabState extends State<ChatsTab> {
 
   @override
   Widget build(BuildContext context) {
+    final cloudFirestoreService =
+    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    final loggedInUser = Provider.of<User>(context, listen: false);
+    chatsStream =
+        cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
     return SafeArea(
       bottom: false,
       child: Column(
