@@ -24,7 +24,7 @@ class ExplanationAnnouncementsTab extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(
-              height: 60,
+              height: 80,
             ),
             Text(
               AppLocalizations.of(context)

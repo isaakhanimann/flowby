@@ -40,16 +40,16 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   void initState() {
     super.initState();
-    _setExplanation();
+    _getAndSetExplanation();
     _initializeEverything(context);
   }
 
   @override
   void dispose() {
-    super.dispose();
     if (positionStreamSubscription != null) {
       positionStreamSubscription.cancel();
     }
+    super.dispose();
   }
 
   @override
@@ -166,17 +166,17 @@ class _NavigationScreenState extends State<NavigationScreen> {
     }
   }
 
-  _setExplanation() async {
+  _getAndSetExplanation() async {
     final preferencesService =
         Provider.of<PreferencesService>(context, listen: false);
 
-    bool shouldExplain = await preferencesService.getExplanationBool();
+    bool shouldExplain =
+        await preferencesService.getShouldExplanationBeLoaded();
 
     if (shouldExplain) {
       setState(() {
         _shouldExplanationBeLoaded = true;
       });
-      await preferencesService.setExplanationBoolToFalse();
     }
   }
 }
