@@ -397,7 +397,7 @@ class MessagesStream extends StatelessWidget {
             return MessageRow(
               text: message.text,
               timestamp: HelperFunctions.getTimestampAsString(
-                  timestamp: messageTimestamp),
+                  context: context, timestamp: messageTimestamp),
               isMe: screenInfo.loggedInUid == message.senderUid,
             );
           },

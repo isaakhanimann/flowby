@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/constants.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class ExplanationAnnouncementsTab extends StatelessWidget {
               height: 30,
             ),
             Text(
-              'See Announcements',
+              AppLocalizations.of(context).translate('see_announcements'),
               style: kExplanationTitleTextStyle,
               textAlign: TextAlign.center,
             ),
@@ -26,7 +27,8 @@ class ExplanationAnnouncementsTab extends StatelessWidget {
               height: 60,
             ),
             Text(
-              'Add your own announcements with the plus icon in the top right corner\nDelete your announcements by longpressing on it',
+              AppLocalizations.of(context)
+                  .translate('add_delete_announcements'),
               style: kExplanationMiddleTextStyle,
               textAlign: TextAlign.center,
             ),

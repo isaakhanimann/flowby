@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,7 +71,7 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
           child: CupertinoButton(
             padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
             child: Text(
-              'Skip',
+              AppLocalizations.of(context).translate('skip'),
               style: kSkipTextStyle,
             ),
             onPressed: () {

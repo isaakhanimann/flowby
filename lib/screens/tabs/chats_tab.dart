@@ -137,7 +137,7 @@ class ChatItem extends StatelessWidget {
               Flexible(
                 child: Text(
                   HelperFunctions.getTimestampAsString(
-                      timestamp: chat.lastMessageTimestamp),
+                      context: context, timestamp: chat.lastMessageTimestamp),
                   overflow: TextOverflow.ellipsis,
                   style: kChatTabTimestampTextStyle,
                 ),

@@ -371,7 +371,7 @@ class AnnouncementItem extends StatelessWidget {
               ),
               Text(
                 HelperFunctions.getTimestampAsString(
-                    timestamp: announcement.timestamp),
+                    context: context, timestamp: announcement.timestamp),
                 overflow: TextOverflow.ellipsis,
                 style: kChatTabTimestampTextStyle,
               ),

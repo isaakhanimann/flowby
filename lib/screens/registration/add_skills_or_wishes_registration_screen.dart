@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/enable_notification_screen.dart';
@@ -66,7 +67,11 @@ class _AddSkillsOrWishesRegistrationScreenState
                         height: 20.0,
                       ),
                       Text(
-                        isProvider ? 'Your skills' : 'Your wishes',
+                        isProvider
+                            ? AppLocalizations.of(context)
+                                .translate('your_skills')
+                            : AppLocalizations.of(context)
+                                .translate('your_wishes'),
                         style: kUsernameTitleTextStyle,
                       ),
                       SizedBox(
@@ -77,8 +82,10 @@ class _AddSkillsOrWishesRegistrationScreenState
                         children: <Widget>[
                           Text(
                             isProvider
-                                ? 'Share what you are good at'
-                                : 'Tell others what you would like to learn',
+                                ? AppLocalizations.of(context)
+                                    .translate('what_you_offer')
+                                : AppLocalizations.of(context)
+                                    .translate('what_do_you_need'),
                             textAlign: TextAlign.start,
                             style: kRegisterHeaderTextStyle,
                           ),
@@ -116,7 +123,7 @@ class _AddSkillsOrWishesRegistrationScreenState
                         ],
                       ),
                       RoundedButton(
-                        text: 'Next',
+                        text: AppLocalizations.of(context).translate('next'),
                         color: kBlueButtonColor,
                         textColor: Colors.white,
                         onPressed: () {
