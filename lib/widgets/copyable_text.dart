@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,9 @@ class CopyableText extends StatelessWidget {
         onLongPress: () {
           //print('Copied to clipboard');
           Clipboard.setData(ClipboardData(text: text));
-          BotToast.showText(text:"Copied to clipboard");
+          BotToast.showText(
+              text: AppLocalizations.of(context)
+                  .translate('copied_to_clipboard'));
         });
   }
 }

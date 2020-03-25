@@ -16,6 +16,8 @@ import 'package:provider/provider.dart';
 import 'services/apple_sign_in_available.dart';
 import 'constants.dart';
 import 'route_generator.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'app_localizations.dart';
 
 void main() async {
   // This app is designed only to work vertically, so we limit
@@ -71,6 +73,25 @@ class Flowby extends StatelessWidget {
         child: BotToastInit(
           // widget that pops up toasts (used to notify users when they copy a message)
           child: CupertinoApp(
+            supportedLocales: [
+              const Locale('en'),
+              const Locale('de'),
+            ],
+            localizationsDelegates: [
+              AppLocalizations.delegate,
+              DefaultCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            localeResolutionCallback: (locale, supportedLocales) {
+              print('locale.languageCode = ${locale.languageCode}');
+              print('supportedLocales = $supportedLocales');
+              for (var supportedLocale in supportedLocales) {
+                if (supportedLocale.languageCode == locale.languageCode) {
+                  return supportedLocale;
+                }
+              }
+              return supportedLocales.first;
+            },
             navigatorObservers: [BotToastNavigatorObserver()],
             theme: CupertinoThemeData(
               brightness: Brightness.light,
@@ -87,11 +108,6 @@ class Flowby extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             initialRoute: NavigationScreen.id,
             onGenerateRoute: RouteGenerator.generateRoute,
-            localizationsDelegates: <LocalizationsDelegate<dynamic>>[
-              DefaultMaterialLocalizations.delegate,
-              DefaultWidgetsLocalizations.delegate,
-              DefaultCupertinoLocalizations.delegate,
-            ],
           ),
         ),
       ),

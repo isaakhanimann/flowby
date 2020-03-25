@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +8,7 @@ import 'package:Flowby/screens/explanationscreens/explanation_provide_skill_tab.
 import 'package:Flowby/screens/explanationscreens/explanation_looking_for_skill_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_didnt_find_skill_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_see_distance_tab.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_announcements_tab.dart';
 
 class ExplanationScreen extends StatefulWidget {
   static const String id = 'explanation_screen';
@@ -37,19 +39,21 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
         )
       ];
     } else if (widget.role == Role.consumer) {
-      numberOfPages = 3;
+      numberOfPages = 4;
       pages = [
         Container(child: ExplanationLookingForSkillTab()),
         Container(child: ExplanationDidntFindSkillTab()),
+        Container(child: ExplanationAnnouncementsTab()),
         Container(child: ExplanationSeeDistanceTab())
       ];
     } else {
       // loggedInUsersRole == null
-      numberOfPages = 4;
+      numberOfPages = 5;
       pages = [
         Container(child: ExplanationProvideSkillTab()),
         Container(child: ExplanationLookingForSkillTab()),
         Container(child: ExplanationDidntFindSkillTab()),
+        Container(child: ExplanationAnnouncementsTab()),
         Container(child: ExplanationSeeDistanceTab())
       ];
     }
@@ -62,23 +66,25 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
           onPageChangeCallback: _onPageChangeCallback,
         ),
         Positioned(
-          top: 50,
+          bottom: 0,
           right: 0,
-          child: CupertinoButton(
-            padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-            child: Text(
-              'Skip',
-              style: kSkipTextStyle,
+          child: SafeArea(
+            child: CupertinoButton(
+              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+              child: Text(
+                AppLocalizations.of(context).translate('skip'),
+                style: kSkipTextStyle,
+              ),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).push(
+                  CupertinoPageRoute<void>(
+                    builder: (context) {
+                      return NavigationScreen();
+                    },
+                  ),
+                );
+              },
             ),
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).push(
-                CupertinoPageRoute<void>(
-                  builder: (context) {
-                    return NavigationScreen();
-                  },
-                ),
-              );
-            },
           ),
         ),
         Positioned(

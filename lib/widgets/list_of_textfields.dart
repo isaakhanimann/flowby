@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/constants.dart';
@@ -86,25 +87,14 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: Column(
               children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 11,
-                      child: InputFieldWithSuggestions(
-                        suggestions: widget.topicSuggestions,
-                        maxLength: 20,
-                        controller: keywordControllers[rowNumber],
-                        placeholder: 'Topic',
-                        capitalization: TextCapitalization.words,
-                        focus: focusNodes[rowNumber]['keywords'],
-                        style: kAddSkillsTopicTextStyle,
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(),
-                    ),
-                  ],
+                InputFieldWithSuggestions(
+                  suggestions: widget.topicSuggestions,
+                  maxLength: 20,
+                  controller: keywordControllers[rowNumber],
+                  placeholder: AppLocalizations.of(context).translate('topic'),
+                  capitalization: TextCapitalization.words,
+                  focus: focusNodes[rowNumber]['keywords'],
+                  style: kAddSkillsTopicTextStyle,
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -112,49 +102,35 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
-                      flex: 11,
                       child: InputFieldWithSuggestions(
                         maxLength: 100,
                         controller: descriptionControllers[rowNumber],
                         suggestions: widget.descriptionSuggestions,
-                        placeholder: 'Description',
+                        placeholder: AppLocalizations.of(context)
+                            .translate('description'),
                         capitalization: TextCapitalization.sentences,
                         focus: focusNodes[rowNumber]['description'],
                       ),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: indexWithFocus == rowNumber
-                            ? GestureDetector(
-                                onTap: () {
-                                  _deleteIthController(index: rowNumber);
-                                },
-                                child: Icon(Feather.x),
-                              )
-                            : Container(),
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0),
+                      child: indexWithFocus == rowNumber
+                          ? GestureDetector(
+                              onTap: () {
+                                _deleteIthController(index: rowNumber);
+                              },
+                              child: Icon(Feather.x),
+                            )
+                          : Container(),
                     ),
                   ],
                 ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 11,
-                      child: InputFieldWithSuggestions(
-                        maxLength: 10,
-                        controller: priceControllers[rowNumber],
-                        suggestions: widget.priceSuggestions,
-                        placeholder: 'Price',
-                        focus: focusNodes[rowNumber]['price'],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(),
-                    ),
-                  ],
+                InputFieldWithSuggestions(
+                  maxLength: 10,
+                  controller: priceControllers[rowNumber],
+                  suggestions: widget.priceSuggestions,
+                  placeholder: AppLocalizations.of(context).translate('price'),
+                  focus: focusNodes[rowNumber]['price'],
                 ),
               ],
             ),
@@ -279,7 +255,6 @@ class InputFieldWithSuggestions extends StatelessWidget {
           placeholder: placeholder,
           controller: controller,
           focusNode: focus,
-          suffix: focus.hasFocus ? Text('${maxLength - controller.text.length}') : Container(),
         ),
         suggestionsBoxDecoration: CupertinoSuggestionsBoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),

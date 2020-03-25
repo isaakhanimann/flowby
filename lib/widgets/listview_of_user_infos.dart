@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/show_profile_picture_screen.dart';
@@ -91,28 +92,28 @@ class ListViewOfUserInfos extends StatelessWidget {
           ),
           if (user.isHidden)
             Text(
-              '(Your profile is hidden)',
+              AppLocalizations.of(context).translate("profile_hidden"),
               textAlign: TextAlign.center,
             ),
           if (!user.isHidden && isProvider && areSkillsEmpty)
             Text(
-              '(Your profile is invisible because you have no skills)',
+              AppLocalizations.of(context).translate("profile_invisible_1"),
               textAlign: TextAlign.center,
             ),
           if (!user.isHidden && isProvider && !areSkillsEmpty)
             SkillOrWishSection(
               skillsOrWishes: user.skills,
-              title: 'Skills',
+              title: AppLocalizations.of(context).translate("skills"),
             ),
           if (!user.isHidden && isConsumer && areWishesEmpty)
             Text(
-              '(Your profile is invisible because you have no wishes)',
+              AppLocalizations.of(context).translate("profile_invisible_2"),
               textAlign: TextAlign.center,
             ),
           if (!user.isHidden && isConsumer && !areWishesEmpty)
             SkillOrWishSection(
               skillsOrWishes: user.wishes,
-              title: 'Wishes',
+              title: AppLocalizations.of(context).translate("wishes"),
             ),
           SizedBox(
             height: 90,

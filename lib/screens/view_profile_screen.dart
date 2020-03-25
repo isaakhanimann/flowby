@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/chat_screen.dart';
@@ -33,7 +34,10 @@ class ViewProfileScreen extends StatelessWidget {
               Positioned(
                 bottom: 20,
                 child: RoundedButton(
-                  text: loggedInUser == null ? 'Sign In to Chat' : 'Chat',
+                  text: loggedInUser == null
+                      ? AppLocalizations.of(context)
+                          .translate('sign_in_to_chat')
+                      : AppLocalizations.of(context).translate('chat'),
                   color: kDefaultProfilePicColor,
                   textColor: kBlueButtonColor,
                   onPressed: () async {

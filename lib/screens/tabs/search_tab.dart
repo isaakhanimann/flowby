@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
@@ -66,7 +67,8 @@ class _SearchTabState extends State<SearchTab> {
                     return Center(
                       child: Container(
                         color: Colors.red,
-                        child: const Text('Something went wrong'),
+                        child: Text(AppLocalizations.of(context)
+                            .translate('something_went_wrong')),
                       ),
                     );
                   }
@@ -140,7 +142,9 @@ class ListOfSortedUsers extends StatelessWidget {
         if (snapshot.hasError) {
           return Container(
             color: Colors.red,
-            child: const Text('Something went wrong'),
+            child: Text(
+              AppLocalizations.of(context).translate('something_went_wrong'),
+            ),
           );
         }
         List<User> sortedUsers = snapshot.data;
@@ -297,7 +301,7 @@ class SearchBar extends StatelessWidget {
             color: kCardBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-        placeholder: 'Search Skills',
+        placeholder: AppLocalizations.of(context).translate('search_skills'),
         placeholderStyle: kSearchPlaceHolderTextStyle,
         prefix: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/registration/add_skills_or_wishes_registration_screen.dart';
@@ -84,7 +85,8 @@ class _AddImageUsernameAndBioRegistrationScreenState
                         height: 20.0,
                       ),
                       Text(
-                        'What\'s your name?',
+                        AppLocalizations.of(context)
+                            .translate('whats_your_name'),
                         textAlign: TextAlign.center,
                         style: kRegisterHeaderTextStyle,
                       ),
@@ -93,7 +95,8 @@ class _AddImageUsernameAndBioRegistrationScreenState
                       ),
                       CupertinoTextField(
                         style: kEditProfileTextFieldTextStyle,
-                        placeholder: 'Enter your name',
+                        placeholder: AppLocalizations.of(context)
+                            .translate('enter_your_name'),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 35,
                         padding:
@@ -112,7 +115,8 @@ class _AddImageUsernameAndBioRegistrationScreenState
                         height: 20.0,
                       ),
                       Text(
-                        'Let the others know who you are',
+                        AppLocalizations.of(context)
+                            .translate('let_others_know_who_you_are'),
                         textAlign: TextAlign.center,
                         style: kRegisterHeaderTextStyle,
                       ),
@@ -121,7 +125,8 @@ class _AddImageUsernameAndBioRegistrationScreenState
                       ),
                       CupertinoTextField(
                         style: kEditProfileTextFieldTextStyle,
-                        placeholder: 'Your biography...',
+                        placeholder:
+                            AppLocalizations.of(context).translate('your_bio'),
                         maxLength: 200,
                         textCapitalization: TextCapitalization.sentences,
                         maxLines: 4,
@@ -141,7 +146,8 @@ class _AddImageUsernameAndBioRegistrationScreenState
                         height: 20.0,
                       ),
                       Text(
-                        'Choose a picture',
+                        AppLocalizations.of(context)
+                            .translate('choose_picture'),
                         textAlign: TextAlign.center,
                         style: kRegisterHeaderTextStyle,
                       ),
@@ -198,7 +204,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
                         ),
                       ),
                       RoundedButton(
-                        text: 'Next',
+                        text: AppLocalizations.of(context).translate('next'),
                         color: kBlueButtonColor,
                         textColor: Colors.white,
                         onPressed: () {
@@ -220,14 +226,18 @@ class _AddImageUsernameAndBioRegistrationScreenState
       builder: (BuildContext context) => CupertinoActionSheet(
           actions: <Widget>[
             CupertinoActionSheetAction(
-              child: const Text('Take Photo'),
+              child: Text(
+                AppLocalizations.of(context).translate('take_photo'),
+              ),
               onPressed: () {
                 Navigator.pop(context);
                 _setImage(ImageSource.camera);
               },
             ),
             CupertinoActionSheetAction(
-              child: const Text('Choose Photo'),
+              child: Text(
+                AppLocalizations.of(context).translate('choose_photo'),
+              ),
               onPressed: () {
                 Navigator.pop(context);
                 _setImage(ImageSource.gallery);
@@ -235,7 +245,9 @@ class _AddImageUsernameAndBioRegistrationScreenState
             )
           ],
           cancelButton: CupertinoActionSheetAction(
-            child: const Text('Cancel'),
+            child: Text(
+              AppLocalizations.of(context).translate('cancel'),
+            ),
             isDefaultAction: true,
             onPressed: () {
               Navigator.pop(context);
@@ -276,7 +288,9 @@ class _AddImageUsernameAndBioRegistrationScreenState
       HelperFunctions.showCustomDialog(
         context: context,
         dialog: BasicDialog(
-            title: "Name is missing", text: "Enter your name. Thank you."),
+          title: AppLocalizations.of(context).translate('name_is_missing'),
+          text: AppLocalizations.of(context).translate('please_enter_name'),
+        ),
       );
       return;
     }

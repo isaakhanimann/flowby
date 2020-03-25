@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/widgets/list_of_textfields.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,27 +10,6 @@ class CreateWishesSection extends StatelessWidget {
   final Function updatePriceAtIndex;
   final Function addEmptyWish;
   final Function deleteWishAtIndex;
-  final List<String> topicSuggestions = [
-    'english',
-    'german',
-    'statistics',
-    'linear algebra',
-    'math',
-    'skating'
-  ];
-  final List<String> priceSuggestions = [
-    '30.-/h',
-    '70.-/d',
-    '50 CHF',
-    'free',
-    'coffee'
-  ];
-  final List<String> descriptionSuggestions = [
-    'I need help understanding how an action potential gets triggered',
-    'Its urgent the exam is tomorrow',
-    'It\'d be great if you have already passed this course',
-    'I\'m looking for a partner for my dance class'
-  ];
 
   CreateWishesSection(
       {@required this.initialWishes,
@@ -41,6 +21,26 @@ class CreateWishesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> topicSuggestions = [
+      AppLocalizations.of(context).translate('wish_topic_suggestion_1'),
+      AppLocalizations.of(context).translate('wish_topic_suggestion_2'),
+      AppLocalizations.of(context).translate('wish_topic_suggestion_3'),
+      AppLocalizations.of(context).translate('wish_topic_suggestion_4')
+    ];
+    final List<String> priceSuggestions = [
+      AppLocalizations.of(context).translate('wish_price_suggestion_1'),
+      AppLocalizations.of(context).translate('wish_price_suggestion_2'),
+      AppLocalizations.of(context).translate('wish_price_suggestion_3'),
+      AppLocalizations.of(context).translate('wish_price_suggestion_4'),
+      AppLocalizations.of(context).translate('wish_price_suggestion_5'),
+    ];
+    final List<String> descriptionSuggestions = [
+      AppLocalizations.of(context).translate('wish_description_suggestion_1'),
+      AppLocalizations.of(context).translate('wish_description_suggestion_2'),
+      AppLocalizations.of(context).translate('wish_description_suggestion_3'),
+      AppLocalizations.of(context).translate('wish_description_suggestion_4')
+    ];
+
     return ListOfTextfields(
         initialSkillsOrWishes: initialWishes,
         updateKeywordsAtIndex: updateKeywordsAtIndex,

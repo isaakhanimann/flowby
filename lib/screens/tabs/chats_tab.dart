@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/helper_functions.dart';
@@ -68,9 +69,9 @@ class _ChatsTabState extends State<ChatsTab> {
                     if (chats.isEmpty) {
                       return Center(
                         child: Text(
-                          'You have no open chats',
-                          style: kCardSubtitleTextStyle,
-                        ),
+                            AppLocalizations.of(context)
+                                .translate('no_open_chats'),
+                            style: kCardSubtitleTextStyle),
                       );
                     }
                     return ListView.builder(
@@ -80,7 +81,7 @@ class _ChatsTabState extends State<ChatsTab> {
                             return Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                               child: Text(
-                                'Chats',
+                                AppLocalizations.of(context).translate('chats'),
                                 style: kTabTitleTextStyle,
                                 textAlign: TextAlign.start,
                               ),
@@ -114,6 +115,7 @@ class ChatItem extends StatelessWidget {
     int otherImageVersionNumber = user1IsLoggedInUser
         ? chat.user2ImageVersionNumber
         : chat.user1ImageVersionNumber;
+
     if (otherImageFileName == null) otherImageFileName = kDefaultProfilePicName;
 
     final heroTag = otherUid + 'chats';
@@ -174,7 +176,7 @@ class ChatItem extends StatelessWidget {
               Flexible(
                 child: Text(
                   HelperFunctions.getTimestampAsString(
-                      timestamp: chat.lastMessageTimestamp),
+                      context: context, timestamp: chat.lastMessageTimestamp),
                   overflow: TextOverflow.ellipsis,
                   style: kChatTabTimestampTextStyle,
                 ),
@@ -199,7 +201,7 @@ class ChatItem extends StatelessWidget {
               if (haveIBlocked || hasOtherBlocked)
                 Expanded(
                   child: Text(
-                    'blocked',
+                    AppLocalizations.of(context).translate('blocked'),
                     style: kSmallBlockedTextStyle,
                   ),
                 )

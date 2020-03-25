@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/tabs/chats_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
@@ -289,7 +290,7 @@ class HomeScreenWithSignin extends StatelessWidget {
           Positioned(
             bottom: 50,
             child: RoundedButton(
-              text: 'Sign In',
+              text: AppLocalizations.of(context).translate('sign_in'),
               color: kDefaultProfilePicColor,
               textColor: kBlueButtonColor,
               onPressed: () async {
