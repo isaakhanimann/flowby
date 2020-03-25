@@ -37,6 +37,23 @@ class FirebaseCloudMessaging {
     return nbrOfUnreadMessages;
   }
 
+  static Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
+    print('mybackground Message handler');
+    if (message.containsKey('data')) {
+      // Handle data message
+      final dynamic data = message['data'];
+      print(data);
+    }
+
+    if (message.containsKey('notification')) {
+      // Handle notification message
+      final dynamic notification = message['notification'];
+      print(notification);
+    }
+
+    // Or do other work.
+  }
+
   void firebaseCloudMessagingListeners(BuildContext context) {
     if (Platform.isIOS) iOSPermission();
 
@@ -48,13 +65,16 @@ class FirebaseCloudMessaging {
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         showNotification(message: message);
       },
+      onBackgroundMessage: Platform.isIOS ? null : myBackgroundMessageHandler,
       onResume: (Map<String, dynamic> mapMessage) async {
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         navigateToChat(context, message);
+        showNotification(message: message);
       },
       onLaunch: (Map<String, dynamic> mapMessage) async {
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         navigateToChat(context, message);
+        showNotification(message: message);
       },
     );
     // Flutter Local Notifications //
@@ -80,7 +100,8 @@ class FirebaseCloudMessaging {
   void showNotification({@required CloudMessage message}) async {
     String contentTitle;
 
-    if (messages[message.data['otherUid']] == null || messages[message.data['otherUid']].last == "empty") {
+    if (messages[message.data['otherUid']] == null ||
+        messages[message.data['otherUid']].last == "empty") {
       messages[message.data['otherUid']] = [];
     }
     messages[message.data['otherUid']].add(message.body);
@@ -96,7 +117,8 @@ class FirebaseCloudMessaging {
         summaryText: message.title);
 
     String groupKey = 'co.flowby';
-    String groupChannelId = 'message_notifications';
+//    String groupChannelId = 'message_notifications_id';
+    String groupChannelId = 'default_notification_channel_id';
     String groupChannelName = 'Message notifications';
     String groupChannelDescription = 'Sound and pop-up';
 

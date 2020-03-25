@@ -39,10 +39,12 @@ class _ChatsTabState extends State<ChatsTab> {
     final firebaseMessaging =
         Provider.of<FirebaseCloudMessaging>(context, listen: false);
     firebaseMessaging.flutterLocalNotificationsPlugin.cancelAll();
+/*
     setState(() {
       chatsStream =
           cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
     });
+*/
 
     return SafeArea(
       bottom: false,
@@ -212,8 +214,7 @@ class ChatItem extends StatelessWidget {
               final firebaseMessaging =
                   Provider.of<FirebaseCloudMessaging>(context, listen: false);
               firebaseMessaging.clearNotificationMessagesOf(uid: otherUid);
-              badgeCount = 0;
-              return ChatScreen(
+             return ChatScreen(
                 loggedInUid: loggedInUser.uid,
                 otherUid: otherUid,
                 otherUsername: otherUsername,
