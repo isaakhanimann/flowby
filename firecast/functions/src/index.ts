@@ -342,7 +342,6 @@ exports.sendNotification = functions.firestore
           notification: {
             title: senderUsername,
             body: contentMessage,
-            badge: "1",
             sound: "default"
           },
           data: {
@@ -372,6 +371,85 @@ exports.sendNotification = functions.firestore
           });
       } else {
         console.log("Can not find pushToken target user");
+        return null;
+      }
+    }
+  );
+
+  exports.sendNotificationBackground = functions.firestore
+  .document("chats/{chatId}/messages/{messageId}")
+  .onCreate(
+    async (snap: FirebaseFirestore.DocumentSnapshot, context: EventContext) => {
+      const message: FirebaseFirestore.DocumentData = snap.data()!;
+
+      const senderUid: string = message.senderUid;
+      const contentMessage: string = message.text;
+
+      const chatId = context.params.chatId;
+      const chatSnap: FirebaseFirestore.DocumentSnapshot = await db
+        .collection("chats")
+        .doc(chatId)
+        .get();
+      const chat: FirebaseFirestore.DocumentData = chatSnap.data()!;
+
+      let receiverUid: string = "";
+      let senderUsername: string = "";
+
+      if (senderUid === chat.uid1) {
+        //the sender is user1 of the chat
+        receiverUid = chat.uid2;
+        senderUsername = chat.username1;
+      } else {
+        receiverUid = chat.uid1;
+        senderUsername = chat.username2;
+      }
+      // Get the sender's imageFileName
+      const senderDoc = await db
+        .collection("users")
+        .doc(senderUid)
+        .get();
+
+      const sender = senderDoc.data();
+
+      // Get the receiver's token
+      const receiverDoc = await db
+        .collection("users")
+        .doc(receiverUid)
+        .get();
+
+      const receiver = receiverDoc.data();
+
+      if (receiver?.pushToken) {
+        const payload = {
+          data: {
+            title: senderUsername,
+            body: contentMessage,
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
+            sound: "default",
+            status: "done",
+            screen: "ChatScreen",
+            loggedInUid: receiverUid,
+            otherUid: senderUid,
+            otherUsername: senderUsername,
+            otherImageFileName: sender?.imageFileName,
+            otherImageVersionNumber: sender?.imageVersionNumber
+              ? (sender?.imageVersionNumber).toString()
+              : "1",
+            chatPath: "chats/" + chatId
+          }
+        };
+        // send the push notification to the receivers device
+        return fcm
+          .sendToDevice(receiver.pushToken, payload)
+          .then((response: any) => {
+            console.log("Notification Background: Successfully sent message:", response);
+            console.log("Notification Background: payload:", payload);
+          })
+          .catch((error: any) => {
+            console.log("Notification Background: Error sending message:", error);
+          });
+      } else {
+        console.log("Notification Background: Can not find pushToken target user");
         return null;
       }
     }
