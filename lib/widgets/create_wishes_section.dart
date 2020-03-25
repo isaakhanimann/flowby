@@ -25,9 +25,7 @@ class CreateWishesSection extends StatelessWidget {
       AppLocalizations.of(context).translate('wish_topic_suggestion_1'),
       AppLocalizations.of(context).translate('wish_topic_suggestion_2'),
       AppLocalizations.of(context).translate('wish_topic_suggestion_3'),
-      AppLocalizations.of(context).translate('wish_topic_suggestion_4'),
-      AppLocalizations.of(context).translate('wish_topic_suggestion_5'),
-      AppLocalizations.of(context).translate('wish_topic_suggestion_6')
+      AppLocalizations.of(context).translate('wish_topic_suggestion_4')
     ];
     final List<String> priceSuggestions = [
       AppLocalizations.of(context).translate('wish_price_suggestion_1'),
@@ -35,15 +33,12 @@ class CreateWishesSection extends StatelessWidget {
       AppLocalizations.of(context).translate('wish_price_suggestion_3'),
       AppLocalizations.of(context).translate('wish_price_suggestion_4'),
       AppLocalizations.of(context).translate('wish_price_suggestion_5'),
-      AppLocalizations.of(context).translate('wish_price_suggestion_6')
     ];
     final List<String> descriptionSuggestions = [
       AppLocalizations.of(context).translate('wish_description_suggestion_1'),
       AppLocalizations.of(context).translate('wish_description_suggestion_2'),
       AppLocalizations.of(context).translate('wish_description_suggestion_3'),
-      AppLocalizations.of(context).translate('wish_description_suggestion_4'),
-      AppLocalizations.of(context).translate('wish_description_suggestion_5'),
-      AppLocalizations.of(context).translate('wish_description_suggestion_6')
+      AppLocalizations.of(context).translate('wish_description_suggestion_4')
     ];
 
     return ListOfTextfields(

@@ -25,25 +25,21 @@ class CreateSkillsSection extends StatelessWidget {
       AppLocalizations.of(context).translate('skill_topic_suggestion_1'),
       AppLocalizations.of(context).translate('skill_topic_suggestion_2'),
       AppLocalizations.of(context).translate('skill_topic_suggestion_3'),
-      AppLocalizations.of(context).translate('skill_topic_suggestion_4'),
-      AppLocalizations.of(context).translate('skill_topic_suggestion_5'),
-      AppLocalizations.of(context).translate('skill_topic_suggestion_6')
+      AppLocalizations.of(context).translate('skill_topic_suggestion_4')
     ];
     final List<String> priceSuggestions = [
       AppLocalizations.of(context).translate('skill_price_suggestion_1'),
       AppLocalizations.of(context).translate('skill_price_suggestion_2'),
       AppLocalizations.of(context).translate('skill_price_suggestion_3'),
       AppLocalizations.of(context).translate('skill_price_suggestion_4'),
-      AppLocalizations.of(context).translate('skill_price_suggestion_5'),
-      AppLocalizations.of(context).translate('skill_price_suggestion_6')
+      AppLocalizations.of(context).translate('skill_price_suggestion_5')
     ];
     final List<String> descriptionSuggestions = [
       AppLocalizations.of(context).translate('skill_description_suggestion_1'),
       AppLocalizations.of(context).translate('skill_description_suggestion_2'),
       AppLocalizations.of(context).translate('skill_description_suggestion_3'),
       AppLocalizations.of(context).translate('skill_description_suggestion_4'),
-      AppLocalizations.of(context).translate('skill_description_suggestion_5'),
-      AppLocalizations.of(context).translate('skill_description_suggestion_6')
+      AppLocalizations.of(context).translate('skill_description_suggestion_5')
     ];
 
     return ListOfTextfields(

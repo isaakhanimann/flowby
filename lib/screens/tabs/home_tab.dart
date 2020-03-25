@@ -61,7 +61,7 @@ class _HomeTabState extends State<HomeTab> {
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
             child: Text(
-              AppLocalizations.of(context).translate('first_string'),
+              AppLocalizations.of(context).translate('announcements'),
               style: kTabTitleTextStyle,
               textAlign: TextAlign.start,
             ),
