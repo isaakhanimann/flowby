@@ -14,7 +14,7 @@ class BasicDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomDialog(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(5, 20, 5, 10),
+        padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

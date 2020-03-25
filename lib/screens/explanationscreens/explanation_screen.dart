@@ -66,23 +66,25 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
           onPageChangeCallback: _onPageChangeCallback,
         ),
         Positioned(
-          top: 25,
+          bottom: 0,
           right: 0,
-          child: CupertinoButton(
-            padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-            child: Text(
-              AppLocalizations.of(context).translate('skip'),
-              style: kSkipTextStyle,
+          child: SafeArea(
+            child: CupertinoButton(
+              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+              child: Text(
+                AppLocalizations.of(context).translate('skip'),
+                style: kSkipTextStyle,
+              ),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).push(
+                  CupertinoPageRoute<void>(
+                    builder: (context) {
+                      return NavigationScreen();
+                    },
+                  ),
+                );
+              },
             ),
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).push(
-                CupertinoPageRoute<void>(
-                  builder: (context) {
-                    return NavigationScreen();
-                  },
-                ),
-              );
-            },
           ),
         ),
         Positioned(

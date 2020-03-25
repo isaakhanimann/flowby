@@ -251,7 +251,7 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
   Widget build(BuildContext context) {
     return CustomDialog(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -278,10 +278,11 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 CupertinoButton(
+                  padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
                   child: Text(
                     AppLocalizations.of(context).translate('cancel'),
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       fontFamily: 'MuliRegular',
                       color: Colors.black,
                     ),
@@ -291,10 +292,11 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
                   },
                 ),
                 CupertinoButton(
+                  padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                   child: Text(
                     AppLocalizations.of(context).translate('add'),
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 16,
                       fontFamily: 'MuliBold',
                       color: kDefaultProfilePicColor,
                     ),

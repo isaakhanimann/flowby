@@ -49,7 +49,7 @@ const kAddSkillsTextStyle = TextStyle(
 const kAddSkillsTopicTextStyle = TextStyle(
     fontFamily: 'MuliBold', fontSize: 14.0, color: kSmallTitlesTextColor);
 const kActionNavigationBarTextStyle = TextStyle(
-    fontFamily: 'MuliSemiBold', fontSize: 19, color: kLoginBackgroundColor);
+    fontFamily: 'MuliSemiBold', fontSize: 17, color: kLoginBackgroundColor);
 const kLargeNavigationBarTextStyle = TextStyle(
     fontFamily: 'MontserratBold', fontSize: 33, color: kKeywordHeaderColor);
 const kMiddleNavigationBarTextStyle = TextStyle(

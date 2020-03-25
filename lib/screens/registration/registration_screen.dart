@@ -124,6 +124,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 RoundedButton(
                   textColor: Colors.white,
                   color: kBlueButtonColor,
+                  paddingInsideHorizontal: 15,
                   text: AppLocalizations.of(context)
                       .translate('sign_up_with_email'),
                   onPressed: () {

@@ -93,7 +93,7 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                             .translate('already_have_account'),
                         color: Colors.white,
                         textColor: kBlueButtonColor,
-                        paddingInsideHorizontal: 25,
+                        paddingInsideHorizontal: 16,
                         onPressed: () {
                           //Navigator.pushNamed(context, LoginScreen.id);
                           Navigator.push(
@@ -105,28 +105,32 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          FlatButton(
-                            child: Text(
-                              AppLocalizations.of(context)
-                                  .translate('privacy_policy'),
-                              style: kPrivacyPolicyTextStyle,
+                          Flexible(
+                            child: FlatButton(
+                              child: Text(
+                                AppLocalizations.of(context)
+                                    .translate('privacy_policy'),
+                                style: kPrivacyPolicyTextStyle,
+                              ),
+                              onPressed: () => _launchURL(
+                                  url: 'https://flowby.co/privacy-policy.pdf'),
                             ),
-                            onPressed: () => _launchURL(
-                                url: 'https://flowby.co/privacy-policy.pdf'),
                           ),
                           Text(
                             '|',
                             style: kPrivacyPolicyTextStyle,
                           ),
-                          FlatButton(
-                            child: Text(
-                              AppLocalizations.of(context)
-                                  .translate('terms_and_conditions'),
-                              style: kPrivacyPolicyTextStyle,
+                          Flexible(
+                            child: FlatButton(
+                              child: Text(
+                                AppLocalizations.of(context)
+                                    .translate('terms_and_conditions'),
+                                style: kPrivacyPolicyTextStyle,
+                              ),
+                              onPressed: () => _launchURL(
+                                  url:
+                                      'https://flowby.co/terms-and-conditions.pdf'),
                             ),
-                            onPressed: () => _launchURL(
-                                url:
-                                    'https://flowby.co/terms-and-conditions.pdf'),
                           ),
                         ],
                       ),

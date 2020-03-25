@@ -53,20 +53,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         progressIndicator: CenteredLoadingIndicator(),
         child: CupertinoPageScaffold(
           navigationBar: CupertinoNavigationBar(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
             border: null,
             backgroundColor: Colors.transparent,
             leading: CupertinoButton(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
               child: Text(AppLocalizations.of(context).translate('cancel'),
                   style: kActionNavigationBarTextStyle),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
-            middle:
-                Text(AppLocalizations.of(context).translate('edit_profile')),
+            middle: Text(
+              AppLocalizations.of(context).translate('edit_profile'),
+              textAlign: TextAlign.center,
+            ),
             trailing: CupertinoButton(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
                 child: Text(AppLocalizations.of(context).translate('done'),
                     style: kActionNavigationBarTextStyle),
                 onPressed: () {
