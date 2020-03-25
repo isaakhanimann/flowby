@@ -10,13 +10,13 @@ class ExplanationAnnouncementsTab extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20),
       width: double.infinity,
       height: double.infinity,
-      color: kLightBlueColor,
+      color: Colors.white,
       child: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             SizedBox(
-              height: 30,
+              height: 60,
             ),
             Text(
               AppLocalizations.of(context).translate('see_announcements'),
@@ -24,7 +24,7 @@ class ExplanationAnnouncementsTab extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(
-              height: 80,
+              height: 60,
             ),
             Text(
               AppLocalizations.of(context)

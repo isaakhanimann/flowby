@@ -29,11 +29,12 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
   @override
   Widget build(BuildContext context) {
     if (widget.role == Role.provider) {
-      numberOfPages = 2;
+      numberOfPages = 3;
       pages = [
         Container(
           child: ExplanationProvideSkillTab(),
         ),
+        Container(child: ExplanationAnnouncementsTab()),
         Container(
           child: ExplanationSeeDistanceTab(),
         )

@@ -84,6 +84,9 @@ class Flowby extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
             ],
             localeResolutionCallback: (locale, supportedLocales) {
+              if (locale == null) {
+                locale = Locale('en');
+              }
               for (var supportedLocale in supportedLocales) {
                 if (supportedLocale.languageCode == locale.languageCode) {
                   return supportedLocale;
