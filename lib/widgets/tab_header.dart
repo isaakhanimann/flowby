@@ -41,6 +41,8 @@ class TabHeader extends StatelessWidget {
                 child: leftIcon == null ? Container() : leftIcon,
                 onPressed: onPressedLeft ??
                     () {
+                    if(screenToNavigateToLeft == null)
+                      return;
                       Navigator.of(context, rootNavigator: true).push(
                         CupertinoPageRoute<void>(
                           builder: (context) {
@@ -57,6 +59,8 @@ class TabHeader extends StatelessWidget {
               child: rightIcon == null ? Container() : rightIcon,
               onPressed: onPressedRight ??
                   () {
+                    if(screenToNavigateToRight == null)
+                      return;
                     Navigator.of(context, rootNavigator: true).push(
                       CupertinoPageRoute<void>(
                         builder: (context) {
