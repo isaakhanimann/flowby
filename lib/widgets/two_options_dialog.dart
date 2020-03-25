@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'custom_dialog.dart';
 import 'package:Flowby/constants.dart';
@@ -47,7 +48,7 @@ class TwoOptionsDialog extends StatelessWidget {
               children: <Widget>[
                 CupertinoButton(
                   child: Text(
-                    'Cancel',
+                    AppLocalizations.of(context).translate('cancel'),
                     style: TextStyle(
                       fontSize: 18,
                       fontFamily: 'MuliRegular',

@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/constants.dart';
@@ -90,7 +91,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                   suggestions: widget.topicSuggestions,
                   maxLength: 20,
                   controller: keywordControllers[rowNumber],
-                  placeholder: 'Topic',
+                  placeholder: AppLocalizations.of(context).translate('topic'),
                   capitalization: TextCapitalization.words,
                   focus: focusNodes[rowNumber]['keywords'],
                   style: kAddSkillsTopicTextStyle,
@@ -105,7 +106,8 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                         maxLength: 100,
                         controller: descriptionControllers[rowNumber],
                         suggestions: widget.descriptionSuggestions,
-                        placeholder: 'Description',
+                        placeholder: AppLocalizations.of(context)
+                            .translate('description'),
                         capitalization: TextCapitalization.sentences,
                         focus: focusNodes[rowNumber]['description'],
                       ),
@@ -127,7 +129,7 @@ class _ListOfTextfieldsState extends State<ListOfTextfields> {
                   maxLength: 10,
                   controller: priceControllers[rowNumber],
                   suggestions: widget.priceSuggestions,
-                  placeholder: 'Price',
+                  placeholder: AppLocalizations.of(context).translate('price'),
                   focus: focusNodes[rowNumber]['price'],
                 ),
               ],

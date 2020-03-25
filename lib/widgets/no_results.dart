@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/screens/edit_profile_screen.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,17 +50,22 @@ class _NoResultsState extends State<NoResults> {
                 SizedBox(height: 15.0),
                 widget.isSkillSelected
                     ? Text(
-                        'No user found... add this skill in your profile as a wish, so skillful people can find you.',
+                        AppLocalizations.of(context)
+                            .translate('no_user_found_1'),
                         style: kAddSkillsTextStyle,
                         textAlign: TextAlign.center,
                       )
-                    : Text('No user found with this wish.',
+                    : Text(
+                        AppLocalizations.of(context)
+                            .translate('no_user_found_2'),
                         style: kAddSkillsTextStyle,
-                        textAlign: TextAlign.center),
+                        textAlign: TextAlign.center,
+                      ),
                 SizedBox(height: 5.0),
                 widget.isSkillSelected
                     ? RoundedButton(
-                        text: 'Add wish',
+                        text:
+                            AppLocalizations.of(context).translate('add_wish'),
                         textColor: Colors.white,
                         color: kBlueButtonColor,
                         onPressed: () async {
@@ -85,12 +91,14 @@ class _NoResultsState extends State<NoResults> {
                           );
                         })
                     : RoundedButton(
-                        text: 'Invite a friend',
+                        text: AppLocalizations.of(context)
+                            .translate('invite_friend'),
                         paddingInsideHorizontal: 39,
                         textColor: Colors.white,
                         color: kBlueButtonColor,
                         onPressed: () => Share.share(
-                            'Flowby is a close by community of people that share their skills in person. Join the adventure: https://flowby.app. Tell your friends about it, the more the merrier.'),
+                            AppLocalizations.of(context)
+                                .translate('flowby_is')),
                       ),
               ],
             ),

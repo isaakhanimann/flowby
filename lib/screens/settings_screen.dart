@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/models/user.dart';
@@ -39,7 +40,7 @@ class SettingsScreen extends StatelessWidget {
             backgroundColor: CupertinoColors.white,
             border: null,
             largeTitle: Text(
-              'Settings',
+              AppLocalizations.of(context).translate('settings'),
             ),
           ),
           SliverSafeArea(
@@ -69,11 +70,10 @@ class SettingsScreen extends StatelessWidget {
       SettingsItem(
         leading: Icon(Feather.log_out, color: kLoginBackgroundColor),
         title: Text(
-          'Sign Out',
+          AppLocalizations.of(context).translate('sign_out'),
           style: kSettingsTextStyle,
         ),
         onTap: () {
-          print('sign out pressssssssssssssssssed');
           final authService =
               Provider.of<FirebaseAuthService>(context, listen: false);
           authService.signOut();
@@ -87,16 +87,17 @@ class SettingsScreen extends StatelessWidget {
       SettingsItem(
         leading: Icon(Feather.share_2, color: kLoginBackgroundColor),
         title: Text(
-          'Invite a friend',
+          AppLocalizations.of(context).translate('invite_friend'),
           style: kSettingsTextStyle,
         ),
         onTap: () => Share.share(
-            'Flowby is a close by community of people that share their skills in person. Join the adventure: https://flowby.app. Tell your friends about it, the more the merrier.'),
+          AppLocalizations.of(context).translate('flowby_is'),
+        ),
       ),
       SettingsItem(
           leading: Icon(Feather.message_circle, color: kLoginBackgroundColor),
           title: Text(
-            'Feedback',
+            AppLocalizations.of(context).translate('feedback'),
             style: kSettingsTextStyle,
           ),
           onTap: () {
@@ -105,7 +106,7 @@ class SettingsScreen extends StatelessWidget {
       SettingsItem(
           leading: Icon(Feather.paperclip, color: kLoginBackgroundColor),
           title: Text(
-            'Terms & Conditions',
+            AppLocalizations.of(context).translate('terms_and_conditions'),
             style: kSettingsTextStyle,
           ),
           onTap: () {
@@ -114,7 +115,7 @@ class SettingsScreen extends StatelessWidget {
       SettingsItem(
           leading: Icon(Feather.info, color: kLoginBackgroundColor),
           title: Text(
-            'Privacy Policy',
+            AppLocalizations.of(context).translate('privacy_policy'),
             style: kSettingsTextStyle,
           ),
           onTap: () {
@@ -123,7 +124,7 @@ class SettingsScreen extends StatelessWidget {
       SettingsItem(
           leading: Icon(Feather.user, color: kLoginBackgroundColor),
           title: Text(
-            'Acceptable Use Policy',
+            AppLocalizations.of(context).translate('acceptable_use_policy'),
             style: kSettingsTextStyle,
           ),
           onTap: () {
@@ -132,7 +133,7 @@ class SettingsScreen extends StatelessWidget {
       SettingsItem(
         leading: Icon(Feather.trash, color: kLoginBackgroundColor),
         title: Text(
-          'Delete Account',
+          AppLocalizations.of(context).translate('delete_account'),
           style: kSettingsTextStyle,
         ),
         onTap: () {
@@ -167,9 +168,9 @@ class DeleteDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TwoOptionsDialog(
-      title: 'Are you sure?',
-      text: 'Do you really want to delete all your info?',
-      rightActionText: 'Delete',
+      title: AppLocalizations.of(context).translate('are_you_sure'),
+      text: AppLocalizations.of(context).translate('really_delete'),
+      rightActionText: AppLocalizations.of(context).translate('delete'),
       rightAction: () async {
         final authService =
             Provider.of<FirebaseAuthService>(context, listen: false);
@@ -195,7 +196,8 @@ class DeleteFailedDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BasicDialog(
-        title: 'Delete failed',
-        text: 'You need to sign out and sign in again to delete your account');
+      title: AppLocalizations.of(context).translate('delete_failed'),
+      text: AppLocalizations.of(context).translate('sign_out_then_sign_in'),
+    );
   }
 }

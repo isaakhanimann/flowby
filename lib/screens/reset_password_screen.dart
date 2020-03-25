@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
@@ -33,7 +34,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         middle: Padding(
           padding: const EdgeInsets.only(top: 13.0),
           child: Text(
-            'Reset password',
+            AppLocalizations.of(context).translate('reset_password'),
             style: kCupertinoScaffoldTextStyle,
           ),
         ),
@@ -53,7 +54,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               LoginInputField(
                 isLast: false,
                 keyboardType: TextInputType.emailAddress,
-                placeholder: 'Email address',
+                placeholder:
+                    AppLocalizations.of(context).translate('email_address'),
                 setText: (value) {
                   email = value;
                 },
@@ -68,13 +70,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     HelperFunctions.showCustomDialog(
                       context: context,
                       dialog: BasicDialog(
-                          title: "You've got mail",
-                          text:
-                              "We sent you an email. Tap the link in that email to reset your password."),
+                        title: AppLocalizations.of(context)
+                            .translate('you_have_mail'),
+                        text: AppLocalizations.of(context)
+                            .translate('we_sent_mail'),
+                      ),
                     );
                     await authService.resetPassword(email: email);
                   },
-                  text: 'Send'),
+                  text: AppLocalizations.of(context).translate('send')),
             ],
           ),
         ),

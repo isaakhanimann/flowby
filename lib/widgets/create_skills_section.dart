@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/widgets/list_of_textfields.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,29 +10,6 @@ class CreateSkillsSection extends StatelessWidget {
   final Function updatePriceAtIndex;
   final Function addEmptySkill;
   final Function deleteSkillAtIndex;
-  final List<String> topicSuggestions = [
-    'english',
-    'swiss german',
-    'statistics',
-    'linear algebra',
-    'photography',
-    'salsa',
-    'skating'
-  ];
-  final List<String> priceSuggestions = [
-    '30.-/h',
-    '70.-/d',
-    '50 CHF',
-    'free',
-    'coffee',
-    'tandem'
-  ];
-  final List<String> descriptionSuggestions = [
-    'I\'m just starting out',
-    'My swiss german is fluent',
-    'Half a year of experience',
-    'I have in depth knowledge of biochemistry'
-  ];
 
   CreateSkillsSection(
       {@required this.initialSkills,
@@ -43,6 +21,31 @@ class CreateSkillsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> topicSuggestions = [
+      AppLocalizations.of(context).translate('skill_topic_suggestion_1'),
+      AppLocalizations.of(context).translate('skill_topic_suggestion_2'),
+      AppLocalizations.of(context).translate('skill_topic_suggestion_3'),
+      AppLocalizations.of(context).translate('skill_topic_suggestion_4'),
+      AppLocalizations.of(context).translate('skill_topic_suggestion_5'),
+      AppLocalizations.of(context).translate('skill_topic_suggestion_6')
+    ];
+    final List<String> priceSuggestions = [
+      AppLocalizations.of(context).translate('skill_price_suggestion_1'),
+      AppLocalizations.of(context).translate('skill_price_suggestion_2'),
+      AppLocalizations.of(context).translate('skill_price_suggestion_3'),
+      AppLocalizations.of(context).translate('skill_price_suggestion_4'),
+      AppLocalizations.of(context).translate('skill_price_suggestion_5'),
+      AppLocalizations.of(context).translate('skill_price_suggestion_6')
+    ];
+    final List<String> descriptionSuggestions = [
+      AppLocalizations.of(context).translate('skill_description_suggestion_1'),
+      AppLocalizations.of(context).translate('skill_description_suggestion_2'),
+      AppLocalizations.of(context).translate('skill_description_suggestion_3'),
+      AppLocalizations.of(context).translate('skill_description_suggestion_4'),
+      AppLocalizations.of(context).translate('skill_description_suggestion_5'),
+      AppLocalizations.of(context).translate('skill_description_suggestion_6')
+    ];
+
     return ListOfTextfields(
         initialSkillsOrWishes: initialSkills,
         updateKeywordsAtIndex: updateKeywordsAtIndex,

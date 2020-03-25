@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
@@ -86,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
             middle: Padding(
               padding: const EdgeInsets.only(top: 13.0),
               child: Text(
-                'Log In',
+                AppLocalizations.of(context).translate('log_in'),
                 style: kCupertinoScaffoldTextStyle,
               ),
             ),
@@ -111,7 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     isLast: false,
                     keyboardType: TextInputType.emailAddress,
-                    placeholder: 'Email address',
+                    placeholder:
+                        AppLocalizations.of(context).translate('email_address'),
                     setText: (value) {
                       email = value;
                     },
@@ -127,7 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     isLast: true,
                     obscureText: true,
-                    placeholder: 'Password',
+                    placeholder:
+                        AppLocalizations.of(context).translate('password'),
                     setText: (value) {
                       password = value;
                     },
@@ -143,7 +146,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               builder: (context) => ResetPasswordScreen()));
                     },
                     child: Text(
-                      'Forgot your password?',
+                      AppLocalizations.of(context)
+                          .translate('forgot_your_password'),
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         color: Colors.white,
@@ -151,19 +155,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   RoundedButton(
-                      color: kBlueButtonColor,
-                      textColor: Colors.white,
-                      onPressed: () async {
-                        _signInWithEmail(context);
-                      },
-                      text: 'Log In'),
+                    color: kBlueButtonColor,
+                    textColor: Colors.white,
+                    onPressed: () async {
+                      _signInWithEmail(context);
+                    },
+                    text: AppLocalizations.of(context).translate('log_in'),
+                  ),
                   Text(
-                    'OR',
+                    AppLocalizations.of(context).translate('or'),
                     textAlign: TextAlign.center,
                     style: kOrTextStyle,
                   ),
                   GoogleLoginButton(
-                    text: 'Sign In with Google',
+                    text: AppLocalizations.of(context)
+                        .translate('sign_in_with_google'),
                     color: Color(0xFFDD4B39),
                     textColor: Colors.white,
                     onPressed: () {
@@ -202,9 +208,12 @@ class _LoginScreenState extends State<LoginScreen> {
           HelperFunctions.showCustomDialog(
             context: context,
             dialog: TwoOptionsDialog(
-                title: 'Verify your email',
-                text: 'It seems that you haven\'t verified your email yet.',
-                rightActionText: 'Send verification',
+                title:
+                    AppLocalizations.of(context).translate('verify_your_email'),
+                text: AppLocalizations.of(context)
+                    .translate('you_havent_verified'),
+                rightActionText:
+                    AppLocalizations.of(context).translate('send_verification'),
                 rightAction: () async {
                   await user?.sendEmailVerification();
                   Navigator.pop(context);
@@ -233,8 +242,10 @@ class _LoginScreenState extends State<LoginScreen> {
             HelperFunctions.showCustomDialog(
               context: context,
               dialog: BasicDialog(
-                  title: 'Invalid Email',
-                  text: 'Please input a valid email address'),
+                title: AppLocalizations.of(context).translate('invalid_email'),
+                text: AppLocalizations.of(context)
+                    .translate('please_input_valid_email'),
+              ),
             );
             break;
           }
@@ -243,7 +254,10 @@ class _LoginScreenState extends State<LoginScreen> {
             HelperFunctions.showCustomDialog(
               context: context,
               dialog: BasicDialog(
-                  title: 'Wrong Password', text: 'The password is invalid'),
+                  title:
+                      AppLocalizations.of(context).translate('wrong_password'),
+                  text: AppLocalizations.of(context)
+                      .translate('password_invalid')),
             );
             break;
           }
@@ -252,8 +266,10 @@ class _LoginScreenState extends State<LoginScreen> {
             HelperFunctions.showCustomDialog(
               context: context,
               dialog: BasicDialog(
-                  title: 'User not found',
-                  text: 'There is no user with this email address'),
+                title: AppLocalizations.of(context).translate('user_not_found'),
+                text: AppLocalizations.of(context)
+                    .translate('no_user_with_email'),
+              ),
             );
             break;
           }
@@ -262,7 +278,10 @@ class _LoginScreenState extends State<LoginScreen> {
             HelperFunctions.showCustomDialog(
               context: context,
               dialog: BasicDialog(
-                  title: 'User Disabled', text: 'This user is disabled'),
+                  title:
+                      AppLocalizations.of(context).translate('user_disabled'),
+                  text: AppLocalizations.of(context)
+                      .translate('this_user_disabled')),
             );
             break;
           }
@@ -270,16 +289,11 @@ class _LoginScreenState extends State<LoginScreen> {
           {
             HelperFunctions.showCustomDialog(
               context: context,
-              dialog: BasicDialog(title: 'Too Many Requests', text: e.message),
-            );
-            break;
-          }
-        case 'ERROR_OPERATION_NOT_ALLOWED':
-          {
-            HelperFunctions.showCustomDialog(
-              context: context,
-              dialog:
-                  BasicDialog(title: 'Operation Not Allowed', text: e.message),
+              dialog: BasicDialog(
+                  title: AppLocalizations.of(context)
+                      .translate('too_many_requests'),
+                  text: AppLocalizations.of(context)
+                      .translate('too_many_requests_description')),
             );
             break;
           }
@@ -288,8 +302,10 @@ class _LoginScreenState extends State<LoginScreen> {
             HelperFunctions.showCustomDialog(
               context: context,
               dialog: BasicDialog(
-                  title: 'An error occured',
-                  text: 'Please try a different login method'),
+                  title:
+                      AppLocalizations.of(context).translate('error_occured'),
+                  text: AppLocalizations.of(context)
+                      .translate('try_different_login_method')),
             );
             print(e);
           }
@@ -326,8 +342,11 @@ class _LoginScreenState extends State<LoginScreen> {
         HelperFunctions.showCustomDialog(
           context: context,
           dialog: BasicDialog(
-              title: "Couldn't log in with Google",
-              text: 'Please sign up before you log in'),
+            title: AppLocalizations.of(context)
+                .translate('could_not_log_in_with_google'),
+            text:
+                AppLocalizations.of(context).translate('sign_up_before_login'),
+          ),
         );
       }
     } catch (e) {
@@ -364,8 +383,11 @@ class _LoginScreenState extends State<LoginScreen> {
         HelperFunctions.showCustomDialog(
           context: context,
           dialog: BasicDialog(
-              title: "Couldn't log in with Apple",
-              text: 'Please sign up before you log in'),
+            title: AppLocalizations.of(context)
+                .translate('could_not_login_with_apple'),
+            text:
+                AppLocalizations.of(context).translate('sign_up_before_login'),
+          ),
         );
       }
     } catch (e) {
@@ -375,8 +397,11 @@ class _LoginScreenState extends State<LoginScreen> {
             HelperFunctions.showCustomDialog(
               context: context,
               dialog: BasicDialog(
-                  title: 'Authorization Denied',
-                  text: 'Please sign up with email'),
+                title: AppLocalizations.of(context)
+                    .translate('authorization_denied'),
+                text: AppLocalizations.of(context)
+                    .translate('sign_up_with_email'),
+              ),
             );
             break;
           }
@@ -385,8 +410,11 @@ class _LoginScreenState extends State<LoginScreen> {
             HelperFunctions.showCustomDialog(
               context: context,
               dialog: BasicDialog(
-                  title: "Apple Sign In didn't work",
-                  text: "Apple Sign In didn't work"),
+                title: AppLocalizations.of(context)
+                    .translate('could_not_login_with_apple'),
+                text: AppLocalizations.of(context)
+                    .translate('sign_up_before_login'),
+              ),
             );
             print(e);
           }

@@ -1,3 +1,4 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Flowby/constants.dart';
 import 'custom_dialog.dart';
@@ -37,7 +38,7 @@ class BasicDialog extends StatelessWidget {
             CupertinoButton(
               padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
               child: Text(
-                'Ok',
+                AppLocalizations.of(context).translate('ok'),
                 style: TextStyle(
                   fontSize: 20,
                   fontFamily: 'MuliBold',
