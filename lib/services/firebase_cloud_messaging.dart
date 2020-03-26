@@ -177,24 +177,25 @@ class FirebaseCloudMessaging {
       ),
     );
   }
+  static Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
+    print('mybackground Message handler');
+    if (message.containsKey('data')) {
+      // Handle data message
+      final dynamic data = message['data'];
+      print(data);
+    }
+
+    if (message.containsKey('notification')) {
+      // Handle notification message
+      final dynamic notification = message['notification'];
+      print(notification);
+    }
+
+    return;
+    // Or do other work.
+  }
 }
 
-Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
-  print('mybackground Message handler');
-  if (message.containsKey('data')) {
-    // Handle data message
-    final dynamic data = message['data'];
-    print(data);
-  }
-
-  if (message.containsKey('notification')) {
-    // Handle notification message
-    final dynamic notification = message['notification'];
-    print(notification);
-  }
-
-  // Or do other work.
-}
 
 class CloudMessage {
   String title;
