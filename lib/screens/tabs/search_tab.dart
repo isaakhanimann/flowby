@@ -47,7 +47,7 @@ class _SearchTabState extends State<SearchTab> {
             leftIcon: Icon(Feather.info),
             screenToNavigateToLeft: ExplanationScreen(
               role: role,
-              pop: true,
+              popScreen: true,
             ),
           ),
           Padding(

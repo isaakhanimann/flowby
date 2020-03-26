@@ -14,9 +14,9 @@ class ExplanationScreen extends StatefulWidget {
   static const String id = 'explanation_screen';
 
   final Role role;
-  bool pop;
+  final bool popScreen;
 
-  ExplanationScreen({@required this.role, this.pop});
+  ExplanationScreen({@required this.role, this.popScreen});
 
   @override
   _ExplanationScreenState createState() => _ExplanationScreenState();
@@ -78,7 +78,7 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
                 style: kSkipTextStyle,
               ),
               onPressed: () {
-                widget.pop
+                widget.popScreen
                     ? Navigator.of(context, rootNavigator: true).pop()
                     : Navigator.of(context, rootNavigator: true).push(
                         CupertinoPageRoute<void>(
