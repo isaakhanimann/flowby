@@ -30,6 +30,14 @@ class _ChatsTabState extends State<ChatsTab> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           TabHeader(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+            child: Text(
+              AppLocalizations.of(context).translate('chats'),
+              style: kTabTitleTextStyle,
+              textAlign: TextAlign.start,
+            ),
+          ),
           Expanded(
               child: StreamBuilder(
                   stream: cloudFirestoreService.getChatsStream(
@@ -53,20 +61,10 @@ class _ChatsTabState extends State<ChatsTab> {
                       );
                     }
                     return ListView.builder(
-                        itemCount: chats.length + 1,
+                        itemCount: chats.length,
                         itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                              child: Text(
-                                AppLocalizations.of(context).translate('chats'),
-                                style: kTabTitleTextStyle,
-                                textAlign: TextAlign.start,
-                              ),
-                            );
-                          }
                           return ChatItem(
-                            chat: chats[index - 1],
+                            chat: chats[index],
                           );
                         });
                   }))
