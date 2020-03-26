@@ -16,7 +16,7 @@ class ExplanationScreen extends StatefulWidget {
   final Role role;
   final bool popScreen;
 
-  ExplanationScreen({@required this.role, this.popScreen});
+  ExplanationScreen({@required this.role, this.popScreen = false});
 
   @override
   _ExplanationScreenState createState() => _ExplanationScreenState();
