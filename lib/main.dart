@@ -80,8 +80,10 @@ class Flowby extends StatelessWidget {
             ],
             localizationsDelegates: [
               AppLocalizations.delegate,
-              DefaultCupertinoLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              DefaultCupertinoLocalizations.delegate,
             ],
             localeResolutionCallback: (locale, supportedLocales) {
               if (locale == null) {
