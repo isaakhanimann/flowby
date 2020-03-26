@@ -19,25 +19,11 @@ class ChatsTab extends StatefulWidget {
 }
 
 class _ChatsTabState extends State<ChatsTab> {
-  Stream<List<Chat>> chatsStream;
-
-  @override
-  void initState() {
-    super.initState();
-    final cloudFirestoreService =
-        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    final loggedInUser = Provider.of<User>(context, listen: false);
-    chatsStream =
-        cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
-  }
-
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     final loggedInUser = Provider.of<User>(context, listen: false);
-    chatsStream =
-        cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
     return SafeArea(
       bottom: false,
       child: Column(
@@ -46,7 +32,8 @@ class _ChatsTabState extends State<ChatsTab> {
           TabHeader(),
           Expanded(
               child: StreamBuilder(
-                  stream: chatsStream,
+                  stream: cloudFirestoreService.getChatsStream(
+                      loggedInUid: loggedInUser.uid),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting ||
                         snapshot.connectionState == ConnectionState.none) {
