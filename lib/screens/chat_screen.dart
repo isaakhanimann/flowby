@@ -230,129 +230,121 @@ class ChatHeader extends StatelessWidget {
     }
     return Container(
       color: Color(0xFFFFFFFF),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  width: 15,
-                ),
-                CupertinoButton(
-                  padding: EdgeInsets.all(0.0),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(
-                    Feather.chevron_left,
-                    size: 30,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true).push(ScaleRoute(
-                        page: ShowProfilePictureScreen(
-                      imageFileName: screenInfo.otherImageFileName,
-                      imageVersionNumber: screenInfo.otherImageVersionNumber,
-                      otherUsername: screenInfo.otherUsername,
-                      heroTag: screenInfo.heroTag,
-                    )));
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      CachedNetworkImage(
-                        imageUrl:
-                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${screenInfo.otherImageFileName}?alt=media&version=${screenInfo.otherImageVersionNumber}",
-                        imageBuilder: (context, imageProvider) {
-                          return Hero(
-                            transitionOnUserGestures: true,
-                            tag: screenInfo.heroTag,
-                            child: CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Colors.grey,
-                                backgroundImage: imageProvider),
-                          );
-                        },
-                        placeholder: (context, url) =>
-                            CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              kDefaultProfilePicColor),
-                        ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        screenInfo.otherUsername,
-                        overflow: TextOverflow.ellipsis,
-                        style: kChatScreenHeaderTextStyle,
-                      )
-                    ],
-                  ),
-                ),
-              ],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          CupertinoButton(
+            padding: EdgeInsets.all(0.0),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Icon(
+              Feather.chevron_left,
+              size: 30,
             ),
-            if (chat == null)
-              CircularProgressIndicator(
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context, rootNavigator: true).push(
+                ScaleRoute(
+                  page: ShowProfilePictureScreen(
+                    imageFileName: screenInfo.otherImageFileName,
+                    imageVersionNumber: screenInfo.otherImageVersionNumber,
+                    otherUsername: screenInfo.otherUsername,
+                    heroTag: screenInfo.heroTag,
+                  ),
+                ),
+              );
+            },
+            child: CachedNetworkImage(
+              imageUrl:
+                  "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${screenInfo.otherImageFileName}?alt=media&version=${screenInfo.otherImageVersionNumber}",
+              imageBuilder: (context, imageProvider) {
+                return Hero(
+                  transitionOnUserGestures: true,
+                  tag: screenInfo.heroTag,
+                  child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: imageProvider),
+                );
+              },
+              placeholder: (context, url) => CircularProgressIndicator(
                 valueColor:
                     AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
               ),
-            if (chat != null)
-              Flexible(
-                child: CupertinoButton(
-                  child: haveIBlocked
-                      ? Text(
-                          AppLocalizations.of(context).translate('unblock'),
-                        )
-                      : Text(
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Flexible(
+            child: Text(
+              screenInfo.otherUsername,
+              overflow: TextOverflow.ellipsis,
+              style: kChatScreenHeaderTextStyle,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          if (chat == null)
+            CircularProgressIndicator(
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+            ),
+          if (chat != null)
+            CupertinoButton(
+              child: haveIBlocked
+                  ? Text(
+                      AppLocalizations.of(context).translate('unblock'),
+                    )
+                  : Text(
+                      AppLocalizations.of(context).translate('block'),
+                    ),
+              onPressed: () {
+                if (!haveIBlocked) {
+                  HelperFunctions.showCustomDialog(
+                    context: context,
+                    dialog: TwoOptionsDialog(
+                      title: AppLocalizations.of(context)
+                          .translate('are_you_sure'),
+                      text: AppLocalizations.of(context)
+                          .translate('blocked_contacts_cant_send'),
+                      rightActionText:
                           AppLocalizations.of(context).translate('block'),
-                        ),
-                  onPressed: () {
-                    if (!haveIBlocked) {
-                      HelperFunctions.showCustomDialog(
-                        context: context,
-                        dialog: TwoOptionsDialog(
-                          title: AppLocalizations.of(context)
-                              .translate('are_you_sure'),
-                          text: AppLocalizations.of(context)
-                              .translate('blocked_contacts_cant_send'),
-                          rightActionText:
-                              AppLocalizations.of(context).translate('block'),
-                          rightActionColor: Colors.red,
-                          rightAction: () {
-                            if (amIUser1) {
-                              cloudFirestoreService.uploadChatBlocked(
-                                  chatpath: chat.chatpath,
-                                  hasUser1Blocked: !haveIBlocked);
-                            } else {
-                              cloudFirestoreService.uploadChatBlocked(
-                                  chatpath: chat.chatpath,
-                                  hasUser2Blocked: !haveIBlocked);
-                            }
-                            Navigator.pop(context);
-                          },
-                        ),
-                      );
-                    } else {
-                      if (amIUser1) {
-                        cloudFirestoreService.uploadChatBlocked(
-                            chatpath: chat.chatpath,
-                            hasUser1Blocked: !haveIBlocked);
-                      } else {
-                        cloudFirestoreService.uploadChatBlocked(
-                            chatpath: chat.chatpath,
-                            hasUser2Blocked: !haveIBlocked);
-                      }
-                    }
-                  },
-                ),
-              )
-          ],
-        ),
+                      rightActionColor: Colors.red,
+                      rightAction: () {
+                        if (amIUser1) {
+                          cloudFirestoreService.uploadChatBlocked(
+                              chatpath: chat.chatpath,
+                              hasUser1Blocked: !haveIBlocked);
+                        } else {
+                          cloudFirestoreService.uploadChatBlocked(
+                              chatpath: chat.chatpath,
+                              hasUser2Blocked: !haveIBlocked);
+                        }
+                        Navigator.pop(context);
+                      },
+                    ),
+                  );
+                } else {
+                  if (amIUser1) {
+                    cloudFirestoreService.uploadChatBlocked(
+                        chatpath: chat.chatpath,
+                        hasUser1Blocked: !haveIBlocked);
+                  } else {
+                    cloudFirestoreService.uploadChatBlocked(
+                        chatpath: chat.chatpath,
+                        hasUser2Blocked: !haveIBlocked);
+                  }
+                }
+              },
+            )
+        ],
       ),
     );
   }
