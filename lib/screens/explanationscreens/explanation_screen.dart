@@ -78,15 +78,15 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
                 style: kSkipTextStyle,
               ),
               onPressed: () {
-                widget.pop ?
-                Navigator.of(context, rootNavigator: true).push(
-                  CupertinoPageRoute<void>(
-                    builder: (context) {
-                      return NavigationScreen();
-                    },
-                  ),
-                ) :
-                Navigator.of(context, rootNavigator: true).pop();
+                widget.pop
+                    ? Navigator.of(context, rootNavigator: true).pop()
+                    : Navigator.of(context, rootNavigator: true).push(
+                        CupertinoPageRoute<void>(
+                          builder: (context) {
+                            return NavigationScreen();
+                          },
+                        ),
+                      );
               },
             ),
           ),
