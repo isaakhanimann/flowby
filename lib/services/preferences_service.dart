@@ -2,16 +2,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:Flowby/models/role.dart';
 
 class PreferencesService {
-  Future<bool> getExplanationBool() async {
+  Future<bool> getShouldExplanationBeLoaded() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool shouldExplanationBeLoaded =
-        prefs.getBool('shouldExplanationBeLoaded') ?? true;
-    return shouldExplanationBeLoaded;
-  }
-
-  setExplanationBoolToFalse() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('shouldExplanationBeLoaded', false);
+    int numberOfTimesLoaded = prefs.getInt('numberOfTimesLoaded') ?? 0;
+    prefs.setInt('numberOfTimesLoaded', numberOfTimesLoaded + 1);
+    if (numberOfTimesLoaded == 0 || numberOfTimesLoaded == 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<Role> getRole() async {

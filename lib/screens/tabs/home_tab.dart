@@ -54,6 +54,7 @@ class _HomeTabState extends State<HomeTab> {
             leftIcon: Icon(Feather.info),
             screenToNavigateToLeft: ExplanationScreen(
               role: role,
+              popScreen: true,
             ),
             rightIcon: Icon(Feather.plus),
             onPressedRight: _addAnnouncement,

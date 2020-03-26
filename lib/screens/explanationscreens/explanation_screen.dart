@@ -14,8 +14,9 @@ class ExplanationScreen extends StatefulWidget {
   static const String id = 'explanation_screen';
 
   final Role role;
+  final bool popScreen;
 
-  ExplanationScreen({@required this.role});
+  ExplanationScreen({@required this.role, this.popScreen});
 
   @override
   _ExplanationScreenState createState() => _ExplanationScreenState();
@@ -29,11 +30,12 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
   @override
   Widget build(BuildContext context) {
     if (widget.role == Role.provider) {
-      numberOfPages = 2;
+      numberOfPages = 3;
       pages = [
         Container(
           child: ExplanationProvideSkillTab(),
         ),
+        Container(child: ExplanationAnnouncementsTab()),
         Container(
           child: ExplanationSeeDistanceTab(),
         )
@@ -76,13 +78,15 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
                 style: kSkipTextStyle,
               ),
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).push(
-                  CupertinoPageRoute<void>(
-                    builder: (context) {
-                      return NavigationScreen();
-                    },
-                  ),
-                );
+                widget.popScreen
+                    ? Navigator.of(context, rootNavigator: true).pop()
+                    : Navigator.of(context, rootNavigator: true).push(
+                        CupertinoPageRoute<void>(
+                          builder: (context) {
+                            return NavigationScreen();
+                          },
+                        ),
+                      );
               },
             ),
           ),

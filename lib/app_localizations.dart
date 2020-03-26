@@ -17,8 +17,8 @@ class AppLocalizations {
   Map<String, String> _localizedStrings;
 
   load() async {
-    String jsonString =
-        await rootBundle.loadString('languages/${locale.languageCode}.json');
+    String jsonString = await rootBundle
+        .loadString('languages/${locale?.languageCode ?? 'en'}.json');
     Map<String, dynamic> jsonMap = json.decode(jsonString);
 
     _localizedStrings = jsonMap.map((key, value) {
@@ -37,7 +37,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) {
-    return ['en', 'de'].contains(locale.languageCode);
+    return ['en', 'de', 'fr'].contains(locale?.languageCode ?? 'en');
   }
 
   @override
