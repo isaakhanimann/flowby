@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:Flowby/screens/chat_screen.dart';
+import 'package:Flowby/widgets/app_pushes.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class FirebaseCloudMessaging {
-  FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   Map<String, List<String>> messages = {
@@ -44,8 +46,6 @@ class FirebaseCloudMessaging {
     firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> mapMessage) async {
         this.context = context;
-        nbrOfUnreadMessages += 1;
-        ctrlUnreadMessages.add(nbrOfUnreadMessages);
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         showNotification(message: message);
       },
@@ -81,7 +81,51 @@ class FirebaseCloudMessaging {
         onSelectNotification: onSelectNotification);
   }
 
+  static Future _showNotification(Map<String, dynamic> message) async {
+    var pushTitle;
+    var pushText;
+    var action;
+
+    if (Platform.isAndroid) {
+      var nodeData = message['data'];
+      pushTitle = nodeData['title'];
+      pushText = nodeData['body'];
+      action = nodeData['action'];
+    } else {
+      pushTitle = message['title'];
+      pushText = message['body'];
+      action = message['action'];
+    }
+    print("AppPushs params pushTitle : $pushTitle");
+    print("AppPushs params pushText : $pushText");
+    print("AppPushs params pushAction : $action");
+
+    // @formatter:off
+    var platformChannelSpecificsAndroid = new AndroidNotificationDetails(
+        'your channel id',
+        'your channel name',
+        'your channel description',
+        playSound: false,
+        enableVibration: false,
+        importance: Importance.Max,
+        priority: Priority.High);
+    // @formatter:on
+    var platformChannelSpecificsIos = new IOSNotificationDetails(presentSound: false);
+    var platformChannelSpecifics = new NotificationDetails(platformChannelSpecificsAndroid, platformChannelSpecificsIos);
+
+    new Future.delayed(Duration.zero, () {
+      _flutterLocalNotificationsPlugin.show(
+        0,
+        pushTitle,
+        pushText,
+        platformChannelSpecifics,
+        payload: 'No_Sound',
+      );
+    });
+  }
   void showNotification({@required CloudMessage message}) async {
+    nbrOfUnreadMessages += 1;
+    ctrlUnreadMessages.add(nbrOfUnreadMessages);
     String contentTitle;
 
     if (messages[message.data['otherUid']] == null ||
@@ -177,7 +221,10 @@ class FirebaseCloudMessaging {
       ),
     );
   }
-  static Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
+
+  static Future<dynamic> myBackgroundMessageHandler(
+      Map<String, dynamic> message) async {
+    _showNotification(message);
     print('mybackground Message handler');
     if (message.containsKey('data')) {
       // Handle data message
@@ -196,13 +243,13 @@ class FirebaseCloudMessaging {
   }
 }
 
-
 class CloudMessage {
   String title;
   String body;
   String priority = 'high';
   String string;
   String toToken;
+  String sound;
 
   CloudMessage({this.title, this.body});
 
@@ -219,9 +266,10 @@ class CloudMessage {
   // "to": "<FCM TOKEN>"}';
   CloudMessage.fromMap({Map<String, dynamic> mapMessage}) {
     string = JsonEncoder.withIndent("    ").convert(mapMessage);
-    title = mapMessage['notification']['title'];
-    body = mapMessage['notification']['body'];
     toToken = mapMessage['to'];
+    title = mapMessage['data']['title'];
+    body = mapMessage['data']['body'];
+    sound = mapMessage['data']['sound'];
     data['screen'] = mapMessage['data']['screen'];
     data['loggedInUid'] = mapMessage['data']['loggedInUid'];
     data['otherUid'] = mapMessage['data']['otherUid'];

@@ -9,6 +9,7 @@ import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_cloud_messaging.dart';
 import 'package:Flowby/services/location_service.dart';
+import 'package:Flowby/widgets/app_pushes.dart';
 import 'package:Flowby/widgets/badge_icon.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -203,6 +204,7 @@ class ScreenWithAllTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final int unreadMessages = Provider.of<int>(context);
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(

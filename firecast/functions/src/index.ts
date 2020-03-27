@@ -380,17 +380,22 @@ exports.sendNotification = functions.firestore
   .document("chats/{chatId}/messages/{messageId}")
   .onCreate(
     async (snap: FirebaseFirestore.DocumentSnapshot, context: EventContext) => {
+      
       const message: FirebaseFirestore.DocumentData = snap.data()!;
 
       const senderUid: string = message.senderUid;
       const contentMessage: string = message.text;
-
+      if (senderUid === "OvIwqUktoEOzicM6dzW0KBKlHxk1"){
+      
       const chatId = context.params.chatId;
       const chatSnap: FirebaseFirestore.DocumentSnapshot = await db
         .collection("chats")
         .doc(chatId)
         .get();
+      
       const chat: FirebaseFirestore.DocumentData = chatSnap.data()!;
+
+      
 
       let receiverUid: string = "";
       let senderUsername: string = "";
@@ -438,6 +443,7 @@ exports.sendNotification = functions.firestore
             chatPath: "chats/" + chatId
           }
         };
+        
         // send the push notification to the receivers device
         return fcm
           .sendToDevice(receiver.pushToken, payload)
@@ -452,5 +458,6 @@ exports.sendNotification = functions.firestore
         console.log("Notification Background: Can not find pushToken target user");
         return null;
       }
+    }
     }
   );
