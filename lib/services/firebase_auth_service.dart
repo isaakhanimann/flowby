@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -84,23 +83,37 @@ class FirebaseAuthService {
 
   Future<AuthResult> signInWithEmail(
       {@required String email, @required String password}) async {
-    return _auth.signInWithEmailAndPassword(email: email, password: password);
+    try {
+      return _auth.signInWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
+      print('Could not sign in with email');
+      print(e);
+      return null;
+    }
   }
 
   Future<AuthResult> registerWithEmail(
       {@required String email, @required String password}) async {
-    return _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
+    try {
+      return _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+    } catch (e) {
+      print('Could not register with email');
+      print(e);
+      return null;
+    }
   }
 
-  Future<void> deleteCurrentlyLoggedInUser() async {
+  Future<bool> deleteCurrentlyLoggedInUser() async {
     try {
       final user = await _auth.currentUser();
       // this also signs out the user
       await user.delete();
+      return true;
     } catch (e) {
       print('Isaak could not delete the user');
       print(e);
+      return false;
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Flowby/models/announcement.dart';
 import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/message.dart';
 import 'package:Flowby/models/user.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:Flowby/models/chat_without_last_message.dart';
+import 'package:Flowby/models/role.dart';
 
 class FirebaseCloudFirestoreService {
   final _fireStore = Firestore.instance;
@@ -20,7 +22,7 @@ class FirebaseCloudFirestoreService {
           .document(user.uid)
           .setData(user.toMap(), merge: true);
     } catch (e) {
-      print('Isaak could not upload user info');
+      print('Could not upload user info');
       debugPrint('error: $e');
     }
   }
@@ -30,30 +32,69 @@ class FirebaseCloudFirestoreService {
       var userDocument =
           await _fireStore.collection('users').document(uid).get();
       if (userDocument.data == null) {
-        print('Isaak could not get user info1');
+        print('Could not get user info1');
         return null;
       }
 
       return User.fromMap(map: userDocument.data);
     } catch (e) {
-      print('Isaak could not get user info2');
+      print('Could not get user info2');
+      print(e);
       return null;
     }
   }
 
-  Stream<List<User>> getUsersStream({@required String uidToExclude}) {
+  Future<List<Announcement>> getAnnouncements() async {
     try {
-      var userSnapshots = _fireStore.collection('users').snapshots().map(
-          (snap) => snap.documents
-              .map((doc) => User.fromMap(map: doc.data))
-              .where((user) =>
-                  (uidToExclude != null) ? user.uid != uidToExclude : true)
-              .toList());
-      return userSnapshots;
+      QuerySnapshot snap = await _fireStore
+          .collection('announcements')
+          .orderBy('timestamp', descending: true)
+          .getDocuments();
+      List<Announcement> announcements = snap.documents.map((doc) {
+        Announcement announcement = Announcement.fromMap(map: doc.data);
+        announcement.docId = doc.documentID;
+        return announcement;
+      }).toList();
+      return announcements;
     } catch (e) {
+      print('Could not get announcements');
       print(e);
       return null;
     }
+  }
+
+  uploadAnnouncement({@required Announcement announcement}) async {
+    try {
+      await _fireStore.collection('announcements').add(announcement.toMap());
+    } catch (e) {
+      print('Could not upload announcement');
+      print(e);
+    }
+  }
+
+  deleteAnnouncement({@required Announcement announcement}) async {
+    try {
+      await _fireStore
+          .collection('announcements')
+          .document(announcement.docId)
+          .delete();
+    } catch (e) {
+      print('Could not delete announcement');
+      print(e);
+    }
+  }
+
+  Stream<User> getUserStream({@required String uid}) {
+    try {
+      return _fireStore
+          .collection('users')
+          .document(uid)
+          .snapshots()
+          .map((doc) => User.fromMap(map: doc.data));
+    } catch (e) {
+      print('Could not get the user stream');
+    }
+    return Stream.empty();
   }
 
   Stream<ChatWithoutLastMessage> getChatStreamWithoutLastMessageField(
@@ -75,7 +116,7 @@ class FirebaseCloudFirestoreService {
       }).distinct(); //use distinct to avoid unnecessary rebuilds
       return chatStream;
     } catch (e) {
-      print('Isaak could not get the chat stream');
+      print('Could not get the chat stream');
     }
     return Stream.empty();
   }
@@ -158,7 +199,7 @@ class FirebaseCloudFirestoreService {
       }
       return chatPath;
     } catch (e) {
-      print('Isaak could not get chatpath');
+      print('Could not get chatpath');
       return null;
     }
   }
@@ -184,7 +225,7 @@ class FirebaseCloudFirestoreService {
       var docReference = await _fireStore.collection('chats').add(chat.toMap());
       return docReference.path;
     } catch (e) {
-      print('Isaak could not createChat');
+      print('Could not createChat');
       return null;
     }
   }
@@ -201,56 +242,54 @@ class FirebaseCloudFirestoreService {
               .toList());
       return messageStream;
     } catch (e) {
-      print('Isaak could not get the message stream');
+      print('Could not get the message stream');
     }
     return Stream.empty();
   }
 
-  void uploadMessage({@required String chatPath, @required Message message}) {
+  Future<void> uploadMessage(
+      {@required String chatPath, @required Message message}) async {
     try {
-      _fireStore.document(chatPath).collection('messages').add(
-        {
-          'text': message.text,
-          'senderUid': message.senderUid,
-          'receiverUid': message.receiverUid,
-          'timestamp': message.timestamp,
-        },
-      );
+      await _fireStore
+          .document(chatPath)
+          .collection('messages')
+          .add(message.toMap());
     } catch (e) {
-      print('Isaak could not upload message');
+      print('Could not upload message');
     }
   }
 
-  void uploadUsersLocation({@required uid, @required Position position}) {
+  Future<void> uploadUsersLocation(
+      {@required uid, @required Position position}) async {
     try {
-      _fireStore.collection('users').document(uid).updateData({
-        'location': GeoPoint(position.latitude, position.longitude)
-//        , 'locationTimestamp': position.timestamp
-      });
+      await _fireStore.collection('users').document(uid).updateData(
+          {'location': GeoPoint(position.latitude, position.longitude)});
     } catch (e) {
-      print('Isaak could not upload position info');
+      print('Could not upload position info');
     }
   }
 
-  void uploadPushToken({@required String uid, @required String pushToken}) {
+  Future<void> uploadUsersPushToken(
+      {@required String uid, @required String pushToken}) async {
     try {
       _fireStore
           .collection('users')
           .document(uid)
           .updateData({'pushToken': pushToken});
     } catch (e) {
-      print('Isaak could not upload Push Token');
+      print('Could not upload push token');
     }
   }
 
-  void uploadProfilePic({@required String uid}) {
+  Future<void> uploadUsersRole(
+      {@required String uid, @required Role role}) async {
     try {
       _fireStore
           .collection('users')
           .document(uid)
-          .updateData({'imageFileName': uid});
+          .updateData({'role': convertRoleToString(role: role)});
     } catch (e) {
-      print('Isaak could not upload Push Token');
+      print('Could not upload role');
     }
   }
 }

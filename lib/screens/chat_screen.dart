@@ -1,16 +1,21 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/models/message.dart';
 import 'package:Flowby/screens/show_profile_picture_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/copyable_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/chat_without_last_message.dart';
 import 'package:Flowby/widgets/route_transitions/scale_route.dart';
+import 'package:Flowby/widgets/centered_loading_indicator.dart';
+import 'package:Flowby/widgets/two_options_dialog.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
@@ -18,8 +23,8 @@ class ChatScreen extends StatelessWidget {
   final String otherUid;
   final String otherUsername;
   final String otherImageFileName;
+  final int otherImageVersionNumber;
   final String heroTag;
-
   final String chatPath;
 
   //either the chatPath is supplied and we can get the messageStream directly
@@ -30,58 +35,60 @@ class ChatScreen extends StatelessWidget {
       @required this.otherUsername,
       @required this.heroTag,
       @required this.otherImageFileName,
+      @required this.otherImageVersionNumber,
       this.chatPath});
 
   @override
   Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.white,
+      child: SafeArea(
+        child: Provider<GlobalChatScreenInfo>(
+          create: (_) => GlobalChatScreenInfo(
+              loggedInUid: loggedInUid,
+              otherUid: otherUid,
+              otherUsername: otherUsername,
+              otherImageFileName: otherImageFileName,
+              otherImageVersionNumber: otherImageVersionNumber,
+              heroTag: heroTag),
+          child: (chatPath != null)
+              ? ChatScreenWithPath(chatPath: chatPath)
+              : ChatScreenThatHasToGetPath(),
+        ),
+      ),
+    );
+  }
+}
+
+class ChatScreenThatHasToGetPath extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    GlobalChatScreenInfo screenInfo =
+        Provider.of<GlobalChatScreenInfo>(context);
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    if (chatPath != null) {
-      return Provider<String>.value(
-        value: loggedInUid,
-        child: ChatScreenWithPath(
-            otherUsername: otherUsername,
-            otherImageFileName: otherImageFileName,
-            heroTag: heroTag,
-            chatPath: chatPath),
-      );
-    }
-
     return FutureBuilder(
       future: cloudFirestoreService.getChatPath(
-          loggedInUid: loggedInUid,
-          otherUid: otherUid,
-          otherUsername: otherUsername,
-          otherUserImageFileName: otherImageFileName),
+          loggedInUid: screenInfo.loggedInUid,
+          otherUid: screenInfo.otherUid,
+          otherUsername: screenInfo.otherUsername,
+          otherUserImageFileName: screenInfo.otherImageFileName),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return CupertinoPageScaffold(
-            backgroundColor: CupertinoColors.white,
-            child: Center(
-              child: CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-              ),
-            ),
-          );
+          return CenteredLoadingIndicator();
         }
         if (snapshot.hasError) {
           return Container(
             color: Colors.red,
-            child: const Text('Something went wrong'),
+            child: Text(
+              AppLocalizations.of(context).translate('something_went_wrong'),
+            ),
           );
         }
         String foundChatPath = snapshot.data;
 
-        return Provider<String>.value(
-          value: loggedInUid,
-          child: ChatScreenWithPath(
-              otherUsername: otherUsername,
-              otherImageFileName: otherImageFileName,
-              heroTag: heroTag,
-              chatPath: foundChatPath),
-        );
+        return ChatScreenWithPath(chatPath: foundChatPath);
       },
     );
   }
@@ -90,84 +97,101 @@ class ChatScreen extends StatelessWidget {
 class ChatScreenWithPath extends StatelessWidget {
   const ChatScreenWithPath({
     Key key,
-    @required this.otherUsername,
-    @required this.otherImageFileName,
-    @required this.heroTag,
     @required this.chatPath,
   }) : super(key: key);
 
-  final String otherUsername;
   final String chatPath;
-  final String otherImageFileName;
-  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    return CupertinoPageScaffold(
-      backgroundColor: CupertinoColors.white,
-      child: SafeArea(
-        child: StreamBuilder(
-          stream: cloudFirestoreService.getChatStreamWithoutLastMessageField(
-              chatPath: chatPath),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting ||
-                snapshot.connectionState == ConnectionState.none) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Header(
-                    otherImageFileName: otherImageFileName,
-                    otherUsername: otherUsername,
-                    heroTag: heroTag,
-                  ),
-                  Expanded(
-                    child: MessagesStream(
-                      messagesStream: cloudFirestoreService.getMessageStream(
-                          chatPath: chatPath),
-                    ),
-                  ),
-                  MessageSendingSectionLoading(),
-                ],
-              );
-            }
+    return StreamBuilder(
+      stream: cloudFirestoreService.getChatStreamWithoutLastMessageField(
+          chatPath: chatPath),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.connectionState == ConnectionState.none) {
+          return ChatIsLoading(chatPath: chatPath);
+        }
 
-            final ChatWithoutLastMessage chat = snapshot.data;
+        final ChatWithoutLastMessage chat = snapshot.data;
 
-            return Stack(children: [
-              Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  SizedBox(height: 60),
-                  Expanded(
-                    child: MessagesStream(
-                      messagesStream: cloudFirestoreService.getMessageStream(
-                          chatPath: chatPath),
-                    ),
-                  ),
-                  MessageSendingSection(chat: chat),
-                ],
-              ),
-              Header(
-                  otherImageFileName: otherImageFileName,
-                  otherUsername: otherUsername,
-                  heroTag: heroTag,
-                  chat: chat),
-            ]);
-          },
+        return ChatHasLoaded(chat: chat, chatPath: chatPath);
+      },
+    );
+  }
+}
+
+class ChatHasLoaded extends StatelessWidget {
+  const ChatHasLoaded({
+    Key key,
+    @required this.chatPath,
+    @required this.chat,
+  }) : super(key: key);
+
+  final String chatPath;
+  final ChatWithoutLastMessage chat;
+
+  @override
+  Widget build(BuildContext context) {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    return Stack(children: [
+      Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: Colors.white,
         ),
       ),
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SizedBox(height: 60),
+          Expanded(
+            child: MessagesStream(
+              messagesStream:
+                  cloudFirestoreService.getMessageStream(chatPath: chatPath),
+            ),
+          ),
+          MessageSendingSection(chat: chat),
+        ],
+      ),
+      ChatHeader(chat: chat),
+    ]);
+  }
+}
+
+class ChatIsLoading extends StatelessWidget {
+  const ChatIsLoading({
+    Key key,
+    @required this.chatPath,
+  }) : super(key: key);
+
+  final String chatPath;
+
+  @override
+  Widget build(BuildContext context) {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        ChatHeader(),
+        Expanded(
+          child: MessagesStream(
+            messagesStream:
+                cloudFirestoreService.getMessageStream(chatPath: chatPath),
+          ),
+        ),
+        MessageSendingSectionLoading(),
+      ],
     );
   }
 }
@@ -183,29 +207,21 @@ class MessageSendingSectionLoading extends StatelessWidget {
   }
 }
 
-class Header extends StatelessWidget {
-  const Header(
-      {Key key,
-      @required this.otherImageFileName,
-      @required this.otherUsername,
-      @required this.heroTag,
-      this.chat})
-      : super(key: key);
+class ChatHeader extends StatelessWidget {
+  const ChatHeader({Key key, this.chat}) : super(key: key);
 
-  final String otherImageFileName;
-  final String otherUsername;
-  final String heroTag;
   final ChatWithoutLastMessage chat;
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUid = Provider.of<String>(context);
+    GlobalChatScreenInfo screenInfo =
+        Provider.of<GlobalChatScreenInfo>(context);
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     bool amIUser1;
     bool haveIBlocked;
     if (chat != null) {
-      amIUser1 = (chat.uid1 == loggedInUid);
+      amIUser1 = (chat.uid1 == screenInfo.loggedInUid);
       if (amIUser1) {
         haveIBlocked = chat.hasUser1Blocked;
       } else {
@@ -214,97 +230,121 @@ class Header extends StatelessWidget {
     }
     return Container(
       color: Color(0xFFFFFFFF),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  width: 15,
-                ),
-                CupertinoButton(
-                  padding: EdgeInsets.all(0.0),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(
-                    Feather.chevron_left,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true).push(ScaleRoute(
-                        page: ShowProfilePictureScreen(
-                      imageFileName: otherImageFileName,
-                      otherUsername: otherUsername,
-                      heroTag: heroTag,
-                    )));
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      CachedNetworkImage(
-                        imageUrl:
-                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$otherImageFileName?alt=media",
-                        imageBuilder: (context, imageProvider) {
-                          return Hero(
-                            transitionOnUserGestures: true,
-                            tag: heroTag,
-                            child: CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Colors.grey,
-                                backgroundImage: imageProvider),
-                          );
-                        },
-                        placeholder: (context, url) =>
-                            CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              kDefaultProfilePicColor),
-                        ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        otherUsername,
-                        overflow: TextOverflow.ellipsis,
-                        style: kChatScreenHeaderTextStyle,
-                      )
-                    ],
-                  ),
-                ),
-              ],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          CupertinoButton(
+            padding: EdgeInsets.all(0.0),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Icon(
+              Feather.chevron_left,
+              size: 30,
             ),
-            if (chat == null)
-              CircularProgressIndicator(
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context, rootNavigator: true).push(
+                ScaleRoute(
+                  page: ShowProfilePictureScreen(
+                    imageFileName: screenInfo.otherImageFileName,
+                    imageVersionNumber: screenInfo.otherImageVersionNumber,
+                    otherUsername: screenInfo.otherUsername,
+                    heroTag: screenInfo.heroTag,
+                  ),
+                ),
+              );
+            },
+            child: CachedNetworkImage(
+              imageUrl:
+                  "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${screenInfo.otherImageFileName}?alt=media&version=${screenInfo.otherImageVersionNumber}",
+              imageBuilder: (context, imageProvider) {
+                return Hero(
+                  transitionOnUserGestures: true,
+                  tag: screenInfo.heroTag,
+                  child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: imageProvider),
+                );
+              },
+              placeholder: (context, url) => CircularProgressIndicator(
                 valueColor:
                     AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
               ),
-            if (chat != null)
-              Flexible(
-                child: CupertinoButton(
-                  child: Icon(
-                    Feather.user_x,
-                    color: haveIBlocked ? kTextFieldTextColor : Colors.red,
-                  ),
-                  onPressed: () {
-                    if (amIUser1) {
-                      cloudFirestoreService.uploadChatBlocked(
-                          chatpath: chat.chatpath,
-                          hasUser1Blocked: !haveIBlocked);
-                    } else {
-                      cloudFirestoreService.uploadChatBlocked(
-                          chatpath: chat.chatpath,
-                          hasUser2Blocked: !haveIBlocked);
-                    }
-                  },
-                ),
-              )
-          ],
-        ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Flexible(
+            child: Text(
+              screenInfo.otherUsername,
+              overflow: TextOverflow.ellipsis,
+              style: kChatScreenHeaderTextStyle,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          if (chat == null)
+            CircularProgressIndicator(
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
+            ),
+          if (chat != null)
+            CupertinoButton(
+              child: haveIBlocked
+                  ? Text(
+                      AppLocalizations.of(context).translate('unblock'),
+                    )
+                  : Text(
+                      AppLocalizations.of(context).translate('block'),
+                    ),
+              onPressed: () {
+                if (!haveIBlocked) {
+                  HelperFunctions.showCustomDialog(
+                    context: context,
+                    dialog: TwoOptionsDialog(
+                      title: AppLocalizations.of(context)
+                          .translate('are_you_sure'),
+                      text: AppLocalizations.of(context)
+                          .translate('blocked_contacts_cant_send'),
+                      rightActionText:
+                          AppLocalizations.of(context).translate('block'),
+                      rightActionColor: Colors.red,
+                      rightAction: () {
+                        if (amIUser1) {
+                          cloudFirestoreService.uploadChatBlocked(
+                              chatpath: chat.chatpath,
+                              hasUser1Blocked: !haveIBlocked);
+                        } else {
+                          cloudFirestoreService.uploadChatBlocked(
+                              chatpath: chat.chatpath,
+                              hasUser2Blocked: !haveIBlocked);
+                        }
+                        Navigator.pop(context);
+                      },
+                    ),
+                  );
+                } else {
+                  if (amIUser1) {
+                    cloudFirestoreService.uploadChatBlocked(
+                        chatpath: chat.chatpath,
+                        hasUser1Blocked: !haveIBlocked);
+                  } else {
+                    cloudFirestoreService.uploadChatBlocked(
+                        chatpath: chat.chatpath,
+                        hasUser2Blocked: !haveIBlocked);
+                  }
+                }
+              },
+            )
+        ],
       ),
     );
   }
@@ -317,7 +357,8 @@ class MessagesStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String loggedInUid = Provider.of<String>(context);
+    GlobalChatScreenInfo screenInfo =
+        Provider.of<GlobalChatScreenInfo>(context);
     return StreamBuilder<List<Message>>(
       stream: messagesStream,
       builder: (context, snapshot) {
@@ -334,7 +375,9 @@ class MessagesStream extends StatelessWidget {
           return Container(
             color: Colors.white,
             child: Center(
-              child: Text('No messages yet'),
+              child: Text(
+                AppLocalizations.of(context).translate('no_messages_yet'),
+              ),
             ),
           );
         }
@@ -343,11 +386,11 @@ class MessagesStream extends StatelessWidget {
           itemBuilder: (context, index) {
             Message message = messages[index];
             var messageTimestamp = message.timestamp;
-            return MessageBubble(
+            return MessageRow(
               text: message.text,
               timestamp: HelperFunctions.getTimestampAsString(
-                  timestamp: messageTimestamp),
-              isMe: loggedInUid == message.senderUid,
+                  context: context, timestamp: messageTimestamp),
+              isMe: screenInfo.loggedInUid == message.senderUid,
             );
           },
           reverse: true,
@@ -372,9 +415,9 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
 
   @override
   Widget build(BuildContext context) {
-    String loggedInUid = Provider.of<String>(context);
-
-    bool amIUser1 = widget.chat.uid1 == loggedInUid;
+    GlobalChatScreenInfo screenInfo =
+        Provider.of<GlobalChatScreenInfo>(context);
+    bool amIUser1 = widget.chat.uid1 == screenInfo.loggedInUid;
     bool haveIBlocked;
     bool hasOtherBlocked;
     if (amIUser1) {
@@ -389,7 +432,8 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
         height: 80,
         child: Center(
           child: Text(
-              'You have blocked ${amIUser1 ? widget.chat.username2 : widget.chat.username1}',
+              AppLocalizations.of(context)
+                  .translate('you_have_blocked_this_person'),
               overflow: TextOverflow.ellipsis,
               style: kBlockedTextStyle),
         ),
@@ -400,7 +444,9 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
         height: 80,
         child: Center(
           child: Text(
-            '${amIUser1 ? widget.chat.username2 : widget.chat.username1} has blocked you',
+            (amIUser1 ? widget.chat.username2 : widget.chat.username1) +
+                ' ' +
+                AppLocalizations.of(context).translate('has_blocked_you'),
             style: kBlockedTextStyle,
           ),
         ),
@@ -420,12 +466,12 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
               expands: true,
               maxLines: null,
               minLines: null,
-              placeholder: 'Type a message',
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              placeholder:
+                  AppLocalizations.of(context).translate('type_message'),
+              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 13),
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: kChatScreenBorderTextFieldColor),
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
+                  color: kCardBackgroundColor,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
               controller: messageTextController,
             ),
           ),
@@ -436,7 +482,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
             if (messageTextController.text != '') {
               //Implement send functionality.
               Message message = Message(
-                  senderUid: loggedInUid,
+                  senderUid: screenInfo.loggedInUid,
                   text: messageTextController.text,
                   timestamp: FieldValue.serverTimestamp());
               cloudFirestoreService.uploadMessage(
@@ -450,8 +496,8 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
   }
 }
 
-class MessageBubble extends StatelessWidget {
-  MessageBubble({this.timestamp, this.text, this.isMe});
+class MessageRow extends StatelessWidget {
+  MessageRow({this.timestamp, this.text, this.isMe});
 
   final String timestamp;
   final String text;
@@ -460,40 +506,70 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4),
       child: Column(
+        // a column with just one child because I haven't figure out out else to size the bubble to fit its contents instead of filling it
         crossAxisAlignment:
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            timestamp,
-            style: kTimestampTextStyle,
-          ),
-          Material(
-            borderRadius: isMe
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30))
-                : BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30)),
-            elevation: 3.0,
-            color: isMe ? kMessageBubbleColor : Colors.white,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontSize: 15.0,
-                  color: isMe ? Colors.white : Colors.black54,
-                ),
+          MessageBubble(isMe: isMe, text: text, timestamp: timestamp),
+        ],
+      ),
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  const MessageBubble({
+    Key key,
+    @required this.isMe,
+    @required this.text,
+    @required this.timestamp,
+  }) : super(key: key);
+
+  final bool isMe;
+  final String text;
+  final String timestamp;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      borderRadius: isMe
+          ? BorderRadius.only(
+              topLeft: Radius.circular(15),
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15))
+          : BorderRadius.only(
+              topRight: Radius.circular(15),
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15)),
+      elevation: 0.0,
+      color: isMe ? kMessageBubbleColor : kCardBackgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        child: Wrap(
+          direction: Axis.horizontal,
+          alignment: WrapAlignment.end,
+          crossAxisAlignment: WrapCrossAlignment.end,
+          children: <Widget>[
+            CopyableText(
+              text,
+              style: TextStyle(
+                fontSize: 15.0,
+                color: isMe ? Colors.white : kKeywordHeaderColor,
               ),
             ),
-          ),
-        ],
+            SizedBox(
+              width: 10,
+            ),
+            Text(
+              timestamp,
+              style: TextStyle(
+                  fontSize: 10.0,
+                  color: isMe ? Colors.white70 : Colors.black54),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -514,10 +590,27 @@ class SendButton extends StatelessWidget {
             color: kDefaultProfilePicColor, shape: CircleBorder()),
         child: Icon(
           Feather.send,
-          color: Colors.white,
+          color: kBlueButtonColor,
           size: 22,
         ),
       ),
     );
   }
+}
+
+class GlobalChatScreenInfo {
+  final String loggedInUid;
+  final String otherUid;
+  final String otherUsername;
+  final String otherImageFileName;
+  final int otherImageVersionNumber;
+  final String heroTag;
+
+  GlobalChatScreenInfo(
+      {@required this.loggedInUid,
+      @required this.otherUid,
+      @required this.otherUsername,
+      @required this.otherImageFileName,
+      @required this.otherImageVersionNumber,
+      @required this.heroTag});
 }

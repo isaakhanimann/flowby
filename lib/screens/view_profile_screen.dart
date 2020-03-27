@@ -1,10 +1,10 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/widgets/listview_of_user_infos.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -13,7 +13,7 @@ class ViewProfileScreen extends StatelessWidget {
   static const String id = 'view_profile_screen';
   final User user;
   final String heroTag;
-  final FirebaseUser loggedInUser;
+  final User loggedInUser;
   final bool showSkills;
 
   ViewProfileScreen(
@@ -29,46 +29,48 @@ class ViewProfileScreen extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: <Widget>[
-            ListViewOfUserInfos(
-              user: user,
-              heroTag: heroTag,
-            ),
-            Positioned(
-              bottom: 20,
-              child: RoundedButton(
-                text: loggedInUser == null ? 'Sign In to Chat' : 'Chat',
-                color: kDefaultProfilePicColor,
-                textColor: kBlueButtonColor,
-                onPressed: () async {
-                  if (loggedInUser == null) {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute<void>(
-                        builder: (context) {
-                          return ChooseSigninScreen();
-                        },
-                      ),
-                    );
-                  } else {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute<void>(
-                        builder: (context) {
-                          return ChatScreen(
-                            loggedInUid: loggedInUser.uid,
-                            otherUid: user.uid,
-                            otherUsername: user.username,
-                            otherImageFileName: user.imageFileName,
-                            heroTag: heroTag,
-                          );
-                        },
-                      ),
-                    );
-                  }
-                },
+            ListViewOfUserInfos(user: user, heroTag: heroTag),
+            if (!(loggedInUser?.uid == user.uid))
+              Positioned(
+                bottom: 20,
+                child: RoundedButton(
+                  text: loggedInUser == null
+                      ? AppLocalizations.of(context)
+                          .translate('sign_in_to_chat')
+                      : AppLocalizations.of(context).translate('chat'),
+                  color: kDefaultProfilePicColor,
+                  textColor: kBlueButtonColor,
+                  onPressed: () async {
+                    if (loggedInUser == null) {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute<void>(
+                          builder: (context) {
+                            return ChooseSigninScreen();
+                          },
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute<void>(
+                          builder: (context) {
+                            return ChatScreen(
+                              loggedInUid: loggedInUser.uid,
+                              otherUid: user.uid,
+                              otherUsername: user.username,
+                              otherImageFileName: user.imageFileName,
+                              otherImageVersionNumber: user.imageVersionNumber,
+                              heroTag: heroTag,
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
             Positioned(
-              top: 0,
-              left: 0,
+              top: 5,
+              left: 6,
               child: CupertinoButton(
                 child: Icon(
                   Feather.chevron_left,

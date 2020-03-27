@@ -36,9 +36,10 @@ class GoogleLoginButton extends StatelessWidget {
                 vertical: paddingInsideVertical),
             child: Text(
               text,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: textColor,
-                fontFamily: 'MontserratRegular',
+                fontFamily: 'MuliRegular',
                 fontSize: 18.0,
               ),
             ),

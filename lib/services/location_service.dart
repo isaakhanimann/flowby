@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:Flowby/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -10,12 +10,9 @@ class LocationService {
     return position;
   }
 
-//  static void getLastKnownPositionAndUploadIt(
-//      {@required String userEmail}) async {
-//    Position position = await Geolocator()
-//        .getLastKnownPosition(desiredAccuracy: LocationAccuracy.medium);
-//    FirebaseConnection.uploadUsersLocation(uid: userEmail, position: position);
-//  }
+  Future<GeolocationStatus> checkGeolocationPermissionStatus() async {
+    return Geolocator().checkGeolocationPermissionStatus();
+  }
 
   StreamSubscription<Position> getPositionStreamSubscription() {
     //To listen for location changes you can subscribe to the onPositionChanged stream. Supply an instance of the LocationOptions class to configure the desired accuracy and the minimum distance change (in meters) before updates are send to the application.
@@ -52,7 +49,7 @@ class LocationService {
         startLongitude == null ||
         endLatitude == null ||
         endLongitude == null) {
-      return null;
+      return kDistanceInKm;
     }
     double distanceInMeters = await Geolocator().distanceBetween(
         startLatitude, startLongitude, endLatitude, endLongitude);

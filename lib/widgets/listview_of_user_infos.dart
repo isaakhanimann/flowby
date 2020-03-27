@@ -1,24 +1,28 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/screens/show_profile_picture_screen.dart';
+import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/route_transitions/scale_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:Flowby/models/role.dart';
 
 class ListViewOfUserInfos extends StatelessWidget {
-  ListViewOfUserInfos({@required this.user, this.heroTag});
-
   final User user;
   final String heroTag;
 
+  ListViewOfUserInfos({@required this.user, this.heroTag});
+
   @override
   Widget build(BuildContext context) {
-    bool canShowSkills =
-        user.hasSkills && user.skills != null && user.skills.isNotEmpty;
-    bool canShowWishes =
-        user.hasWishes && user.wishes != null && user.wishes.isNotEmpty;
+    bool areSkillsEmpty = user.skills == null || user.skills.isEmpty;
+
+    bool areWishesEmpty = user.wishes == null || user.wishes.isEmpty;
+
+    bool isProvider = user.role == Role.provider;
+    bool isConsumer = user.role == Role.consumer;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -33,29 +37,16 @@ class ListViewOfUserInfos extends StatelessWidget {
                 Navigator.of(context, rootNavigator: true).push(ScaleRoute(
                     page: ShowProfilePictureScreen(
                   imageFileName: user.imageFileName,
+                  imageVersionNumber: user.imageVersionNumber,
                   otherUsername: user.username,
                   heroTag: heroTag ?? user.imageFileName,
                 )));
               },
-              child: CachedNetworkImage(
-                imageUrl:
-                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media",
-                imageBuilder: (context, imageProvider) {
-                  return Hero(
-                    transitionOnUserGestures: true,
-                    tag: heroTag ?? user.imageFileName,
-                    child: CircleAvatar(
-                        radius: 60,
-                        backgroundColor: Colors.grey,
-                        backgroundImage: imageProvider),
-                  );
-                },
-                placeholder: (context, url) => CircularProgressIndicator(
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-                ),
-                errorWidget: (context, url, error) => Icon(Icons.error),
-              ),
+              child: ProfilePicture(
+                  imageFileName: user.imageFileName,
+                  imageVersionNumber: user.imageVersionNumber,
+                  radius: 60,
+                  heroTag: heroTag ?? user.imageFileName),
             ),
           ),
           if (user.distanceInKm != null)
@@ -66,13 +57,14 @@ class ListViewOfUserInfos extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: <Widget>[
-                  Text(
-                    user.distanceInKm.toString() + ' km ',
-                  ),
                   Icon(
-                    Feather.map_pin,
+                    Feather.navigation,
                     size: 14,
-                  )
+                  ),
+                  Text(
+                    ' ' + user.distanceInKm.toString() + 'km',
+                    style: kDistanceTextStyle,
+                  ),
                 ],
               ),
             ),
@@ -83,6 +75,7 @@ class ListViewOfUserInfos extends StatelessWidget {
             child: Text(
               user.username,
               style: kUsernameTitleTextStyle,
+              textAlign: TextAlign.center,
             ),
           ),
           SizedBox(
@@ -91,46 +84,36 @@ class ListViewOfUserInfos extends StatelessWidget {
           if (user.bio != null && user.bio != '')
             Text(
               user.bio,
-              style: kSmallTitleTextStyle,
+              style: kDescriptionTextStyle,
               textAlign: TextAlign.center,
             ),
           SizedBox(
             height: 15,
           ),
-          if (!canShowSkills && !canShowWishes)
+          if (user.isHidden)
             Text(
-              '(Your profile is invisible)',
+              AppLocalizations.of(context).translate("profile_hidden"),
               textAlign: TextAlign.center,
             ),
-          if (canShowSkills)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Skills',
-                  style: kSkillsTitleTextStyle,
-                ),
-                SizedBox(height: 10),
-                _buildListOfTextFields(skillsOrWishes: user.skills)
-              ],
+          if (!user.isHidden && isProvider && areSkillsEmpty)
+            Text(
+              AppLocalizations.of(context).translate("profile_invisible_1"),
+              textAlign: TextAlign.center,
             ),
-          if (canShowWishes)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  'Wishes',
-                  style: kSkillsTitleTextStyle,
-                ),
-                SizedBox(height: 10),
-                _buildListOfTextFields(skillsOrWishes: user.wishes)
-              ],
+          if (!user.isHidden && isProvider && !areSkillsEmpty)
+            SkillOrWishSection(
+              skillsOrWishes: user.skills,
+              title: AppLocalizations.of(context).translate("skills"),
+            ),
+          if (!user.isHidden && isConsumer && areWishesEmpty)
+            Text(
+              AppLocalizations.of(context).translate("profile_invisible_2"),
+              textAlign: TextAlign.center,
+            ),
+          if (!user.isHidden && isConsumer && !areWishesEmpty)
+            SkillOrWishSection(
+              skillsOrWishes: user.wishes,
+              title: AppLocalizations.of(context).translate("wishes"),
             ),
           SizedBox(
             height: 90,
@@ -139,8 +122,49 @@ class ListViewOfUserInfos extends StatelessWidget {
       ),
     );
   }
+}
 
-  Column _buildListOfTextFields({List<SkillOrWish> skillsOrWishes}) {
+class SkillOrWishSection extends StatelessWidget {
+  final List<SkillOrWish> skillsOrWishes;
+  final String title;
+
+  SkillOrWishSection({@required this.skillsOrWishes, @required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: kCardBackgroundColor,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15))),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              title,
+              style: kSkillsTitleTextStyle,
+            ),
+            SizedBox(height: 10),
+            ListOfTexts(skillsOrWishes: skillsOrWishes)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ListOfTexts extends StatelessWidget {
+  final List<SkillOrWish> skillsOrWishes;
+
+  ListOfTexts({@required this.skillsOrWishes});
+
+  @override
+  Widget build(BuildContext context) {
     List<Widget> rows = [];
     for (SkillOrWish skillOrWish in skillsOrWishes) {
       rows.add(

@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -30,19 +30,23 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>flowby wants to set your profile picture</string>
+	<string>Flowby wants to set your profile picture</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Flowby needs access to your location to see how far away other users are</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Flowby needs access to your location to see how far away other users are</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>flowby needs access to location when open</string>
+	<string>Flowby needs access to your location to see how far away other users are</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>flowby wants to record the sound of the videos</string>
+	<string>Flowby wants to record the sound of your videos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>flowby wants to set your profile picture</string>
+	<string>Flowby wants to set your profile picture</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

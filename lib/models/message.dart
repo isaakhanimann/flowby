@@ -17,4 +17,13 @@ class Message {
     this.text = map['text'];
     this.timestamp = map['timestamp']?.toDate() ?? DateTime.now();
   }
+
+  toMap() {
+    return {
+      'text': text,
+      'senderUid': senderUid,
+      'receiverUid': receiverUid,
+      'timestamp': timestamp
+    };
+  }
 }

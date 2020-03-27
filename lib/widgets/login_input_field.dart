@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:Flowby/constants.dart';
 
 class LoginInputField extends StatelessWidget {
   final bool isLast;
   final Function setText;
-  final bool isEmail;
+  final TextInputType keyboardType;
+  final bool obscureText;
   final String placeholder;
-  final bool isCapitalized;
 
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -15,30 +16,27 @@ class LoginInputField extends StatelessWidget {
   LoginInputField(
       {this.isLast,
       this.setText,
-      this.isEmail,
+      this.keyboardType = TextInputType.text,
+      this.obscureText = false,
       this.placeholder,
       this.controller,
       this.focusNode,
-      this.onFieldSubmitted,
-      this.isCapitalized = false});
+      this.onFieldSubmitted});
 
   @override
   Widget build(BuildContext context) {
     return CupertinoTextField(
+      autocorrect: false,
       maxLength: 35,
-      textCapitalization:
-          isCapitalized ? TextCapitalization.words : TextCapitalization.none,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       placeholder: placeholder,
-      placeholderStyle: TextStyle(
-        fontFamily: 'MontserratRegular',
-      ),
+      placeholderStyle: kLoginPlaceHolderTextStyle,
       controller: controller,
       focusNode: focusNode,
       onSubmitted: onFieldSubmitted,
       textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
-      keyboardType: isEmail ? TextInputType.emailAddress : null,
-      obscureText: !isEmail,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
       onChanged: setText,
     );
   }

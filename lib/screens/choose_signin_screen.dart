@@ -1,12 +1,15 @@
+import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/login_screen.dart';
 import 'package:Flowby/screens/registration/registration_screen.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
+import 'package:Flowby/widgets/tab_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:video_player/video_player.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChooseSigninScreen extends StatefulWidget {
   static const String id = 'ChooseSigninScreen';
@@ -35,6 +38,12 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
         _controller.setLooping(true);
         setState(() {});
       });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -68,7 +77,7 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       RoundedButton(
-                        text: 'Sign Up',
+                        text: AppLocalizations.of(context).translate('sign_up'),
                         color: kBlueButtonColor,
                         textColor: Colors.white,
                         onPressed: () {
@@ -80,10 +89,11 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                         },
                       ),
                       RoundedButton(
-                        text: 'I already have an account',
+                        text: AppLocalizations.of(context)
+                            .translate('already_have_account'),
                         color: Colors.white,
                         textColor: kBlueButtonColor,
-                        paddingInsideHorizontal: 25,
+                        paddingInsideHorizontal: 16,
                         onPressed: () {
                           //Navigator.pushNamed(context, LoginScreen.id);
                           Navigator.push(
@@ -92,27 +102,51 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
                                   builder: (context) => LoginScreen()));
                         },
                       ),
-                      SizedBox(
-                        height: 60,
-                      )
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Flexible(
+                            child: FlatButton(
+                              child: Text(
+                                AppLocalizations.of(context)
+                                    .translate('privacy_policy'),
+                                style: kPrivacyPolicyTextStyle,
+                              ),
+                              onPressed: () => _launchURL(
+                                  url: 'https://flowby.co/privacy-policy.pdf'),
+                            ),
+                          ),
+                          Text(
+                            '|',
+                            style: kPrivacyPolicyTextStyle,
+                          ),
+                          Flexible(
+                            child: FlatButton(
+                              child: Text(
+                                AppLocalizations.of(context)
+                                    .translate('terms_and_conditions'),
+                                style: kPrivacyPolicyTextStyle,
+                              ),
+                              onPressed: () => _launchURL(
+                                  url:
+                                      'https://flowby.co/terms-and-conditions.pdf'),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ),
               if (widget.canGoBack)
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: CupertinoButton(
-                    child: Icon(
-                      Feather.chevron_left,
-                      size: 40,
-                      color: kDefaultProfilePicColor,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                TabHeader(
+                  backgroundColor: Colors.transparent,
+                  whiteLogo: true,
+                  leftIcon: Icon(
+                    Feather.chevron_left,
+                    size: 30,
                   ),
+                  onPressedLeft: () => Navigator.of(context).pop(),
                 ),
             ]),
           ),
@@ -120,10 +154,12 @@ class _ChooseSigninScreenState extends State<ChooseSigninScreen> {
       ),
     );
   }
+}
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+_launchURL({@required String url}) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }

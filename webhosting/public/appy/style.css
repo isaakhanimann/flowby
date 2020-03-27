@@ -463,7 +463,8 @@ input:-webkit-autofill:focus {
     color: #768ede;
     padding-top: 20vh;
     color: #ffffff;
-    margin-bottom: 100px;
+    /* margin-bottom: 100px; */
+    padding-bottom: 120px;
 }
 
 .home-area p{
@@ -681,21 +682,21 @@ input:-webkit-autofill:focus {
 
 .gallery-area {
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#482cbf+0,6ac6f0+100 */
-    background: rgb(72, 44, 191);
+    background: rgb(0, 255, 171);
     /* Old browsers */
     /* FF3.6-15 */
-    background: -webkit-linear-gradient(45deg, rgba(72, 44, 191, 1) 0%, rgba(106, 198, 240, 1) 100%);
+    /* background: -webkit-linear-gradient(45deg, rgba(72, 44, 191, 1) 0%, rgba(106, 198, 240, 1) 100%); */
     /* Chrome10-25,Safari5.1-6 */
-    background: -o-linear-gradient(45deg, rgba(72, 44, 191, 1) 0%, rgba(106, 198, 240, 1) 100%);
-    background: linear-gradient(45deg, rgba(72, 44, 191, 1) 0%, rgba(106, 198, 240, 1) 100%);
+    /* background: -o-linear-gradient(45deg, rgba(72, 44, 191, 1) 0%, rgba(106, 198, 240, 1) 100%); */
+    /* background: linear-gradient(45deg, rgba(72, 44, 191, 1) 0%, rgba(106, 198, 240, 1) 100%); */
     /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#482cbf', endColorstr='#6ac6f0', GradientType=1);
+    /* filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#482cbf', endColorstr='#6ac6f0', GradientType=1); */
     /* IE6-9 fallback on horizontal gradient */
     color: #ffffff;
 }
 
 .gallery-slide .owl-stage-outer {
-    background: url('images/mobile-screen.png') no-repeat center right / auto 100%;
+    /* background: url('images/mobile-screen.png') no-repeat center right / auto 100%; */
 
 }
 
@@ -1438,4 +1439,14 @@ input:-webkit-autofill:focus {
 font-family: "Montserrat", sans-serif;
 line-height: 75px;
 font-size:60px;
+}
+
+.icon-social{
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+}
+.mainmenu-area.affix .icon-social{
+  filter: invert(0%) sepia(0%) saturate(7500%) hue-rotate(313deg) brightness(93%) contrast(107%);
+}
+.icon-social:hover{
+filter: invert(76%) sepia(21%) saturate(2796%) hue-rotate(101deg) brightness(106%) contrast(101%);
 }
