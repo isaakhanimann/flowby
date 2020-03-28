@@ -77,6 +77,7 @@ class Flowby extends StatelessWidget {
               const Locale('en'),
               const Locale('de'),
               const Locale('fr'),
+              const Locale('it'),
             ],
             localizationsDelegates: [
               AppLocalizations.delegate,
