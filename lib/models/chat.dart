@@ -15,20 +15,25 @@ class Chat {
   String chatpath;
   String lastMessageText;
   var lastMessageTimestamp;
+  int unreadMessages1;
+  int unreadMessages2;
 
-  Chat(
-      {this.uid1,
-      this.username1,
-      this.user1ImageFileName = kDefaultProfilePicName,
-      this.user1ImageVersionNumber = 1,
-      this.hasUser1Blocked,
-      this.uid2,
-      this.username2,
-      this.user2ImageFileName = kDefaultProfilePicName,
-      this.user2ImageVersionNumber = 1,
-      this.hasUser2Blocked,
-      this.lastMessageText,
-      this.lastMessageTimestamp});
+  Chat({
+    this.uid1,
+    this.username1,
+    this.user1ImageFileName = kDefaultProfilePicName,
+    this.user1ImageVersionNumber = 1,
+    this.hasUser1Blocked,
+    this.uid2,
+    this.username2,
+    this.user2ImageFileName = kDefaultProfilePicName,
+    this.user2ImageVersionNumber = 1,
+    this.hasUser2Blocked,
+    this.lastMessageText,
+    this.lastMessageTimestamp,
+    this.unreadMessages1 = 0,
+    this.unreadMessages2 = 0,
+  });
 
   Chat.fromMap({Map<String, dynamic> map}) {
     this.uid1 = map['uid1'];
@@ -56,6 +61,8 @@ class Chat {
     this.lastMessageText = map['lastMessageText'] ?? 'No messages';
     this.lastMessageTimestamp =
         map['lastMessageTimestamp']?.toDate() ?? DateTime.now();
+    this.unreadMessages1 = map['unreadMessages1'] ?? 0;
+    this.unreadMessages2 = map['unreadMessages2'] ?? 0;
   }
 
   Map<String, dynamic> toMap() {
@@ -72,6 +79,8 @@ class Chat {
       'hasUser2Blocked': hasUser2Blocked,
       'lastMessageText': lastMessageText,
       'lastMessageTimestamp': lastMessageTimestamp,
+      'unreadMessages1' : unreadMessages1,
+      'unreadMessages2' : unreadMessages2,
     };
   }
 
@@ -91,6 +100,8 @@ class Chat {
     toPrint += 'user2ImageVersionNumber: $user2ImageVersionNumber, ';
     toPrint += 'lastMessageText: $lastMessageText, ';
     toPrint += 'lastMessageTimestamp: ${lastMessageTimestamp.toString()} }\n';
+    toPrint += 'unreadMessages1: $unreadMessages1, ';
+    toPrint += 'unreadMessages2: $unreadMessages1, ';
     return toPrint;
   }
 }

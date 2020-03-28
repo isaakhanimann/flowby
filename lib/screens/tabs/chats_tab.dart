@@ -130,31 +130,18 @@ class ChatItem extends StatelessWidget {
     bool amIUser1 = chat.uid1 == loggedInUser.uid;
     bool haveIBlocked;
     bool hasOtherBlocked;
+    // refresh last message and number of unread messages
+    String lastMessageText = chat.lastMessageText;
+    int badgeCount;
+
     if (amIUser1) {
       haveIBlocked = chat.hasUser1Blocked;
       hasOtherBlocked = chat.hasUser2Blocked;
+      badgeCount = chat.unreadMessages1;
     } else {
       haveIBlocked = chat.hasUser2Blocked;
       hasOtherBlocked = chat.hasUser1Blocked;
-    }
-
-    int badgeCount = 0;
-    String lastMessage;
-    bool hasLastMessage = false;
-
-    final listOfMessages = Provider.of<Map<String, List<String>>>(context);
-    print(listOfMessages);
-    if (listOfMessages.containsKey(otherUid)) {
-      badgeCount = listOfMessages[otherUid].length;
-      lastMessage = listOfMessages[otherUid].last;
-      hasLastMessage = true;
-      if (listOfMessages[otherUid].last == "empty") {
-        badgeCount = 0;
-        hasLastMessage = false ;
-      }
-    } else {
-      badgeCount = 0;
-      hasLastMessage = false ;
+      badgeCount = chat.unreadMessages2;
     }
 
     return CustomCard(
@@ -199,7 +186,7 @@ class ChatItem extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Text(
-                  hasLastMessage ? lastMessage : chat.lastMessageText,
+                  lastMessageText,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: kChatLastMessageTextStyle,
