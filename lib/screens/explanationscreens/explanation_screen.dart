@@ -80,12 +80,12 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
               onPressed: () {
                 widget.popScreen
                     ? Navigator.of(context, rootNavigator: true).pop()
-                    : Navigator.of(context, rootNavigator: true).push(
-                        CupertinoPageRoute<void>(
-                          builder: (context) {
-                            return NavigationScreen();
-                          },
-                        ),
+                    : Navigator.of(context, rootNavigator: true)
+                        .pushAndRemoveUntil(
+                        CupertinoPageRoute(
+                            builder: (BuildContext context) =>
+                                NavigationScreen()),
+                        (Route<dynamic> route) => false,
                       );
               },
             ),
