@@ -18,6 +18,7 @@ import 'constants.dart';
 import 'route_generator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'app_localizations.dart';
+import 'models/search_mode.dart';
 
 void main() async {
   // This app is designed only to work vertically, so we limit
@@ -60,6 +61,9 @@ class Flowby extends StatelessWidget {
         ),
         Provider<AlgoliaService>(
           create: (_) => AlgoliaService(),
+        ),
+        Provider<SearchMode>(
+          create: (_) => SearchMode(mode: Mode.searchSkills),
         ),
       ],
       child: GestureDetector(
