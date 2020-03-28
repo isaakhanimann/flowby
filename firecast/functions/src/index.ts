@@ -307,3 +307,135 @@ exports.sendNotification = functions.firestore
       }
     }
   );
+
+// when the username of a user is changed update all the chats that contain that username (find them with uid)
+exports.oldUpdateUsernameUpdateChat = functions.firestore
+  .document("/users/{userId}")
+  .onUpdate(async (change: any, context: any) => {
+    // Get an object representing the document
+    const newUser = change.after.data();
+    // ...or the previous value before this update
+    const previousUser = change.before.data();
+    // if the username changed change all the chats
+    if (previousUser.username !== newUser.username) {
+      try {
+        // First update all the chats where the user is user1
+        const querySnapshot = await db
+          .collection("chats")
+          .where("uid1", "==", newUser.uid)
+          .get();
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("chats")
+              .doc(documentSnapshot.ref.id)
+              .update({ username1: newUser.username })
+              .catch((error: any) => {
+                console.log("Error updating chat1:", error);
+              });
+          }
+        });
+      } catch (error) {
+        console.log("Error getting chats1:", error);
+      }
+      try {
+        // Then update all the chats where the user is user2
+        const querySnapshot = await db
+          .collection("chats")
+          .where("uid2", "==", newUser.uid)
+          .get();
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("chats")
+              .doc(documentSnapshot.ref.id)
+              .update({ username1: newUser.username })
+              .catch((error: any) => {
+                console.log("Error updating chat2:", error);
+              });
+          }
+        });
+      } catch (error) {
+        console.log("Error getting chats2:", error);
+      }
+    }
+  });
+
+// when an image is added to storage update its users imageFileName and also all the chats the user is in
+// a user can only upload an image with the same filename as his uid
+// if the imageFileName of the user (in users collection) is already his uid no update has to be made
+exports.oldUpdateImageUpdateUserAndChats = functions.storage
+  .object()
+  .onFinalize(async (object: any) => {
+    const filePath = object.name; // File path in the bucket.
+    // Get the file name, this should be the uid of the user
+    const uid = path.basename(filePath);
+    const userDoc = await db
+      .collection("users")
+      .doc(uid)
+      .get();
+
+    const imageVersionNumber = userDoc?.data()?.imageVersionNumber;
+    let newImageVersionNumber = 1;
+    if (imageVersionNumber !== null) {
+      newImageVersionNumber = imageVersionNumber + 1;
+    }
+
+    // Update the user in the users collection
+    db.collection("users")
+      .doc(uid)
+      .update({ imageFileName: uid, imageVersionNumber: newImageVersionNumber })
+      .then(() => {
+        console.log(`Users imageFileName updated to ${uid}`);
+      })
+      .catch((error: any) => {
+        console.log("Error updating imageFileName:", error);
+      });
+    // Update all the chats of this user to have the same imageFileName
+    // First update all the chats where the user is user1
+    db.collection("chats")
+      .where("uid1", "==", uid)
+      .get()
+      .then((querySnapshot: any) => {
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("chats")
+              .doc(documentSnapshot.ref.id)
+              .update({
+                user1ImageFileName: uid,
+                user1ImageVersionNumber: newImageVersionNumber
+              })
+              .then(() => {
+                console.log(`Users user1ImageFileName updated to ${uid}`);
+              })
+              .catch((error: any) => {
+                console.log("Error updating chat:", error);
+              });
+          }
+        });
+      })
+      .catch((error: any) => console.log(error));
+    // Then update all the chats where the user is user2
+    db.collection("chats")
+      .where("uid2", "==", uid)
+      .get()
+      .then((querySnapshot: any) => {
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("chats")
+              .doc(documentSnapshot.ref.id)
+              .update({
+                user2ImageFileName: uid,
+                user2ImageVersionNumber: newImageVersionNumber
+              })
+              .then(() => {
+                console.log(`Users user2ImageFileName updated to ${uid}`);
+              })
+              .catch((error: any) => {
+                console.log("Error updating chat:", error);
+              });
+          }
+        });
+      })
+      .catch((error: any) => {
+        console.log("Error getting chat:", error);
+      });
+  });
