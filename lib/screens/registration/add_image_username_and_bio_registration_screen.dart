@@ -17,8 +17,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:Flowby/services/preferences_service.dart';
-import 'package:Flowby/models/role.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/widgets/basic_dialog.dart';
@@ -307,10 +305,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
     } catch (e) {
       print('Could not upload image');
     }
-    final preferencesService =
-        Provider.of<PreferencesService>(context, listen: false);
 
-    Role preferenceRole = await preferencesService.getRole();
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     final storageService =
@@ -320,7 +315,6 @@ class _AddImageUsernameAndBioRegistrationScreenState
           fileName: widget.user.uid, image: _profilePic);
       widget.user.imageFileName = widget.user.uid;
     }
-    widget.user.role = preferenceRole;
     widget.user.username = _username;
     widget.user.bio = _bio;
     print(widget.user);

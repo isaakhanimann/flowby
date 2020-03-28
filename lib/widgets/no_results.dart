@@ -10,12 +10,12 @@ import 'package:Flowby/models/user.dart';
 import 'package:share/share.dart';
 import '../constants.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
+import 'package:Flowby/models/search_mode.dart';
 
 class NoResults extends StatefulWidget {
-  final bool isSkillSelected;
   final String uidOfLoggedInUser;
 
-  NoResults({this.isSkillSelected, this.uidOfLoggedInUser});
+  NoResults({this.uidOfLoggedInUser});
 
   @override
   _NoResultsState createState() => _NoResultsState();
@@ -26,6 +26,7 @@ class _NoResultsState extends State<NoResults> {
 
   @override
   Widget build(BuildContext context) {
+    final searchMode = Provider.of<SearchMode>(context, listen: false);
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
@@ -48,7 +49,7 @@ class _NoResultsState extends State<NoResults> {
                   height: 200,
                 ),
                 SizedBox(height: 15.0),
-                widget.isSkillSelected
+                (searchMode.mode == Mode.searchSkills)
                     ? Text(
                         AppLocalizations.of(context)
                             .translate('no_user_found_1'),
@@ -62,7 +63,7 @@ class _NoResultsState extends State<NoResults> {
                         textAlign: TextAlign.center,
                       ),
                 SizedBox(height: 5.0),
-                widget.isSkillSelected
+                (searchMode.mode == Mode.searchSkills)
                     ? RoundedButton(
                         text:
                             AppLocalizations.of(context).translate('add_wish'),

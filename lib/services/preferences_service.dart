@@ -1,5 +1,4 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:Flowby/models/role.dart';
 
 class PreferencesService {
   Future<bool> getShouldExplanationBeLoaded() async {
@@ -11,18 +10,5 @@ class PreferencesService {
     } else {
       return false;
     }
-  }
-
-  Future<Role> getRole() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String roleString = prefs.getString('role') ?? 'unassigned';
-    Role role = convertStringToRole(roleString: roleString);
-    return role;
-  }
-
-  setRole({Role role}) async {
-    String roleString = convertRoleToString(role: role);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('role', roleString);
   }
 }

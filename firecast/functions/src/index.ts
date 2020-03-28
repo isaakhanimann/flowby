@@ -292,6 +292,31 @@ exports.deleteUserEveryhere = functions.auth
       .catch((error: any) => {
         console.log("Error getting chat:", error);
       });
+
+    // delete all announcements this user made
+    db.collection("announcements")
+      .where("user.uid", "==", user.uid)
+      .get()
+      .then((querySnapshot: any) => {
+        querySnapshot.forEach((documentSnapshot: any) => {
+          if (documentSnapshot.exists) {
+            db.collection("announcements")
+              .doc(documentSnapshot.ref.id)
+              .delete()
+              .then(() => {
+                console.log(
+                  `Announcement ${documentSnapshot.ref.id} deleted successfully`
+                );
+              })
+              .catch((error: any) => {
+                console.log("Error deleting announcement:", error);
+              });
+          }
+        });
+      })
+      .catch((error: any) => {
+        console.log("Error getting announcement:", error);
+      });
   });
 
 exports.sendNotification = functions.firestore

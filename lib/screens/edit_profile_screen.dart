@@ -16,7 +16,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
-import 'package:Flowby/models/role.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -398,14 +397,7 @@ class ChooseRoleAndSkillSection extends StatefulWidget {
 }
 
 class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
-  Role _role;
-
-  @override
-  void initState() {
-    super.initState();
-    final user = Provider.of<User>(context, listen: false);
-    _role = user.role;
-  }
+  bool _showSkills = true;
 
   @override
   Widget build(BuildContext context) {
@@ -415,14 +407,12 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
       children: <Widget>[
         CupertinoSegmentedControl(
           padding: EdgeInsets.symmetric(horizontal: 0),
-          groupValue: _role,
+          groupValue: _showSkills,
           onValueChanged: _switchRole,
-          children: <Role, Widget>{
-            Role.consumer: Text(
-                AppLocalizations.of(context).translate('searcher'),
+          children: <bool, Widget>{
+            true: Text(AppLocalizations.of(context).translate('skills'),
                 style: kHomeSwitchTextStyle),
-            Role.provider: Text(
-                AppLocalizations.of(context).translate('provider'),
+            false: Text(AppLocalizations.of(context).translate('wishes'),
                 style: kHomeSwitchTextStyle),
           },
         ),
@@ -434,7 +424,7 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
               borderRadius: BorderRadius.all(Radius.circular(15))),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-            child: _role == Role.provider
+            child: _showSkills
                 ? Column(
                     children: <Widget>[
                       Text(
@@ -481,11 +471,9 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
     );
   }
 
-  _switchRole(Role newRole) {
-    final user = Provider.of<User>(context, listen: false);
-    user.role = newRole;
+  _switchRole(bool newChoice) {
     setState(() {
-      _role = newRole;
+      _showSkills = newChoice;
     });
   }
 }
