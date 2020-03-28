@@ -5,22 +5,8 @@ class SearchMode with ChangeNotifier {
 
   SearchMode({this.mode});
 
-  switchMode() {
-    if (mode == Mode.searchSkills) {
-      mode = Mode.searchWishes;
-    } else {
-      mode = Mode.searchSkills;
-    }
-    notifyListeners();
-  }
-
-  setModeToSearchSkills() {
-    mode = Mode.searchSkills;
-    notifyListeners();
-  }
-
-  setModeToSearchWishes() {
-    mode = Mode.searchWishes;
+  setMode(Mode newMode) {
+    mode = newMode;
     notifyListeners();
   }
 }

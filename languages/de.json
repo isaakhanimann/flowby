@@ -1,4 +1,6 @@
 {
+  "searchers":"Suchende",
+  "providers":"Anbieter",
   "no_user_found_1":"Keinen Nutzer gefunden... füge diesen Dienst als Wunsch in deinem Profil hinzu damit dich andere finden können",
   "no_user_found_2":"Keinen Nutzer mit diesem Wunsch gefunden",
   "invite_friend":"Lade jemanden ein",
@@ -111,6 +113,7 @@
   "has_blocked_you":"hat dich blockiert",
   "type_message":"Schreibe eine Nachricht",
   "search_skills":"Suche nach Diensten",
+  "search_wishes":"Suche Wünsche",
   "your_profile_is_hidden":"Dein Profil ist unsichtbar",
   "you_cannot_add_announcements":"Du kannst keine News verkünden, weil dein Profil unsichtbar ist",
   "cannot_delete":"Löschen nicht möglich",

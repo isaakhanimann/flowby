@@ -1,4 +1,6 @@
 {
+  "searchers":"Searchers",
+  "providers":"Providers",
   "no_user_found_1":"No user found... add this service in your profile as a wish, so people can find you.",
   "no_user_found_2":"No user found with this wish.",
   "invite_friend":"Invite a friend",
@@ -111,6 +113,7 @@
   "has_blocked_you":"has blocked you",
   "type_message":"Type a message",
   "search_skills":"Search Services",
+  "search_wishes":"Search Wishes",
   "your_profile_is_hidden":"Your profile is invisible",
   "you_cannot_add_announcements":"You cannot add announcements because your profile is invisible",
   "cannot_delete":"Cannot delete",

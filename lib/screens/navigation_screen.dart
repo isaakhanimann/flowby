@@ -134,7 +134,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     int numberOfWishes = currentUser.wishes.length;
     if (numberOfSkills > numberOfWishes) {
       final searchMode = Provider.of<SearchMode>(context, listen: false);
-      searchMode.setModeToSearchWishes();
+      searchMode.setMode(Mode.searchWishes);
     }
 
     Role profileRole = currentUser?.role;

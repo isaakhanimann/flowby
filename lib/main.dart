@@ -62,7 +62,7 @@ class Flowby extends StatelessWidget {
         Provider<AlgoliaService>(
           create: (_) => AlgoliaService(),
         ),
-        Provider<SearchMode>(
+        ChangeNotifierProvider<SearchMode>(
           create: (_) => SearchMode(mode: Mode.searchSkills),
         ),
       ],

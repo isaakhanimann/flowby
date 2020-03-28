@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:Flowby/models/role.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:Flowby/services/location_service.dart';
+import 'package:Flowby/models/search_mode.dart';
 
 class SearchTab extends StatefulWidget {
   @override
@@ -35,6 +36,7 @@ class _SearchTabState extends State<SearchTab> {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context);
+    final searchMode = Provider.of<SearchMode>(context);
 
     final localRole = Provider.of<Role>(context);
     final role = loggedInUser?.role ?? localRole;
@@ -42,6 +44,7 @@ class _SearchTabState extends State<SearchTab> {
     return SafeArea(
       bottom: false,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           TabHeader(
             leftIcon: Icon(Feather.info),
@@ -51,11 +54,23 @@ class _SearchTabState extends State<SearchTab> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: SearchBar(
-                isSkillSearch: role == Role.consumer,
                 onSearchSubmitted: _onSearchSubmitted,
                 onSearchChanged: _onSearchChanged),
+          ),
+          CupertinoSegmentedControl(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            groupValue: searchMode.mode,
+            onValueChanged: searchMode.setMode,
+            children: <Mode, Widget>{
+              Mode.searchSkills: Text(
+                  AppLocalizations.of(context).translate('searchers'),
+                  style: kHomeSwitchTextStyle),
+              Mode.searchWishes: Text(
+                  AppLocalizations.of(context).translate('providers'),
+                  style: kHomeSwitchTextStyle),
+            },
           ),
           Expanded(
             child: FutureBuilder(
@@ -76,29 +91,33 @@ class _SearchTabState extends State<SearchTab> {
 
                   List<User> allMatchedUsers =
                       List.from(snapshot.data); // to convert it editable list
-                  List<User> allVisibleUsers = allMatchedUsers
-                      .where(
-                          (u) => !u.isHidden && !(u.uid == loggedInUser?.uid))
-                      .toList();
-                  List<User> searchResultUsers;
 
-                  if (role == Role.consumer) {
-                    searchResultUsers = allVisibleUsers
-                        .where((u) => u.role == Role.provider)
+                  List<User> usersToShow;
+                  if (searchMode.mode == Mode.searchSkills) {
+                    //show only the users that have skills
+                    usersToShow = allMatchedUsers
+                        .where((u) =>
+                            !u.isHidden &&
+                            u.skills.length > 0 &&
+                            !(u.uid == loggedInUser?.uid))
                         .toList();
                   } else {
-                    searchResultUsers = allVisibleUsers
-                        .where((u) => u.role == Role.consumer)
+                    //show only the users that have wishes
+                    usersToShow = allMatchedUsers
+                        .where((u) =>
+                            !u.isHidden &&
+                            u.wishes.length > 0 &&
+                            !(u.uid == loggedInUser?.uid))
                         .toList();
                   }
 
-                  if (searchResultUsers.length == 0 && loggedInUser != null) {
+                  if (usersToShow.length == 0 && loggedInUser != null) {
                     return NoResults(
                       isSkillSelected: role == Role.consumer,
                       uidOfLoggedInUser: loggedInUser.uid,
                     );
                   }
-                  return ListOfSortedUsers(unsortedUsers: searchResultUsers);
+                  return ListOfSortedUsers(unsortedUsers: usersToShow);
                 }),
           ),
         ],
@@ -284,17 +303,14 @@ class ProfileItem extends StatelessWidget {
 }
 
 class SearchBar extends StatelessWidget {
-  SearchBar(
-      {@required this.isSkillSearch,
-      @required this.onSearchChanged,
-      @required this.onSearchSubmitted});
+  SearchBar({@required this.onSearchChanged, @required this.onSearchSubmitted});
 
-  final isSkillSearch;
   final Function onSearchChanged;
   final Function onSearchSubmitted;
 
   @override
   Widget build(BuildContext context) {
+    SearchMode searchMode = Provider.of<SearchMode>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
       child: CupertinoTextField(
@@ -302,7 +318,9 @@ class SearchBar extends StatelessWidget {
             color: kCardBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-        placeholder: AppLocalizations.of(context).translate('search_skills'),
+        placeholder: (searchMode.mode == Mode.searchSkills)
+            ? AppLocalizations.of(context).translate('search_skills')
+            : AppLocalizations.of(context).translate('search_wishes'),
         placeholderStyle: kSearchPlaceHolderTextStyle,
         prefix: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
