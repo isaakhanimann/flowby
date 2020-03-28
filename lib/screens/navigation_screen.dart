@@ -17,7 +17,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:Flowby/screens/choose_signin_screen.dart';
-import 'package:Flowby/screens/choose_role_screen.dart';
+import 'package:Flowby/screens/choose_search_mode_screen.dart';
 import 'package:Flowby/services/preferences_service.dart';
 import 'package:Flowby/models/user.dart';
 import 'tabs/home_tab.dart';
