@@ -13,6 +13,16 @@ class SearchMode with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  setModeToSearchSkills() {
+    mode = Mode.searchSkills;
+    notifyListeners();
+  }
+
+  setModeToSearchWishes() {
+    mode = Mode.searchWishes;
+    notifyListeners();
+  }
 }
 
 enum Mode { searchSkills, searchWishes }

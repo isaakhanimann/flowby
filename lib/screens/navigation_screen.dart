@@ -22,6 +22,7 @@ import 'package:Flowby/services/preferences_service.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:Flowby/models/role.dart';
 import 'tabs/home_tab.dart';
+import 'package:Flowby/models/search_mode.dart';
 
 class NavigationScreen extends StatefulWidget {
   static const String id = 'navigation_screen';
@@ -106,6 +107,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
     );
   }
 
+  // get the preference that is stored locally
+  // get the logged in user from the users collection in firebase
+  // initialize the search mode
   _initializeEverything(BuildContext context) async {
     Future<Role> preferenceRole = _getPreferenceRole();
 
@@ -123,6 +127,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     User currentUser =
         await cloudFirestoreService.getUser(uid: firebaseUser?.uid);
+
+    // the default is searching for services
+    // we only switch if the user has no wishes or if he has more skills than wishes
+    int numberOfSkills = currentUser.skills.length;
+    int numberOfWishes = currentUser.wishes.length;
+    if (numberOfSkills > numberOfWishes) {
+      final searchMode = Provider.of<SearchMode>(context, listen: false);
+      searchMode.setModeToSearchWishes();
+    }
 
     Role profileRole = currentUser?.role;
     _uploadLocationAndPushToken(loggedInUser: firebaseUser);
