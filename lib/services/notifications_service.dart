@@ -6,9 +6,6 @@ class NotificationsService {
 
   NotificationsService({
     this.nbrOfUnreadMessages = 0,
-    this.messages = const {
-      "empty": ["empty"]
-    },
   });
 
   StreamController<int> ctrlUnreadMessages = StreamController<int>();

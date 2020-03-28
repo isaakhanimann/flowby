@@ -479,6 +479,12 @@ exports.updateUnreadMessagesInChat = functions.firestore
       .get();
     
     const chat: FirebaseFirestore.DocumentData = chatSnap.data()!;
+
+    // Get the receiver's token
+    const unreadMessagesDoc = await db
+    .collection("chats")
+    .doc("unreadMessages")
+    .get();
   
     let unreadMessages1: number = 0;
     let unreadMessages2: number = 0;
