@@ -102,5 +102,5 @@ const kSecondCardBackgroundColor = Color(0xFFE8E8E9);
 //const kCardBackgroundColor = Color(0x2Ffdd66d);
 
 // Other
-const String kDefaultProfilePicName = 'default-profile-pic.jpg';
+const String kDefaultProfilePicUrl = 'default-profile-pic.jpg';
 const int kDistanceInKm = 100000000000000;

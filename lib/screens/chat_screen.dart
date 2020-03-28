@@ -16,26 +16,21 @@ import 'package:Flowby/models/chat_without_last_message.dart';
 import 'package:Flowby/widgets/route_transitions/scale_route.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/two_options_dialog.dart';
+import 'package:Flowby/models/user.dart';
 
 class ChatScreen extends StatelessWidget {
   static const String id = 'chat_screen';
-  final String loggedInUid;
-  final String otherUid;
-  final String otherUsername;
-  final String otherImageFileName;
-  final int otherImageVersionNumber;
+  final User loggedInUser;
+  final User otherUser;
   final String heroTag;
   final String chatPath;
 
   //either the chatPath is supplied and we can get the messageStream directly
   //or if he isn't we can user the other user to figure out the chatpath ourselves
   ChatScreen(
-      {@required this.loggedInUid,
-      @required this.otherUid,
-      @required this.otherUsername,
+      {@required this.loggedInUser,
+      @required this.otherUser,
       @required this.heroTag,
-      @required this.otherImageFileName,
-      @required this.otherImageVersionNumber,
       this.chatPath});
 
   @override
@@ -45,11 +40,8 @@ class ChatScreen extends StatelessWidget {
       child: SafeArea(
         child: Provider<GlobalChatScreenInfo>(
           create: (_) => GlobalChatScreenInfo(
-              loggedInUid: loggedInUid,
-              otherUid: otherUid,
-              otherUsername: otherUsername,
-              otherImageFileName: otherImageFileName,
-              otherImageVersionNumber: otherImageVersionNumber,
+              loggedInUser: loggedInUser,
+              otherUser: otherUser,
               heroTag: heroTag),
           child: (chatPath != null)
               ? ChatScreenWithPath(chatPath: chatPath)
@@ -70,10 +62,7 @@ class ChatScreenThatHasToGetPath extends StatelessWidget {
 
     return FutureBuilder(
       future: cloudFirestoreService.getChatPath(
-          loggedInUid: screenInfo.loggedInUid,
-          otherUid: screenInfo.otherUid,
-          otherUsername: screenInfo.otherUsername,
-          otherUserImageFileName: screenInfo.otherImageFileName),
+          user1: screenInfo.loggedInUser, user2: screenInfo.otherUser),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return CenteredLoadingIndicator();
@@ -221,7 +210,7 @@ class ChatHeader extends StatelessWidget {
     bool amIUser1;
     bool haveIBlocked;
     if (chat != null) {
-      amIUser1 = (chat.uid1 == screenInfo.loggedInUid);
+      amIUser1 = (chat.uid1 == screenInfo.loggedInUser.uid);
       if (amIUser1) {
         haveIBlocked = chat.hasUser1Blocked;
       } else {
@@ -248,17 +237,15 @@ class ChatHeader extends StatelessWidget {
               Navigator.of(context, rootNavigator: true).push(
                 ScaleRoute(
                   page: ShowProfilePictureScreen(
-                    imageFileName: screenInfo.otherImageFileName,
-                    imageVersionNumber: screenInfo.otherImageVersionNumber,
-                    otherUsername: screenInfo.otherUsername,
+                    imageUrl: screenInfo.otherUser.imageUrl,
+                    otherUsername: screenInfo.otherUser.username,
                     heroTag: screenInfo.heroTag,
                   ),
                 ),
               );
             },
             child: CachedNetworkImage(
-              imageUrl:
-                  "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${screenInfo.otherImageFileName}?alt=media&version=${screenInfo.otherImageVersionNumber}",
+              imageUrl: screenInfo.otherUser.imageUrl,
               imageBuilder: (context, imageProvider) {
                 return Hero(
                   transitionOnUserGestures: true,
@@ -281,7 +268,7 @@ class ChatHeader extends StatelessWidget {
           ),
           Flexible(
             child: Text(
-              screenInfo.otherUsername,
+              screenInfo.otherUser.username,
               overflow: TextOverflow.ellipsis,
               style: kChatScreenHeaderTextStyle,
             ),
@@ -390,7 +377,7 @@ class MessagesStream extends StatelessWidget {
               text: message.text,
               timestamp: HelperFunctions.getTimestampAsString(
                   context: context, timestamp: messageTimestamp),
-              isMe: screenInfo.loggedInUid == message.senderUid,
+              isMe: screenInfo.loggedInUser.uid == message.senderUid,
             );
           },
           reverse: true,
@@ -417,7 +404,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
   Widget build(BuildContext context) {
     GlobalChatScreenInfo screenInfo =
         Provider.of<GlobalChatScreenInfo>(context);
-    bool amIUser1 = widget.chat.uid1 == screenInfo.loggedInUid;
+    bool amIUser1 = widget.chat.uid1 == screenInfo.loggedInUser.uid;
     bool haveIBlocked;
     bool hasOtherBlocked;
     if (amIUser1) {
@@ -482,7 +469,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
             if (messageTextController.text != '') {
               //Implement send functionality.
               Message message = Message(
-                  senderUid: screenInfo.loggedInUid,
+                  senderUid: screenInfo.loggedInUser.uid,
                   text: messageTextController.text,
                   timestamp: FieldValue.serverTimestamp());
               cloudFirestoreService.uploadMessage(
@@ -599,18 +586,12 @@ class SendButton extends StatelessWidget {
 }
 
 class GlobalChatScreenInfo {
-  final String loggedInUid;
-  final String otherUid;
-  final String otherUsername;
-  final String otherImageFileName;
-  final int otherImageVersionNumber;
+  final User loggedInUser;
+  final User otherUser;
   final String heroTag;
 
   GlobalChatScreenInfo(
-      {@required this.loggedInUid,
-      @required this.otherUid,
-      @required this.otherUsername,
-      @required this.otherImageFileName,
-      @required this.otherImageVersionNumber,
+      {@required this.loggedInUser,
+      @required this.otherUser,
       @required this.heroTag});
 }

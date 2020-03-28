@@ -161,7 +161,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
                                       opacity: 0.4,
                                       child: CachedNetworkImage(
                                         imageUrl:
-                                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$kDefaultProfilePicName?alt=media",
+                                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$kDefaultProfilePicUrl?alt=media",
                                         imageBuilder: (context, imageProvider) {
                                           return CircleAvatar(
                                               radius: 60,
@@ -311,9 +311,9 @@ class _AddImageUsernameAndBioRegistrationScreenState
     final storageService =
         Provider.of<FirebaseStorageService>(context, listen: false);
     if (_profilePic != null) {
-      await storageService.uploadImage(
+      String imageUrl = await storageService.uploadImage(
           fileName: widget.user.uid, image: _profilePic);
-      widget.user.imageFileName = widget.user.uid;
+      widget.user.imageUrl = imageUrl;
     }
     widget.user.username = _username;
     widget.user.bio = _bio;

@@ -82,21 +82,13 @@ class ChatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context, listen: false);
-    bool user1IsLoggedInUser = (chat.uid1 == loggedInUser.uid);
-    String otherUid = user1IsLoggedInUser ? chat.uid2 : chat.uid1;
-    String otherUsername =
-        user1IsLoggedInUser ? chat.username2 : chat.username1;
-    String otherImageFileName =
-        user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
-    int otherImageVersionNumber = user1IsLoggedInUser
-        ? chat.user2ImageVersionNumber
-        : chat.user1ImageVersionNumber;
 
-    if (otherImageFileName == null) otherImageFileName = kDefaultProfilePicName;
+    bool amIUser1 = chat.user1.uid == loggedInUser.uid;
 
-    final heroTag = otherUid + 'chats';
+    User otherUser = amIUser1 ? chat.user2 : chat.user1;
 
-    bool amIUser1 = chat.uid1 == loggedInUser.uid;
+    final heroTag = otherUser.uid + 'chats';
+
     bool haveIBlocked;
     bool hasOtherBlocked;
     if (amIUser1) {
@@ -109,10 +101,7 @@ class ChatItem extends StatelessWidget {
 
     return CustomCard(
       leading: ProfilePicture(
-          imageFileName: otherImageFileName,
-          imageVersionNumber: otherImageVersionNumber,
-          radius: 30,
-          heroTag: heroTag),
+          imageUrl: otherUser.imageUrl, radius: 30, heroTag: heroTag),
       middle: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -120,7 +109,7 @@ class ChatItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                otherUsername,
+                otherUser.username,
                 overflow: TextOverflow.ellipsis,
                 style: kUsernameTextStyle,
               ),
@@ -165,11 +154,8 @@ class ChatItem extends StatelessWidget {
           CupertinoPageRoute<void>(
             builder: (context) {
               return ChatScreen(
-                loggedInUid: loggedInUser.uid,
-                otherUid: otherUid,
-                otherUsername: otherUsername,
-                otherImageFileName: otherImageFileName,
-                otherImageVersionNumber: otherImageVersionNumber,
+                loggedInUser: loggedInUser,
+                otherUser: otherUser,
                 heroTag: heroTag,
                 chatPath: chat.chatpath,
               );

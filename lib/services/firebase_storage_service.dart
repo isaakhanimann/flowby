@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:Flowby/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,16 +9,18 @@ import 'package:flutter/material.dart';
 final StorageReference _storageReference = FirebaseStorage().ref();
 
 class FirebaseStorageService {
-  Future<void> uploadImage(
+  Future<String> uploadImage(
       {@required String fileName, @required File image}) async {
     try {
-      //the imagefilename and imageversionnumber of the user document is updated with cloud functions
       final StorageUploadTask uploadTask =
           _storageReference.child('images/$fileName').putFile(image);
-      await uploadTask.onComplete;
+      StorageTaskSnapshot snap = await uploadTask.onComplete;
+      String imageUrl = await snap.ref.getDownloadURL();
+      return imageUrl;
     } catch (e) {
       print('Isaak could not upload image');
       print(e);
+      return kDefaultProfilePicUrl;
     }
   }
 

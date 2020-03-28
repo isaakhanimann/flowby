@@ -5,14 +5,12 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ShowProfilePictureScreen extends StatelessWidget {
-  final String imageFileName;
-  final int imageVersionNumber;
+  final String imageUrl;
   final String otherUsername;
   final String heroTag;
 
   ShowProfilePictureScreen(
-      {@required this.imageFileName,
-      @required this.imageVersionNumber,
+      {@required this.imageUrl,
       @required this.otherUsername,
       @required this.heroTag});
 
@@ -28,8 +26,7 @@ class ShowProfilePictureScreen extends StatelessWidget {
           child: Stack(children: [
             Center(
               child: CachedNetworkImage(
-                imageUrl:
-                    "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$imageFileName?alt=media&version=$imageVersionNumber",
+                imageUrl: imageUrl,
                 imageBuilder: (context, imageProvider) {
                   return Hero(
                     transitionOnUserGestures: true,

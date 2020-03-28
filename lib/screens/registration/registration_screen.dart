@@ -280,7 +280,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       User user = User(
           username: firebaseUser.displayName,
           uid: firebaseUser.uid,
-          imageFileName: kDefaultProfilePicName);
+          imageUrl: kDefaultProfilePicUrl);
       _uploadUserAndNavigate(context: context, user: user);
       setState(() {
         showSpinner = false;
@@ -304,7 +304,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       User user = User(
           username: firebaseUser.displayName,
           uid: firebaseUser.uid,
-          imageFileName: kDefaultProfilePicName);
+          imageUrl: kDefaultProfilePicUrl);
       _uploadUserAndNavigate(context: context, user: user);
       setState(() {
         showSpinner = false;

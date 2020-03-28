@@ -6,6 +6,7 @@ import 'package:Flowby/screens/chat_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:Flowby/models/user.dart';
 
 class FirebaseCloudMessaging {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -92,17 +93,15 @@ class FirebaseCloudMessaging {
     BuildContext context,
     CloudMessage message,
   ) {
+    User loggedInUser = User.fromMap(map: message.data['loggedInUser']);
+    User otherUser = User.fromMap(map: message.data['otherUser']);
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
           return ChatScreen(
-            loggedInUid: message.data['loggedInUid'],
-            otherUid: message.data['otherUid'],
-            otherUsername: message.data['otherUsername'],
-            heroTag: message.data['otherUid'] + 'chats',
-            otherImageFileName: message.data['otherImageFileName'],
-            otherImageVersionNumber: int.parse(message.data[
-                'otherImageVersionNumber']), // this is a random number for now, it should be otherImageVersionNumber
+            loggedInUser: loggedInUser,
+            otherUser: otherUser,
+            heroTag: otherUser.uid + 'chats',
             chatPath: message.data['chatPath'],
           );
         },
@@ -137,12 +136,8 @@ class CloudMessage {
     body = mapMessage['notification']['body'];
     toToken = mapMessage['to'];
     data['screen'] = mapMessage['data']['screen'];
-    data['loggedInUid'] = mapMessage['data']['loggedInUid'];
-    data['otherUid'] = mapMessage['data']['otherUid'];
-    data['otherUsername'] = mapMessage['data']['otherUsername'];
-    data['otherImageFileName'] = mapMessage['data']['otherImageFileName'];
-    data['otherImageVersionNumber'] =
-        mapMessage['data']['otherImageVersionNumber'];
+    data['loggedInUser'] = mapMessage['data']['loggedInUser'];
+    data['otherUser'] = mapMessage['data']['otherUser'];
     data['chatPath'] = mapMessage['data']['chatPath'];
   }
 }

@@ -166,58 +166,35 @@ class FirebaseCloudFirestoreService {
   }
 
   Future<String> getChatPath(
-      {@required String loggedInUid,
-      @required String otherUid,
-      @required String otherUsername,
-      @required String otherUserImageFileName}) async {
+      {@required User user1, @required User user2}) async {
     try {
+      QuerySnapshot snap = await _fireStore
+          .collection('chats')
+          .where('combinedUids', arrayContains: user1.uid + user2.uid)
+          .getDocuments();
       String chatPath;
-      QuerySnapshot snap1 = await _fireStore
-          .collection('chats')
-          .where('uid1', isEqualTo: loggedInUid)
-          .where('uid2', isEqualTo: otherUid)
-          .getDocuments();
-      QuerySnapshot snap2 = await _fireStore
-          .collection('chats')
-          .where('uid1', isEqualTo: otherUid)
-          .where('uid2', isEqualTo: loggedInUid)
-          .getDocuments();
-      if (snap1.documents.isNotEmpty) {
-//loggedInUser is user1
-        chatPath = snap1.documents[0].reference.path;
-      } else if (snap2.documents.isNotEmpty) {
-//loggedInUser is user2
-        chatPath = snap2.documents[0].reference.path;
+      if (snap.documents.length == 0) {
+        //there is no chat yet, so create one
+        chatPath = await _createChat(user1: user1, user2: user2);
       } else {
-//there is no chat yet, so create one
-        chatPath = await _createChat(
-            loggedInUid: loggedInUid,
-            otherUserUid: otherUid,
-            otherUsername: otherUsername,
-            otherUserImageFileName: otherUserImageFileName);
+        chatPath = snap.documents[0].reference.path;
       }
       return chatPath;
     } catch (e) {
+      print(e);
       print('Could not get chatpath');
       return null;
     }
   }
 
   Future<String> _createChat(
-      {@required String loggedInUid,
-      @required String otherUserUid,
-      @required String otherUsername,
-      @required String otherUserImageFileName}) async {
+      {@required User user1, @required User user2}) async {
     try {
-      User loggedInUser = await getUser(uid: loggedInUid);
       Chat chat = Chat(
-          uid1: loggedInUser.uid,
-          username1: loggedInUser.username,
-          user1ImageFileName: loggedInUser.imageFileName,
+          combinedUids: [user1.uid + user2.uid, user2.uid + user1.uid],
+          user1: user1,
+          user2: user2,
           hasUser1Blocked: false,
-          uid2: otherUserUid,
-          username2: otherUsername,
-          user2ImageFileName: otherUserImageFileName,
           hasUser2Blocked: false,
           lastMessageText: 'No message yet',
           lastMessageTimestamp: FieldValue.serverTimestamp());
@@ -225,6 +202,7 @@ class FirebaseCloudFirestoreService {
       return docReference.path;
     } catch (e) {
       print('Could not createChat');
+      print(e);
       return null;
     }
   }

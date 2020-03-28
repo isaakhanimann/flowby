@@ -54,11 +54,8 @@ class ViewProfileScreen extends StatelessWidget {
                         CupertinoPageRoute<void>(
                           builder: (context) {
                             return ChatScreen(
-                              loggedInUid: loggedInUser.uid,
-                              otherUid: user.uid,
-                              otherUsername: user.username,
-                              otherImageFileName: user.imageFileName,
-                              otherImageVersionNumber: user.imageVersionNumber,
+                              loggedInUser: loggedInUser,
+                              otherUser: user,
                               heroTag: heroTag,
                             );
                           },

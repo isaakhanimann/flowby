@@ -216,11 +216,8 @@ class ProfileItem extends StatelessWidget {
     final String heroTag = user.uid + 'home';
 
     return CustomCard(
-      leading: ProfilePicture(
-          imageFileName: user.imageFileName,
-          imageVersionNumber: user.imageVersionNumber,
-          radius: 30,
-          heroTag: heroTag),
+      leading:
+          ProfilePicture(imageUrl: user.imageUrl, radius: 30, heroTag: heroTag),
       middle: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[

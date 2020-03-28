@@ -53,17 +53,13 @@ class ListViewOfUserInfos extends StatelessWidget {
               onTap: () {
                 Navigator.of(context, rootNavigator: true).push(ScaleRoute(
                     page: ShowProfilePictureScreen(
-                  imageFileName: user.imageFileName,
-                  imageVersionNumber: user.imageVersionNumber,
+                  imageUrl: user.imageUrl,
                   otherUsername: user.username,
-                  heroTag: heroTag ?? user.imageFileName,
+                  heroTag: heroTag,
                 )));
               },
               child: ProfilePicture(
-                  imageFileName: user.imageFileName,
-                  imageVersionNumber: user.imageVersionNumber,
-                  radius: 60,
-                  heroTag: heroTag ?? user.imageFileName),
+                  imageUrl: user.imageUrl, radius: 60, heroTag: heroTag),
             ),
           ),
           if (user.distanceInKm != null)

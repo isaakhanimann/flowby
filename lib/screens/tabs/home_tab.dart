@@ -347,8 +347,7 @@ class AnnouncementItem extends StatelessWidget {
       },
       paddingInsideVertical: 15,
       leading: ProfilePicture(
-        imageFileName: announcement.user.imageFileName,
-        imageVersionNumber: announcement.user.imageVersionNumber,
+        imageUrl: announcement.user.imageUrl,
         radius: 30,
         heroTag: heroTag,
       ),

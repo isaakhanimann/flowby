@@ -8,8 +8,7 @@ class User {
   bool isHidden;
   GeoPoint location;
   int distanceInKm;
-  String imageFileName = kDefaultProfilePicName;
-  int imageVersionNumber = 1;
+  String imageUrl;
   String skillKeywords;
   String wishKeywords;
   List<SkillOrWish> skills = [];
@@ -23,8 +22,7 @@ class User {
       this.skills,
       this.wishes,
       this.location,
-      this.imageFileName,
-      this.imageVersionNumber});
+      this.imageUrl});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'] ?? '';
@@ -36,13 +34,7 @@ class User {
     } catch (e) {
       this.location = _convertLocationToGeopoint(location: map['location']);
     }
-    this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
-    try {
-      this.imageVersionNumber = map['imageVersionNumber'].round();
-    } catch (e) {
-      //could not convert double to int (because its infinity or NaN)
-      this.imageVersionNumber = 1;
-    }
+    this.imageUrl = map['imageUrl'] ?? kDefaultProfilePicUrl;
     this.skills = _convertFirebaseToDart(skillsOrWishes: map['skills']);
     this.wishes = _convertFirebaseToDart(skillsOrWishes: map['wishes']);
     this.skillKeywords = _getKeywordString(skills);
@@ -56,8 +48,7 @@ class User {
       'bio': bio,
       'isHidden': isHidden,
       'location': location,
-      'imageFileName': imageFileName ?? 'default-profile-pic.jpg',
-      'imageVersionNumber': imageVersionNumber ?? 1,
+      'imageUrl': imageUrl ?? kDefaultProfilePicUrl,
       'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
       'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList(),
     };
@@ -116,8 +107,7 @@ class User {
     toPrint += 'bio: $bio, ';
     toPrint += 'isHidden: $isHidden, ';
     toPrint += 'location: ${location.toString()}, ';
-    toPrint += 'imageFileName: ${imageFileName.toString()}, ';
-    toPrint += 'imageVersionNumber: ${imageVersionNumber.toString()}, ';
+    toPrint += 'imageUrl: $imageUrl, ';
     toPrint += 'skills: ${skills.toString()}, ';
     toPrint += 'wishes: ${wishes.toString()}, ';
     toPrint += 'skillKeywords: ${skillKeywords.toString()}, ';

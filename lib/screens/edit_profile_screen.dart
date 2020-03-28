@@ -162,8 +162,7 @@ class _ImageSectionState extends State<ImageSection> {
                   Opacity(
                     opacity: 0.4,
                     child: CachedNetworkImage(
-                      imageUrl:
-                          "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media&version=${user.imageVersionNumber}",
+                      imageUrl: user.imageUrl,
                       imageBuilder: (context, imageProvider) {
                         return CircleAvatar(
                             radius: 60,
