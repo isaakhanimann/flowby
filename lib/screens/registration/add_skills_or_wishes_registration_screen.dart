@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
-import 'package:Flowby/models/role.dart';
+import 'package:Flowby/models/search_mode.dart';
 
 class AddSkillsOrWishesRegistrationScreen extends StatefulWidget {
   static const String id = 'add_skills_registration_screen';
@@ -32,7 +32,8 @@ class _AddSkillsOrWishesRegistrationScreenState
   @override
   void initState() {
     super.initState();
-    if (widget.user.role == Role.provider) {
+    final searchMode = Provider.of<SearchMode>(context, listen: false);
+    if (searchMode.mode == Mode.searchWishes) {
       widget.user.addEmptySkill();
     } else {
       widget.user.addEmptyWish();
@@ -41,7 +42,7 @@ class _AddSkillsOrWishesRegistrationScreenState
 
   @override
   Widget build(BuildContext context) {
-    bool isProvider = widget.user.role == Role.provider;
+    final searchMode = Provider.of<SearchMode>(context, listen: false);
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.white,
       child: ModalProgressHUD(
@@ -67,7 +68,7 @@ class _AddSkillsOrWishesRegistrationScreenState
                         height: 20.0,
                       ),
                       Text(
-                        isProvider
+                        (searchMode.mode == Mode.searchWishes)
                             ? AppLocalizations.of(context)
                                 .translate('your_skills')
                             : AppLocalizations.of(context)
@@ -81,7 +82,7 @@ class _AddSkillsOrWishesRegistrationScreenState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            isProvider
+                            (searchMode.mode == Mode.searchWishes)
                                 ? AppLocalizations.of(context)
                                     .translate('what_you_offer')
                                 : AppLocalizations.of(context)
@@ -92,7 +93,7 @@ class _AddSkillsOrWishesRegistrationScreenState
                           SizedBox(
                             height: 10.0,
                           ),
-                          isProvider
+                          (searchMode.mode == Mode.searchWishes)
                               ? CreateSkillsSection(
                                   initialSkills: widget.user.skills,
                                   updateKeywordsAtIndex:
@@ -157,10 +158,11 @@ class _AddSkillsOrWishesRegistrationScreenState
       showSpinner = true;
     });
 
-    if (widget.user.role == Role.provider) {
+    final searchMode = Provider.of<SearchMode>(context, listen: false);
+    if (searchMode.mode == Mode.searchWishes) {
       widget.user?.skills?.removeWhere(
           (skill) => (skill.keywords == null || skill.keywords.isEmpty));
-    } else if (widget.user.role == Role.consumer) {
+    } else {
       widget.user?.wishes?.removeWhere(
           (wish) => (wish.keywords == null || wish.keywords.isEmpty));
     }

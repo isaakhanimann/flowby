@@ -3,20 +3,20 @@ import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
-import 'package:Flowby/models/role.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_provide_skill_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_looking_for_skill_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_didnt_find_skill_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_see_distance_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_announcements_tab.dart';
+import 'package:Flowby/models/search_mode.dart';
+import 'package:provider/provider.dart';
 
 class ExplanationScreen extends StatefulWidget {
   static const String id = 'explanation_screen';
 
-  final Role role;
   final bool popScreen;
 
-  ExplanationScreen({@required this.role, this.popScreen = false});
+  ExplanationScreen({this.popScreen = false});
 
   @override
   _ExplanationScreenState createState() => _ExplanationScreenState();
@@ -29,7 +29,9 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.role == Role.provider) {
+    final searchMode = Provider.of<SearchMode>(context, listen: false);
+
+    if (searchMode.mode == Mode.searchWishes) {
       numberOfPages = 3;
       pages = [
         Container(
@@ -40,7 +42,7 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
           child: ExplanationSeeDistanceTab(),
         )
       ];
-    } else if (widget.role == Role.consumer) {
+    } else if (searchMode.mode == Mode.searchSkills) {
       numberOfPages = 4;
       pages = [
         Container(child: ExplanationLookingForSkillTab()),

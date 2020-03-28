@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Flowby/constants.dart';
-import 'package:Flowby/models/role.dart';
 
 class User {
   String username;
   String uid;
   String bio;
-  Role role;
   bool isHidden;
   GeoPoint location;
   int distanceInKm;
@@ -21,7 +19,6 @@ class User {
       {this.username,
       this.uid,
       this.bio,
-      this.role,
       this.isHidden,
       this.skills,
       this.wishes,
@@ -33,7 +30,6 @@ class User {
     this.username = map['username'] ?? '';
     this.uid = map['uid'] ?? '';
     this.bio = map['bio'] ?? '';
-    this.role = convertStringToRole(roleString: map['role']);
     this.isHidden = map['isHidden'] ?? false;
     try {
       this.location = map['location'];
@@ -58,7 +54,6 @@ class User {
       'username': username,
       'uid': uid,
       'bio': bio,
-      'role': convertRoleToString(role: role),
       'isHidden': isHidden,
       'location': location,
       'imageFileName': imageFileName ?? 'default-profile-pic.jpg',
@@ -119,7 +114,6 @@ class User {
     String toPrint = '\n{ username: $username, ';
     toPrint += 'uid: $uid, ';
     toPrint += 'bio: $bio, ';
-    toPrint += 'role: ${convertRoleToString(role: role)}, ';
     toPrint += 'isHidden: $isHidden, ';
     toPrint += 'location: ${location.toString()}, ';
     toPrint += 'imageFileName: ${imageFileName.toString()}, ';

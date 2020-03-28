@@ -20,7 +20,6 @@ import 'package:Flowby/screens/choose_signin_screen.dart';
 import 'package:Flowby/screens/choose_role_screen.dart';
 import 'package:Flowby/services/preferences_service.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/models/role.dart';
 import 'tabs/home_tab.dart';
 import 'package:Flowby/models/search_mode.dart';
 
@@ -34,8 +33,8 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
-  Role _role;
   bool _shouldExplanationBeLoaded = false;
+  bool _chooseSearchMode = false;
   FirebaseUser loggedInUser;
 
   @override
@@ -58,7 +57,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    if (_role == Role.unassigned) {
+    if (_chooseSearchMode) {
       return StreamProvider<User>.value(
         value: cloudFirestoreService.getUserStream(uid: loggedInUser?.uid),
         catchError: (context, object) {
@@ -69,7 +68,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     }
 
     if (_shouldExplanationBeLoaded) {
-      return ExplanationScreen(role: _role);
+      return ExplanationScreen();
     }
 
     if (loggedInUser == null) {
@@ -84,7 +83,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
               return null;
             },
           ),
-          Provider<Role>.value(value: _role),
         ],
         child: HomeScreenWithSignin(),
       );
@@ -100,8 +98,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           catchError: (context, object) {
             return null;
           },
-        ),
-        Provider<Role>.value(value: _role),
+        )
       ],
       child: ScreenWithAllTabs(),
     );
@@ -111,8 +108,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
   // get the logged in user from the users collection in firebase
   // initialize the search mode
   _initializeEverything(BuildContext context) async {
-    Future<Role> preferenceRole = _getPreferenceRole();
-
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
 
@@ -132,26 +127,16 @@ class _NavigationScreenState extends State<NavigationScreen> {
     // we only switch if the user has no wishes or if he has more skills than wishes
     int numberOfSkills = currentUser.skills.length;
     int numberOfWishes = currentUser.wishes.length;
-    if (numberOfSkills > numberOfWishes) {
+    if (numberOfWishes == 0 && numberOfSkills == 0) {
+      setState(() {
+        _chooseSearchMode = true;
+      });
+    } else if (numberOfSkills > numberOfWishes) {
       final searchMode = Provider.of<SearchMode>(context, listen: false);
       searchMode.setMode(Mode.searchWishes);
     }
 
-    Role profileRole = currentUser?.role;
     _uploadLocationAndPushToken(loggedInUser: firebaseUser);
-
-    Role finalRole = profileRole ?? await preferenceRole;
-    setState(() {
-      _role = finalRole;
-    });
-  }
-
-  Future<Role> _getPreferenceRole() async {
-    final preferencesService =
-        Provider.of<PreferencesService>(context, listen: false);
-
-    Role preferenceRole = await preferencesService.getRole();
-    return preferenceRole;
   }
 
   _uploadLocationAndPushToken({@required FirebaseUser loggedInUser}) async {

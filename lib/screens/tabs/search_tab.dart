@@ -13,7 +13,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:Flowby/models/role.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:Flowby/services/location_service.dart';
 import 'package:Flowby/models/search_mode.dart';
@@ -38,9 +37,6 @@ class _SearchTabState extends State<SearchTab> {
     final loggedInUser = Provider.of<User>(context);
     final searchMode = Provider.of<SearchMode>(context);
 
-    final localRole = Provider.of<Role>(context);
-    final role = loggedInUser?.role ?? localRole;
-
     return SafeArea(
       bottom: false,
       child: Column(
@@ -49,7 +45,6 @@ class _SearchTabState extends State<SearchTab> {
           TabHeader(
             leftIcon: Icon(Feather.info),
             screenToNavigateToLeft: ExplanationScreen(
-              role: role,
               popScreen: true,
             ),
           ),
@@ -65,10 +60,10 @@ class _SearchTabState extends State<SearchTab> {
             onValueChanged: searchMode.setMode,
             children: <Mode, Widget>{
               Mode.searchSkills: Text(
-                  AppLocalizations.of(context).translate('searchers'),
+                  AppLocalizations.of(context).translate('skills'),
                   style: kHomeSwitchTextStyle),
               Mode.searchWishes: Text(
-                  AppLocalizations.of(context).translate('providers'),
+                  AppLocalizations.of(context).translate('wishes'),
                   style: kHomeSwitchTextStyle),
             },
           ),
@@ -113,7 +108,6 @@ class _SearchTabState extends State<SearchTab> {
 
                   if (usersToShow.length == 0 && loggedInUser != null) {
                     return NoResults(
-                      isSkillSelected: role == Role.consumer,
                       uidOfLoggedInUser: loggedInUser.uid,
                     );
                   }
@@ -149,9 +143,7 @@ class ListOfSortedUsers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUser = Provider.of<User>(context);
-    final localRole = Provider.of<Role>(context);
-    final role = loggedInUser?.role ?? localRole;
+    final searchMode = Provider.of<SearchMode>(context, listen: false);
     return FutureBuilder(
       future:
           _waitAndSortUsersByDistance(context: context, users: unsortedUsers),
@@ -173,7 +165,7 @@ class ListOfSortedUsers extends StatelessWidget {
           itemBuilder: (context, index) {
             return ProfileItem(
               user: sortedUsers[index],
-              isSkillSearch: role == Role.consumer,
+              isSkillSearch: searchMode.mode == Mode.searchSkills,
             );
           },
           itemCount: sortedUsers.length,
