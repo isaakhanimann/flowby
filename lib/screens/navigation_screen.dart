@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/unread_messages.dart';
 import 'package:Flowby/screens/tabs/chats_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:Flowby/screens/tabs/search_tab.dart';
@@ -34,8 +35,6 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
-  Stream<int> unreadMessagesStream;
-  Stream<Map<String, List<String>>> listOfMessagesStream;
   Role _role;
   bool _shouldExplanationBeLoaded = false;
   FirebaseUser loggedInUser;
@@ -104,15 +103,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
           },
         ),
         Provider<Role>.value(value: _role),
-        StreamProvider<int>.value(
-          initialData: 0,
-          value: unreadMessagesStream,
-        ),
-        StreamProvider<Map<String, List<String>>>.value(
-          initialData: {
-            "": [""]
+        StreamProvider<UnreadMessages>.value(
+          value: cloudFirestoreService.getUnreadMessagesStream(uid: loggedInUser.uid),
+          catchError: (context, object) {
+            print("ERROR: Stream provider UnreadMessages: $object");
+            return null;
           },
-          value: listOfMessagesStream,
         ),
       ],
       child: ScreenWithAllTabs(),
@@ -201,8 +197,7 @@ class ScreenWithAllTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final int unreadMessages = Provider.of<int>(context);
+    final unreadMessages = Provider.of<UnreadMessages>(context);
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         backgroundColor: Colors.white,
@@ -224,7 +219,7 @@ class ScreenWithAllTabs extends StatelessWidget {
               icon: Icon(
                 Feather.mail,
               ),
-              badgeCount: unreadMessages,
+              badgeCount: unreadMessages.total ?? 0,
             ),
           ),
           BottomNavigationBarItem(

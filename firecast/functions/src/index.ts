@@ -345,6 +345,8 @@ exports.sendNotification = functions.firestore
             sound: "default"
           },
           data: {
+            title: senderUsername,
+            body: contentMessage,
             click_action: "FLUTTER_NOTIFICATION_CLICK",
             sound: "default",
             status: "done",
@@ -471,6 +473,7 @@ exports.updateUnreadMessagesInChat = functions.firestore
     const message: FirebaseFirestore.DocumentData = snap.data()!;
 
     const senderUid: string = message.senderUid;
+    let receiverUid: string = "";
       
     const chatId = context.params.chatId;
     const chatSnap: FirebaseFirestore.DocumentSnapshot = await db
@@ -479,12 +482,6 @@ exports.updateUnreadMessagesInChat = functions.firestore
       .get();
     
     const chat: FirebaseFirestore.DocumentData = chatSnap.data()!;
-
-    // Get the receiver's token
-    const unreadMessagesDoc = await db
-    .collection("chats")
-    .doc("unreadMessages")
-    .get();
   
     let unreadMessages1: number = 0;
     let unreadMessages2: number = 0;
@@ -493,6 +490,7 @@ exports.updateUnreadMessagesInChat = functions.firestore
       //
       // the receiver is user2 of the chat
       //
+      receiverUid = chat.uid2;
       if(chat?.unreadMessages2){
         unreadMessages2 = chat.unreadMessages2;
         unreadMessages2 += 1;
@@ -500,7 +498,7 @@ exports.updateUnreadMessagesInChat = functions.firestore
         unreadMessages2 = 1;
       }
 
-      return db.collection("chats")
+      db.collection("chats")
       .doc(chatId)
       .update({
         unreadMessages2: unreadMessages2
@@ -515,6 +513,7 @@ exports.updateUnreadMessagesInChat = functions.firestore
       //
       // the receiver is user1 of the chat
       //
+      receiverUid = chat.uid1;
       if(chat?.unreadMessages1){
         unreadMessages1 = chat.unreadMessages1;
         unreadMessages1 += 1;
@@ -522,7 +521,7 @@ exports.updateUnreadMessagesInChat = functions.firestore
         unreadMessages1 = 1;
       }
 
-      return db.collection("chats")
+      db.collection("chats")
       .doc(chatId)
       .update({
         unreadMessages1: unreadMessages1
@@ -534,4 +533,24 @@ exports.updateUnreadMessagesInChat = functions.firestore
         console.log(`Error updating the number of unread messages of user2:`, error);
       });
     }
+
+    const unreadMessagesSnap: FirebaseFirestore.DocumentSnapshot = await db
+      .collection("unreadMessages")
+      .doc(receiverUid)
+      .get();
+
+      const unreadMessages: FirebaseFirestore.DocumentData = unreadMessagesSnap.data()!;
+    let total: number = unreadMessages.total + 1;
+
+    return db.collection("unreadMessages")
+      .doc(receiverUid)
+      .update({
+        total: total
+      })
+      .then(() => {
+        console.log(`Successful update: User ${receiverUid} has a total of ${total} unread messages`);
+      })
+      .catch((error: any) => {
+        console.log(`Error updating the total number of unread messages of user ${receiverUid}:`, error);
+      });
 });

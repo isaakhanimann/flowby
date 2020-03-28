@@ -245,6 +245,10 @@ class ChatHeader extends StatelessWidget {
                 CupertinoButton(
                   padding: EdgeInsets.all(0.0),
                   onPressed: () {
+                    String uid;
+                    amIUser1 ? uid = chat.uid1 : uid = chat.uid2;
+                    cloudFirestoreService.updateUserTotalUnreadMessages(chatpath: chat.chatpath, isUser1: amIUser1, uid: uid);
+                    cloudFirestoreService.resetUnreadMessagesInChat(chatpath: chat.chatpath, isUser1: amIUser1);
                     Navigator.of(context).pop();
                   },
                   child: Icon(

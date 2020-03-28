@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:Flowby/models/announcement.dart';
 import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/message.dart';
+import 'package:Flowby/models/unread_messages.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,7 +31,7 @@ class FirebaseCloudFirestoreService {
   Future<User> getUser({@required String uid}) async {
     try {
       var userDocument =
-          await _fireStore.collection('users').document(uid).get();
+      await _fireStore.collection('users').document(uid).get();
       if (userDocument.data == null) {
         print('Could not get user info1');
         return null;
@@ -121,10 +122,9 @@ class FirebaseCloudFirestoreService {
     return Stream.empty();
   }
 
-  Future<void> uploadChatBlocked(
-      {@required String chatpath,
-      bool hasUser1Blocked,
-      bool hasUser2Blocked}) async {
+  Future<void> uploadChatBlocked({@required String chatpath,
+    bool hasUser1Blocked,
+    bool hasUser2Blocked}) async {
     if (hasUser1Blocked != null) {
       await _fireStore
           .document(chatpath)
@@ -137,40 +137,70 @@ class FirebaseCloudFirestoreService {
     return null;
   }
 
+  Future<void> resetUnreadMessagesInChat(
+      {@required String chatpath, @required bool isUser1}) async {
+    if (isUser1) {
+      await _fireStore.document(chatpath).updateData({'unreadMessages1': 0});
+    } else {
+      await _fireStore.document(chatpath).updateData({'unreadMessages2': 0});
+    }
+    return null;
+  }
+
+  Future<void> updateUserTotalUnreadMessages(
+      {@required String chatpath, @required bool isUser1, @required String uid}) async {
+    String docPath = "unreadMessages/$uid";
+    var chatDoc = await _fireStore.document(chatpath).get();
+    var unreadMessagesDoc = await _fireStore.document(docPath).get();
+
+    int readMessages = 0;
+    int total = unreadMessagesDoc.data['total'];
+
+    if (isUser1) {
+      readMessages = chatDoc.data['unreadMessages1'];
+    } else {
+      readMessages = chatDoc.data['unreadMessages2'];
+    }
+    int newTotal = total - readMessages;
+    await _fireStore.document(docPath).updateData({'total': newTotal});
+    return null;
+  }
+
   Stream<List<Chat>> getChatsStream({@required String loggedInUid}) {
     Stream<List<Chat>> stream1 = _fireStore
         .collection('chats')
         .where('uid1', isEqualTo: loggedInUid)
         .snapshots()
-        .map((snap) => snap.documents.map((doc) {
-              Chat chat = Chat.fromMap(map: doc.data);
-              chat.setChatpath(chatpath: doc.reference.path);
-              return chat;
-            }).toList());
+        .map((snap) =>
+        snap.documents.map((doc) {
+          Chat chat = Chat.fromMap(map: doc.data);
+          chat.setChatpath(chatpath: doc.reference.path);
+          return chat;
+        }).toList());
     Stream<List<Chat>> stream2 = _fireStore
         .collection('chats')
         .where('uid2', isEqualTo: loggedInUid)
         .snapshots()
-        .map((snap) => snap.documents.map((doc) {
-              Chat chat = Chat.fromMap(map: doc.data);
-              chat.setChatpath(chatpath: doc.reference.path);
-              return chat;
-            }).toList());
+        .map((snap) =>
+        snap.documents.map((doc) {
+          Chat chat = Chat.fromMap(map: doc.data);
+          chat.setChatpath(chatpath: doc.reference.path);
+          return chat;
+        }).toList());
 
 //i have 2 streams of lists
 //i want one stream with the list of those streams combined
 
     Stream<List<Chat>> chatStream =
-        ZipStream.zip2(stream1, stream2, (list1, list2) => list1 + list2);
+    ZipStream.zip2(stream1, stream2, (list1, list2) => list1 + list2);
 
     return chatStream;
   }
 
-  Future<String> getChatPath(
-      {@required String loggedInUid,
-      @required String otherUid,
-      @required String otherUsername,
-      @required String otherUserImageFileName}) async {
+  Future<String> getChatPath({@required String loggedInUid,
+    @required String otherUid,
+    @required String otherUsername,
+    @required String otherUserImageFileName}) async {
     try {
       String chatPath;
       QuerySnapshot snap1 = await _fireStore
@@ -204,11 +234,10 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  Future<String> _createChat(
-      {@required String loggedInUid,
-      @required String otherUserUid,
-      @required String otherUsername,
-      @required String otherUserImageFileName}) async {
+  Future<String> _createChat({@required String loggedInUid,
+    @required String otherUserUid,
+    @required String otherUsername,
+    @required String otherUserImageFileName}) async {
     try {
       User loggedInUser = await getUser(uid: loggedInUid);
       Chat chat = Chat(
@@ -237,7 +266,8 @@ class FirebaseCloudFirestoreService {
           .collection('messages')
           .orderBy('timestamp')
           .snapshots()
-          .map((snap) => snap.documents.reversed
+          .map((snap) =>
+          snap.documents.reversed
               .map((doc) => Message.fromMap(map: doc.data))
               .toList());
       return messageStream;
@@ -291,5 +321,18 @@ class FirebaseCloudFirestoreService {
     } catch (e) {
       print('Could not upload role');
     }
+  }
+
+  Stream<UnreadMessages> getUnreadMessagesStream({@required String uid}) {
+    try {
+      return _fireStore
+          .collection('unreadMessages')
+          .document(uid)
+          .snapshots()
+          .map((doc) => UnreadMessages.fromMap(map: doc.data));
+    } catch (e) {
+      print('Could not get the unread messages stream');
+    }
+    return Stream.empty();
   }
 }
