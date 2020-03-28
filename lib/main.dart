@@ -13,7 +13,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'services/notifications_service.dart';
 import 'services/apple_sign_in_available.dart';
 import 'constants.dart';
 import 'route_generator.dart';
@@ -61,9 +60,6 @@ class Flowby extends StatelessWidget {
         ),
         Provider<AlgoliaService>(
           create: (_) => AlgoliaService(),
-        ),
-        Provider<NotificationsService>(
-          create: (_) => NotificationsService(),
         ),
       ],
       child: GestureDetector(

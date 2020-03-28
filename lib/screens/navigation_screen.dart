@@ -9,7 +9,6 @@ import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_cloud_messaging.dart';
 import 'package:Flowby/services/location_service.dart';
-import 'package:Flowby/widgets/app_pushes.dart';
 import 'package:Flowby/widgets/badge_icon.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -161,8 +160,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     final firebaseMessaging =
         Provider.of<FirebaseCloudMessaging>(context, listen: false);
-    unreadMessagesStream = firebaseMessaging.getUnreadMessagesStream();
-    listOfMessagesStream = firebaseMessaging.getListOfMessagesStream();
 
     final locationService =
         Provider.of<LocationService>(context, listen: false);

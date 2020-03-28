@@ -207,9 +207,6 @@ class ChatItem extends StatelessWidget {
         Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
-              final firebaseMessaging =
-                  Provider.of<FirebaseCloudMessaging>(context, listen: false);
-              firebaseMessaging.clearNotificationMessagesOf(uid: otherUid);
              return ChatScreen(
                 loggedInUid: loggedInUser.uid,
                 otherUid: otherUid,

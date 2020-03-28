@@ -12,67 +12,27 @@ StreamController<Map<String, List<String>>> ctrlListOfMessages =
     StreamController<Map<String, List<String>>>();
 
 class FirebaseCloudMessaging {
-  static BuildContext context;
-
-  static void setContext(BuildContext context) {
-    context = context;
-  }
-
-  static BuildContext getContext() {
-    return context;
-  }
+  BuildContext context;
 
   static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  Future<String> getToken() {
+    return _firebaseMessaging.getToken();
+  }
 
   void cancelAll() {
     _flutterLocalNotificationsPlugin.cancelAll();
   }
 
-/*
-*
-* Unread Messages - manage state
-*
-* */
-  static int nbrOfUnreadMessages = 0;
-  static Map<String, List<String>> messages = {
-    "empty": ["empty"]
-  };
-
-  int getUnreadMessages() {
-    return nbrOfUnreadMessages;
-  }
-
-  Stream getUnreadMessagesStream() {
-    return ctrlUnreadMessages.stream;
-  }
-
-  Stream getListOfMessagesStream() {
-    return ctrlListOfMessages.stream;
-  }
-
-  static void add(dynamic messages) {
-    nbrOfUnreadMessages += 1;
-    ctrlUnreadMessages.add(nbrOfUnreadMessages);
-    ctrlListOfMessages.add(messages);
-  }
-
-/*
-*
-*
-*
-* */
-  Future<String> getToken() {
-    return _firebaseMessaging.getToken();
-  }
 
   void firebaseCloudMessagingListeners(BuildContext context) {
     if (Platform.isIOS) iOSPermission();
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> mapMessage) async {
-        setContext(context);
+        this.context = context;
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         showNotification(message: message);
       },
@@ -92,13 +52,13 @@ class FirebaseCloudMessaging {
     configLocalNotification(context);
   }
 
-  static void iOSPermission() {
+   void iOSPermission() {
     _firebaseMessaging.requestNotificationPermissions(
         IosNotificationSettings(sound: true, badge: true, alert: true));
   }
 
 // Flutter Local Notifications //
-  static void configLocalNotification(BuildContext context) {
+   void configLocalNotification(BuildContext context) {
     var initializationSettingsAndroid = new AndroidInitializationSettings(
         'app_icon'); // init app_icon that is on the folder android/app/src/main/res/drawable
     var initializationSettingsIOS = new IOSInitializationSettings();
@@ -108,11 +68,10 @@ class FirebaseCloudMessaging {
         onSelectNotification: onSelectNotification);
   }
 
-  static Future showNotification({@required CloudMessage message}) async {
-    nbrOfUnreadMessages += 1;
-    ctrlUnreadMessages.add(nbrOfUnreadMessages);
+   Future showNotification({@required CloudMessage message}) async {
     String contentTitle;
 
+/*
     if (messages[message.data['otherUid']] == null ||
         messages[message.data['otherUid']].last == "empty") {
       messages[message.data['otherUid']] = [];
@@ -126,6 +85,47 @@ class FirebaseCloudMessaging {
     ctrlListOfMessages.add(messages);
 
     add(messages);
+*/
+/*
+    InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
+        messages[message.data['otherUid']],
+        contentTitle: contentTitle,
+        summaryText: message.title);
+*/
+
+    String groupKey = 'co.flowby';
+//    String groupChannelId = 'message_notifications_id';
+    String groupChannelId = 'default_notification_channel_id';
+    String groupChannelName = 'Message notifications';
+    String groupChannelDescription = 'Sound and pop-up';
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      groupChannelId,
+      groupChannelName,
+      groupChannelDescription,
+      playSound: true,
+      enableVibration: true,
+      importance: Importance.Max,
+      priority: Priority.High,
+      groupKey: groupKey,
+      category: "Chats",
+      setAsGroupSummary: true,
+    );
+
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+    await _flutterLocalNotificationsPlugin.show(
+      message.data['otherUid'].hashCode,
+      contentTitle,
+      message.body,
+      platformChannelSpecifics,
+      payload: message.string,
+    );
+  }
+  static Future showNotificationBackground({@required CloudMessage message}) async {
+    String contentTitle;
 /*
     InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
         messages[message.data['otherUid']],
@@ -165,32 +165,21 @@ class FirebaseCloudMessaging {
     );
   }
 
-  void clearNotificationMessagesOf({@required String uid}) {
-    if (messages[uid] != null) {
-      nbrOfUnreadMessages -= messages[uid].length;
-      ctrlUnreadMessages.add(nbrOfUnreadMessages);
-      messages[uid].clear();
-      messages[uid].add("empty");
-      ctrlListOfMessages.add(messages);
-    }
-  }
-
-  static Future onSelectNotification(String payload) async {
+  Future onSelectNotification(String payload) async {
     if (payload != null) {
       //debugPrint('notification payload: ' + payload);
     }
-    BuildContext context = getContext();
+    BuildContext context = this.context;
     debugPrint('context messaging: $context');
     CloudMessage message =
         CloudMessage.fromMap(mapMessage: json.decode(payload));
     navigateToChat(context, message);
   }
 
-  static void navigateToChat(
+   void navigateToChat(
     BuildContext context,
     CloudMessage message,
   ) {
-    messages[message.title].clear();
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
@@ -213,7 +202,7 @@ class FirebaseCloudMessaging {
   static Future<dynamic> myBackgroundMessageHandler(
       Map<String, dynamic> mapMessage) async {
     CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
-    showNotification(message: message);
+    showNotificationBackground(message: message);
     print('mybackground Message handler');
     if (mapMessage.containsKey('data')) {
       // Handle data message
