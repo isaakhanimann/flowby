@@ -39,7 +39,9 @@ class _ChatsTabState extends State<ChatsTab> {
   Widget build(BuildContext context) {
     final firebaseMessaging =
         Provider.of<FirebaseCloudMessaging>(context, listen: false);
-    firebaseMessaging.flutterLocalNotificationsPlugin.cancelAll();
+    firebaseMessaging.cancelAll();
+
+
 /*
     setState(() {
       chatsStream =

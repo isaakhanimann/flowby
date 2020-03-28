@@ -8,7 +8,6 @@ import 'package:Flowby/services/firebase_storage_service.dart';
 import 'package:Flowby/services/image_picker_service.dart';
 import 'package:Flowby/services/location_service.dart';
 import 'package:Flowby/services/preferences_service.dart';
-import 'package:Flowby/widgets/app_pushes.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,48 +74,46 @@ class Flowby extends StatelessWidget {
             currentFocus.unfocus();
           }
         },
-        child: AppPushes(
-          child: BotToastInit(
-            // widget that pops up toasts (used to notify users when they copy a message)
-            child: CupertinoApp(
-              supportedLocales: [
-                const Locale('en'),
-                const Locale('de'),
-                const Locale('fr'),
-              ],
-              localizationsDelegates: [
-                AppLocalizations.delegate,
-                DefaultCupertinoLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              localeResolutionCallback: (locale, supportedLocales) {
-                if (locale == null) {
-                  locale = Locale('en');
+        child: BotToastInit(
+          // widget that pops up toasts (used to notify users when they copy a message)
+          child: CupertinoApp(
+            supportedLocales: [
+              const Locale('en'),
+              const Locale('de'),
+              const Locale('fr'),
+            ],
+            localizationsDelegates: [
+              AppLocalizations.delegate,
+              DefaultCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            localeResolutionCallback: (locale, supportedLocales) {
+              if (locale == null) {
+                locale = Locale('en');
+              }
+              for (var supportedLocale in supportedLocales) {
+                if (supportedLocale.languageCode == locale.languageCode) {
+                  return supportedLocale;
                 }
-                for (var supportedLocale in supportedLocales) {
-                  if (supportedLocale.languageCode == locale.languageCode) {
-                    return supportedLocale;
-                  }
-                }
-                return supportedLocales.first;
-              },
-              navigatorObservers: [BotToastNavigatorObserver()],
-              theme: CupertinoThemeData(
-                brightness: Brightness.light,
-                primaryColor: kLoginBackgroundColor,
-                primaryContrastingColor: CupertinoColors.white,
-                barBackgroundColor: CupertinoColors.white,
-                scaffoldBackgroundColor: CupertinoColors.white,
-                textTheme: CupertinoTextThemeData(
-                    textStyle: kDefaultTextStyle,
-                    navTitleTextStyle: kMiddleNavigationBarTextStyle,
-                    navLargeTitleTextStyle: kLargeNavigationBarTextStyle,
-                    navActionTextStyle: kActionNavigationBarTextStyle),
-              ),
-              debugShowCheckedModeBanner: false,
-              initialRoute: NavigationScreen.id,
-              onGenerateRoute: RouteGenerator.generateRoute,
+              }
+              return supportedLocales.first;
+            },
+            navigatorObservers: [BotToastNavigatorObserver()],
+            theme: CupertinoThemeData(
+              brightness: Brightness.light,
+              primaryColor: kLoginBackgroundColor,
+              primaryContrastingColor: CupertinoColors.white,
+              barBackgroundColor: CupertinoColors.white,
+              scaffoldBackgroundColor: CupertinoColors.white,
+              textTheme: CupertinoTextThemeData(
+                  textStyle: kDefaultTextStyle,
+                  navTitleTextStyle: kMiddleNavigationBarTextStyle,
+                  navLargeTitleTextStyle: kLargeNavigationBarTextStyle,
+                  navActionTextStyle: kActionNavigationBarTextStyle),
             ),
+            debugShowCheckedModeBanner: false,
+            initialRoute: NavigationScreen.id,
+            onGenerateRoute: RouteGenerator.generateRoute,
           ),
         ),
       ),

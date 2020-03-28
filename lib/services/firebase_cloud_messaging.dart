@@ -3,29 +3,45 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:Flowby/screens/chat_screen.dart';
-import 'package:Flowby/widgets/app_pushes.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+StreamController<int> ctrlUnreadMessages = StreamController<int>();
+StreamController<Map<String, List<String>>> ctrlListOfMessages =
+    StreamController<Map<String, List<String>>>();
+
 class FirebaseCloudMessaging {
-static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-FirebaseMessaging firebaseMessaging = FirebaseMessaging();
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  static BuildContext context;
+
+  static void setContext(BuildContext context) {
+    context = context;
+  }
+
+  static BuildContext getContext() {
+    return context;
+  }
+
+  static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  Map<String, List<String>> messages = {
+  static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  void cancelAll() {
+    _flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+/*
+*
+* Unread Messages - manage state
+*
+* */
+  static int nbrOfUnreadMessages = 0;
+  static Map<String, List<String>> messages = {
     "empty": ["empty"]
   };
 
-  int nbrOfUnreadMessages = 0;
-  StreamController<int> ctrlUnreadMessages = StreamController<int>();
-  StreamController<Map<String, List<String>>> ctrlListOfMessages =
-      StreamController<Map<String, List<String>>>();
-
-  BuildContext context;
-
-  Future<String> getToken() {
-    return firebaseMessaging.getToken();
+  int getUnreadMessages() {
+    return nbrOfUnreadMessages;
   }
 
   Stream getUnreadMessagesStream() {
@@ -36,16 +52,27 @@ FirebaseMessaging firebaseMessaging = FirebaseMessaging();
     return ctrlListOfMessages.stream;
   }
 
-  int getUnreadMessages() {
-    return nbrOfUnreadMessages;
+  static void add(dynamic messages) {
+    nbrOfUnreadMessages += 1;
+    ctrlUnreadMessages.add(nbrOfUnreadMessages);
+    ctrlListOfMessages.add(messages);
+  }
+
+/*
+*
+*
+*
+* */
+  Future<String> getToken() {
+    return _firebaseMessaging.getToken();
   }
 
   void firebaseCloudMessagingListeners(BuildContext context) {
     if (Platform.isIOS) iOSPermission();
 
-    firebaseMessaging.configure(
+    _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> mapMessage) async {
-        this.context = context;
+        setContext(context);
         CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
         showNotification(message: message);
       },
@@ -65,65 +92,23 @@ FirebaseMessaging firebaseMessaging = FirebaseMessaging();
     configLocalNotification(context);
   }
 
-  void iOSPermission() {
-    firebaseMessaging.requestNotificationPermissions(
+  static void iOSPermission() {
+    _firebaseMessaging.requestNotificationPermissions(
         IosNotificationSettings(sound: true, badge: true, alert: true));
   }
 
 // Flutter Local Notifications //
-  void configLocalNotification(BuildContext context) {
+  static void configLocalNotification(BuildContext context) {
     var initializationSettingsAndroid = new AndroidInitializationSettings(
         'app_icon'); // init app_icon that is on the folder android/app/src/main/res/drawable
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+    _flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
   }
 
-  static Future _showNotification(Map<String, dynamic> message) async {
-    var pushTitle;
-    var pushText;
-    var action;
-
-    if (Platform.isAndroid) {
-      var nodeData = message['data'];
-      pushTitle = nodeData['title'];
-      pushText = nodeData['body'];
-      action = nodeData['action'];
-    } else {
-      pushTitle = message['title'];
-      pushText = message['body'];
-      action = message['action'];
-    }
-    print("AppPushs params pushTitle : $pushTitle");
-    print("AppPushs params pushText : $pushText");
-    print("AppPushs params pushAction : $action");
-
-    // @formatter:off
-    var platformChannelSpecificsAndroid = new AndroidNotificationDetails(
-        'your channel id',
-        'your channel name',
-        'your channel description',
-        playSound: false,
-        enableVibration: false,
-        importance: Importance.Max,
-        priority: Priority.High);
-    // @formatter:on
-    var platformChannelSpecificsIos = new IOSNotificationDetails(presentSound: false);
-    var platformChannelSpecifics = new NotificationDetails(platformChannelSpecificsAndroid, platformChannelSpecificsIos);
-
-    new Future.delayed(Duration.zero, () {
-      _flutterLocalNotificationsPlugin.show(
-        0,
-        pushTitle,
-        pushText,
-        platformChannelSpecifics,
-        payload: 'No_Sound',
-      );
-    });
-  }
-  void showNotification({@required CloudMessage message}) async {
+  static Future showNotification({@required CloudMessage message}) async {
     nbrOfUnreadMessages += 1;
     ctrlUnreadMessages.add(nbrOfUnreadMessages);
     String contentTitle;
@@ -139,10 +124,14 @@ FirebaseMessaging firebaseMessaging = FirebaseMessaging();
             '${message.title} (${messages[message.data['otherUid']].length} messages)';
     print(messages);
     ctrlListOfMessages.add(messages);
+
+    add(messages);
+/*
     InboxStyleInformation inboxStyleInformation = InboxStyleInformation(
         messages[message.data['otherUid']],
         contentTitle: contentTitle,
         summaryText: message.title);
+*/
 
     String groupKey = 'co.flowby';
 //    String groupChannelId = 'message_notifications_id';
@@ -154,8 +143,6 @@ FirebaseMessaging firebaseMessaging = FirebaseMessaging();
       groupChannelId,
       groupChannelName,
       groupChannelDescription,
-      styleInformation: inboxStyleInformation,
-      style: AndroidNotificationStyle.Inbox,
       playSound: true,
       enableVibration: true,
       importance: Importance.Max,
@@ -169,7 +156,7 @@ FirebaseMessaging firebaseMessaging = FirebaseMessaging();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
-    await flutterLocalNotificationsPlugin.show(
+    await _flutterLocalNotificationsPlugin.show(
       message.data['otherUid'].hashCode,
       contentTitle,
       message.body,
@@ -188,17 +175,18 @@ FirebaseMessaging firebaseMessaging = FirebaseMessaging();
     }
   }
 
-  Future onSelectNotification(String payload) async {
+  static Future onSelectNotification(String payload) async {
     if (payload != null) {
       //debugPrint('notification payload: ' + payload);
     }
+    BuildContext context = getContext();
     debugPrint('context messaging: $context');
     CloudMessage message =
         CloudMessage.fromMap(mapMessage: json.decode(payload));
     navigateToChat(context, message);
   }
 
-  void navigateToChat(
+  static void navigateToChat(
     BuildContext context,
     CloudMessage message,
   ) {
@@ -223,18 +211,19 @@ FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   }
 
   static Future<dynamic> myBackgroundMessageHandler(
-      Map<String, dynamic> message) async {
-    _showNotification(message);
+      Map<String, dynamic> mapMessage) async {
+    CloudMessage message = CloudMessage.fromMap(mapMessage: mapMessage);
+    showNotification(message: message);
     print('mybackground Message handler');
-    if (message.containsKey('data')) {
+    if (mapMessage.containsKey('data')) {
       // Handle data message
-      final dynamic data = message['data'];
+      final dynamic data = mapMessage['data'];
       print(data);
     }
 
-    if (message.containsKey('notification')) {
+    if (mapMessage.containsKey('notification')) {
       // Handle notification message
-      final dynamic notification = message['notification'];
+      final dynamic notification = mapMessage['notification'];
       print(notification);
     }
 

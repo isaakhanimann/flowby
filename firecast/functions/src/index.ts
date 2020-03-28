@@ -461,3 +461,71 @@ exports.sendNotification = functions.firestore
     }
     }
   );
+
+// update the number of unread messages of a chat from an user perspective
+exports.updateUnreadMessagesInChat = functions.firestore
+.document("chats/{chatId}/messages/{messageId}")
+.onCreate(
+  async (snap: FirebaseFirestore.DocumentSnapshot, context: EventContext) => {
+
+    const message: FirebaseFirestore.DocumentData = snap.data()!;
+
+    const senderUid: string = message.senderUid;
+      
+    const chatId = context.params.chatId;
+    const chatSnap: FirebaseFirestore.DocumentSnapshot = await db
+      .collection("chats")
+      .doc(chatId)
+      .get();
+    
+    const chat: FirebaseFirestore.DocumentData = chatSnap.data()!;
+  
+    let unreadMessages1: number = 0;
+    let unreadMessages2: number = 0;
+
+    if (senderUid === chat.uid1) {
+      //
+      // the receiver is user2 of the chat
+      //
+      if(chat?.unreadMessages2){
+        unreadMessages2 = chat.unreadMessages2;
+        unreadMessages2 += 1;
+      } else {
+        unreadMessages2 = 1;
+      }
+
+      return db.collection("chats")
+      .doc(chatId)
+      .update({
+        unreadMessages2: unreadMessages2
+      })
+      .then(() => {
+        console.log(`Successful update: User2 has ${unreadMessages2} unread messages`);
+      })
+      .catch((error: any) => {
+        console.log(`Error updating the number of unread messages of user1:`, error);
+      });
+    } else {
+      //
+      // the receiver is user1 of the chat
+      //
+      if(chat?.unreadMessages1){
+        unreadMessages1 = chat.unreadMessages1;
+        unreadMessages1 += 1;
+      } else {
+        unreadMessages1 = 1;
+      }
+
+      return db.collection("chats")
+      .doc(chatId)
+      .update({
+        unreadMessages1: unreadMessages1
+      })
+      .then(() => {
+        console.log(`Successful update: User1 has ${unreadMessages1} unread messages`);
+      })
+      .catch((error: any) => {
+        console.log(`Error updating the number of unread messages of user2:`, error);
+      });
+    }
+});
