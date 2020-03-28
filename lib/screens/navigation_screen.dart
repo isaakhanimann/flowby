@@ -63,7 +63,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         catchError: (context, object) {
           return null;
         },
-        child: ChooseRoleScreen(),
+        child: ChooseSearchModeScreen(),
       );
     }
 

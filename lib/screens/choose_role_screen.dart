@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:Flowby/models/search_mode.dart';
 
-class ChooseRoleScreen extends StatelessWidget {
+class ChooseSearchModeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final searchMode = Provider.of<SearchMode>(context, listen: false);
