@@ -44,28 +44,6 @@ exports.deleteFromIndex = functions.firestore
   .document("users/{userId}")
   .onDelete(snapshot => index.deleteObject(snapshot.id));
 
-// when a message is added scan it for the string "pizza" and replace it with the emoji
-exports.createMessageWithPizza = functions.firestore
-  .document("/chats/{chatId}/messages/{messageId}")
-  .onCreate((snap: any, context: any) => {
-    //access wildcards
-    const chatId = context.params.chatId;
-    const messageId = context.params.messageId;
-    console.log(`New message ${messageId} in chat ${chatId}`);
-    // Get an object representing the document
-    const newMessage = snap.data();
-
-    // access a particular field as you would any JS property
-    const text = addPizzas(newMessage.text);
-
-    // perform desired operations ...
-    return snap.ref.update({ text: text });
-  });
-
-function addPizzas(text: string) {
-  return text.replace(/\bpizza\b/g, "🍕");
-}
-
 // when a message is added update the lastMessageText field of the respective chat
 exports.createMessageUpdateChat = functions.firestore
   .document("/chats/{chatId}/messages/{messageId}")
@@ -84,8 +62,8 @@ exports.createMessageUpdateChat = functions.firestore
     });
   });
 
-// when the username of a user is changed update all the chats that contain that username (find them with uid)
-exports.updateUsernameUpdateChat = functions.firestore
+// when the username or imageUrl of a user is changed update all the chats that contain that user (find them with uid)
+exports.updateUserUpdateChat = functions.firestore
   .document("/users/{userId}")
   .onUpdate(async (change: any, context: any) => {
     // Get an object representing the document
@@ -93,18 +71,24 @@ exports.updateUsernameUpdateChat = functions.firestore
     // ...or the previous value before this update
     const previousUser = change.before.data();
     // if the username changed change all the chats
-    if (previousUser.username !== newUser.username) {
+    if (
+      previousUser.username !== newUser.username ||
+      previousUser.imageUrl !== newUser.imageUrl
+    ) {
       try {
         // First update all the chats where the user is user1
         const querySnapshot = await db
           .collection("chats")
-          .where("uid1", "==", newUser.uid)
+          .where("user1.uid", "==", newUser.uid)
           .get();
         querySnapshot.forEach((documentSnapshot: any) => {
           if (documentSnapshot.exists) {
             db.collection("chats")
               .doc(documentSnapshot.ref.id)
-              .update({ username1: newUser.username })
+              .update({
+                "user1.username": newUser.username,
+                "user1.imageUrl": newUser.imageUrl
+              })
               .catch((error: any) => {
                 console.log("Error updating chat1:", error);
               });
@@ -117,13 +101,16 @@ exports.updateUsernameUpdateChat = functions.firestore
         // Then update all the chats where the user is user2
         const querySnapshot = await db
           .collection("chats")
-          .where("uid2", "==", newUser.uid)
+          .where("user2.uid", "==", newUser.uid)
           .get();
         querySnapshot.forEach((documentSnapshot: any) => {
           if (documentSnapshot.exists) {
             db.collection("chats")
               .doc(documentSnapshot.ref.id)
-              .update({ username1: newUser.username })
+              .update({
+                "user2.username": newUser.username,
+                "user2.imageUrl": newUser.imageUrl
+              })
               .catch((error: any) => {
                 console.log("Error updating chat2:", error);
               });
@@ -133,87 +120,6 @@ exports.updateUsernameUpdateChat = functions.firestore
         console.log("Error getting chats2:", error);
       }
     }
-  });
-
-// when an image is added to storage update its users imageFileName and also all the chats the user is in
-// a user can only upload an image with the same filename as his uid
-// if the imageFileName of the user (in users collection) is already his uid no update has to be made
-exports.updateImageUpdateUserAndChats = functions.storage
-  .object()
-  .onFinalize(async (object: any) => {
-    const filePath = object.name; // File path in the bucket.
-    // Get the file name, this should be the uid of the user
-    const uid = path.basename(filePath);
-    const userDoc = await db
-      .collection("users")
-      .doc(uid)
-      .get();
-
-    const imageVersionNumber = userDoc?.data()?.imageVersionNumber;
-    let newImageVersionNumber = 1;
-    if (imageVersionNumber !== null) {
-      newImageVersionNumber = imageVersionNumber + 1;
-    }
-
-    // Update the user in the users collection
-    db.collection("users")
-      .doc(uid)
-      .update({ imageFileName: uid, imageVersionNumber: newImageVersionNumber })
-      .then(() => {
-        console.log(`Users imageFileName updated to ${uid}`);
-      })
-      .catch((error: any) => {
-        console.log("Error updating imageFileName:", error);
-      });
-    // Update all the chats of this user to have the same imageFileName
-    // First update all the chats where the user is user1
-    db.collection("chats")
-      .where("uid1", "==", uid)
-      .get()
-      .then((querySnapshot: any) => {
-        querySnapshot.forEach((documentSnapshot: any) => {
-          if (documentSnapshot.exists) {
-            db.collection("chats")
-              .doc(documentSnapshot.ref.id)
-              .update({
-                user1ImageFileName: uid,
-                user1ImageVersionNumber: newImageVersionNumber
-              })
-              .then(() => {
-                console.log(`Users user1ImageFileName updated to ${uid}`);
-              })
-              .catch((error: any) => {
-                console.log("Error updating chat:", error);
-              });
-          }
-        });
-      })
-      .catch((error: any) => console.log(error));
-    // Then update all the chats where the user is user2
-    db.collection("chats")
-      .where("uid2", "==", uid)
-      .get()
-      .then((querySnapshot: any) => {
-        querySnapshot.forEach((documentSnapshot: any) => {
-          if (documentSnapshot.exists) {
-            db.collection("chats")
-              .doc(documentSnapshot.ref.id)
-              .update({
-                user2ImageFileName: uid,
-                user2ImageVersionNumber: newImageVersionNumber
-              })
-              .then(() => {
-                console.log(`Users user2ImageFileName updated to ${uid}`);
-              })
-              .catch((error: any) => {
-                console.log("Error updating chat:", error);
-              });
-          }
-        });
-      })
-      .catch((error: any) => {
-        console.log("Error getting chat:", error);
-      });
   });
 
 // when the firebase user is deleted the user in the users collection, his chats and image should also be deleted

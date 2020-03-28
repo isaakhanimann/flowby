@@ -99,8 +99,7 @@ const kChatScreenBorderTextFieldColor = Color(0xFFdadada);
 const kCardBackgroundColor = Color(0xFFf4f4f4);
 const kSecondCardBackgroundColor = Color(0xFFE8E8E9);
 
-//const kCardBackgroundColor = Color(0x2Ffdd66d);
-
 // Other
-const String kDefaultProfilePicUrl = 'default-profile-pic.jpg';
+const String kDefaultProfilePicUrl =
+    'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2Fdefault-profile-pic.jpg?alt=media';
 const int kDistanceInKm = 100000000000000;
