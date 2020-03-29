@@ -52,17 +52,31 @@ class ChatScreen extends StatelessWidget {
   }
 }
 
-class ChatScreenThatHasToGetPath extends StatelessWidget {
+class ChatScreenThatHasToGetPath extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
+  _ChatScreenThatHasToGetPathState createState() =>
+      _ChatScreenThatHasToGetPathState();
+}
+
+class _ChatScreenThatHasToGetPathState
+    extends State<ChatScreenThatHasToGetPath> {
+  Future<String> chatPathFuture;
+
+  @override
+  void initState() {
+    super.initState();
     GlobalChatScreenInfo screenInfo =
-        Provider.of<GlobalChatScreenInfo>(context);
+        Provider.of<GlobalChatScreenInfo>(context, listen: false);
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    chatPathFuture = cloudFirestoreService.getChatPath(
+        user1: screenInfo.loggedInUser, user2: screenInfo.otherUser);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder(
-      future: cloudFirestoreService.getChatPath(
-          user1: screenInfo.loggedInUser, user2: screenInfo.otherUser),
+      future: chatPathFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return CenteredLoadingIndicator();
@@ -189,9 +203,7 @@ class MessageSendingSectionLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-      ),
+      child: CenteredLoadingIndicator(),
     );
   }
 }
@@ -210,7 +222,7 @@ class ChatHeader extends StatelessWidget {
     bool amIUser1;
     bool haveIBlocked;
     if (chat != null) {
-      amIUser1 = (chat.uid1 == screenInfo.loggedInUser.uid);
+      amIUser1 = (chat.user1.uid == screenInfo.loggedInUser.uid);
       if (amIUser1) {
         haveIBlocked = chat.hasUser1Blocked;
       } else {
@@ -404,7 +416,7 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
   Widget build(BuildContext context) {
     GlobalChatScreenInfo screenInfo =
         Provider.of<GlobalChatScreenInfo>(context);
-    bool amIUser1 = widget.chat.uid1 == screenInfo.loggedInUser.uid;
+    bool amIUser1 = widget.chat.user1.uid == screenInfo.loggedInUser.uid;
     bool haveIBlocked;
     bool hasOtherBlocked;
     if (amIUser1) {
@@ -431,7 +443,9 @@ class _MessageSendingSectionState extends State<MessageSendingSection> {
         height: 80,
         child: Center(
           child: Text(
-            (amIUser1 ? widget.chat.username2 : widget.chat.username1) +
+            (amIUser1
+                    ? widget.chat.user2.username
+                    : widget.chat.user1.username) +
                 ' ' +
                 AppLocalizations.of(context).translate('has_blocked_you'),
             style: kBlockedTextStyle,

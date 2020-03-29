@@ -101,13 +101,9 @@ class FirebaseCloudFirestoreService {
       var chatStream = _fireStore.document(chatPath).snapshots().map((doc) {
         Map<dynamic, dynamic> map = doc.data;
         ChatWithoutLastMessage chat = ChatWithoutLastMessage(
-            uid1: map['uid1'],
-            username1: map['username1'],
-            user1ImageFileName: map['user1ImageFileName'],
+            user1: User.fromMap(map: map['user1']),
             hasUser1Blocked: map['hasUser1Blocked'],
-            uid2: map['uid2'],
-            username2: map['username2'] ?? 'Default username2',
-            user2ImageFileName: map['user2ImageFileName'],
+            user2: User.fromMap(map: map['user2']),
             hasUser2Blocked: map['hasUser2Blocked'],
             chatpath: doc.reference.path);
         return chat;
@@ -174,7 +170,12 @@ class FirebaseCloudFirestoreService {
       {@required User user1, @required User user2}) async {
     try {
       Chat chat = Chat(
-          combinedUids: [user1.uid + user2.uid, user2.uid + user1.uid],
+          combinedUids: [
+            user1.uid,
+            user2.uid,
+            user1.uid + user2.uid,
+            user2.uid + user1.uid
+          ],
           user1: user1,
           user2: user2,
           hasUser1Blocked: false,
