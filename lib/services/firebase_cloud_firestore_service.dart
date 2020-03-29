@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:Flowby/models/announcement.dart';
 import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/message.dart';
@@ -7,7 +8,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:Flowby/models/chat_without_last_message.dart';
 
 class FirebaseCloudFirestoreService {
@@ -136,31 +136,15 @@ class FirebaseCloudFirestoreService {
   }
 
   Stream<List<Chat>> getChatsStream({@required String loggedInUid}) {
-    Stream<List<Chat>> stream1 = _fireStore
+    Stream<List<Chat>> chatStream = _fireStore
         .collection('chats')
-        .where('uid1', isEqualTo: loggedInUid)
+        .where('combinedUids', arrayContains: loggedInUid)
         .snapshots()
         .map((snap) => snap.documents.map((doc) {
               Chat chat = Chat.fromMap(map: doc.data);
               chat.setChatpath(chatpath: doc.reference.path);
               return chat;
             }).toList());
-    Stream<List<Chat>> stream2 = _fireStore
-        .collection('chats')
-        .where('uid2', isEqualTo: loggedInUid)
-        .snapshots()
-        .map((snap) => snap.documents.map((doc) {
-              Chat chat = Chat.fromMap(map: doc.data);
-              chat.setChatpath(chatpath: doc.reference.path);
-              return chat;
-            }).toList());
-
-//i have 2 streams of lists
-//i want one stream with the list of those streams combined
-
-    Stream<List<Chat>> chatStream =
-        ZipStream.zip2(stream1, stream2, (list1, list2) => list1 + list2);
-
     return chatStream;
   }
 
