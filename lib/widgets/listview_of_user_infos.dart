@@ -14,7 +14,7 @@ class ListViewOfUserInfos extends StatelessWidget {
   final User user;
   final String heroTag;
 
-  ListViewOfUserInfos({@required this.user, this.heroTag});
+  ListViewOfUserInfos({@required this.user, this.heroTag = 'notnulltag'});
 
   @override
   Widget build(BuildContext context) {

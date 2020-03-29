@@ -13,6 +13,8 @@ class User {
   String wishKeywords;
   List<SkillOrWish> skills = [];
   List<SkillOrWish> wishes = [];
+  String imageFileName;
+  int imageVersionNumber;
 
   User(
       {this.username,

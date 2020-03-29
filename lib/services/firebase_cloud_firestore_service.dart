@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:Flowby/models/announcement.dart';
 import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/message.dart';
@@ -31,7 +30,7 @@ class FirebaseCloudFirestoreService {
       var userDocument =
           await _fireStore.collection('users').document(uid).get();
       if (userDocument.data == null) {
-        print('Could not get user info1');
+        print('Could not get user with uid = $uid');
         return null;
       }
 

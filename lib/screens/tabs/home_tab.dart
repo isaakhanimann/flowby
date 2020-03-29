@@ -363,8 +363,8 @@ class AnnouncementItem extends StatelessWidget {
                 style: kUsernameTextStyle,
               ),
               DistanceText(
-                latitude1: loggedInUser.location?.latitude,
-                longitude1: loggedInUser.location?.longitude,
+                latitude1: loggedInUser?.location?.latitude,
+                longitude1: loggedInUser?.location?.longitude,
                 latitude2: announcement.user?.location?.latitude,
                 longitude2: announcement.user?.location?.longitude,
                 fontSize: 10,

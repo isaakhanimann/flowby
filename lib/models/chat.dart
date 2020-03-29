@@ -11,6 +11,17 @@ class Chat {
   String lastMessageText;
   var lastMessageTimestamp;
 
+  //old start
+  String uid1;
+  String username1;
+  String user1ImageFileName;
+  int user1ImageVersionNumber = 1;
+  String uid2;
+  String username2;
+  String user2ImageFileName;
+  int user2ImageVersionNumber = 1;
+  //old end
+
   Chat(
       {this.combinedUids,
       this.user1,
@@ -60,7 +71,10 @@ class Chat {
   }
 
   List<String> _convertFirebaseList({List<dynamic> list}) {
-    List<String> newList = list.map((d) => d.toString()).toList();
+    List<String> newList = [];
+    for (dynamic item in list) {
+      newList.add(item.toString());
+    }
     return newList;
   }
 }

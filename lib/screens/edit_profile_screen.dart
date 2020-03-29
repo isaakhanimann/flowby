@@ -87,7 +87,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 NameBioHideSection(),
                 SizedBox(height: 20),
-                ChooseRoleAndSkillSection(),
+                EditSkillsAndWishesSection(),
                 SizedBox(
                   height: 20,
                 ),
@@ -111,8 +111,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           Provider.of<FirebaseStorageService>(context, listen: false);
 
       if (_profilePic != null) {
-        await storageService.uploadImage(
+        String imageUrl = await storageService.uploadImage(
             fileName: widget.user.uid, image: _profilePic);
+        widget.user.imageUrl = imageUrl;
       }
 
       widget.user.skills?.removeWhere(
@@ -389,13 +390,14 @@ class _NameBioHideSectionState extends State<NameBioHideSection> {
   }
 }
 
-class ChooseRoleAndSkillSection extends StatefulWidget {
+class EditSkillsAndWishesSection extends StatefulWidget {
   @override
-  _ChooseRoleAndSkillSectionState createState() =>
-      _ChooseRoleAndSkillSectionState();
+  _EditSkillsAndWishesSectionState createState() =>
+      _EditSkillsAndWishesSectionState();
 }
 
-class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
+class _EditSkillsAndWishesSectionState
+    extends State<EditSkillsAndWishesSection> {
   bool _showSkills = true;
 
   @override
@@ -407,7 +409,7 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
         CupertinoSegmentedControl(
           padding: EdgeInsets.symmetric(horizontal: 0),
           groupValue: _showSkills,
-          onValueChanged: _switchRole,
+          onValueChanged: _switchSkillsWishes,
           children: <bool, Widget>{
             true: Text(AppLocalizations.of(context).translate('skills'),
                 style: kHomeSwitchTextStyle),
@@ -470,7 +472,7 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
     );
   }
 
-  _switchRole(bool newChoice) {
+  _switchSkillsWishes(bool newChoice) {
     setState(() {
       _showSkills = newChoice;
     });
