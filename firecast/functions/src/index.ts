@@ -439,3 +439,96 @@ exports.oldUpdateImageUpdateUserAndChats = functions.storage
         console.log("Error getting chat:", error);
       });
   });
+
+  // update the number of unread messages of a chat from an user perspective
+exports.updateUnreadMessagesInChat = functions.firestore
+.document("chats/{chatId}/messages/{messageId}")
+.onCreate(
+  async (snap: FirebaseFirestore.DocumentSnapshot, context: EventContext) => {
+
+    const message: FirebaseFirestore.DocumentData = snap.data()!;
+
+    const senderUid: string = message.senderUid;
+    let receiverUid: string = "";
+      
+    const chatId = context.params.chatId;
+    const chatSnap: FirebaseFirestore.DocumentSnapshot = await db
+      .collection("chats")
+      .doc(chatId)
+      .get();
+    
+    const chat: FirebaseFirestore.DocumentData = chatSnap.data()!;
+  
+    let unreadMessages1: number = 0;
+    let unreadMessages2: number = 0;
+
+    if (senderUid === chat.uid1) {
+      //
+      // the receiver is user2 of the chat
+      //
+      receiverUid = chat.uid2;
+      if(chat?.unreadMessages2){
+        unreadMessages2 = chat.unreadMessages2;
+        unreadMessages2 += 1;
+      } else {
+        unreadMessages2 = 1;
+      }
+
+      db.collection("chats")
+      .doc(chatId)
+      .update({
+        unreadMessages2: unreadMessages2
+      })
+      .then(() => {
+        console.log(`Successful update: User2 has ${unreadMessages2} unread messages`);
+      })
+      .catch((error: any) => {
+        console.log(`Error updating the number of unread messages of user1:`, error);
+      });
+    } else {
+      //
+      // the receiver is user1 of the chat
+      //
+      receiverUid = chat.uid1;
+      if(chat?.unreadMessages1){
+        unreadMessages1 = chat.unreadMessages1;
+        unreadMessages1 += 1;
+      } else {
+        unreadMessages1 = 1;
+      }
+
+      db.collection("chats")
+      .doc(chatId)
+      .update({
+        unreadMessages1: unreadMessages1
+      })
+      .then(() => {
+        console.log(`Successful update: User1 has ${unreadMessages1} unread messages`);
+      })
+      .catch((error: any) => {
+        console.log(`Error updating the number of unread messages of user2:`, error);
+      });
+    }
+
+    //TODO: create a new document if the user doesn't have an unreadMessagesDoc yet
+
+    const unreadMessagesSnap: FirebaseFirestore.DocumentSnapshot = await db
+      .collection("unreadMessages")
+      .doc(receiverUid)
+      .get();
+
+    const unreadMessages: FirebaseFirestore.DocumentData = unreadMessagesSnap.data()!;
+    let total: number = unreadMessages.total + 1;
+
+    return db.collection("unreadMessages")
+      .doc(receiverUid)
+      .update({
+        total: total
+      })
+      .then(() => {
+        console.log(`Successful update: User ${receiverUid} has a total of ${total} unread messages`);
+      })
+      .catch((error: any) => {
+        console.log(`Error updating the total number of unread messages of user ${receiverUid}:`, error);
+      });
+});
