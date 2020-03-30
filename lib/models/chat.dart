@@ -10,6 +10,8 @@ class Chat {
   String chatpath;
   String lastMessageText;
   var lastMessageTimestamp;
+  int unreadMessages1;
+  int unreadMessages2;
 
   Chat(
       {this.combinedUids,
@@ -18,7 +20,9 @@ class Chat {
       this.user2,
       this.hasUser2Blocked,
       this.lastMessageText,
-      this.lastMessageTimestamp});
+      this.lastMessageTimestamp,
+      this.unreadMessages1 = 0,
+      this.unreadMessages2 = 0});
 
   Chat.fromMap({Map<String, dynamic> map}) {
     this.combinedUids = _convertFirebaseList(list: map['combinedUids']);
@@ -29,6 +33,8 @@ class Chat {
     this.lastMessageText = map['lastMessageText'] ?? 'No messages';
     this.lastMessageTimestamp =
         map['lastMessageTimestamp']?.toDate() ?? DateTime.now();
+    this.unreadMessages1 = map['unreadMessages1'] ?? 0;
+    this.unreadMessages2 = map['unreadMessages2'] ?? 0;
   }
 
   Map<String, dynamic> toMap() {
@@ -40,6 +46,8 @@ class Chat {
       'hasUser2Blocked': hasUser2Blocked,
       'lastMessageText': lastMessageText,
       'lastMessageTimestamp': lastMessageTimestamp,
+      'unreadMessages1' : unreadMessages1,
+      'unreadMessages2' : unreadMessages2,
     };
   }
 
@@ -55,7 +63,9 @@ class Chat {
     toPrint += 'user2: $user2, ';
     toPrint += 'hasUser2Blocked: $hasUser2Blocked, ';
     toPrint += 'lastMessageText: $lastMessageText, ';
-    toPrint += 'lastMessageTimestamp: ${lastMessageTimestamp.toString()} }\n';
+    toPrint += 'lastMessageTimestamp: ${lastMessageTimestamp.toString()} ';
+    toPrint += 'unreadMessages1: $unreadMessages1, ';
+    toPrint += 'unreadMessages2: $unreadMessages1, }\n';
     return toPrint;
   }
 

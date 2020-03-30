@@ -4,6 +4,7 @@ import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/widgets/badge.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/custom_card.dart';
 import 'package:Flowby/widgets/tab_header.dart';
@@ -99,12 +100,15 @@ class ChatItem extends StatelessWidget {
 
     bool haveIBlocked;
     bool hasOtherBlocked;
+    int unreadMessages;
     if (amIUser1) {
       haveIBlocked = chat.hasUser1Blocked;
       hasOtherBlocked = chat.hasUser2Blocked;
+      unreadMessages = chat.unreadMessages1;
     } else {
       haveIBlocked = chat.hasUser2Blocked;
       hasOtherBlocked = chat.hasUser1Blocked;
+      unreadMessages = chat.unreadMessages2;
     }
 
     return CustomCard(
@@ -116,10 +120,16 @@ class ChatItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                otherUser.username,
-                overflow: TextOverflow.ellipsis,
-                style: kUsernameTextStyle,
+              Row(
+                children: <Widget>[
+                  Text(
+                    otherUser.username,
+                    overflow: TextOverflow.ellipsis,
+                    style: kUsernameTextStyle,
+                  ),
+                  SizedBox(width: 10),
+                  Badge(count: unreadMessages, badgeColor: Colors.red),
+                ],
               ),
               Flexible(
                 child: Text(
