@@ -7,22 +7,39 @@ import 'package:Flowby/widgets/route_transitions/scale_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:Flowby/models/role.dart';
+import 'package:provider/provider.dart';
+import 'package:Flowby/models/search_mode.dart';
 
 class ListViewOfUserInfos extends StatelessWidget {
   final User user;
   final String heroTag;
 
-  ListViewOfUserInfos({@required this.user, this.heroTag});
+  ListViewOfUserInfos({@required this.user, this.heroTag = 'notnulltag'});
 
   @override
   Widget build(BuildContext context) {
+    final searchMode = Provider.of<SearchMode>(context);
+
     bool areSkillsEmpty = user.skills == null || user.skills.isEmpty;
 
     bool areWishesEmpty = user.wishes == null || user.wishes.isEmpty;
 
-    bool isProvider = user.role == Role.provider;
-    bool isConsumer = user.role == Role.consumer;
+    bool showSkillsAndWishes = false;
+    bool showJustSkills = false;
+    bool showJustWishes = false;
+    bool showHidden = false;
+    bool showInvisible = false;
+    if (user.isHidden) {
+      showHidden = true;
+    } else if (areSkillsEmpty && areWishesEmpty) {
+      showInvisible = true;
+    } else if (!areWishesEmpty && !areSkillsEmpty) {
+      showSkillsAndWishes = true;
+    } else if (!areWishesEmpty) {
+      showJustWishes = true;
+    } else if (!areSkillsEmpty) {
+      showJustSkills = true;
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -36,17 +53,13 @@ class ListViewOfUserInfos extends StatelessWidget {
               onTap: () {
                 Navigator.of(context, rootNavigator: true).push(ScaleRoute(
                     page: ShowProfilePictureScreen(
-                  imageFileName: user.imageFileName,
-                  imageVersionNumber: user.imageVersionNumber,
+                  imageUrl: user.imageUrl,
                   otherUsername: user.username,
-                  heroTag: heroTag ?? user.imageFileName,
+                  heroTag: heroTag,
                 )));
               },
               child: ProfilePicture(
-                  imageFileName: user.imageFileName,
-                  imageVersionNumber: user.imageVersionNumber,
-                  radius: 60,
-                  heroTag: heroTag ?? user.imageFileName),
+                  imageUrl: user.imageUrl, radius: 60, heroTag: heroTag),
             ),
           ),
           if (user.distanceInKm != null)
@@ -90,30 +103,32 @@ class ListViewOfUserInfos extends StatelessWidget {
           SizedBox(
             height: 15,
           ),
-          if (user.isHidden)
+          //if the user has both wishes and skills we show both sections
+          if (showSkillsAndWishes)
+            SkillAndWishSection(
+              skills: user.skills,
+              wishes: user.wishes,
+              isSkillChosenInitially: searchMode.mode == Mode.searchSkills,
+            ),
+          //if the user just has skills just show those
+          if (showJustSkills)
+            SkillSection(
+              skills: user.skills,
+            ),
+          //if the user just has wishes just show those
+          if (showJustWishes)
+            WishSection(
+              wishes: user.wishes,
+            ),
+          if (showHidden)
             Text(
               AppLocalizations.of(context).translate("profile_hidden"),
               textAlign: TextAlign.center,
             ),
-          if (!user.isHidden && isProvider && areSkillsEmpty)
+          if (showInvisible)
             Text(
-              AppLocalizations.of(context).translate("profile_invisible_1"),
+              AppLocalizations.of(context).translate("profile_invisible"),
               textAlign: TextAlign.center,
-            ),
-          if (!user.isHidden && isProvider && !areSkillsEmpty)
-            SkillOrWishSection(
-              skillsOrWishes: user.skills,
-              title: AppLocalizations.of(context).translate("skills"),
-            ),
-          if (!user.isHidden && isConsumer && areWishesEmpty)
-            Text(
-              AppLocalizations.of(context).translate("profile_invisible_2"),
-              textAlign: TextAlign.center,
-            ),
-          if (!user.isHidden && isConsumer && !areWishesEmpty)
-            SkillOrWishSection(
-              skillsOrWishes: user.wishes,
-              title: AppLocalizations.of(context).translate("wishes"),
             ),
           SizedBox(
             height: 90,
@@ -124,11 +139,69 @@ class ListViewOfUserInfos extends StatelessWidget {
   }
 }
 
-class SkillOrWishSection extends StatelessWidget {
-  final List<SkillOrWish> skillsOrWishes;
-  final String title;
+class SkillAndWishSection extends StatefulWidget {
+  final List<SkillOrWish> skills;
+  final List<SkillOrWish> wishes;
+  final bool isSkillChosenInitially;
 
-  SkillOrWishSection({@required this.skillsOrWishes, @required this.title});
+  SkillAndWishSection(
+      {@required this.skills,
+      @required this.wishes,
+      @required this.isSkillChosenInitially});
+
+  @override
+  _SkillAndWishSectionState createState() => _SkillAndWishSectionState();
+}
+
+class _SkillAndWishSectionState extends State<SkillAndWishSection> {
+  bool isSkillChosen;
+
+  @override
+  void initState() {
+    super.initState();
+    isSkillChosen = widget.isSkillChosenInitially;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        CupertinoSegmentedControl(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          groupValue: isSkillChosen,
+          onValueChanged: _switch,
+          children: <bool, Widget>{
+            true: Text(AppLocalizations.of(context).translate('skills'),
+                style: kHomeSwitchTextStyle),
+            false: Text(AppLocalizations.of(context).translate('wishes'),
+                style: kHomeSwitchTextStyle),
+          },
+        ),
+        SizedBox(height: 20),
+        if (isSkillChosen)
+          SkillSection(
+            skills: widget.skills,
+          ),
+        if (!isSkillChosen)
+          WishSection(
+            wishes: widget.wishes,
+          ),
+      ],
+    );
+  }
+
+  _switch(bool newChoice) {
+    setState(() {
+      isSkillChosen = newChoice;
+    });
+  }
+}
+
+class SkillSection extends StatelessWidget {
+  final List<SkillOrWish> skills;
+
+  SkillSection({@required this.skills});
 
   @override
   Widget build(BuildContext context) {
@@ -146,11 +219,44 @@ class SkillOrWishSection extends StatelessWidget {
               height: 20,
             ),
             Text(
-              title,
+              AppLocalizations.of(context).translate("skills"),
               style: kSkillsTitleTextStyle,
             ),
             SizedBox(height: 10),
-            ListOfTexts(skillsOrWishes: skillsOrWishes)
+            ListOfTexts(skillsOrWishes: skills)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class WishSection extends StatelessWidget {
+  final List<SkillOrWish> wishes;
+
+  WishSection({@required this.wishes});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: kCardBackgroundColor,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15))),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              AppLocalizations.of(context).translate("wishes"),
+              style: kSkillsTitleTextStyle,
+            ),
+            SizedBox(height: 10),
+            ListOfTexts(skillsOrWishes: wishes)
           ],
         ),
       ),

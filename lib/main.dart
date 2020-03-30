@@ -18,6 +18,7 @@ import 'constants.dart';
 import 'route_generator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'app_localizations.dart';
+import 'models/search_mode.dart';
 
 void main() async {
   // This app is designed only to work vertically, so we limit
@@ -61,6 +62,9 @@ class Flowby extends StatelessWidget {
         Provider<AlgoliaService>(
           create: (_) => AlgoliaService(),
         ),
+        ChangeNotifierProvider<SearchMode>(
+          create: (_) => SearchMode(mode: Mode.searchSkills),
+        ),
       ],
       child: GestureDetector(
         onTap: () {
@@ -77,11 +81,14 @@ class Flowby extends StatelessWidget {
               const Locale('en'),
               const Locale('de'),
               const Locale('fr'),
+              const Locale('it'),
             ],
             localizationsDelegates: [
               AppLocalizations.delegate,
-              DefaultCupertinoLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              DefaultCupertinoLocalizations.delegate,
             ],
             localeResolutionCallback: (locale, supportedLocales) {
               if (locale == null) {

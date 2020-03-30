@@ -16,7 +16,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
-import 'package:Flowby/models/role.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -88,7 +87,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 NameBioHideSection(),
                 SizedBox(height: 20),
-                ChooseRoleAndSkillSection(),
+                EditSkillsAndWishesSection(),
                 SizedBox(
                   height: 20,
                 ),
@@ -112,8 +111,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           Provider.of<FirebaseStorageService>(context, listen: false);
 
       if (_profilePic != null) {
-        await storageService.uploadImage(
+        String imageUrl = await storageService.uploadImage(
             fileName: widget.user.uid, image: _profilePic);
+        widget.user.imageUrl = imageUrl;
       }
 
       widget.user.skills?.removeWhere(
@@ -163,8 +163,7 @@ class _ImageSectionState extends State<ImageSection> {
                   Opacity(
                     opacity: 0.4,
                     child: CachedNetworkImage(
-                      imageUrl:
-                          "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F${user.imageFileName}?alt=media&version=${user.imageVersionNumber}",
+                      imageUrl: user.imageUrl,
                       imageBuilder: (context, imageProvider) {
                         return CircleAvatar(
                             radius: 60,
@@ -391,21 +390,15 @@ class _NameBioHideSectionState extends State<NameBioHideSection> {
   }
 }
 
-class ChooseRoleAndSkillSection extends StatefulWidget {
+class EditSkillsAndWishesSection extends StatefulWidget {
   @override
-  _ChooseRoleAndSkillSectionState createState() =>
-      _ChooseRoleAndSkillSectionState();
+  _EditSkillsAndWishesSectionState createState() =>
+      _EditSkillsAndWishesSectionState();
 }
 
-class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
-  Role _role;
-
-  @override
-  void initState() {
-    super.initState();
-    final user = Provider.of<User>(context, listen: false);
-    _role = user.role;
-  }
+class _EditSkillsAndWishesSectionState
+    extends State<EditSkillsAndWishesSection> {
+  bool _showSkills = true;
 
   @override
   Widget build(BuildContext context) {
@@ -415,14 +408,12 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
       children: <Widget>[
         CupertinoSegmentedControl(
           padding: EdgeInsets.symmetric(horizontal: 0),
-          groupValue: _role,
-          onValueChanged: _switchRole,
-          children: <Role, Widget>{
-            Role.consumer: Text(
-                AppLocalizations.of(context).translate('searcher'),
+          groupValue: _showSkills,
+          onValueChanged: _switchSkillsWishes,
+          children: <bool, Widget>{
+            true: Text(AppLocalizations.of(context).translate('skills'),
                 style: kHomeSwitchTextStyle),
-            Role.provider: Text(
-                AppLocalizations.of(context).translate('provider'),
+            false: Text(AppLocalizations.of(context).translate('wishes'),
                 style: kHomeSwitchTextStyle),
           },
         ),
@@ -434,7 +425,7 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
               borderRadius: BorderRadius.all(Radius.circular(15))),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-            child: _role == Role.provider
+            child: _showSkills
                 ? Column(
                     children: <Widget>[
                       Text(
@@ -481,11 +472,9 @@ class _ChooseRoleAndSkillSectionState extends State<ChooseRoleAndSkillSection> {
     );
   }
 
-  _switchRole(Role newRole) {
-    final user = Provider.of<User>(context, listen: false);
-    user.role = newRole;
+  _switchSkillsWishes(bool newChoice) {
     setState(() {
-      _role = newRole;
+      _showSkills = newChoice;
     });
   }
 }

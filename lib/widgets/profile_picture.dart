@@ -6,22 +6,19 @@ import 'centered_loading_indicator.dart';
 class ProfilePicture extends StatelessWidget {
   const ProfilePicture({
     Key key,
-    @required this.imageFileName,
-    @required this.imageVersionNumber,
+    @required this.imageUrl,
     @required this.radius,
     @required this.heroTag,
   }) : super(key: key);
 
-  final String imageFileName;
-  final int imageVersionNumber;
+  final String imageUrl;
   final double radius;
   final String heroTag;
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-      imageUrl:
-          "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$imageFileName?alt=media&version=$imageVersionNumber",
+      imageUrl: imageUrl,
       imageBuilder: (context, imageProvider) {
         return Hero(
           transitionOnUserGestures: true,

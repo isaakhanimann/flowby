@@ -3,15 +3,12 @@ import 'dart:async';
 import 'package:Flowby/models/announcement.dart';
 import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/message.dart';
-import 'package:Flowby/models/unread_messages.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:Flowby/models/chat_without_last_message.dart';
-import 'package:Flowby/models/role.dart';
 
 class FirebaseCloudFirestoreService {
   final _fireStore = Firestore.instance;
@@ -33,7 +30,7 @@ class FirebaseCloudFirestoreService {
       var userDocument =
           await _fireStore.collection('users').document(uid).get();
       if (userDocument.data == null) {
-        print('Could not get user info1');
+        print('Could not get user with uid = $uid');
         return null;
       }
 
@@ -104,13 +101,9 @@ class FirebaseCloudFirestoreService {
       var chatStream = _fireStore.document(chatPath).snapshots().map((doc) {
         Map<dynamic, dynamic> map = doc.data;
         ChatWithoutLastMessage chat = ChatWithoutLastMessage(
-            uid1: map['uid1'],
-            username1: map['username1'],
-            user1ImageFileName: map['user1ImageFileName'],
+            user1: User.fromMap(map: map['user1']),
             hasUser1Blocked: map['hasUser1Blocked'],
-            uid2: map['uid2'],
-            username2: map['username2'] ?? 'Default username2',
-            user2ImageFileName: map['user2ImageFileName'],
+            user2: User.fromMap(map: map['user2']),
             hasUser2Blocked: map['hasUser2Blocked'],
             chatpath: doc.reference.path);
         return chat;
@@ -139,87 +132,53 @@ class FirebaseCloudFirestoreService {
   }
 
   Stream<List<Chat>> getChatsStream({@required String loggedInUid}) {
-    Stream<List<Chat>> stream1 = _fireStore
+    Stream<List<Chat>> chatStream = _fireStore
         .collection('chats')
-        .where('uid1', isEqualTo: loggedInUid)
+        .where('combinedUids', arrayContains: loggedInUid)
         .snapshots()
         .map((snap) => snap.documents.map((doc) {
               Chat chat = Chat.fromMap(map: doc.data);
               chat.setChatpath(chatpath: doc.reference.path);
               return chat;
             }).toList());
-    Stream<List<Chat>> stream2 = _fireStore
-        .collection('chats')
-        .where('uid2', isEqualTo: loggedInUid)
-        .snapshots()
-        .map((snap) => snap.documents.map((doc) {
-              Chat chat = Chat.fromMap(map: doc.data);
-              chat.setChatpath(chatpath: doc.reference.path);
-              return chat;
-            }).toList());
-
-//i have 2 streams of lists
-//i want one stream with the list of those streams combined
-
-    Stream<List<Chat>> chatStream =
-        ZipStream.zip2(stream1, stream2, (list1, list2) => list1 + list2);
-
     return chatStream;
   }
 
   Future<String> getChatPath(
-      {@required String loggedInUid,
-      @required String otherUid,
-      @required String otherUsername,
-      @required String otherUserImageFileName}) async {
+      {@required User user1, @required User user2}) async {
     try {
+      QuerySnapshot snap = await _fireStore
+          .collection('chats')
+          .where('combinedUids', arrayContains: user1.uid + user2.uid)
+          .getDocuments();
       String chatPath;
-      QuerySnapshot snap1 = await _fireStore
-          .collection('chats')
-          .where('uid1', isEqualTo: loggedInUid)
-          .where('uid2', isEqualTo: otherUid)
-          .getDocuments();
-      QuerySnapshot snap2 = await _fireStore
-          .collection('chats')
-          .where('uid1', isEqualTo: otherUid)
-          .where('uid2', isEqualTo: loggedInUid)
-          .getDocuments();
-      if (snap1.documents.isNotEmpty) {
-//loggedInUser is user1
-        chatPath = snap1.documents[0].reference.path;
-      } else if (snap2.documents.isNotEmpty) {
-//loggedInUser is user2
-        chatPath = snap2.documents[0].reference.path;
+      if (snap.documents.length == 0) {
+        //there is no chat yet, so create one
+        chatPath = await _createChat(user1: user1, user2: user2);
       } else {
-//there is no chat yet, so create one
-        chatPath = await _createChat(
-            loggedInUid: loggedInUid,
-            otherUserUid: otherUid,
-            otherUsername: otherUsername,
-            otherUserImageFileName: otherUserImageFileName);
+        chatPath = snap.documents[0].reference.path;
       }
       return chatPath;
     } catch (e) {
+      print(e);
       print('Could not get chatpath');
       return null;
     }
   }
 
   Future<String> _createChat(
-      {@required String loggedInUid,
-      @required String otherUserUid,
-      @required String otherUsername,
-      @required String otherUserImageFileName}) async {
+      {@required User user1, @required User user2}) async {
     try {
-      User loggedInUser = await getUser(uid: loggedInUid);
       Chat chat = Chat(
-          uid1: loggedInUser.uid,
-          username1: loggedInUser.username,
-          user1ImageFileName: loggedInUser.imageFileName,
+          combinedUids: [
+            user1.uid,
+            user2.uid,
+            user1.uid + user2.uid,
+            user2.uid + user1.uid
+          ],
+          user1: user1,
+          user2: user2,
           hasUser1Blocked: false,
-          uid2: otherUserUid,
-          username2: otherUsername,
-          user2ImageFileName: otherUserImageFileName,
           hasUser2Blocked: false,
           lastMessageText: 'No message yet',
           lastMessageTimestamp: FieldValue.serverTimestamp());
@@ -227,6 +186,7 @@ class FirebaseCloudFirestoreService {
       return docReference.path;
     } catch (e) {
       print('Could not createChat');
+      print(e);
       return null;
     }
   }
@@ -280,64 +240,5 @@ class FirebaseCloudFirestoreService {
     } catch (e) {
       print('Could not upload push token');
     }
-  }
-
-  Future<void> uploadUsersRole(
-      {@required String uid, @required Role role}) async {
-    try {
-      _fireStore
-          .collection('users')
-          .document(uid)
-          .updateData({'role': convertRoleToString(role: role)});
-    } catch (e) {
-      print('Could not upload role');
-    }
-  }
-
-/*
-* Unread Messages
-* */
-  Stream<UnreadMessages> getUnreadMessagesStream({@required String uid}) {
-    try {
-      return _fireStore
-          .collection('unreadMessages')
-          .document(uid)
-          .snapshots()
-          .map((doc) => UnreadMessages.fromMap(map: doc.data));
-    } catch (e) {
-      print('Could not get the unread messages stream');
-    }
-    return Stream.empty();
-  }
-
-  Future<void> resetUnreadMessagesInChat(
-      {@required String chatPath, @required bool isUser1}) async {
-    if (isUser1) {
-      await _fireStore.document(chatPath).updateData({'unreadMessages1': 0});
-    } else {
-      await _fireStore.document(chatPath).updateData({'unreadMessages2': 0});
-    }
-    return null;
-  }
-
-  Future<void> updateTotalUnreadMessagesOfUser(
-      {@required String chatPath,
-      @required bool isUser1,
-      @required String uid}) async {
-    String docPath = "unreadMessages/$uid";
-    var chatDoc = await _fireStore.document(chatPath).get();
-    var unreadMessagesDoc = await _fireStore.document(docPath).get();
-
-    int readMessages = 0;
-    int total = unreadMessagesDoc.data['total'];
-
-    if (isUser1) {
-      readMessages = chatDoc.data['unreadMessages1'];
-    } else {
-      readMessages = chatDoc.data['unreadMessages2'];
-    }
-    int newTotal = total - readMessages;
-    await _fireStore.document(docPath).updateData({'total': newTotal});
-    return null;
   }
 }

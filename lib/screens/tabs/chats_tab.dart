@@ -4,8 +4,6 @@ import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
-import 'package:Flowby/services/firebase_cloud_messaging.dart';
-import 'package:Flowby/widgets/badge.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/custom_card.dart';
 import 'package:Flowby/widgets/tab_header.dart';
@@ -21,48 +19,37 @@ class ChatsTab extends StatefulWidget {
 }
 
 class _ChatsTabState extends State<ChatsTab> {
-  Stream<List<Chat>> chatsStream;
-  FirebaseCloudFirestoreService cloudFirestoreService;
-  User loggedInUser;
+  Stream<List<Chat>> chatStream;
 
   @override
   void initState() {
     super.initState();
-    cloudFirestoreService =
+    final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    loggedInUser = Provider.of<User>(context, listen: false);
-    chatsStream =
+    final loggedInUser = Provider.of<User>(context, listen: false);
+    chatStream =
         cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
   }
 
   @override
   Widget build(BuildContext context) {
-    final firebaseMessaging =
-        Provider.of<FirebaseCloudMessaging>(context, listen: false);
-    firebaseMessaging.cancelAll();
-
-
-/*
-    setState(() {
-      chatsStream =
-          cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
-    });
-*/
-
-    final cloudFirestoreService =
-    Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    final loggedInUser = Provider.of<User>(context, listen: false);
-    chatsStream =
-        cloudFirestoreService.getChatsStream(loggedInUid: loggedInUser.uid);
     return SafeArea(
       bottom: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           TabHeader(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+            child: Text(
+              AppLocalizations.of(context).translate('chats'),
+              style: kTabTitleTextStyle,
+              textAlign: TextAlign.start,
+            ),
+          ),
           Expanded(
               child: StreamBuilder(
-                  stream: chatsStream,
+                  stream: chatStream,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting ||
                         snapshot.connectionState == ConnectionState.none) {
@@ -82,20 +69,10 @@ class _ChatsTabState extends State<ChatsTab> {
                       );
                     }
                     return ListView.builder(
-                        itemCount: chats.length + 1,
+                        itemCount: chats.length,
                         itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                              child: Text(
-                                AppLocalizations.of(context).translate('chats'),
-                                style: kTabTitleTextStyle,
-                                textAlign: TextAlign.start,
-                              ),
-                            );
-                          }
                           return ChatItem(
-                            chat: chats[index - 1],
+                            chat: chats[index],
                           );
                         });
                   }))
@@ -113,59 +90,36 @@ class ChatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context, listen: false);
-    bool user1IsLoggedInUser = (chat.uid1 == loggedInUser.uid);
-    String otherUid = user1IsLoggedInUser ? chat.uid2 : chat.uid1;
-    String otherUsername =
-        user1IsLoggedInUser ? chat.username2 : chat.username1;
-    String otherImageFileName =
-        user1IsLoggedInUser ? chat.user2ImageFileName : chat.user1ImageFileName;
-    int otherImageVersionNumber = user1IsLoggedInUser
-        ? chat.user2ImageVersionNumber
-        : chat.user1ImageVersionNumber;
 
-    if (otherImageFileName == null) otherImageFileName = kDefaultProfilePicName;
+    bool amIUser1 = chat.user1.uid == loggedInUser.uid;
 
-    final heroTag = otherUid + 'chats';
+    User otherUser = amIUser1 ? chat.user2 : chat.user1;
 
-    bool amIUser1 = chat.uid1 == loggedInUser.uid;
+    final heroTag = otherUser.uid + 'chats';
+
     bool haveIBlocked;
     bool hasOtherBlocked;
-    // refresh last message and number of unread messages
-    String lastMessageText = chat.lastMessageText;
-    int badgeCount;
-
     if (amIUser1) {
       haveIBlocked = chat.hasUser1Blocked;
       hasOtherBlocked = chat.hasUser2Blocked;
-      badgeCount = chat.unreadMessages1;
     } else {
       haveIBlocked = chat.hasUser2Blocked;
       hasOtherBlocked = chat.hasUser1Blocked;
-      badgeCount = chat.unreadMessages2;
     }
 
     return CustomCard(
       leading: ProfilePicture(
-          imageFileName: otherImageFileName,
-          imageVersionNumber: otherImageVersionNumber,
-          radius: 30,
-          heroTag: heroTag),
+          imageUrl: otherUser.imageUrl, radius: 30, heroTag: heroTag),
       middle: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Text(
-                    otherUsername,
-                    overflow: TextOverflow.ellipsis,
-                    style: kUsernameTextStyle,
-                  ),
-                  SizedBox(width: 10),
-                  Badge(count: badgeCount, badgeColor: Colors.red),
-                ],
+              Text(
+                otherUser.username,
+                overflow: TextOverflow.ellipsis,
+                style: kUsernameTextStyle,
               ),
               Flexible(
                 child: Text(
@@ -186,7 +140,7 @@ class ChatItem extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Text(
-                  lastMessageText,
+                  chat.lastMessageText,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: kChatLastMessageTextStyle,
@@ -207,12 +161,9 @@ class ChatItem extends StatelessWidget {
         Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
-             return ChatScreen(
-                loggedInUid: loggedInUser.uid,
-                otherUid: otherUid,
-                otherUsername: otherUsername,
-                otherImageFileName: otherImageFileName,
-                otherImageVersionNumber: otherImageVersionNumber,
+              return ChatScreen(
+                loggedInUser: loggedInUser,
+                otherUser: otherUser,
                 heroTag: heroTag,
                 chatPath: chat.chatpath,
               );

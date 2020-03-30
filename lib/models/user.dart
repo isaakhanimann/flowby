@@ -1,17 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Flowby/constants.dart';
-import 'package:Flowby/models/role.dart';
 
 class User {
   String username;
   String uid;
   String bio;
-  Role role;
   bool isHidden;
   GeoPoint location;
   int distanceInKm;
-  String imageFileName = kDefaultProfilePicName;
-  int imageVersionNumber = 1;
+  String imageUrl;
   String skillKeywords;
   String wishKeywords;
   List<SkillOrWish> skills = [];
@@ -21,32 +18,23 @@ class User {
       {this.username,
       this.uid,
       this.bio,
-      this.role,
       this.isHidden,
       this.skills,
       this.wishes,
       this.location,
-      this.imageFileName,
-      this.imageVersionNumber});
+      this.imageUrl});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'] ?? '';
     this.uid = map['uid'] ?? '';
     this.bio = map['bio'] ?? '';
-    this.role = convertStringToRole(roleString: map['role']);
     this.isHidden = map['isHidden'] ?? false;
     try {
       this.location = map['location'];
     } catch (e) {
       this.location = _convertLocationToGeopoint(location: map['location']);
     }
-    this.imageFileName = map['imageFileName'] ?? kDefaultProfilePicName;
-    try {
-      this.imageVersionNumber = map['imageVersionNumber'].round();
-    } catch (e) {
-      //could not convert double to int (because its infinity or NaN)
-      this.imageVersionNumber = 1;
-    }
+    this.imageUrl = map['imageUrl'] ?? kDefaultProfilePicUrl;
     this.skills = _convertFirebaseToDart(skillsOrWishes: map['skills']);
     this.wishes = _convertFirebaseToDart(skillsOrWishes: map['wishes']);
     this.skillKeywords = _getKeywordString(skills);
@@ -58,11 +46,9 @@ class User {
       'username': username,
       'uid': uid,
       'bio': bio,
-      'role': convertRoleToString(role: role),
       'isHidden': isHidden,
       'location': location,
-      'imageFileName': imageFileName ?? 'default-profile-pic.jpg',
-      'imageVersionNumber': imageVersionNumber ?? 1,
+      'imageUrl': imageUrl ?? kDefaultProfilePicUrl,
       'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
       'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList(),
     };
@@ -119,11 +105,9 @@ class User {
     String toPrint = '\n{ username: $username, ';
     toPrint += 'uid: $uid, ';
     toPrint += 'bio: $bio, ';
-    toPrint += 'role: ${convertRoleToString(role: role)}, ';
     toPrint += 'isHidden: $isHidden, ';
     toPrint += 'location: ${location.toString()}, ';
-    toPrint += 'imageFileName: ${imageFileName.toString()}, ';
-    toPrint += 'imageVersionNumber: ${imageVersionNumber.toString()}, ';
+    toPrint += 'imageUrl: $imageUrl, ';
     toPrint += 'skills: ${skills.toString()}, ';
     toPrint += 'wishes: ${wishes.toString()}, ';
     toPrint += 'skillKeywords: ${skillKeywords.toString()}, ';

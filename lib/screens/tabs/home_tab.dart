@@ -18,7 +18,6 @@ import 'package:Flowby/models/user.dart';
 import 'package:Flowby/models/announcement.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:Flowby/models/role.dart';
 import 'package:Flowby/widgets/custom_card.dart';
 
 class HomeTab extends StatefulWidget {
@@ -40,11 +39,6 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUser = Provider.of<User>(context);
-    final localRole = Provider.of<Role>(context);
-
-    final role = loggedInUser?.role ?? localRole;
-
     return SafeArea(
       bottom: false,
       child: Column(
@@ -53,7 +47,6 @@ class _HomeTabState extends State<HomeTab> {
           TabHeader(
             leftIcon: Icon(Feather.info),
             screenToNavigateToLeft: ExplanationScreen(
-              role: role,
               popScreen: true,
             ),
             rightIcon: Icon(Feather.plus),
@@ -116,11 +109,7 @@ class _HomeTabState extends State<HomeTab> {
     bool areWishesEmpty =
         loggedInUser.wishes == null || loggedInUser.wishes.isEmpty;
 
-    bool isProvider = loggedInUser.role == Role.provider;
-    bool isConsumer = loggedInUser.role == Role.consumer;
-    if (loggedInUser.isHidden ||
-        (isProvider && areSkillsEmpty) ||
-        (isConsumer && areWishesEmpty)) {
+    if (loggedInUser.isHidden || (areWishesEmpty && areSkillsEmpty)) {
       HelperFunctions.showCustomDialog(
         context: context,
         dialog: BasicDialog(
@@ -358,8 +347,7 @@ class AnnouncementItem extends StatelessWidget {
       },
       paddingInsideVertical: 15,
       leading: ProfilePicture(
-        imageFileName: announcement.user.imageFileName,
-        imageVersionNumber: announcement.user.imageVersionNumber,
+        imageUrl: announcement.user.imageUrl,
         radius: 30,
         heroTag: heroTag,
       ),
@@ -375,8 +363,8 @@ class AnnouncementItem extends StatelessWidget {
                 style: kUsernameTextStyle,
               ),
               DistanceText(
-                latitude1: loggedInUser.location?.latitude,
-                longitude1: loggedInUser.location?.longitude,
+                latitude1: loggedInUser?.location?.latitude,
+                longitude1: loggedInUser?.location?.longitude,
                 latitude2: announcement.user?.location?.latitude,
                 longitude2: announcement.user?.location?.longitude,
                 fontSize: 10,
