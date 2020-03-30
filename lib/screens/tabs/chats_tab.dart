@@ -171,6 +171,7 @@ class ChatItem extends StatelessWidget {
         Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
+
               return ChatScreen(
                 loggedInUser: loggedInUser,
                 otherUser: otherUser,

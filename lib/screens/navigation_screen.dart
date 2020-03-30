@@ -217,7 +217,7 @@ class ScreenWithAllTabs extends StatelessWidget {
               icon: Icon(
                 Feather.mail,
               ),
-              badgeCount: unreadMessages.total,
+              badgeCount: unreadMessages == null ? 0 : unreadMessages.total,
             ),
           ),
           BottomNavigationBarItem(

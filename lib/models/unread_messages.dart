@@ -17,9 +17,16 @@ class UnreadMessages {
 
   @override
   String toString() {
-    String toPrint = '\n{';
-    toPrint += 'total: ${total.toString()}, ';
-    toPrint += '}\n';
+    String toPrint = '\n{ ';
+    toPrint += 'total: ${total.toString()}';
+    toPrint += ' }\n';
     return toPrint;
+  }
+
+  int getTotal() {
+    if (total == null)
+      return 0;
+    else
+      return total;
   }
 }
