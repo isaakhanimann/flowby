@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:Flowby/models/announcement.dart';
 import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/message.dart';
+import 'package:Flowby/models/unread_messages.dart';
 import 'package:Flowby/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -240,5 +241,48 @@ class FirebaseCloudFirestoreService {
     } catch (e) {
       print('Could not upload push token');
     }
+  }
+/*
+* Unread Messages Management
+* */
+  Stream<UnreadMessages> getUnreadMessagesStream({@required String uid}) {
+    try {
+      return _fireStore
+          .collection('unreadMessages')
+          .document(uid)
+          .snapshots()
+          .map((doc) => UnreadMessages.fromMap(map: doc.data));
+    } catch (e) {
+      print('Could not get the unread messages stream');
+    }
+    return Stream.empty();
+  }
+  Future<void> resetUnreadMessagesInChat(
+      {@required String chatPath, @required bool isUser1}) async {
+    if (isUser1) {
+      await _fireStore.document(chatPath).updateData({'unreadMessages1': 0});
+    } else {
+      await _fireStore.document(chatPath).updateData({'unreadMessages2': 0});
+    }
+    return null;
+  }
+
+  Future<void> updateUserTotalUnreadMessages(
+      {@required String chatPath, @required bool isUser1, @required String uid}) async {
+    String docPath = "unreadMessages/$uid";
+    var chatDoc = await _fireStore.document(chatPath).get();
+    var unreadMessagesDoc = await _fireStore.document(docPath).get();
+
+    int readMessages = 0;
+    int total = unreadMessagesDoc.data['total'];
+
+    if (isUser1) {
+      readMessages = chatDoc.data['unreadMessages1'];
+    } else {
+      readMessages = chatDoc.data['unreadMessages2'];
+    }
+    int newTotal = total - readMessages;
+    await _fireStore.document(docPath).updateData({'total': newTotal});
+    return null;
   }
 }
