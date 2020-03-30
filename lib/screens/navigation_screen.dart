@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/models/unread_messages.dart';
 import 'package:Flowby/screens/tabs/chats_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:Flowby/screens/tabs/search_tab.dart';
@@ -9,6 +10,7 @@ import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/services/firebase_cloud_messaging.dart';
 import 'package:Flowby/services/location_service.dart';
+import 'package:Flowby/widgets/badge_icon.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -98,6 +100,13 @@ class _NavigationScreenState extends State<NavigationScreen> {
           catchError: (context, object) {
             return null;
           },
+        ),
+        StreamProvider<UnreadMessages>.value(
+          value: cloudFirestoreService.getUnreadMessagesStream(uid: loggedInUser.uid),
+          catchError: (context, object) {
+            debugPrint('Error with StreamProvider<UnreadMessages>: $object');
+           return null;
+          },
         )
       ],
       child: ScreenWithAllTabs(),
@@ -186,6 +195,7 @@ class ScreenWithAllTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final unreadMessages = Provider.of<UnreadMessages>(context);
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         backgroundColor: Colors.white,
@@ -203,8 +213,11 @@ class ScreenWithAllTabs extends StatelessWidget {
             ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Feather.mail,
+            icon: BadgeIcon(
+              icon: Icon(
+                Feather.mail,
+              ),
+              badgeCount: unreadMessages.total,
             ),
           ),
           BottomNavigationBarItem(
