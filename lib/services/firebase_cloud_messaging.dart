@@ -58,10 +58,15 @@ class FirebaseCloudMessaging {
   }
 
   void showNotification({@required CloudMessage message}) async {
+    // sets an unique channel id for each user's messages
+    String groupChannelId = 'message_notifications_id';
+    // Changes the text in the notifications' settings
+    String groupChannelName = 'Message notifications';
+    String groupChannelDescription = 'Sound and pop-up';
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      Platform.isAndroid ? 'co.flowby' : 'co.flowby',
-      'Flowby',
-      'Flowby is a close by community of people that share their skills in person.',
+      groupChannelId,
+      groupChannelName,
+      groupChannelDescription,
       playSound: true,
       enableVibration: true,
       importance: Importance.Max,
@@ -71,7 +76,7 @@ class FirebaseCloudMessaging {
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-      0,
+      message.data['otherUid'], //id of the message so we can remove it from the notifications when we enter a specific chat
       message.title,
       message.body,
       platformChannelSpecifics,
@@ -139,5 +144,6 @@ class CloudMessage {
     data['loggedInUser'] = mapMessage['data']['loggedInUser'];
     data['otherUser'] = mapMessage['data']['otherUser'];
     data['chatPath'] = mapMessage['data']['chatPath'];
+    data['otherUid'] = mapMessage['data']['otherUid'];
   }
 }
