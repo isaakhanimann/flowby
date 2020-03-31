@@ -221,6 +221,18 @@ class FirebaseCloudFirestoreService {
     }
   }
 
+  Future<void> uploadMessageToUnreadMessagesCollection(
+      {@required String chatPath, @required Message message}) async {
+    try {
+      await _fireStore
+          .document(chatPath)
+          .collection('unreadMessages')
+          .add(message.toMap());
+    } catch (e) {
+      print('Could not upload message to unreadMessages collection');
+    }
+  }
+
   Future<void> uploadUsersLocation(
       {@required uid, @required Position position}) async {
     try {
@@ -242,6 +254,7 @@ class FirebaseCloudFirestoreService {
       print('Could not upload push token');
     }
   }
+
 /*
 * Unread Messages Management
 * */
@@ -257,6 +270,7 @@ class FirebaseCloudFirestoreService {
     }
     return Stream.empty();
   }
+
   // this function is executed when the user leaves the chat
   Future<void> resetUnreadMessagesInChat(
       {@required String chatPath, @required bool isUser1}) async {
@@ -267,9 +281,12 @@ class FirebaseCloudFirestoreService {
     }
     return null;
   }
+
   // this function is executed when the user leaves the chat
   Future<void> updateUserTotalUnreadMessages(
-      {@required String chatPath, @required bool isUser1, @required String uid}) async {
+      {@required String chatPath,
+      @required bool isUser1,
+      @required String uid}) async {
     String docPath = "users/$uid";
     var chatDoc = await _fireStore.document(chatPath).get();
     var userDoc = await _fireStore.document(docPath).get();
@@ -283,7 +300,32 @@ class FirebaseCloudFirestoreService {
       readMessages = chatDoc.data['unreadMessages2'];
     }
     int newTotal = total - readMessages;
-    await _fireStore.document(docPath).updateData({'totalUnreadMessages': newTotal});
+    await _fireStore
+        .document(docPath)
+        .updateData({'totalUnreadMessages': newTotal});
     return null;
+  }
+
+  deleteUnreadMessagesOf(
+      {@required String senderUid, @required String chatPath}) async {
+    try {
+      QuerySnapshot snap = await _fireStore
+          .document(chatPath)
+          .collection('unreadMessages')
+          .where('senderUid', isEqualTo: senderUid)
+          .getDocuments();
+
+      snap.documents.forEach((doc) async {
+        await _fireStore
+            .document(chatPath)
+            .collection('unreadMessages')
+            .document(doc.documentID)
+            .delete();
+        print(doc.documentID);
+      });
+    } catch (e) {
+      print('Could not delete unread Messages');
+      print(e);
+    }
   }
 }

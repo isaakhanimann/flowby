@@ -4,6 +4,7 @@ import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/services/firebase_cloud_messaging.dart';
 import 'package:Flowby/widgets/badge.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/custom_card.dart';
@@ -91,6 +92,7 @@ class ChatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context, listen: false);
+    final firebaseMessaging = Provider.of<FirebaseCloudMessaging>(context,listen: false);
 
     bool amIUser1 = chat.user1.uid == loggedInUser.uid;
 
@@ -171,7 +173,8 @@ class ChatItem extends StatelessWidget {
         Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
-
+              // removes the current notifications of the opened chat
+              firebaseMessaging.cancel(otherUser.uid.hashCode);
               return ChatScreen(
                 loggedInUser: loggedInUser,
                 otherUser: otherUser,

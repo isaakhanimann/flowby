@@ -19,6 +19,13 @@ class FirebaseCloudMessaging {
     return _firebaseMessaging.getToken();
   }
 
+  Future<void> cancelAll(){
+    return flutterLocalNotificationsPlugin.cancelAll();
+  }
+  Future<void> cancel(int id){
+    return flutterLocalNotificationsPlugin.cancel(id);
+  }
+
   void firebaseCloudMessagingListeners(BuildContext context) {
     if (Platform.isIOS) iOSPermission();
 
@@ -59,12 +66,12 @@ class FirebaseCloudMessaging {
 
   void showNotification({@required CloudMessage message}) async {
     // sets an unique channel id for each user's messages
-    String groupChannelId = 'message_notifications_id';
+    // String groupChannelId = 'message_notifications_id';
     // Changes the text in the notifications' settings
     String groupChannelName = 'Message notifications';
     String groupChannelDescription = 'Sound and pop-up';
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      groupChannelId,
+      message.data['otherUid'],
       groupChannelName,
       groupChannelDescription,
       playSound: true,
@@ -76,7 +83,8 @@ class FirebaseCloudMessaging {
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-      message.data['otherUid'].hashCode , //id of the message so we can remove it from the notifications when we enter a specific chat
+      message.data['otherUid'].hashCode,
+      //id of the message so we can remove it from the notifications when we enter a specific chat
       message.title,
       message.body,
       platformChannelSpecifics,
