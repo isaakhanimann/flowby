@@ -510,15 +510,13 @@ exports.updateUnreadMessagesInChat = functions.firestore
       });
     }
 
-    //TODO: create a new document if the user doesn't have an unreadMessagesDoc yet
-
     const unreadMessagesSnap: FirebaseFirestore.DocumentSnapshot = await db
       .collection("users")
       .doc(receiverUid)
       .get();
 
     const unreadMessages: FirebaseFirestore.DocumentData = unreadMessagesSnap.data()!;
-    let total: number = unreadMessages.total + 1;
+    let total: number = unreadMessages.totalUnreadMessages + 1;
 
     return db.collection("users")
       .doc(receiverUid)

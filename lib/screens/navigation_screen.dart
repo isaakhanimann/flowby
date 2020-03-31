@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
-import 'package:Flowby/models/unread_messages.dart';
 import 'package:Flowby/screens/tabs/chats_tab.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:Flowby/screens/tabs/search_tab.dart';
@@ -101,13 +100,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
             return null;
           },
         ),
-        StreamProvider<UnreadMessages>.value(
-          value: cloudFirestoreService.getUnreadMessagesStream(uid: loggedInUser.uid),
-          catchError: (context, object) {
-            debugPrint('Error with StreamProvider<UnreadMessages>: $object');
-           return null;
-          },
-        )
       ],
       child: ScreenWithAllTabs(),
     );
@@ -195,7 +187,7 @@ class ScreenWithAllTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unreadMessages = Provider.of<UnreadMessages>(context);
+    User currentUser = Provider.of<User>(context);
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         backgroundColor: Colors.white,
@@ -217,7 +209,9 @@ class ScreenWithAllTabs extends StatelessWidget {
               icon: Icon(
                 Feather.mail,
               ),
-              badgeCount: unreadMessages == null ? 0 : unreadMessages.total,
+              badgeCount: currentUser.totalUnreadMessages == null
+                  ? 0
+                  : currentUser.totalUnreadMessages,
             ),
           ),
           BottomNavigationBarItem(

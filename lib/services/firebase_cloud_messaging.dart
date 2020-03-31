@@ -76,7 +76,7 @@ class FirebaseCloudMessaging {
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-      message.data['otherUid'], //id of the message so we can remove it from the notifications when we enter a specific chat
+      message.data['otherUid'].hashCode , //id of the message so we can remove it from the notifications when we enter a specific chat
       message.title,
       message.body,
       platformChannelSpecifics,
