@@ -42,7 +42,8 @@ class User {
     this.skillKeywords = _getKeywordString(skills);
     this.wishKeywords = _getKeywordString(wishes);
     try {
-      this.totalNumberOfUnreadMessages = map['totalNumberOfUnreadMessages'];
+      this.totalNumberOfUnreadMessages =
+          map['totalNumberOfUnreadMessages'] ?? 0;
     } catch (e) {
       this.totalNumberOfUnreadMessages = 0;
     }

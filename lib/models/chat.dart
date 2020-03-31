@@ -29,14 +29,16 @@ class Chat {
     this.user1 = User.fromMap(map: map['user1']);
     this.hasUser1Blocked = map['hasUser1Blocked'] ?? false;
     try {
-      this.numberOfUnreadMessagesUser1 = map['numberOfUnreadMessagesUser1'];
+      this.numberOfUnreadMessagesUser1 =
+          map['numberOfUnreadMessagesUser1'] ?? 0;
     } catch (e) {
       this.numberOfUnreadMessagesUser1 = 0;
     }
     this.user2 = User.fromMap(map: map['user2']);
     this.hasUser2Blocked = map['hasUser2Blocked'] ?? false;
     try {
-      this.numberOfUnreadMessagesUser2 = map['numberOfUnreadMessagesUser2'];
+      this.numberOfUnreadMessagesUser2 =
+          map['numberOfUnreadMessagesUser2'] ?? 0;
     } catch (e) {
       this.numberOfUnreadMessagesUser2 = 0;
     }
