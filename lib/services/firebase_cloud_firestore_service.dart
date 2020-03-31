@@ -21,23 +21,26 @@ class FirebaseCloudFirestoreService {
           .document(user.uid)
           .setData(user.toMap(), merge: true);
     } catch (e) {
-      print('Could not upload user info');
+      print('Could not upload user');
       debugPrint('error: $e');
     }
   }
 
   Future<User> getUser({@required String uid}) async {
     try {
+      if (uid == null) {
+        return null;
+      }
       var userDocument =
           await _fireStore.collection('users').document(uid).get();
       if (userDocument.data == null) {
         print('Could not get user with uid = $uid');
         return null;
       }
-
-      return User.fromMap(map: userDocument.data);
+      User u = User.fromMap(map: userDocument.data);
+      return u;
     } catch (e) {
-      print('Could not get user info2');
+      print('Could not get user with uid = $uid');
       print(e);
       return null;
     }

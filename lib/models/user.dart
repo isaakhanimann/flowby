@@ -41,7 +41,11 @@ class User {
     this.wishes = _convertFirebaseToDart(skillsOrWishes: map['wishes']);
     this.skillKeywords = _getKeywordString(skills);
     this.wishKeywords = _getKeywordString(wishes);
-    this.totalUnreadMessages = map['totalUnreadMessages'] ?? 0;
+    try {
+      this.totalUnreadMessages = map['totalUnreadMessages'];
+    } catch (e) {
+      this.totalUnreadMessages = 0;
+    }
   }
 
   Map<String, dynamic> toMap() {
