@@ -278,9 +278,13 @@ class FirebaseCloudFirestoreService {
   Future<void> resetUnreadMessagesInChat(
       {@required String chatPath, @required bool isUser1}) async {
     if (isUser1) {
-      await _fireStore.document(chatPath).updateData({'unreadMessages1': 0});
+      await _fireStore
+          .document(chatPath)
+          .updateData({'numberOfUnreadMessagesUser1': 0});
     } else {
-      await _fireStore.document(chatPath).updateData({'unreadMessages2': 0});
+      await _fireStore
+          .document(chatPath)
+          .updateData({'numberOfUnreadMessagesUser2': 0});
     }
     return null;
   }
