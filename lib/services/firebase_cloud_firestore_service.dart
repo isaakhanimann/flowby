@@ -286,49 +286,27 @@ class FirebaseCloudFirestoreService {
   }
 
   // this function is executed when the user leaves the chat
-  Future<void> updateUserTotalUnreadMessages(
+  updateUserTotalUnreadMessages(
       {@required String chatPath,
       @required bool isUser1,
       @required String uid}) async {
     String docPath = "users/$uid";
     var chatDoc = await _fireStore.document(chatPath).get();
+    Chat chat = Chat.fromMap(map: chatDoc.data);
     var userDoc = await _fireStore.document(docPath).get();
+    User user = User.fromMap(map: userDoc.data);
 
     int readMessages = 0;
-    int total = userDoc.data['totalUnreadMessages'];
+    int total = user.totalNumberOfUnreadMessages;
 
     if (isUser1) {
-      readMessages = chatDoc.data['unreadMessages1'];
+      readMessages = chat.numberOfUnreadMessagesUser1;
     } else {
-      readMessages = chatDoc.data['unreadMessages2'];
+      readMessages = chat.numberOfUnreadMessagesUser2;
     }
+
     int newTotal = total - readMessages;
-    await _fireStore
-        .document(docPath)
-        .updateData({'totalUnreadMessages': newTotal});
-    return null;
-  }
-
-  deleteUnreadMessagesOf(
-      {@required String senderUid, @required String chatPath}) async {
-    try {
-      QuerySnapshot snap = await _fireStore
-          .document(chatPath)
-          .collection('unreadMessages')
-          .where('senderUid', isEqualTo: senderUid)
-          .getDocuments();
-
-      snap.documents.forEach((doc) async {
-        await _fireStore
-            .document(chatPath)
-            .collection('unreadMessages')
-            .document(doc.documentID)
-            .delete();
-        print(doc.documentID);
-      });
-    } catch (e) {
-      print('Could not delete unread Messages');
-      print(e);
-    }
+    user.totalNumberOfUnreadMessages = newTotal;
+    await _fireStore.document(docPath).updateData(user.toMap());
   }
 }

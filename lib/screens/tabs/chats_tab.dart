@@ -92,7 +92,8 @@ class ChatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context, listen: false);
-    final firebaseMessaging = Provider.of<FirebaseCloudMessaging>(context,listen: false);
+    final firebaseMessaging =
+        Provider.of<FirebaseCloudMessaging>(context, listen: false);
 
     bool amIUser1 = chat.user1.uid == loggedInUser.uid;
 
@@ -102,15 +103,15 @@ class ChatItem extends StatelessWidget {
 
     bool haveIBlocked;
     bool hasOtherBlocked;
-    int unreadMessages;
+    int numberOfUnreadMessages;
     if (amIUser1) {
       haveIBlocked = chat.hasUser1Blocked;
       hasOtherBlocked = chat.hasUser2Blocked;
-      unreadMessages = chat.unreadMessages1;
+      numberOfUnreadMessages = chat.numberOfUnreadMessagesUser1;
     } else {
       haveIBlocked = chat.hasUser2Blocked;
       hasOtherBlocked = chat.hasUser1Blocked;
-      unreadMessages = chat.unreadMessages2;
+      numberOfUnreadMessages = chat.numberOfUnreadMessagesUser2;
     }
 
     return CustomCard(
@@ -122,22 +123,20 @@ class ChatItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Text(
-                    otherUser.username,
-                    overflow: TextOverflow.ellipsis,
-                    style: kUsernameTextStyle,
-                  ),
-                  SizedBox(width: 10),
-                  Badge(count: unreadMessages, badgeColor: Colors.red),
-                ],
+              Text(
+                otherUser.username,
+                overflow: TextOverflow.ellipsis,
+                style: kUsernameTextStyle,
               ),
+              SizedBox(width: 10),
+              if (numberOfUnreadMessages != null)
+                Badge(count: numberOfUnreadMessages, badgeColor: Colors.red),
               Flexible(
                 child: Text(
                   HelperFunctions.getTimestampAsString(
                       context: context, timestamp: chat.lastMessageTimestamp),
                   overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
                   style: kChatTabTimestampTextStyle,
                 ),
               ),
@@ -150,7 +149,7 @@ class ChatItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Expanded(
-                flex: 2,
+                flex: 1,
                 child: Text(
                   chat.lastMessageText,
                   maxLines: 1,
@@ -159,11 +158,9 @@ class ChatItem extends StatelessWidget {
                 ),
               ),
               if (haveIBlocked || hasOtherBlocked)
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context).translate('blocked'),
-                    style: kSmallBlockedTextStyle,
-                  ),
+                Text(
+                  AppLocalizations.of(context).translate('blocked'),
+                  style: kSmallBlockedTextStyle,
                 )
             ],
           ),

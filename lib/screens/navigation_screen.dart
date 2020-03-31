@@ -195,7 +195,7 @@ class ScreenWithAllTabs extends StatelessWidget {
               ),
               badgeCount: currentUser == null
                   ? 0
-                  : currentUser.totalUnreadMessages,
+                  : currentUser.totalNumberOfUnreadMessages,
             ),
           ),
           BottomNavigationBarItem(

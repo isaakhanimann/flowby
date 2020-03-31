@@ -13,7 +13,7 @@ class User {
   String wishKeywords;
   List<SkillOrWish> skills = [];
   List<SkillOrWish> wishes = [];
-  int totalUnreadMessages = 0;
+  int totalNumberOfUnreadMessages = 0;
 
   User(
       {this.username,
@@ -24,7 +24,7 @@ class User {
       this.wishes,
       this.location,
       this.imageUrl,
-      this.totalUnreadMessages});
+      this.totalNumberOfUnreadMessages});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'] ?? '';
@@ -42,9 +42,9 @@ class User {
     this.skillKeywords = _getKeywordString(skills);
     this.wishKeywords = _getKeywordString(wishes);
     try {
-      this.totalUnreadMessages = map['totalUnreadMessages'];
+      this.totalNumberOfUnreadMessages = map['totalNumberOfUnreadMessages'];
     } catch (e) {
-      this.totalUnreadMessages = 0;
+      this.totalNumberOfUnreadMessages = 0;
     }
   }
 
@@ -58,7 +58,7 @@ class User {
       'imageUrl': imageUrl ?? kDefaultProfilePicUrl,
       'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
       'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList(),
-      'totalUnreadMessages': totalUnreadMessages,
+      'totalNumberOfUnreadMessages': totalNumberOfUnreadMessages,
     };
   }
 
@@ -120,7 +120,8 @@ class User {
     toPrint += 'wishes: ${wishes.toString()}, ';
     toPrint += 'skillKeywords: ${skillKeywords.toString()}, ';
     toPrint += 'wishKeywords: ${wishKeywords.toString()}, ';
-    toPrint += 'totalUnreadMessages: ${totalUnreadMessages.toString()}, ';
+    toPrint +=
+        'totalNumberOfUnreadMessages: ${totalNumberOfUnreadMessages.toString()}, ';
     toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';
 
     return toPrint;
