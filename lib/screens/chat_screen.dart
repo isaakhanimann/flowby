@@ -245,12 +245,6 @@ class ChatHeader extends StatelessWidget {
               // set to 0 the number of unread messages of the chat when user leaves the chat
               cloudFirestoreService.resetUnreadMessagesInChat(
                   chatPath: chat.chatpath, isUser1: amIUser1);
-              // delete in unreadMessages collection
-              amIUser1
-                  ? cloudFirestoreService.deleteUnreadMessagesOf(
-                      senderUid: chat.user2.uid, chatPath: chat.chatpath)
-                  : cloudFirestoreService.deleteUnreadMessagesOf(
-                      senderUid: chat.user1.uid, chatPath: chat.chatpath);
               Navigator.of(context).pop();
             },
             child: Icon(
