@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/screens/tabs/chats_tab.dart';
-import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:Flowby/screens/tabs/search_tab.dart';
 import 'package:Flowby/screens/tabs/profile_tab.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
@@ -34,14 +33,12 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   Stream<Position> positionStream;
   StreamSubscription<Position> positionStreamSubscription;
-  bool _shouldExplanationBeLoaded = false;
-  bool _chooseSearchMode = false;
+  bool _isAppLoadedForFirstTime = false;
   FirebaseUser loggedInUser;
 
   @override
   void initState() {
     super.initState();
-    _getAndSetExplanation();
     _initializeEverything(context);
   }
 
@@ -58,7 +55,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
 
-    if (_chooseSearchMode) {
+    if (_isAppLoadedForFirstTime) {
       return StreamProvider<User>.value(
         value: cloudFirestoreService.getUserStream(uid: loggedInUser?.uid),
         catchError: (context, object) {
@@ -66,13 +63,22 @@ class _NavigationScreenState extends State<NavigationScreen> {
         },
         child: ChooseSearchModeScreen(),
       );
-    }
-
-    if (_shouldExplanationBeLoaded) {
-      return ExplanationScreen();
-    }
-
-    if (loggedInUser == null) {
+    } else if (loggedInUser != null) {
+      return MultiProvider(
+        providers: [
+          StreamProvider<Position>.value(
+            value: positionStream,
+          ),
+          StreamProvider<User>.value(
+            value: cloudFirestoreService.getUserStream(uid: loggedInUser.uid),
+            catchError: (context, object) {
+              return null;
+            },
+          ),
+        ],
+        child: ScreenWithAllTabs(),
+      );
+    } else {
       return MultiProvider(
         providers: [
           StreamProvider<Position>.value(
@@ -88,35 +94,16 @@ class _NavigationScreenState extends State<NavigationScreen> {
         child: HomeScreenWithSignin(),
       );
     }
-
-    return MultiProvider(
-      providers: [
-        StreamProvider<Position>.value(
-          value: positionStream,
-        ),
-        StreamProvider<User>.value(
-          value: cloudFirestoreService.getUserStream(uid: loggedInUser.uid),
-          catchError: (context, object) {
-            return null;
-          },
-        ),
-      ],
-      child: ScreenWithAllTabs(),
-    );
   }
 
-  // get the preference that is stored locally
-  // get the logged in user from the users collection in firebase
-  // initialize the search mode
+  // check if this is the first time that the app is loaded
+  // get the logged in user
+  // initialize the search mode by getting the user from the users collection in firebase
   _initializeEverything(BuildContext context) async {
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
 
     FirebaseUser firebaseUser = await authService.getCurrentUser();
-
-    setState(() {
-      this.loggedInUser = firebaseUser;
-    });
 
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
@@ -124,15 +111,26 @@ class _NavigationScreenState extends State<NavigationScreen> {
     User currentUser =
         await cloudFirestoreService.getUser(uid: firebaseUser?.uid);
 
-    // the default is searching for services
-    // we only switch if the user has no wishes or if he has more skills than wishes
-    int numberOfSkills = currentUser.skills.length;
-    int numberOfWishes = currentUser.wishes.length;
-    if (numberOfWishes == 0 && numberOfSkills == 0) {
+    setState(() {
+      this.loggedInUser = firebaseUser;
+    });
+
+    //check if this is the first time the app is loaded
+    final preferencesService =
+        Provider.of<PreferencesService>(context, listen: false);
+    final isFirstTimeThatAppIsLoaded =
+        await preferencesService.getIsFirstTimeThatAppIsLoaded();
+    if (isFirstTimeThatAppIsLoaded) {
       setState(() {
-        _chooseSearchMode = true;
+        _isAppLoadedForFirstTime = true;
       });
-    } else if (numberOfSkills > numberOfWishes) {
+    }
+
+    // the default is searching for services
+    // we only switch if the user has more skills than wishes
+    int numberOfSkills = currentUser?.skills?.length ?? 0;
+    int numberOfWishes = currentUser?.wishes?.length ?? 0;
+    if (numberOfSkills > numberOfWishes) {
       final searchMode = Provider.of<SearchMode>(context, listen: false);
       searchMode.setMode(Mode.searchWishes);
     }
@@ -161,20 +159,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
       firebaseMessaging.getToken().then((token) {
         cloudFirestoreService.uploadUsersPushToken(
             uid: loggedInUser.uid, pushToken: token);
-      });
-    }
-  }
-
-  _getAndSetExplanation() async {
-    final preferencesService =
-        Provider.of<PreferencesService>(context, listen: false);
-
-    bool shouldExplain =
-        await preferencesService.getShouldExplanationBeLoaded();
-
-    if (shouldExplain) {
-      setState(() {
-        _shouldExplanationBeLoaded = true;
       });
     }
   }

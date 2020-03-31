@@ -15,22 +15,28 @@ class ExplanationAnnouncementsTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              height: 60,
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                height: 10,
+              ),
             ),
-            Text(
-              AppLocalizations.of(context).translate('see_announcements'),
-              style: kExplanationTitleTextStyle,
-              textAlign: TextAlign.center,
+            Expanded(
+              flex: 1,
+              child: Text(
+                AppLocalizations.of(context).translate('see_announcements'),
+                style: kExplanationTitleTextStyle,
+                textAlign: TextAlign.center,
+              ),
             ),
-            SizedBox(
-              height: 60,
-            ),
-            Text(
-              AppLocalizations.of(context)
-                  .translate('add_delete_announcements'),
-              style: kExplanationMiddleTextStyle,
-              textAlign: TextAlign.center,
+            Expanded(
+              flex: 5,
+              child: Text(
+                AppLocalizations.of(context)
+                    .translate('add_delete_announcements'),
+                style: kExplanationMiddleTextStyle,
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),
