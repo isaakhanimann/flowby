@@ -166,8 +166,8 @@ class ChatItem extends StatelessWidget {
           ),
         ],
       ),
-      onPress: () {
-        Navigator.of(context, rootNavigator: true).push(
+      onPress: () async {
+        await Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
               // removes the current notifications of the opened chat
@@ -181,6 +181,14 @@ class ChatItem extends StatelessWidget {
             },
           ),
         );
+        // subtract the number of unread messages from the global total
+        final cloudFirestoreService =
+            Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        cloudFirestoreService.updateUserTotalUnreadMessages(
+            chatPath: chat.chatpath, isUser1: amIUser1, uid: loggedInUser.uid);
+        // set to 0 the number of unread messages of the chat when user leaves the chat
+        cloudFirestoreService.resetUnreadMessagesInChat(
+            chatPath: chat.chatpath, isUser1: amIUser1);
       },
     );
   }
