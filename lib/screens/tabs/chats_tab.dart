@@ -181,15 +181,23 @@ class ChatItem extends StatelessWidget {
             },
           ),
         );
-        // subtract the number of unread messages from the global total
-        final cloudFirestoreService =
-            Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-        cloudFirestoreService.updateUserTotalUnreadMessages(
-            chatPath: chat.chatpath, isUser1: amIUser1, uid: loggedInUser.uid);
-        // set to 0 the number of unread messages of the chat when user leaves the chat
-        cloudFirestoreService.resetUnreadMessagesInChat(
-            chatPath: chat.chatpath, isUser1: amIUser1);
+        _updateUnreadMessages(
+            context: context,
+            amIUser1: amIUser1,
+            loggedInUid: loggedInUser.uid);
       },
     );
+  }
+
+  _updateUnreadMessages(
+      {BuildContext context, bool amIUser1, String loggedInUid}) {
+    // subtract the number of unread messages from the global total
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    cloudFirestoreService.updateUserTotalUnreadMessages(
+        chatPath: chat.chatpath, isUser1: amIUser1, uid: loggedInUid);
+    // set to 0 the number of unread messages of the chat when user leaves the chat
+    cloudFirestoreService.resetUnreadMessagesInChat(
+        chatPath: chat.chatpath, isUser1: amIUser1);
   }
 }
