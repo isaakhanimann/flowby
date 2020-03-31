@@ -248,7 +248,7 @@ class FirebaseCloudFirestoreService {
   Stream<UnreadMessages> getUnreadMessagesStream({@required String uid}) {
     try {
       return _fireStore
-          .collection('unreadMessages')
+          .collection('users')
           .document(uid)
           .snapshots()
           .map((doc) => UnreadMessages.fromMap(map: doc.data));
@@ -257,6 +257,7 @@ class FirebaseCloudFirestoreService {
     }
     return Stream.empty();
   }
+  // this function is executed when the user leaves the chat
   Future<void> resetUnreadMessagesInChat(
       {@required String chatPath, @required bool isUser1}) async {
     if (isUser1) {
@@ -266,15 +267,15 @@ class FirebaseCloudFirestoreService {
     }
     return null;
   }
-
+  // this function is executed when the user leaves the chat
   Future<void> updateUserTotalUnreadMessages(
       {@required String chatPath, @required bool isUser1, @required String uid}) async {
-    String docPath = "unreadMessages/$uid";
+    String docPath = "users/$uid";
     var chatDoc = await _fireStore.document(chatPath).get();
-    var unreadMessagesDoc = await _fireStore.document(docPath).get();
+    var userDoc = await _fireStore.document(docPath).get();
 
     int readMessages = 0;
-    int total = unreadMessagesDoc.data['total'];
+    int total = userDoc.data['totalUnreadMessages'];
 
     if (isUser1) {
       readMessages = chatDoc.data['unreadMessages1'];
@@ -282,7 +283,7 @@ class FirebaseCloudFirestoreService {
       readMessages = chatDoc.data['unreadMessages2'];
     }
     int newTotal = total - readMessages;
-    await _fireStore.document(docPath).updateData({'total': newTotal});
+    await _fireStore.document(docPath).updateData({'totalUnreadMessages': newTotal});
     return null;
   }
 }

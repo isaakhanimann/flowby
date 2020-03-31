@@ -513,17 +513,17 @@ exports.updateUnreadMessagesInChat = functions.firestore
     //TODO: create a new document if the user doesn't have an unreadMessagesDoc yet
 
     const unreadMessagesSnap: FirebaseFirestore.DocumentSnapshot = await db
-      .collection("unreadMessages")
+      .collection("users")
       .doc(receiverUid)
       .get();
 
     const unreadMessages: FirebaseFirestore.DocumentData = unreadMessagesSnap.data()!;
     let total: number = unreadMessages.total + 1;
 
-    return db.collection("unreadMessages")
+    return db.collection("users")
       .doc(receiverUid)
       .update({
-        total: total
+        totalUnreadMessages: total
       })
       .then(() => {
         console.log(`Successful update: User ${receiverUid} has a total of ${total} unread messages`);
