@@ -456,54 +456,53 @@ exports.updateUnreadMessagesInChat = functions.firestore
       .collection("chats")
       .doc(chatId)
       .get();
-    
     const chat: FirebaseFirestore.DocumentData = chatSnap.data()!;
   
-    let unreadMessages1: number = 0;
-    let unreadMessages2: number = 0;
+    let numberOfUnreadMessagesUser1: number = 0;
+    let numberOfUnreadMessagesUser2: number = 0;
 
     if (senderUid === chat.uid1) {
       //
-      // the receiver is user2 of the chat
+      // the *receiver* is  *user2* of the chat
       //
       receiverUid = chat.uid2;
-      if(chat?.unreadMessages2){
-        unreadMessages2 = chat.unreadMessages2;
-        unreadMessages2 += 1;
+      if(chat?.numberOfUnreadMessagesUser2){
+        numberOfUnreadMessagesUser2 = chat.numberOfUnreadMessagesUser2;
+        numberOfUnreadMessagesUser2 += 1;
       } else {
-        unreadMessages2 = 1;
+        numberOfUnreadMessagesUser2 = 1;
       }
 
       db.collection("chats")
       .doc(chatId)
       .update({
-        unreadMessages2: unreadMessages2
+        numberOfUnreadMessagesUser2: numberOfUnreadMessagesUser2
       })
       .then(() => {
-        console.log(`Successful update: User2 has ${unreadMessages2} unread messages`);
+        console.log(`Successful update: User2 has ${numberOfUnreadMessagesUser2} unread messages`);
       })
       .catch((error: any) => {
         console.log(`Error updating the number of unread messages of user1:`, error);
       });
     } else {
       //
-      // the receiver is user1 of the chat
+      // the *receiver* is *user1* of the chat
       //
       receiverUid = chat.uid1;
-      if(chat?.unreadMessages1){
-        unreadMessages1 = chat.unreadMessages1;
-        unreadMessages1 += 1;
+      if(chat?.numberOfUnreadMessagesUser1){
+        numberOfUnreadMessagesUser1 = chat.numberOfUnreadMessagesUser1;
+        numberOfUnreadMessagesUser1 += 1;
       } else {
-        unreadMessages1 = 1;
+        numberOfUnreadMessagesUser1 = 1;
       }
 
       db.collection("chats")
       .doc(chatId)
       .update({
-        unreadMessages1: unreadMessages1
+        numberOfUnreadMessagesUser1: numberOfUnreadMessagesUser1
       })
       .then(() => {
-        console.log(`Successful update: User1 has ${unreadMessages1} unread messages`);
+        console.log(`Successful update: User1 has ${numberOfUnreadMessagesUser1} unread messages`);
       })
       .catch((error: any) => {
         console.log(`Error updating the number of unread messages of user2:`, error);
@@ -514,17 +513,22 @@ exports.updateUnreadMessagesInChat = functions.firestore
       .collection("users")
       .doc(receiverUid)
       .get();
-
     const unreadMessages: FirebaseFirestore.DocumentData = unreadMessagesSnap.data()!;
-    let total: number = unreadMessages.totalUnreadMessages + 1;
+
+    let newTotal: number = 0;
+    if(unreadMessages?.totalNumberOfUnreadMessages){
+      newTotal = unreadMessages.totalNumberOfUnreadMessages + 1;
+    } else {
+      newTotal = 1;
+    }
 
     return db.collection("users")
       .doc(receiverUid)
       .update({
-        totalUnreadMessages: total
+        totalNumberOfUnreadMessages: newTotal
       })
       .then(() => {
-        console.log(`Successful update: User ${receiverUid} has a total of ${total} unread messages`);
+        console.log(`Successful update: User ${receiverUid} has a total of ${newTotal} unread messages`);
       })
       .catch((error: any) => {
         console.log(`Error updating the total number of unread messages of user ${receiverUid}:`, error);
