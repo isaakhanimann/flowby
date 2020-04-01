@@ -146,8 +146,11 @@ class FirebaseCloudFirestoreService {
         .collection('chats')
         .where('combinedUids', arrayContains: loggedInUid)
         .snapshots()
-        .map((snap) =>
-            snap.documents.map((doc) => Chat.fromMap(map: doc.data)).toList());
+        .map((snap) => snap.documents.map((doc) {
+              Chat chat = Chat.fromMap(map: doc.data);
+              chat.chatId = doc.documentID;
+              return chat;
+            }).toList());
     return chatStream;
   }
 

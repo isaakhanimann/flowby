@@ -107,11 +107,14 @@ class FirebaseCloudMessaging {
     BuildContext context,
     CloudMessage message,
   ) {
+    User loggedInUser = User.fromMap(map: message.data['loggedInUser']);
     User otherUser = User.fromMap(map: message.data['otherUser']);
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
           return ChatScreen(
+            loggedInUser: loggedInUser,
+            otherUser: otherUser,
             heroTag: otherUser.uid + 'chats',
             chatId: message.data['chatId'],
           );

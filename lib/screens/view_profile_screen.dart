@@ -107,6 +107,8 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
       CupertinoPageRoute<void>(
         builder: (context) {
           return ChatScreen(
+            loggedInUser: widget.loggedInUser,
+            otherUser: widget.user,
             chatId: chat.chatId,
             heroTag: widget.heroTag,
           );

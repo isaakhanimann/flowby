@@ -173,6 +173,8 @@ class ChatItem extends StatelessWidget {
               // removes the current notifications of the opened chat
               firebaseMessaging.cancel(otherUser.uid.hashCode);
               return ChatScreen(
+                loggedInUser: loggedInUser,
+                otherUser: otherUser,
                 heroTag: heroTag,
                 chatId: chat.chatId,
               );
