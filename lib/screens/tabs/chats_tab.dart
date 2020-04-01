@@ -121,7 +121,7 @@ class ChatItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Text(
                 otherUser.username,
@@ -131,14 +131,15 @@ class ChatItem extends StatelessWidget {
               SizedBox(width: 10),
               if (numberOfUnreadMessages != null)
                 Badge(count: numberOfUnreadMessages, badgeColor: Colors.red),
-              Flexible(
-                child: Text(
-                  HelperFunctions.getTimestampAsString(
-                      context: context, timestamp: chat.lastMessageTimestamp),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.end,
-                  style: kChatTabTimestampTextStyle,
-                ),
+              Expanded(
+                child: Container(),
+              ),
+              Text(
+                HelperFunctions.getTimestampAsString(
+                    context: context, timestamp: chat.lastMessageTimestamp),
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.end,
+                style: kChatTabTimestampTextStyle,
               ),
             ],
           ),
