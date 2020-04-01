@@ -308,9 +308,7 @@ class MessagesStream extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting ||
             snapshot.connectionState == ConnectionState.none) {
-          return CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(kDefaultProfilePicColor),
-          );
+          return CenteredLoadingIndicator();
         }
 
         final List<Message> messages = snapshot.data;
