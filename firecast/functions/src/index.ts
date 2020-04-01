@@ -467,7 +467,7 @@ exports.updateUnreadMessagesInChat = functions.firestore
         //
         receiverUid = chat.user2.uid;
         if (chat?.numberOfUnreadMessagesUser2) {
-          numberOfUnreadMessagesUser2 = chat.unreadMessages2;
+          numberOfUnreadMessagesUser2 = chat.numberOfUnreadMessagesUser2;
           numberOfUnreadMessagesUser2 += 1;
         } else {
           numberOfUnreadMessagesUser2 = 1;
