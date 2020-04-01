@@ -19,10 +19,11 @@ class FirebaseCloudMessaging {
     return _firebaseMessaging.getToken();
   }
 
-  Future<void> cancelAll(){
+  Future<void> cancelAll() {
     return flutterLocalNotificationsPlugin.cancelAll();
   }
-  Future<void> cancel(int id){
+
+  Future<void> cancel(int id) {
     return flutterLocalNotificationsPlugin.cancel(id);
   }
 
@@ -106,16 +107,13 @@ class FirebaseCloudMessaging {
     BuildContext context,
     CloudMessage message,
   ) {
-    User loggedInUser = User.fromMap(map: message.data['loggedInUser']);
     User otherUser = User.fromMap(map: message.data['otherUser']);
     Navigator.of(context, rootNavigator: true).push(
       CupertinoPageRoute<void>(
         builder: (context) {
           return ChatScreen(
-            loggedInUser: loggedInUser,
-            otherUser: otherUser,
             heroTag: otherUser.uid + 'chats',
-            chatPath: message.data['chatPath'],
+            chatId: message.data['chatId'],
           );
         },
       ),
@@ -151,7 +149,7 @@ class CloudMessage {
     data['screen'] = mapMessage['data']['screen'];
     data['loggedInUser'] = mapMessage['data']['loggedInUser'];
     data['otherUser'] = mapMessage['data']['otherUser'];
-    data['chatPath'] = mapMessage['data']['chatPath'];
+    data['chatId'] = mapMessage['data']['chatId'];
     data['otherUid'] = mapMessage['data']['otherUid'];
   }
 }

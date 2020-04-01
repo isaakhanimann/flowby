@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:Flowby/models/user.dart';
 
 class Chat {
+  String chatId;
   List<String> combinedUids;
   User user1;
   bool hasUser1Blocked;
@@ -9,12 +9,12 @@ class Chat {
   User user2;
   bool hasUser2Blocked;
   int numberOfUnreadMessagesUser2;
-  String chatpath;
   String lastMessageText;
   var lastMessageTimestamp;
 
   Chat(
-      {this.combinedUids,
+      {this.chatId,
+      this.combinedUids,
       this.user1,
       this.hasUser1Blocked,
       this.numberOfUnreadMessagesUser1 = 0,
@@ -25,6 +25,7 @@ class Chat {
       this.lastMessageTimestamp});
 
   Chat.fromMap({Map<String, dynamic> map}) {
+    this.chatId = map['chatId'];
     this.combinedUids = _convertFirebaseList(list: map['combinedUids']);
     this.user1 = User.fromMap(map: map['user1']);
     this.hasUser1Blocked = map['hasUser1Blocked'] ?? false;
@@ -49,6 +50,7 @@ class Chat {
 
   Map<String, dynamic> toMap() {
     return {
+      'chatId': chatId,
       'combinedUids': combinedUids,
       'user1': user1.toMap(),
       'hasUser1Blocked': hasUser1Blocked,
@@ -61,13 +63,10 @@ class Chat {
     };
   }
 
-  void setChatpath({@required String chatpath}) {
-    this.chatpath = chatpath;
-  }
-
   @override
   String toString() {
-    String toPrint = '\n{ user1: $user1, ';
+    String toPrint = '\n{ chatId: $chatId, ';
+    toPrint += 'user1: $user1';
     toPrint += 'combinedUids: $combinedUids';
     toPrint += 'hasUser1Blocked: $hasUser1Blocked, ';
     toPrint += 'numberOfUnreadMessagesUser1: $numberOfUnreadMessagesUser1, ';

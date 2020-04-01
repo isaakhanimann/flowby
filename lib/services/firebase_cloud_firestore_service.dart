@@ -100,36 +100,42 @@ class FirebaseCloudFirestoreService {
   }
 
   Stream<ChatWithoutLastMessage> getChatStreamWithoutLastMessageField(
-      {@required String chatPath}) {
+      {@required String chatId}) {
     try {
-      var chatStream = _fireStore.document(chatPath).snapshots().map((doc) {
-        Map<dynamic, dynamic> map = doc.data;
-        ChatWithoutLastMessage chat = ChatWithoutLastMessage(
-            user1: User.fromMap(map: map['user1']),
-            hasUser1Blocked: map['hasUser1Blocked'],
-            user2: User.fromMap(map: map['user2']),
-            hasUser2Blocked: map['hasUser2Blocked'],
-            chatpath: doc.reference.path);
-        return chat;
+      var chatStream = _fireStore
+          .collection('chats')
+          .document(chatId)
+          .snapshots()
+          .map((doc) {
+        Chat chat = Chat.fromMap(map: doc.data);
+        chat.chatId = doc.documentID;
+        ChatWithoutLastMessage chatWithoutLastMessage = ChatWithoutLastMessage(
+            chatId: chat.chatId,
+            user1: chat.user1,
+            hasUser1Blocked: chat.hasUser1Blocked,
+            user2: chat.user2,
+            hasUser2Blocked: chat.hasUser2Blocked);
+        return chatWithoutLastMessage;
       }).distinct(); //use distinct to avoid unnecessary rebuilds
       return chatStream;
     } catch (e) {
       print('Could not get the chat stream');
+      print(e);
     }
     return Stream.empty();
   }
 
   Future<void> uploadChatBlocked(
-      {@required String chatpath,
+      {@required String chatId,
       bool hasUser1Blocked,
       bool hasUser2Blocked}) async {
     if (hasUser1Blocked != null) {
       await _fireStore
-          .document(chatpath)
+          .document('chats/$chatId')
           .updateData({'hasUser1Blocked': hasUser1Blocked});
     } else if (hasUser2Blocked != null) {
       await _fireStore
-          .document(chatpath)
+          .document('chats/$chatId')
           .updateData({'hasUser2Blocked': hasUser2Blocked});
     }
     return null;
@@ -140,29 +146,25 @@ class FirebaseCloudFirestoreService {
         .collection('chats')
         .where('combinedUids', arrayContains: loggedInUid)
         .snapshots()
-        .map((snap) => snap.documents.map((doc) {
-              Chat chat = Chat.fromMap(map: doc.data);
-              chat.setChatpath(chatpath: doc.reference.path);
-              return chat;
-            }).toList());
+        .map((snap) =>
+            snap.documents.map((doc) => Chat.fromMap(map: doc.data)).toList());
     return chatStream;
   }
 
-  Future<String> getChatPath(
-      {@required User user1, @required User user2}) async {
+  Future<Chat> getChat({@required User user1, @required User user2}) async {
     try {
       QuerySnapshot snap = await _fireStore
           .collection('chats')
           .where('combinedUids', arrayContains: user1.uid + user2.uid)
           .getDocuments();
-      String chatPath;
+      Chat chat;
       if (snap.documents.length == 0) {
         //there is no chat yet, so create one
-        chatPath = await _createChat(user1: user1, user2: user2);
+        chat = await _createChat(user1: user1, user2: user2);
       } else {
-        chatPath = snap.documents[0].reference.path;
+        chat = Chat.fromMap(map: snap.documents[0].data);
       }
-      return chatPath;
+      return chat;
     } catch (e) {
       print(e);
       print('Could not get chatpath');
@@ -170,8 +172,7 @@ class FirebaseCloudFirestoreService {
     }
   }
 
-  Future<String> _createChat(
-      {@required User user1, @required User user2}) async {
+  Future<Chat> _createChat({@required User user1, @required User user2}) async {
     try {
       Chat chat = Chat(
           combinedUids: [
@@ -187,18 +188,23 @@ class FirebaseCloudFirestoreService {
           lastMessageText: 'No message yet',
           lastMessageTimestamp: FieldValue.serverTimestamp());
       var docReference = await _fireStore.collection('chats').add(chat.toMap());
-      return docReference.path;
+      chat.chatId = docReference.documentID;
+      await _fireStore
+          .collection('chats')
+          .document(chat.chatId)
+          .updateData(chat.toMap());
+      return chat;
     } catch (e) {
-      print('Could not createChat');
+      print('Could not create chat');
       print(e);
       return null;
     }
   }
 
-  Stream<List<Message>> getMessageStream({@required String chatPath}) {
+  Stream<List<Message>> getMessageStream({@required String chatId}) {
     try {
       var messageStream = _fireStore
-          .document(chatPath)
+          .document('chats/$chatId')
           .collection('messages')
           .orderBy('timestamp')
           .snapshots()
@@ -213,10 +219,10 @@ class FirebaseCloudFirestoreService {
   }
 
   Future<void> uploadMessage(
-      {@required String chatPath, @required Message message}) async {
+      {@required String chatId, @required Message message}) async {
     try {
       await _fireStore
-          .document(chatPath)
+          .document('chats/$chatId')
           .collection('messages')
           .add(message.toMap());
     } catch (e) {
@@ -276,14 +282,14 @@ class FirebaseCloudFirestoreService {
 
   // this function is executed when the user leaves the chat
   Future<void> resetUnreadMessagesInChat(
-      {@required String chatPath, @required bool isUser1}) async {
+      {@required String chatId, @required bool isUser1}) async {
     if (isUser1) {
       await _fireStore
-          .document(chatPath)
+          .document('chats/$chatId')
           .updateData({'numberOfUnreadMessagesUser1': 0});
     } else {
       await _fireStore
-          .document(chatPath)
+          .document('chats/$chatId')
           .updateData({'numberOfUnreadMessagesUser2': 0});
     }
     return null;
@@ -291,11 +297,11 @@ class FirebaseCloudFirestoreService {
 
   // this function is executed when the user leaves the chat
   updateUserTotalUnreadMessages(
-      {@required String chatPath,
+      {@required String chatId,
       @required bool isUser1,
       @required String uid}) async {
     String docPath = "users/$uid";
-    var chatDoc = await _fireStore.document(chatPath).get();
+    var chatDoc = await _fireStore.document('chats/$chatId').get();
     Chat chat = Chat.fromMap(map: chatDoc.data);
     var userDoc = await _fireStore.document(docPath).get();
     User user = User.fromMap(map: userDoc.data);

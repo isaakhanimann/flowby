@@ -173,16 +173,15 @@ class ChatItem extends StatelessWidget {
               // removes the current notifications of the opened chat
               firebaseMessaging.cancel(otherUser.uid.hashCode);
               return ChatScreen(
-                loggedInUser: loggedInUser,
-                otherUser: otherUser,
                 heroTag: heroTag,
-                chatPath: chat.chatpath,
+                chatId: chat.chatId,
               );
             },
           ),
         );
         _updateUnreadMessages(
             context: context,
+            chatId: chat.chatId,
             amIUser1: amIUser1,
             loggedInUid: loggedInUser.uid);
       },
@@ -190,14 +189,17 @@ class ChatItem extends StatelessWidget {
   }
 
   _updateUnreadMessages(
-      {BuildContext context, bool amIUser1, String loggedInUid}) {
+      {BuildContext context,
+      String chatId,
+      bool amIUser1,
+      String loggedInUid}) {
     // subtract the number of unread messages from the global total
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     cloudFirestoreService.updateUserTotalUnreadMessages(
-        chatPath: chat.chatpath, isUser1: amIUser1, uid: loggedInUid);
+        chatId: chatId, isUser1: amIUser1, uid: loggedInUid);
     // set to 0 the number of unread messages of the chat when user leaves the chat
     cloudFirestoreService.resetUnreadMessagesInChat(
-        chatPath: chat.chatpath, isUser1: amIUser1);
+        chatId: chatId, isUser1: amIUser1);
   }
 }
