@@ -42,15 +42,15 @@ class ViewProfileScreen extends StatelessWidget {
                   textColor: kBlueButtonColor,
                   onPressed: () async {
                     if (loggedInUser == null) {
-                      Navigator.of(context).push(
-                        CupertinoPageRoute<void>(
-                          builder: (context) {
-                            return ChooseSigninScreen();
-                          },
-                        ),
+                      Navigator.of(context, rootNavigator: true)
+                          .pushAndRemoveUntil(
+                        CupertinoPageRoute(
+                            builder: (BuildContext context) =>
+                                ChooseSigninScreen()),
+                        (Route<dynamic> route) => false,
                       );
                     } else {
-                      Navigator.of(context).push(
+                      await Navigator.of(context).push(
                         CupertinoPageRoute<void>(
                           builder: (context) {
                             return ChatScreen(
