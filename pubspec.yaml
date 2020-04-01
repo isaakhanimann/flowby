@@ -60,6 +60,7 @@ flutter:
     - languages/en.json
     - languages/de.json
     - languages/fr.json
+    - languages/it.json
 
   fonts:
     - family: MontserratBlack
