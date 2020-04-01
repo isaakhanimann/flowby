@@ -92,8 +92,6 @@ class ChatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loggedInUser = Provider.of<User>(context, listen: false);
-    final firebaseMessaging =
-        Provider.of<FirebaseCloudMessaging>(context, listen: false);
 
     bool amIUser1 = chat.user1.uid == loggedInUser.uid;
 
@@ -172,7 +170,10 @@ class ChatItem extends StatelessWidget {
         await Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
+
               // removes the current notifications of the opened chat
+              final firebaseMessaging =
+              Provider.of<FirebaseCloudMessaging>(context, listen: false);
               firebaseMessaging.cancel(otherUser.uid.hashCode);
               return ChatScreen(
                 loggedInUser: loggedInUser,
@@ -187,7 +188,8 @@ class ChatItem extends StatelessWidget {
             context: context,
             chatId: chat.chatId,
             amIUser1: amIUser1,
-            loggedInUid: loggedInUser.uid);
+            loggedInUid: loggedInUser.uid,
+            otherUserUid: otherUser.uid);
       },
     );
   }
@@ -196,14 +198,18 @@ class ChatItem extends StatelessWidget {
       {BuildContext context,
       String chatId,
       bool amIUser1,
-      String loggedInUid}) {
+      String loggedInUid,
+      String otherUserUid}) {
     // subtract the number of unread messages from the global total
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    final firebaseMessaging =
+        Provider.of<FirebaseCloudMessaging>(context, listen: false);
     cloudFirestoreService.updateUserTotalUnreadMessages(
         chatId: chatId, isUser1: amIUser1, uid: loggedInUid);
     // set to 0 the number of unread messages of the chat when user leaves the chat
     cloudFirestoreService.resetUnreadMessagesInChat(
         chatId: chatId, isUser1: amIUser1);
+    firebaseMessaging.cancel(otherUserUid.hashCode);
   }
 }

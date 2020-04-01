@@ -525,17 +525,24 @@ exports.updateUnreadMessagesInChat = functions.firestore
         .get();
 
       const unreadMessages: FirebaseFirestore.DocumentData = unreadMessagesSnap.data()!;
-      let total: number = unreadMessages.totalNumberOfUnreadMessages + 1;
+      
+      let newTotal: number = 0;
+      if (unreadMessages?.totalNumberOfUnreadMessages){
+        newTotal = unreadMessages.totalNumberOfUnreadMessages + 1;
+      } else {
+        newTotal = 1;
+      }
+      
 
       return db
         .collection("users")
         .doc(receiverUid)
         .update({
-          totalNumberOfUnreadMessages: total
+          totalNumberOfUnreadMessages: newTotal
         })
         .then(() => {
           console.log(
-            `Successful update: User ${receiverUid} has a total of ${total} unread messages`
+            `Successful update: User ${receiverUid} has a total of ${newTotal} unread messages`
           );
         })
         .catch((error: any) => {
