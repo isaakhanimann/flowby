@@ -128,9 +128,12 @@ class ChatItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: kUsernameTextStyle,
               ),
-              SizedBox(width: 10),
               if (numberOfUnreadMessages != null)
-                Badge(count: numberOfUnreadMessages, badgeColor: Colors.red),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: Badge(
+                      count: numberOfUnreadMessages, badgeColor: Colors.red),
+                ),
               Expanded(
                 child: Container(),
               ),
