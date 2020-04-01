@@ -56,6 +56,32 @@
         })(window,document,'script','dataLayer','GTM-WTPMR7P');
     </script>
     <!-- End Google Tag Manager -->
+    <script>
+    const lang = navigator.language;
+    console.log(lang.slice(0, 2));
+
+    if (lang.slice(0, 2) === 'en') {
+    console.log('en');
+    window.location.replace("https://www.flowby.ch/en/");
+}
+    else if (lang.slice(0, 2) === 'de') {
+    console.log('de');
+    window.location.replace("https://www.flowby.ch/de/");
+}
+    else if (lang.slice(0, 2) === 'fr') {
+    console.log('fr');
+    window.location.replace("https://www.flowby.ch/fr/");
+}
+    else if (lang.slice(0, 2) === 'it') {
+    console.log('it');
+    window.location.replace("https://www.flowby.ch/it/");
+}
+else {
+console.log("default");
+    window.location.replace("https://www.flowby.ch/en/");
+}
+
+    </script>
 
 </head>
 
@@ -233,7 +259,7 @@
                 <script>
                   document.write(new Date().getFullYear());
                 </script>
-                Flowby | Made in Zürich. 💚 </span>
+                Flowby | Made in Zürich 🇨🇭💚 </span>
                     <div class="space-30 hidden visible-xs"></div>
                 </div>
                 <div class="col-xs-12 col-md-7">
