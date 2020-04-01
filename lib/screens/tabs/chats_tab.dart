@@ -135,14 +135,13 @@ class ChatItem extends StatelessWidget {
                       count: numberOfUnreadMessages, badgeColor: Colors.red),
                 ),
               Expanded(
-                child: Container(),
-              ),
-              Text(
-                HelperFunctions.getTimestampAsString(
-                    context: context, timestamp: chat.lastMessageTimestamp),
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.end,
-                style: kChatTabTimestampTextStyle,
+                child: Text(
+                  HelperFunctions.getTimestampAsString(
+                      context: context, timestamp: chat.lastMessageTimestamp),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
+                  style: kChatTabTimestampTextStyle,
+                ),
               ),
             ],
           ),
@@ -153,7 +152,6 @@ class ChatItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Expanded(
-                flex: 1,
                 child: Text(
                   chat.lastMessageText,
                   maxLines: 1,
