@@ -99,24 +99,34 @@ class FirebaseCloudFirestoreService {
     return Stream.empty();
   }
 
-  Stream<ChatWithoutLastMessage> getChatStreamWithoutLastMessageField(
-      {@required String chatId}) {
+  Stream<ChatJustWithFieldsNeededForChatScreen>
+      getChatStreamJustWithFieldsNeededForChatScreen(
+          {@required String chatId}) {
     try {
-      var chatStream = _fireStore
+      Stream<ChatJustWithFieldsNeededForChatScreen> chatStream = _fireStore
           .collection('chats')
           .document(chatId)
           .snapshots()
           .map((doc) {
         Chat chat = Chat.fromMap(map: doc.data);
         chat.chatId = doc.documentID;
-        ChatWithoutLastMessage chatWithoutLastMessage = ChatWithoutLastMessage(
-            chatId: chat.chatId,
-            user1: chat.user1,
-            hasUser1Blocked: chat.hasUser1Blocked,
-            user2: chat.user2,
-            hasUser2Blocked: chat.hasUser2Blocked);
-        return chatWithoutLastMessage;
-      }).distinct(); //use distinct to avoid unnecessary rebuilds
+        ChatJustWithFieldsNeededForChatScreen
+            chatJustWithFieldsNeededForChatScreen =
+            ChatJustWithFieldsNeededForChatScreen(
+                chatId: chat.chatId,
+                user1: chat.user1,
+                hasUser1Blocked: chat.hasUser1Blocked,
+                user2: chat.user2,
+                hasUser2Blocked: chat.hasUser2Blocked);
+        return chatJustWithFieldsNeededForChatScreen;
+      }).distinct((chatPrevious, chatNext) {
+        if (chatPrevious.hasUser1Blocked == chatNext.hasUser1Blocked &&
+            chatPrevious.hasUser2Blocked == chatNext.hasUser2Blocked) {
+          return true;
+        } else {
+          return false;
+        }
+      }); //use distinct to avoid unnecessary rebuilds
       return chatStream;
     } catch (e) {
       print('Could not get the chat stream');

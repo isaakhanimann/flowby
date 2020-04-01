@@ -39,15 +39,15 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  Stream<ChatWithoutLastMessage> chatStream;
+  Stream<ChatJustWithFieldsNeededForChatScreen> chatStream;
 
   @override
   void initState() {
     super.initState();
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
-    chatStream = cloudFirestoreService.getChatStreamWithoutLastMessageField(
-        chatId: widget.chatId);
+    chatStream = cloudFirestoreService
+        .getChatStreamJustWithFieldsNeededForChatScreen(chatId: widget.chatId);
   }
 
   @override
@@ -68,8 +68,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   snapshot.connectionState == ConnectionState.none) {
                 return ChatIsLoading();
               }
+              print('whole chat screen rebuilt');
 
-              final ChatWithoutLastMessage chat = snapshot.data;
+              final ChatJustWithFieldsNeededForChatScreen chat = snapshot.data;
+              print('chat = $chat');
 
               return ChatHasLoaded(chat: chat);
             },
@@ -86,7 +88,7 @@ class ChatHasLoaded extends StatelessWidget {
     @required this.chat,
   }) : super(key: key);
 
-  final ChatWithoutLastMessage chat;
+  final ChatJustWithFieldsNeededForChatScreen chat;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +160,7 @@ class MessageSendingSectionLoading extends StatelessWidget {
 class ChatHeader extends StatelessWidget {
   const ChatHeader({Key key, this.chat}) : super(key: key);
 
-  final ChatWithoutLastMessage chat;
+  final ChatJustWithFieldsNeededForChatScreen chat;
 
   @override
   Widget build(BuildContext context) {
@@ -344,7 +346,7 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageSendingSection extends StatefulWidget {
-  final ChatWithoutLastMessage chat;
+  final ChatJustWithFieldsNeededForChatScreen chat;
 
   MessageSendingSection({@required this.chat});
 

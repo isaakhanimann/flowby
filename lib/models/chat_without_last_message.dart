@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'user.dart';
 
-class ChatWithoutLastMessage extends Equatable {
+class ChatJustWithFieldsNeededForChatScreen extends Equatable {
   final String chatId;
   final User user1;
   final bool hasUser1Blocked;
   final User user2;
   final bool hasUser2Blocked;
 
-  ChatWithoutLastMessage({
+  ChatJustWithFieldsNeededForChatScreen({
     this.chatId,
     this.user1,
     this.hasUser1Blocked = false,
