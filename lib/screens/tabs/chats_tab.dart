@@ -170,7 +170,6 @@ class ChatItem extends StatelessWidget {
         await Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
-
               // removes the current notifications of the opened chat
               final firebaseMessaging =
               Provider.of<FirebaseCloudMessaging>(context, listen: false);
