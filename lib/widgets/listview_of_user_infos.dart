@@ -62,7 +62,8 @@ class ListViewOfUserInfos extends StatelessWidget {
                   imageUrl: user.imageUrl, radius: 60, heroTag: heroTag),
             ),
           ),
-          if (user.distanceInKm != null)
+          if (user.distanceInKm != null &&
+              user.distanceInKm != kAlmostInfiniteDistanceInKm)
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: Row(

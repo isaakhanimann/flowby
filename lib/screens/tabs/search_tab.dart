@@ -230,7 +230,7 @@ class ProfileItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: kUsernameTextStyle,
               ),
-              if (user.distanceInKm != kDistanceInKm)
+              if (user.distanceInKm != kAlmostInfiniteDistanceInKm)
                 Flexible(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.baseline,
