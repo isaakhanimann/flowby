@@ -41,7 +41,7 @@ class _AgreeToTermsScreenState extends State<AgreeToTermsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                "Please agree to the following terms:",
+                AppLocalizations.of(context).translate("please_agree_to_terms"),
                 style: kExplanationTitleTextStyle,
                 textAlign: TextAlign.center,
               ),
@@ -71,7 +71,8 @@ class _AgreeToTermsScreenState extends State<AgreeToTermsScreen> {
                 onPressed: () {
                   _agreeAndNavigate(context);
                 },
-                text: "Agree and Continue",
+                text: AppLocalizations.of(context)
+                    .translate("agree_and_continue"),
               ),
             ],
           ),

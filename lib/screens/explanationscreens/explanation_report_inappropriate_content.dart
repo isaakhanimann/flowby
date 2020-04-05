@@ -24,7 +24,8 @@ class ExplanationReportInappropriateContent extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Text(
-                "Seeing a user with inappropriate content?",
+                AppLocalizations.of(context)
+                    .translate("seeing_user_with_inappropriate_content"),
                 style: kExplanationTitleTextStyle,
                 textAlign: TextAlign.center,
               ),
@@ -32,7 +33,8 @@ class ExplanationReportInappropriateContent extends StatelessWidget {
             Expanded(
               flex: 5,
               child: Text(
-                "Longpress on the announcement or user to mark it as inappropriate",
+                AppLocalizations.of(context)
+                    .translate("longpress_on_announcement_or_user"),
                 style: kExplanationMiddleTextStyle,
                 textAlign: TextAlign.center,
               ),
