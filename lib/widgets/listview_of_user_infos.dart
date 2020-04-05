@@ -64,7 +64,8 @@ class ListViewOfUserInfos extends StatelessWidget {
           ),
           if (user.distanceInKm != null &&
               user.distanceInKm != kAlmostInfiniteDistanceInKm &&
-              user.currentCity != null)
+              user.currentCity != null &&
+              user.currentCity != '')
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: Row(
