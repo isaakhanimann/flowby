@@ -401,14 +401,6 @@ class AnnouncementItem extends StatelessWidget {
           reloadAnnouncements: tabInfo.fetchNewAnnouncements,
         ),
       );
-    } else {
-      HelperFunctions.showCustomDialog(
-        context: context,
-        dialog: BasicDialog(
-          title: AppLocalizations.of(context).translate('cannot_delete'),
-          text: AppLocalizations.of(context).translate('can_only_delete_own'),
-        ),
-      );
     }
   }
 
