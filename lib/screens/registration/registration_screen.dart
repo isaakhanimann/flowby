@@ -1,6 +1,7 @@
 import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/user.dart';
+import 'package:Flowby/screens/registration/agree_to_terms_screen.dart';
 import 'package:Flowby/screens/registration/verify_email_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/widgets/login_input_field.dart';
@@ -15,7 +16,6 @@ import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:Flowby/services/apple_sign_in_available.dart';
 import 'package:Flowby/widgets/google_login_button.dart';
-import 'add_image_username_and_bio_registration_screen.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/widgets/basic_dialog.dart';
 
@@ -171,8 +171,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     });
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       CupertinoPageRoute(
-          builder: (BuildContext context) =>
-              AddImageUsernameAndBioRegistrationScreen(user: user)),
+          builder: (BuildContext context) => AgreeToTermsScreen(user: user)),
       (Route<dynamic> route) => false,
     );
   }
