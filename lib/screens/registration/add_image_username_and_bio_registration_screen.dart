@@ -160,8 +160,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
                                     Opacity(
                                       opacity: 0.4,
                                       child: CachedNetworkImage(
-                                        imageUrl:
-                                            "https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2F$kDefaultProfilePicUrl?alt=media",
+                                        imageUrl: kDefaultProfilePicUrl,
                                         imageBuilder: (context, imageProvider) {
                                           return CircleAvatar(
                                               radius: 60,
