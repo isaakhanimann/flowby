@@ -201,13 +201,11 @@ class ListOfSortedUsers extends StatelessWidget {
           endLatitude: user?.location?.latitude,
           endLongitude: user?.location?.longitude);
       usersWithDistance.add(user);
-      if(user?.location?.latitude != null)
-        {
-          user.currentCity = await locationService.getCity(
-              latitude: user?.location?.latitude,
-              longitude: user?.location?.longitude);
-        }
-      else {
+      if (user?.location?.latitude != null) {
+        user.currentCity = await locationService.getCity(
+            latitude: user?.location?.latitude,
+            longitude: user?.location?.longitude);
+      } else {
         user.currentCity = '';
       }
     }
@@ -263,7 +261,11 @@ class ProfileItem extends StatelessWidget {
                       Flexible(
                         flex: 3,
                         child: Text(
-                          ' ' + user.currentCity + ', ' + user.distanceInKm.toString() + 'km',
+                          ' ' +
+                              user.currentCity +
+                              ', ' +
+                              user.distanceInKm.toString() +
+                              'km',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

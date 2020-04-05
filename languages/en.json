@@ -1,6 +1,13 @@
 {
   "no_user_found_1":"No user found... add this service in your profile as a wish, so people can find you.",
   "no_user_found_2":"No user found with this wish.",
+  "is_displaying_inappropriate_content":"Is this user displaying inappropriate content?",
+  "mark_user_as_inappropriate":"Do you want to mark this user as inappropriate?",
+  "yes":"Yes",
+  "seeing_user_with_inappropriate_content":"Seeing a user with inappropriate content?",
+  "longpress_on_announcement_or_user":"Longpress on the announcement or user to mark it as inappropriate",
+  "agree_and_continue":"Agree and Continue",
+  "please_agree_to_terms":"Please agree to the following terms:",
   "invite_friend":"Invite a friend",
   "flowby_is":"Flowby is a close by community of people who offer their services to people nearby. Join the adventure: https://flowby.app. Tell your friends about it, the more the merrier.",
   "profile_hidden":"(Your profile is hidden)",
