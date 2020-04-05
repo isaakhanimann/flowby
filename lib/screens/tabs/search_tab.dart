@@ -78,6 +78,8 @@ class _SearchTabState extends State<SearchTab> {
                     return CenteredLoadingIndicator();
                   }
                   if (snapshot.hasError) {
+                    print(
+                        'getting users from algolia got an error = ${snapshot.error.toString()}');
                     return Center(
                       child: Container(
                         color: Colors.red,
@@ -156,6 +158,8 @@ class ListOfSortedUsers extends StatelessWidget {
           return CenteredLoadingIndicator();
         }
         if (snapshot.hasError) {
+          print(
+              'error occured while waiting and sorting the users by distance. error = ${snapshot.error.toString()}');
           return Container(
             color: Colors.red,
             child: Text(

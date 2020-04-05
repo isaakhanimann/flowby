@@ -59,8 +59,14 @@ class LocationService {
 
   Future<String> getCity(
       {@required double latitude, @required double longitude}) async {
-    List<Placemark> placemarks =
-        await Geolocator().placemarkFromCoordinates(latitude, longitude);
-    return placemarks[0]?.locality;
+    try {
+      List<Placemark> placemarks =
+          await Geolocator().placemarkFromCoordinates(latitude, longitude);
+      return placemarks[0]?.locality;
+    } catch (e) {
+      print('Could not get city name');
+      print(e);
+      return '';
+    }
   }
 }

@@ -38,7 +38,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
   bool showSpinner = false;
 
   File _profilePic;
-  TextEditingController _usernameController;
+  TextEditingController _usernameController = TextEditingController();
   String _bio;
 
   @override
@@ -279,7 +279,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
   }
 
   Future<void> _uploadImageAndUserAndNavigate(BuildContext context) async {
-    if (_usernameController.text == null) {
+    if (_usernameController.text == null || _usernameController.text == '') {
       HelperFunctions.showCustomDialog(
         context: context,
         dialog: BasicDialog(
@@ -302,7 +302,6 @@ class _AddImageUsernameAndBioRegistrationScreenState
     } catch (e) {
       print('Could not upload image');
     }
-
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     final storageService =
