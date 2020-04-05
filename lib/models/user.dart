@@ -8,6 +8,7 @@ class User {
   bool isHidden;
   GeoPoint location;
   int distanceInKm;
+  String currentCity;
   String imageUrl;
   String skillKeywords;
   String wishKeywords;
@@ -123,7 +124,8 @@ class User {
     toPrint += 'wishKeywords: ${wishKeywords.toString()}, ';
     toPrint +=
         'totalNumberOfUnreadMessages: ${totalNumberOfUnreadMessages.toString()}, ';
-    toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';
+    toPrint += 'distanceInKm: ${distanceInKm.toString()}, ';
+    toPrint += 'currentCity: $currentCity }\n';
 
     return toPrint;
   }

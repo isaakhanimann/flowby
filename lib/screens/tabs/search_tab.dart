@@ -139,6 +139,7 @@ class _SearchTabState extends State<SearchTab> {
 
 class ListOfSortedUsers extends StatelessWidget {
   final List<User> unsortedUsers;
+
   ListOfSortedUsers({@required this.unsortedUsers});
 
   @override
@@ -187,7 +188,7 @@ class ListOfSortedUsers extends StatelessWidget {
     } else {
       currentUsersLocation = Position(
           latitude: loggedInUser.location?.latitude,
-          longitude: loggedInUser.location?.latitude);
+          longitude: loggedInUser.location?.longitude);
     }
     List<User> usersWithDistance = [];
     for (User user in users) {
@@ -197,6 +198,15 @@ class ListOfSortedUsers extends StatelessWidget {
           endLatitude: user?.location?.latitude,
           endLongitude: user?.location?.longitude);
       usersWithDistance.add(user);
+      if(user?.location?.latitude != null)
+        {
+          user.currentCity = await locationService.getCity(
+              latitude: user?.location?.latitude,
+              longitude: user?.location?.longitude);
+        }
+      else {
+        user.currentCity = ' ';
+      }
     }
     usersWithDistance
         .sort((user1, user2) => user1.distanceInKm - user2.distanceInKm);
@@ -249,7 +259,7 @@ class ProfileItem extends StatelessWidget {
                       Flexible(
                         flex: 3,
                         child: Text(
-                          ' ' + user.distanceInKm.toString() + 'km',
+                          ' ' + user.currentCity + ', ' + user.distanceInKm.toString() + 'km',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

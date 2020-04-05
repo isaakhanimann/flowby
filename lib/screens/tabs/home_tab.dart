@@ -6,7 +6,7 @@ import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/basic_dialog.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/custom_dialog.dart';
-import 'package:Flowby/widgets/distance_text.dart';
+import 'package:Flowby/widgets/city_and_distance_text.dart';
 import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/tab_header.dart';
 import 'package:Flowby/widgets/two_options_dialog.dart';
@@ -362,7 +362,7 @@ class AnnouncementItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: kUsernameTextStyle,
               ),
-              DistanceText(
+              CityAndDistanceText(
                 latitude1: loggedInUser?.location?.latitude,
                 longitude1: loggedInUser?.location?.longitude,
                 latitude2: announcement.user?.location?.latitude,
