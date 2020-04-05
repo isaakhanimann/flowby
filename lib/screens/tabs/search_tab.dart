@@ -205,7 +205,7 @@ class ListOfSortedUsers extends StatelessWidget {
               longitude: user?.location?.longitude);
         }
       else {
-        user.currentCity = ' ';
+        user.currentCity = '';
       }
     }
     usersWithDistance
