@@ -302,12 +302,14 @@ class ProfileItem extends StatelessWidget {
   }
 
   _showMarkInappropriateDialog({BuildContext context, User user}) async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    final navigator = Navigator.of(context, rootNavigator: true);
     HelperFunctions.showCustomDialog(
       context: context,
       dialog: MarkInappropriateDialog(onWantsToMark: () {
-        final cloudFirestoreService =
-            Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
         cloudFirestoreService.incrementUserFlagged(uid: user.uid);
+        navigator.pop();
       }),
     );
   }
