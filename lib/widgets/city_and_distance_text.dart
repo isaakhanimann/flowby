@@ -53,7 +53,7 @@ class _CityAndDistanceTextState extends State<CityAndDistanceText> {
             }
 
             String currentCity = snapshot.data;
-            if (currentCity == null) {
+            if (currentCity == null || currentCity == '') {
               return Text('');
             }
             return Row(
