@@ -14,6 +14,7 @@ class User {
   List<SkillOrWish> skills = [];
   List<SkillOrWish> wishes = [];
   int totalNumberOfUnreadMessages = 0;
+  int numberOfTimesMarkedInappropriate = 0;
 
   User(
       {this.username,
@@ -24,7 +25,8 @@ class User {
       this.wishes,
       this.location,
       this.imageUrl,
-      this.totalNumberOfUnreadMessages});
+      this.totalNumberOfUnreadMessages,
+      this.numberOfTimesMarkedInappropriate});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'] ?? '';
@@ -47,6 +49,12 @@ class User {
     } catch (e) {
       this.totalNumberOfUnreadMessages = 0;
     }
+    try {
+      this.numberOfTimesMarkedInappropriate =
+          map['numberOfTimesMarkedInappropriate'] ?? 0;
+    } catch (e) {
+      this.numberOfTimesMarkedInappropriate = 0;
+    }
   }
 
   Map<String, dynamic> toMap() {
@@ -60,6 +68,7 @@ class User {
       'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
       'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList(),
       'totalNumberOfUnreadMessages': totalNumberOfUnreadMessages,
+      'numberOfTimesMarkedInappropriate': numberOfTimesMarkedInappropriate,
     };
   }
 
@@ -121,8 +130,9 @@ class User {
     toPrint += 'wishes: ${wishes.toString()}, ';
     toPrint += 'skillKeywords: ${skillKeywords.toString()}, ';
     toPrint += 'wishKeywords: ${wishKeywords.toString()}, ';
+    toPrint += 'totalNumberOfUnreadMessages: $totalNumberOfUnreadMessages, ';
     toPrint +=
-        'totalNumberOfUnreadMessages: ${totalNumberOfUnreadMessages.toString()}, ';
+        'numberOfTimesMarkedInappropriate: $numberOfTimesMarkedInappropriate, ';
     toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';
 
     return toPrint;

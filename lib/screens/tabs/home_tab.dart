@@ -324,24 +324,30 @@ class AnnouncementItem extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            Navigator.pop(context);
+            final cloudFirestoreService =
+                Provider.of<FirebaseCloudFirestoreService>(context,
+                    listen: false);
+            cloudFirestoreService.incrementUserFlagged(
+                uid: announcement.user.uid);
+            Navigator.of(context, rootNavigator: true).pop();
           },
         ),
-        CupertinoContextMenuAction(
-          trailingIcon: Feather.trash,
-          child: Text(
-            'Delete',
-            style: TextStyle(
-              fontSize: 18,
-              fontFamily: 'MuliBold',
-              color: Colors.red,
+        if (announcement.user.uid == loggedInUser.uid)
+          CupertinoContextMenuAction(
+            trailingIcon: Feather.trash,
+            child: Text(
+              'Delete',
+              style: TextStyle(
+                fontSize: 18,
+                fontFamily: 'MuliBold',
+                color: Colors.red,
+              ),
             ),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+              _deleteAnnouncement(context: context, announcement: announcement);
+            },
           ),
-          onPressed: () {
-            Navigator.pop(context);
-            _deleteAnnouncement(context: context, announcement: announcement);
-          },
-        ),
       ],
       child: CustomCard(
         onPress: () {
@@ -357,28 +363,30 @@ class AnnouncementItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  announcement.user.username,
-                  overflow: TextOverflow.ellipsis,
-                  style: kUsernameTextStyle,
-                ),
-                DistanceText(
-                  latitude1: loggedInUser?.location?.latitude,
-                  longitude1: loggedInUser?.location?.longitude,
-                  latitude2: announcement.user?.location?.latitude,
-                  longitude2: announcement.user?.location?.longitude,
-                  fontSize: 10,
-                ),
-                Text(
-                  HelperFunctions.getTimestampAsString(
-                      context: context, timestamp: announcement.timestamp),
-                  overflow: TextOverflow.ellipsis,
-                  style: kChatTabTimestampTextStyle,
-                ),
-              ],
+            Flexible(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    announcement.user.username,
+                    overflow: TextOverflow.ellipsis,
+                    style: kUsernameTextStyle,
+                  ),
+                  DistanceText(
+                    latitude1: loggedInUser?.location?.latitude,
+                    longitude1: loggedInUser?.location?.longitude,
+                    latitude2: announcement.user?.location?.latitude,
+                    longitude2: announcement.user?.location?.longitude,
+                    fontSize: 10,
+                  ),
+                  Text(
+                    HelperFunctions.getTimestampAsString(
+                        context: context, timestamp: announcement.timestamp),
+                    overflow: TextOverflow.ellipsis,
+                    style: kChatTabTimestampTextStyle,
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: 5,
