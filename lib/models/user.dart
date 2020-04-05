@@ -15,18 +15,21 @@ class User {
   List<SkillOrWish> wishes = [];
   int totalNumberOfUnreadMessages = 0;
   int numberOfTimesMarkedInappropriate = 0;
+  bool hasAgreedToTerms = false;
 
-  User(
-      {this.username,
-      this.uid,
-      this.bio,
-      this.isHidden,
-      this.skills,
-      this.wishes,
-      this.location,
-      this.imageUrl,
-      this.totalNumberOfUnreadMessages,
-      this.numberOfTimesMarkedInappropriate});
+  User({
+    this.username,
+    this.uid,
+    this.bio,
+    this.isHidden,
+    this.skills,
+    this.wishes,
+    this.location,
+    this.imageUrl,
+    this.totalNumberOfUnreadMessages,
+    this.numberOfTimesMarkedInappropriate,
+    this.hasAgreedToTerms,
+  });
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'] ?? '';
@@ -55,6 +58,7 @@ class User {
     } catch (e) {
       this.numberOfTimesMarkedInappropriate = 0;
     }
+    this.hasAgreedToTerms = map['hasAgreedToTerms'] ?? false;
   }
 
   Map<String, dynamic> toMap() {
@@ -69,6 +73,7 @@ class User {
       'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList(),
       'totalNumberOfUnreadMessages': totalNumberOfUnreadMessages,
       'numberOfTimesMarkedInappropriate': numberOfTimesMarkedInappropriate,
+      'hasAgreedToTerms': hasAgreedToTerms,
     };
   }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/screens/registration/agree_to_terms_screen.dart';
 import 'package:Flowby/screens/tabs/chats_tab.dart';
 import 'package:Flowby/screens/tabs/search_tab.dart';
 import 'package:Flowby/screens/tabs/profile_tab.dart';
@@ -172,73 +173,78 @@ class ScreenWithAllTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     User currentUser = Provider.of<User>(context);
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        backgroundColor: Colors.white,
-        activeColor: kDefaultProfilePicColor,
-        inactiveColor: kSmallTitlesTextColor,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Feather.home,
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Feather.search,
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: BadgeIcon(
+    if (currentUser?.hasAgreedToTerms ?? true) {
+      return CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+          backgroundColor: Colors.white,
+          activeColor: kDefaultProfilePicColor,
+          inactiveColor: kSmallTitlesTextColor,
+          items: [
+            BottomNavigationBarItem(
               icon: Icon(
-                Feather.mail,
+                Feather.home,
               ),
-              badgeCount: currentUser?.totalNumberOfUnreadMessages ?? 0,
             ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Feather.user,
+            BottomNavigationBarItem(
+              icon: Icon(
+                Feather.search,
+              ),
             ),
-          ),
-        ],
-      ),
-      tabBuilder: (context, index) {
-        // since every tabview is created new on every call maybe this code can be shorter without side effects
-        CupertinoTabView returnValue;
-        switch (index) {
-          case 0:
-            returnValue = CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(
-                child: HomeTab(),
-              );
-            });
-            break;
-          case 1:
-            returnValue = CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(
-                child: SearchTab(),
-              );
-            });
-            break;
-          case 2:
-            returnValue = CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(
-                child: ChatsTab(),
-              );
-            });
-            break;
-          case 3:
-            returnValue = CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(
-                child: ProfileTab(),
-              );
-            });
-            break;
-        }
-        return returnValue;
-      },
-    );
+            BottomNavigationBarItem(
+              icon: BadgeIcon(
+                icon: Icon(
+                  Feather.mail,
+                ),
+                badgeCount: currentUser?.totalNumberOfUnreadMessages ?? 0,
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Feather.user,
+              ),
+            ),
+          ],
+        ),
+        tabBuilder: (context, index) {
+          // since every tabview is created new on every call maybe this code can be shorter without side effects
+          CupertinoTabView returnValue;
+          switch (index) {
+            case 0:
+              returnValue = CupertinoTabView(builder: (context) {
+                return CupertinoPageScaffold(
+                  child: HomeTab(),
+                );
+              });
+              break;
+            case 1:
+              returnValue = CupertinoTabView(builder: (context) {
+                return CupertinoPageScaffold(
+                  child: SearchTab(),
+                );
+              });
+              break;
+            case 2:
+              returnValue = CupertinoTabView(builder: (context) {
+                return CupertinoPageScaffold(
+                  child: ChatsTab(),
+                );
+              });
+              break;
+            case 3:
+              returnValue = CupertinoTabView(builder: (context) {
+                return CupertinoPageScaffold(
+                  child: ProfileTab(),
+                );
+              });
+              break;
+          }
+          return returnValue;
+        },
+      );
+    } else {
+      return AgreeToTermsScreen(
+          user: currentUser, nextScreenIsNavigationScreen: true);
+    }
   }
 }
 
