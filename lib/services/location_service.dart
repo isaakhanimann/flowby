@@ -56,4 +56,11 @@ class LocationService {
     int distanceInKm = (distanceInMeters / 1000).round();
     return distanceInKm;
   }
+
+  Future<String> getCity(
+      {@required double latitude, @required double longitude}) async {
+    List<Placemark> placemarks =
+        await Geolocator().placemarkFromCoordinates(latitude, longitude);
+    return placemarks[0]?.locality;
+  }
 }

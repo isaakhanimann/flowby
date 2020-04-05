@@ -63,7 +63,8 @@ class ListViewOfUserInfos extends StatelessWidget {
             ),
           ),
           if (user.distanceInKm != null &&
-              user.distanceInKm != kAlmostInfiniteDistanceInKm)
+              user.distanceInKm != kAlmostInfiniteDistanceInKm &&
+              user.currentCity != null)
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: Row(
@@ -76,7 +77,11 @@ class ListViewOfUserInfos extends StatelessWidget {
                     size: 14,
                   ),
                   Text(
-                    ' ' + user.distanceInKm.toString() + 'km',
+                    ' ' +
+                        user.currentCity +
+                        ', ' +
+                        user.distanceInKm.toString() +
+                        'km',
                     style: kDistanceTextStyle,
                   ),
                 ],

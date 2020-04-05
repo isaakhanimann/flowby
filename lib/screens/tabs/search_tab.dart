@@ -142,6 +142,7 @@ class _SearchTabState extends State<SearchTab> {
 
 class ListOfSortedUsers extends StatelessWidget {
   final List<User> unsortedUsers;
+
   ListOfSortedUsers({@required this.unsortedUsers});
 
   @override
@@ -190,7 +191,7 @@ class ListOfSortedUsers extends StatelessWidget {
     } else {
       currentUsersLocation = Position(
           latitude: loggedInUser.location?.latitude,
-          longitude: loggedInUser.location?.latitude);
+          longitude: loggedInUser.location?.longitude);
     }
     List<User> usersWithDistance = [];
     for (User user in users) {
@@ -200,6 +201,15 @@ class ListOfSortedUsers extends StatelessWidget {
           endLatitude: user?.location?.latitude,
           endLongitude: user?.location?.longitude);
       usersWithDistance.add(user);
+      if(user?.location?.latitude != null)
+        {
+          user.currentCity = await locationService.getCity(
+              latitude: user?.location?.latitude,
+              longitude: user?.location?.longitude);
+        }
+      else {
+        user.currentCity = '';
+      }
     }
     usersWithDistance
         .sort((user1, user2) => user1.distanceInKm - user2.distanceInKm);
@@ -225,60 +235,56 @@ class ProfileItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Flexible(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  user.username,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: kUsernameTextStyle,
-                ),
-                if (user.distanceInKm != kAlmostInfiniteDistanceInKm)
-                  Flexible(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 1,
-                          child: Icon(
-                            Feather.navigation,
-                            size: 10,
-                            color: kBlueButtonColor,
-                          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                user.username,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: kUsernameTextStyle,
+              ),
+              if (user.distanceInKm != kAlmostInfiniteDistanceInKm)
+                Flexible(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: <Widget>[
+                      Flexible(
+                        flex: 1,
+                        child: Icon(
+                          Feather.navigation,
+                          size: 10,
+                          color: kBlueButtonColor,
                         ),
-                        Flexible(
-                          flex: 3,
-                          child: Text(
-                            ' ' + user.distanceInKm.toString() + 'km',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: kBlueButtonColor,
-                                fontSize: 10,
-                                fontFamily: 'MuliRegular'),
-                          ),
+                      ),
+                      Flexible(
+                        flex: 3,
+                        child: Text(
+                          ' ' + user.currentCity + ', ' + user.distanceInKm.toString() + 'km',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: kBlueButtonColor,
+                              fontSize: 10,
+                              fontFamily: 'MuliRegular'),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
           SizedBox(
             height: 6,
           ),
-          Flexible(
-            child: Text(
-              isSkillSearch ? user.skillKeywords : user.wishKeywords,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: kCardSubtitleTextStyle,
-            ),
+          Text(
+            isSkillSearch ? user.skillKeywords : user.wishKeywords,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: kCardSubtitleTextStyle,
           ),
         ],
       ),

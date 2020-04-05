@@ -6,7 +6,7 @@ import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
 import 'package:Flowby/widgets/basic_dialog.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/custom_dialog.dart';
-import 'package:Flowby/widgets/distance_text.dart';
+import 'package:Flowby/widgets/city_and_distance_text.dart';
 import 'package:Flowby/widgets/profile_picture.dart';
 import 'package:Flowby/widgets/tab_header.dart';
 import 'package:Flowby/widgets/two_options_dialog.dart';
@@ -336,42 +336,38 @@ class AnnouncementItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Flexible(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  announcement.user.username,
-                  overflow: TextOverflow.ellipsis,
-                  style: kUsernameTextStyle,
-                ),
-                DistanceText(
-                  latitude1: loggedInUser?.location?.latitude,
-                  longitude1: loggedInUser?.location?.longitude,
-                  latitude2: announcement.user?.location?.latitude,
-                  longitude2: announcement.user?.location?.longitude,
-                  fontSize: 10,
-                ),
-                Text(
-                  HelperFunctions.getTimestampAsString(
-                      context: context, timestamp: announcement.timestamp),
-                  overflow: TextOverflow.ellipsis,
-                  style: kChatTabTimestampTextStyle,
-                ),
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                announcement.user.username,
+                overflow: TextOverflow.ellipsis,
+                style: kUsernameTextStyle,
+              ),
+              CityAndDistanceText(
+                latitude1: loggedInUser?.location?.latitude,
+                longitude1: loggedInUser?.location?.longitude,
+                latitude2: announcement.user?.location?.latitude,
+                longitude2: announcement.user?.location?.longitude,
+                fontSize: 10,
+              ),
+              Text(
+                HelperFunctions.getTimestampAsString(
+                    context: context, timestamp: announcement.timestamp),
+                overflow: TextOverflow.ellipsis,
+                style: kChatTabTimestampTextStyle,
+              ),
+            ],
           ),
           SizedBox(
             height: 5,
           ),
-          Flexible(
-            child: Text(
-              announcement.text,
-              textAlign: TextAlign.start,
-              maxLines: 5,
-              overflow: TextOverflow.ellipsis,
-              style: kChatLastMessageTextStyle,
-            ),
+          Text(
+            announcement.text,
+            textAlign: TextAlign.start,
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+            style: kChatLastMessageTextStyle,
           ),
         ],
       ),

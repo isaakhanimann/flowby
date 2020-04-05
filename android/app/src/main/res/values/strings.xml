@@ -10,4 +10,5 @@
       **NOTE**: The scheme needs to start with `fb` and then your ID.
     -->
     <string name="fb_login_protocol_scheme">fb1539202536237348</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 </resources>
