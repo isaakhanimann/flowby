@@ -59,6 +59,9 @@ class LocationService {
 
   Future<String> getCity(
       {@required double latitude, @required double longitude}) async {
+    if (latitude == null || longitude == null) {
+      return '';
+    }
     try {
       List<Placemark> placemarks =
           await Geolocator().placemarkFromCoordinates(latitude, longitude);

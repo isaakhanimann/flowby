@@ -151,8 +151,8 @@ class ListOfSortedUsers extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchMode = Provider.of<SearchMode>(context, listen: false);
     return FutureBuilder(
-      future:
-          _waitAndSortUsersByDistance(context: context, users: unsortedUsers),
+      future: _sortUsersByDistanceAndGetCity(
+          context: context, users: unsortedUsers),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return CenteredLoadingIndicator();
@@ -182,7 +182,7 @@ class ListOfSortedUsers extends StatelessWidget {
     );
   }
 
-  Future<List<User>> _waitAndSortUsersByDistance(
+  Future<List<User>> _sortUsersByDistanceAndGetCity(
       {@required BuildContext context, @required List<User> users}) async {
     final loggedInUser = Provider.of<User>(context);
     final locationService =
@@ -197,25 +197,33 @@ class ListOfSortedUsers extends StatelessWidget {
           latitude: loggedInUser.location?.latitude,
           longitude: loggedInUser.location?.longitude);
     }
-    List<User> usersWithDistance = [];
+    List<Future<int>> distanceFutures = [];
+    List<Future<String>> cityFutures = [];
+
     for (User user in users) {
-      user.distanceInKm = await locationService.distanceBetween(
+      distanceFutures.add(locationService.distanceBetween(
           startLatitude: currentUsersLocation?.latitude,
           startLongitude: currentUsersLocation?.longitude,
           endLatitude: user?.location?.latitude,
-          endLongitude: user?.location?.longitude);
-      usersWithDistance.add(user);
-      if (user?.location?.latitude != null) {
-        user.currentCity = await locationService.getCity(
-            latitude: user?.location?.latitude,
-            longitude: user?.location?.longitude);
-      } else {
-        user.currentCity = '';
-      }
+          endLongitude: user?.location?.longitude));
+      cityFutures.add(locationService.getCity(
+          latitude: user?.location?.latitude,
+          longitude: user?.location?.longitude));
     }
-    usersWithDistance
+
+    List<int> distances = await Future.wait(distanceFutures);
+    List<String> cities = await Future.wait(cityFutures);
+
+    List<User> usersWithDistanceAndCity = [];
+    for (int i = 0; i < users.length; i++) {
+      User userWithDistanceAndCity = users[i];
+      userWithDistanceAndCity.distanceInKm = distances[i];
+      userWithDistanceAndCity.currentCity = cities[i];
+      usersWithDistanceAndCity.add(userWithDistanceAndCity);
+    }
+    usersWithDistanceAndCity
         .sort((user1, user2) => user1.distanceInKm - user2.distanceInKm);
-    return usersWithDistance;
+    return usersWithDistanceAndCity;
   }
 }
 
