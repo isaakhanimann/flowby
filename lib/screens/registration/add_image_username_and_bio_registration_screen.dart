@@ -38,14 +38,14 @@ class _AddImageUsernameAndBioRegistrationScreenState
   bool showSpinner = false;
 
   File _profilePic;
-  String _username;
+  TextEditingController _usernameController;
   String _bio;
 
   @override
   void initState() {
     super.initState();
     if (widget.user.username != null && widget.user.username != '') {
-      _username = widget.user.username;
+      _usernameController = TextEditingController(text: widget.user.username);
     }
   }
 
@@ -93,6 +93,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
                       ),
                       CupertinoTextField(
                         style: kEditProfileTextFieldTextStyle,
+                        controller: _usernameController,
                         placeholder: AppLocalizations.of(context)
                             .translate('enter_your_name'),
                         textCapitalization: TextCapitalization.words,
@@ -104,9 +105,6 @@ class _AddImageUsernameAndBioRegistrationScreenState
                           borderRadius: BorderRadius.circular(8),
                           color: Colors.white,
                         ),
-                        onChanged: (value) {
-                          _username = value;
-                        },
                         textAlign: TextAlign.start,
                       ),
                       SizedBox(
@@ -281,7 +279,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
   }
 
   Future<void> _uploadImageAndUserAndNavigate(BuildContext context) async {
-    if (_username == null) {
+    if (_usernameController.text == null) {
       HelperFunctions.showCustomDialog(
         context: context,
         dialog: BasicDialog(
@@ -314,7 +312,7 @@ class _AddImageUsernameAndBioRegistrationScreenState
           fileName: widget.user.uid, image: _profilePic);
       widget.user.imageUrl = imageUrl;
     }
-    widget.user.username = _username;
+    widget.user.username = _usernameController.text;
     widget.user.bio = _bio;
     print(widget.user);
     await cloudFirestoreService.uploadUser(user: widget.user);
