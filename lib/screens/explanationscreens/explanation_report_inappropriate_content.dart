@@ -15,29 +15,23 @@ class ExplanationReportInappropriateContent extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                height: 10,
-              ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 10,
             ),
-            Expanded(
-              flex: 1,
-              child: Text(
-                AppLocalizations.of(context)
-                    .translate("seeing_user_with_inappropriate_content"),
-                style: kExplanationTitleTextStyle,
-                textAlign: TextAlign.center,
-              ),
+            Text(
+              AppLocalizations.of(context)
+                  .translate("seeing_user_with_inappropriate_content"),
+              style: kExplanationTitleTextStyle,
+              textAlign: TextAlign.center,
             ),
-            Expanded(
-              flex: 5,
-              child: Text(
-                AppLocalizations.of(context)
-                    .translate("longpress_on_announcement_or_user"),
-                style: kExplanationMiddleTextStyle,
-                textAlign: TextAlign.center,
-              ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 10,
+            ),
+            Text(
+              AppLocalizations.of(context)
+                  .translate("longpress_on_announcement_or_user"),
+              style: kExplanationMiddleTextStyle,
+              textAlign: TextAlign.center,
             ),
           ],
         ),

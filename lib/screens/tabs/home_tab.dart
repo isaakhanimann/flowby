@@ -242,16 +242,18 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
             SizedBox(
               height: 15,
             ),
-            CupertinoTextField(
-              autofocus: true,
-              showCursor: true,
-              expands: true,
-              minLines: null,
-              maxLines: null,
-              decoration: BoxDecoration(color: kCardBackgroundColor),
-              onChanged: (newText) {
-                announcementText = newText;
-              },
+            Flexible(
+              child: CupertinoTextField(
+                autofocus: true,
+                showCursor: true,
+                expands: true,
+                minLines: null,
+                maxLines: null,
+                decoration: BoxDecoration(color: kCardBackgroundColor),
+                onChanged: (newText) {
+                  announcementText = newText;
+                },
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

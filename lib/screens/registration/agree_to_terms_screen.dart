@@ -63,7 +63,7 @@ class _AgreeToTermsScreenState extends State<AgreeToTermsScreen> {
                 urlToGoTo: 'https://flowby.co/acceptable-use-policy.pdf',
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height / 4,
+                height: MediaQuery.of(context).size.height / 12,
               ),
               RoundedButton(
                 color: kBlueButtonColor,
