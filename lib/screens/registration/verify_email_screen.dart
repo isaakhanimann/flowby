@@ -2,7 +2,7 @@ import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/models/user.dart';
-import 'package:Flowby/screens/registration/add_image_username_and_bio_registration_screen.dart';
+import 'package:Flowby/screens/registration/agree_to_terms_screen.dart';
 import 'package:Flowby/services/firebase_auth_service.dart';
 import 'package:Flowby/widgets/progress_bar.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
@@ -131,14 +131,11 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       );
       return;
     }
-    Navigator.of(context, rootNavigator: true).push(
-      CupertinoPageRoute<void>(
-        builder: (context) {
-          return AddImageUsernameAndBioRegistrationScreen(
-            user: widget.user,
-          );
-        },
-      ),
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+      CupertinoPageRoute(
+          builder: (BuildContext context) =>
+              AgreeToTermsScreen(user: widget.user)),
+      (Route<dynamic> route) => false,
     );
   }
 }
