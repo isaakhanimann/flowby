@@ -1,5 +1,6 @@
 import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_report_inappropriate_content.dart';
 import 'package:Flowby/screens/navigation_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
@@ -32,35 +33,32 @@ class _ExplanationScreenState extends State<ExplanationScreen> {
     final searchMode = Provider.of<SearchMode>(context, listen: false);
 
     if (searchMode.mode == Mode.searchWishes) {
-      numberOfPages = 3;
       pages = [
-        Container(
-          child: ExplanationProvideSkillTab(),
-        ),
+        Container(child: ExplanationProvideSkillTab()),
         Container(child: ExplanationAnnouncementsTab()),
-        Container(
-          child: ExplanationSeeDistanceTab(),
-        )
+        Container(child: ExplanationReportInappropriateContent()),
+        Container(child: ExplanationSeeDistanceTab())
       ];
     } else if (searchMode.mode == Mode.searchSkills) {
-      numberOfPages = 4;
       pages = [
         Container(child: ExplanationLookingForSkillTab()),
         Container(child: ExplanationDidntFindSkillTab()),
         Container(child: ExplanationAnnouncementsTab()),
+        Container(child: ExplanationReportInappropriateContent()),
         Container(child: ExplanationSeeDistanceTab())
       ];
     } else {
       // loggedInUsersRole == null
-      numberOfPages = 5;
       pages = [
         Container(child: ExplanationProvideSkillTab()),
         Container(child: ExplanationLookingForSkillTab()),
         Container(child: ExplanationDidntFindSkillTab()),
         Container(child: ExplanationAnnouncementsTab()),
+        Container(child: ExplanationReportInappropriateContent()),
         Container(child: ExplanationSeeDistanceTab())
       ];
     }
+    numberOfPages = pages.length;
 
     return Stack(
       alignment: Alignment.bottomCenter,
