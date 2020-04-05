@@ -4,6 +4,8 @@ import 'package:Flowby/models/chat.dart';
 import 'package:Flowby/models/helper_functions.dart';
 import 'package:Flowby/screens/chat_screen.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/services/firebase_cloud_messaging.dart';
+import 'package:Flowby/widgets/badge.dart';
 import 'package:Flowby/widgets/centered_loading_indicator.dart';
 import 'package:Flowby/widgets/custom_card.dart';
 import 'package:Flowby/widgets/tab_header.dart';
@@ -99,12 +101,15 @@ class ChatItem extends StatelessWidget {
 
     bool haveIBlocked;
     bool hasOtherBlocked;
+    int numberOfUnreadMessages;
     if (amIUser1) {
       haveIBlocked = chat.hasUser1Blocked;
       hasOtherBlocked = chat.hasUser2Blocked;
+      numberOfUnreadMessages = chat.numberOfUnreadMessagesUser1;
     } else {
       haveIBlocked = chat.hasUser2Blocked;
       hasOtherBlocked = chat.hasUser1Blocked;
+      numberOfUnreadMessages = chat.numberOfUnreadMessagesUser2;
     }
 
     return CustomCard(
@@ -114,18 +119,25 @@ class ChatItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Text(
                 otherUser.username,
                 overflow: TextOverflow.ellipsis,
                 style: kUsernameTextStyle,
               ),
-              Flexible(
+              if (numberOfUnreadMessages != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: Badge(
+                      count: numberOfUnreadMessages, badgeColor: Colors.red),
+                ),
+              Expanded(
                 child: Text(
                   HelperFunctions.getTimestampAsString(
                       context: context, timestamp: chat.lastMessageTimestamp),
                   overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
                   style: kChatTabTimestampTextStyle,
                 ),
               ),
@@ -138,7 +150,6 @@ class ChatItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Expanded(
-                flex: 2,
                 child: Text(
                   chat.lastMessageText,
                   maxLines: 1,
@@ -147,30 +158,57 @@ class ChatItem extends StatelessWidget {
                 ),
               ),
               if (haveIBlocked || hasOtherBlocked)
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context).translate('blocked'),
-                    style: kSmallBlockedTextStyle,
-                  ),
+                Text(
+                  AppLocalizations.of(context).translate('blocked'),
+                  style: kSmallBlockedTextStyle,
                 )
             ],
           ),
         ],
       ),
-      onPress: () {
-        Navigator.of(context, rootNavigator: true).push(
+      onPress: () async {
+        await Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute<void>(
             builder: (context) {
+              // removes the current notifications of the opened chat
+              final firebaseMessaging =
+              Provider.of<FirebaseCloudMessaging>(context, listen: false);
+              firebaseMessaging.cancel(otherUser.uid.hashCode);
               return ChatScreen(
                 loggedInUser: loggedInUser,
                 otherUser: otherUser,
                 heroTag: heroTag,
-                chatPath: chat.chatpath,
+                chatId: chat.chatId,
               );
             },
           ),
         );
+        _updateUnreadMessages(
+            context: context,
+            chatId: chat.chatId,
+            amIUser1: amIUser1,
+            loggedInUid: loggedInUser.uid,
+            otherUserUid: otherUser.uid);
       },
     );
+  }
+
+  _updateUnreadMessages(
+      {BuildContext context,
+      String chatId,
+      bool amIUser1,
+      String loggedInUid,
+      String otherUserUid}) {
+    // subtract the number of unread messages from the global total
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    final firebaseMessaging =
+        Provider.of<FirebaseCloudMessaging>(context, listen: false);
+    cloudFirestoreService.updateUserTotalUnreadMessages(
+        chatId: chatId, isUser1: amIUser1, uid: loggedInUid);
+    // set to 0 the number of unread messages of the chat when user leaves the chat
+    cloudFirestoreService.resetUnreadMessagesInChat(
+        chatId: chatId, isUser1: amIUser1);
+    firebaseMessaging.cancel(otherUserUid.hashCode);
   }
 }

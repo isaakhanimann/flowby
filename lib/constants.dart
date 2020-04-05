@@ -104,4 +104,4 @@ const kSecondCardBackgroundColor = Color(0xFFE8E8E9);
 // Other
 const String kDefaultProfilePicUrl =
     'https://firebasestorage.googleapis.com/v0/b/float-a5628.appspot.com/o/images%2Fdefault-profile-pic.jpg?alt=media';
-const int kDistanceInKm = 100000000000000;
+const int kAlmostInfiniteDistanceInKm = 100000000000000;

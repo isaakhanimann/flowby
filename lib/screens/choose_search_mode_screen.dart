@@ -1,6 +1,6 @@
 import 'package:Flowby/app_localizations.dart';
 import 'package:Flowby/constants.dart';
-import 'package:Flowby/screens/navigation_screen.dart';
+import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:Flowby/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +52,8 @@ class ChooseSearchModeScreen extends StatelessWidget {
 
   _navigate({BuildContext context}) async {
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-      CupertinoPageRoute(builder: (BuildContext context) => NavigationScreen()),
+      CupertinoPageRoute(
+          builder: (BuildContext context) => ExplanationScreen()),
       (Route<dynamic> route) => false,
     );
   }

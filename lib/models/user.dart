@@ -13,6 +13,7 @@ class User {
   String wishKeywords;
   List<SkillOrWish> skills = [];
   List<SkillOrWish> wishes = [];
+  int totalNumberOfUnreadMessages = 0;
 
   User(
       {this.username,
@@ -22,7 +23,8 @@ class User {
       this.skills,
       this.wishes,
       this.location,
-      this.imageUrl});
+      this.imageUrl,
+      this.totalNumberOfUnreadMessages});
 
   User.fromMap({Map<String, dynamic> map}) {
     this.username = map['username'] ?? '';
@@ -39,6 +41,12 @@ class User {
     this.wishes = _convertFirebaseToDart(skillsOrWishes: map['wishes']);
     this.skillKeywords = _getKeywordString(skills);
     this.wishKeywords = _getKeywordString(wishes);
+    try {
+      this.totalNumberOfUnreadMessages =
+          map['totalNumberOfUnreadMessages'] ?? 0;
+    } catch (e) {
+      this.totalNumberOfUnreadMessages = 0;
+    }
   }
 
   Map<String, dynamic> toMap() {
@@ -51,6 +59,7 @@ class User {
       'imageUrl': imageUrl ?? kDefaultProfilePicUrl,
       'skills': skills?.map((SkillOrWish s) => s.toMap())?.toList(),
       'wishes': wishes?.map((SkillOrWish w) => w.toMap())?.toList(),
+      'totalNumberOfUnreadMessages': totalNumberOfUnreadMessages,
     };
   }
 
@@ -112,6 +121,8 @@ class User {
     toPrint += 'wishes: ${wishes.toString()}, ';
     toPrint += 'skillKeywords: ${skillKeywords.toString()}, ';
     toPrint += 'wishKeywords: ${wishKeywords.toString()}, ';
+    toPrint +=
+        'totalNumberOfUnreadMessages: ${totalNumberOfUnreadMessages.toString()}, ';
     toPrint += 'distanceInKm: ${distanceInKm.toString()} }\n';
 
     return toPrint;

@@ -19,6 +19,14 @@ class FirebaseCloudMessaging {
     return _firebaseMessaging.getToken();
   }
 
+  Future<void> cancelAll() {
+    return flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+  Future<void> cancel(int id) {
+    return flutterLocalNotificationsPlugin.cancel(id);
+  }
+
   void firebaseCloudMessagingListeners(BuildContext context) {
     if (Platform.isIOS) iOSPermission();
 
@@ -58,10 +66,15 @@ class FirebaseCloudMessaging {
   }
 
   void showNotification({@required CloudMessage message}) async {
+    // sets an unique channel id for each user's messages
+    // String groupChannelId = 'message_notifications_id';
+    // Changes the text in the notifications' settings
+    String groupChannelName = 'Message notifications';
+    String groupChannelDescription = 'Sound and pop-up';
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      Platform.isAndroid ? 'co.flowby' : 'co.flowby',
-      'Flowby',
-      'Flowby is a close by community of people that share their skills in person.',
+      message.data['otherUid'],
+      groupChannelName,
+      groupChannelDescription,
       playSound: true,
       enableVibration: true,
       importance: Importance.Max,
@@ -71,7 +84,8 @@ class FirebaseCloudMessaging {
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-      0,
+      message.data['otherUid'].hashCode,
+      //id of the message so we can remove it from the notifications when we enter a specific chat
       message.title,
       message.body,
       platformChannelSpecifics,
@@ -102,7 +116,7 @@ class FirebaseCloudMessaging {
             loggedInUser: loggedInUser,
             otherUser: otherUser,
             heroTag: otherUser.uid + 'chats',
-            chatPath: message.data['chatPath'],
+            chatId: message.data['chatId'],
           );
         },
       ),
@@ -138,6 +152,7 @@ class CloudMessage {
     data['screen'] = mapMessage['data']['screen'];
     data['loggedInUser'] = mapMessage['data']['loggedInUser'];
     data['otherUser'] = mapMessage['data']['otherUser'];
-    data['chatPath'] = mapMessage['data']['chatPath'];
+    data['chatId'] = mapMessage['data']['chatId'];
+    data['otherUid'] = mapMessage['data']['otherUid'];
   }
 }

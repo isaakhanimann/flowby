@@ -49,7 +49,7 @@ class LocationService {
         startLongitude == null ||
         endLatitude == null ||
         endLongitude == null) {
-      return kDistanceInKm;
+      return kAlmostInfiniteDistanceInKm;
     }
     double distanceInMeters = await Geolocator().distanceBetween(
         startLatitude, startLongitude, endLatitude, endLongitude);

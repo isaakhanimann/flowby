@@ -48,7 +48,7 @@ class _DistanceTextState extends State<DistanceText> {
         }
 
         int distanceInKm = snapshot.data;
-        if (distanceInKm == kDistanceInKm) {
+        if (distanceInKm == kAlmostInfiniteDistanceInKm) {
           return Text('');
         }
         return Row(

@@ -5,7 +5,7 @@ class Badge extends StatelessWidget {
   final int count;
   final Color badgeColor;
 
-  Badge({this.count, this.badgeColor});
+  Badge({this.count = 0, this.badgeColor});
 
   @override
   Widget build(BuildContext context) {
