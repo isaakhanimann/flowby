@@ -19,6 +19,7 @@ import 'package:Flowby/models/announcement.dart';
 import 'package:Flowby/screens/explanationscreens/explanation_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Flowby/widgets/custom_card.dart';
+import 'package:Flowby/widgets/mark_inappropriate_dialog.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -313,100 +314,83 @@ class AnnouncementItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User loggedInUser = Provider.of<User>(context);
-    return CupertinoContextMenu(
-      actions: <Widget>[
-        CupertinoContextMenuAction(
-          child: Text(
-            'Mark Inappropriate',
-            style: TextStyle(
-              fontSize: 18,
-              fontFamily: 'MuliBold',
+    return CustomCard(
+      onPress: () {
+        _navigateToUser(context: context);
+      },
+      onLongPress: () {
+        if (announcement.user.uid == loggedInUser.uid) {
+          _showDeleteDialog(context: context, announcement: announcement);
+        } else {
+          _showMarkInappropriateDialog(
+              context: context, announcement: announcement);
+        }
+      },
+      paddingInsideVertical: 15,
+      leading: ProfilePicture(
+        imageUrl: announcement.user.imageUrl,
+        radius: 30,
+        heroTag: heroTag,
+      ),
+      middle: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Flexible(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  announcement.user.username,
+                  overflow: TextOverflow.ellipsis,
+                  style: kUsernameTextStyle,
+                ),
+                DistanceText(
+                  latitude1: loggedInUser?.location?.latitude,
+                  longitude1: loggedInUser?.location?.longitude,
+                  latitude2: announcement.user?.location?.latitude,
+                  longitude2: announcement.user?.location?.longitude,
+                  fontSize: 10,
+                ),
+                Text(
+                  HelperFunctions.getTimestampAsString(
+                      context: context, timestamp: announcement.timestamp),
+                  overflow: TextOverflow.ellipsis,
+                  style: kChatTabTimestampTextStyle,
+                ),
+              ],
             ),
           ),
-          onPressed: () {
-            final cloudFirestoreService =
-                Provider.of<FirebaseCloudFirestoreService>(context,
-                    listen: false);
-            cloudFirestoreService.incrementUserFlagged(
-                uid: announcement.user.uid);
-            Navigator.of(context, rootNavigator: true).pop();
-          },
-        ),
-        if (announcement.user.uid == loggedInUser.uid)
-          CupertinoContextMenuAction(
-            trailingIcon: Feather.trash,
+          SizedBox(
+            height: 5,
+          ),
+          Flexible(
             child: Text(
-              'Delete',
-              style: TextStyle(
-                fontSize: 18,
-                fontFamily: 'MuliBold',
-                color: Colors.red,
-              ),
+              announcement.text,
+              textAlign: TextAlign.start,
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
+              style: kChatLastMessageTextStyle,
             ),
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).pop();
-              _deleteAnnouncement(context: context, announcement: announcement);
-            },
           ),
-      ],
-      child: CustomCard(
-        onPress: () {
-          _navigateToUser(context: context);
-        },
-        paddingInsideVertical: 15,
-        leading: ProfilePicture(
-          imageUrl: announcement.user.imageUrl,
-          radius: 30,
-          heroTag: heroTag,
-        ),
-        middle: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Flexible(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    announcement.user.username,
-                    overflow: TextOverflow.ellipsis,
-                    style: kUsernameTextStyle,
-                  ),
-                  DistanceText(
-                    latitude1: loggedInUser?.location?.latitude,
-                    longitude1: loggedInUser?.location?.longitude,
-                    latitude2: announcement.user?.location?.latitude,
-                    longitude2: announcement.user?.location?.longitude,
-                    fontSize: 10,
-                  ),
-                  Text(
-                    HelperFunctions.getTimestampAsString(
-                        context: context, timestamp: announcement.timestamp),
-                    overflow: TextOverflow.ellipsis,
-                    style: kChatTabTimestampTextStyle,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Flexible(
-              child: Text(
-                announcement.text,
-                textAlign: TextAlign.start,
-                maxLines: 5,
-                overflow: TextOverflow.ellipsis,
-                style: kChatLastMessageTextStyle,
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
 
-  _deleteAnnouncement({BuildContext context, Announcement announcement}) async {
+  _showMarkInappropriateDialog(
+      {BuildContext context, Announcement announcement}) async {
+    HelperFunctions.showCustomDialog(
+      context: context,
+      dialog: MarkInappropriateDialog(onWantsToMark: () {
+        final cloudFirestoreService =
+            Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        cloudFirestoreService.incrementUserFlagged(uid: announcement.user.uid);
+      }),
+    );
+  }
+
+  _showDeleteDialog({BuildContext context, Announcement announcement}) async {
     final loggedInUser = Provider.of<User>(context, listen: false);
     final tabInfo = Provider.of<GlobalHomeTabInfo>(context, listen: false);
     if (announcement.user.uid == loggedInUser.uid) {

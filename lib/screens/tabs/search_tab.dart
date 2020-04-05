@@ -16,7 +16,9 @@ import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:Flowby/services/location_service.dart';
 import 'package:Flowby/models/search_mode.dart';
+import 'package:Flowby/widgets/mark_inappropriate_dialog.dart';
 import 'package:Flowby/services/firebase_cloud_firestore_service.dart';
+import 'package:Flowby/models/helper_functions.dart';
 
 class SearchTab extends StatefulWidget {
   @override
@@ -216,103 +218,97 @@ class ProfileItem extends StatelessWidget {
     final loggedInUser = Provider.of<User>(context);
     final String heroTag = user.uid + 'home';
 
-    return CupertinoContextMenu(
-      actions: <Widget>[
-        CupertinoContextMenuAction(
-          child: Text(
-            'Mark Inappropriate',
-            style: TextStyle(
-              fontSize: 18,
-              fontFamily: 'MuliBold',
+    return CustomCard(
+      leading:
+          ProfilePicture(imageUrl: user.imageUrl, radius: 30, heroTag: heroTag),
+      middle: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Flexible(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  user.username,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: kUsernameTextStyle,
+                ),
+                if (user.distanceInKm != kAlmostInfiniteDistanceInKm)
+                  Flexible(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: <Widget>[
+                        Flexible(
+                          flex: 1,
+                          child: Icon(
+                            Feather.navigation,
+                            size: 10,
+                            color: kBlueButtonColor,
+                          ),
+                        ),
+                        Flexible(
+                          flex: 3,
+                          child: Text(
+                            ' ' + user.distanceInKm.toString() + 'km',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: kBlueButtonColor,
+                                fontSize: 10,
+                                fontFamily: 'MuliRegular'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
           ),
-          onPressed: () {
-//            final cloudFirestoreService =
-//                Provider.of<FirebaseCloudFirestoreService>(context,
-//                    listen: false);
-//            cloudFirestoreService.incrementUserFlagged(uid: user.uid);
-            Navigator.of(context, rootNavigator: true).pop();
-          },
-        ),
-      ],
-      child: CustomCard(
-        leading: ProfilePicture(
-            imageUrl: user.imageUrl, radius: 30, heroTag: heroTag),
-        middle: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Flexible(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    user.username,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: kUsernameTextStyle,
-                  ),
-                  if (user.distanceInKm != kAlmostInfiniteDistanceInKm)
-                    Flexible(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: <Widget>[
-                          Flexible(
-                            flex: 1,
-                            child: Icon(
-                              Feather.navigation,
-                              size: 10,
-                              color: kBlueButtonColor,
-                            ),
-                          ),
-                          Flexible(
-                            flex: 3,
-                            child: Text(
-                              ' ' + user.distanceInKm.toString() + 'km',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: kBlueButtonColor,
-                                  fontSize: 10,
-                                  fontFamily: 'MuliRegular'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
+          SizedBox(
+            height: 6,
+          ),
+          Flexible(
+            child: Text(
+              isSkillSearch ? user.skillKeywords : user.wishKeywords,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: kCardSubtitleTextStyle,
             ),
-            SizedBox(
-              height: 6,
-            ),
-            Flexible(
-              child: Text(
-                isSkillSearch ? user.skillKeywords : user.wishKeywords,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: kCardSubtitleTextStyle,
-              ),
-            ),
-          ],
-        ),
-        onPress: () {
-          Navigator.of(context, rootNavigator: true).push(
-            CupertinoPageRoute<void>(
-              builder: (context) {
-                return ViewProfileScreen(
-                    user: user,
-                    heroTag: heroTag,
-                    loggedInUser: loggedInUser,
-                    showSkills: isSkillSearch);
-              },
-            ),
-          );
-        },
+          ),
+        ],
       ),
+      onPress: () {
+        Navigator.of(context, rootNavigator: true).push(
+          CupertinoPageRoute<void>(
+            builder: (context) {
+              return ViewProfileScreen(
+                  user: user,
+                  heroTag: heroTag,
+                  loggedInUser: loggedInUser,
+                  showSkills: isSkillSearch);
+            },
+          ),
+        );
+      },
+      onLongPress: () {
+        _showMarkInappropriateDialog(context: context, user: user);
+      },
+    );
+  }
+
+  _showMarkInappropriateDialog({BuildContext context, User user}) async {
+    HelperFunctions.showCustomDialog(
+      context: context,
+      dialog: MarkInappropriateDialog(onWantsToMark: () {
+        final cloudFirestoreService =
+            Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+        cloudFirestoreService.incrementUserFlagged(uid: user.uid);
+      }),
     );
   }
 }
