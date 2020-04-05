@@ -8,7 +8,7 @@
     <meta name="description"
           content="Flowby is a nearby community of people that offer their services locally. Stay local. Be together in solidarity.">
     <meta name="keywords"
-          content="Skills, sharing, community, mobile app, learn, teach, earn money, services, offer, demand, locally, neighbors, neigborhood, local, solidarity">
+          content="flowby app, flowby switzerland, flowby, flowby community, flowby covid-19, coronavirus app, find help coronavirus, skills, sharing, community, mobile app, learn, teach, earn money, services, offer, demand, locally, neighbors, neigborhood, local, solidarity">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--  Essential META Tags -->
@@ -96,14 +96,14 @@
                 <li><a id="menu_contact" href="#contact_page">Contact</a></li>
                 <li></li>
                 <li>
-                    <a href="https://www.instagram.com/flowby.app/">
-                        <img id="social-instagram" class="icon-social" src="images/icon_instagram.svg" alt="instagram social icon" width="20px"
+                    <a id="social-instagram" href="https://www.instagram.com/flowby.app/">
+                        <img class="icon-social" src="images/icon_instagram.svg" alt="instagram social icon" width="20px"
                              height="20px"/>
                     </a>
                 </li>
                 <li>
-                    <a href="https://www.facebook.com/flowbyapp/">
-                        <img id="social-facebook" class="icon-social" src="images/icon_facebook.svg" alt="facebook social icon" width="20px"
+                    <a id="social-facebook" href="https://www.facebook.com/flowbyapp/">
+                        <img class="icon-social" src="images/icon_facebook.svg" alt="facebook social icon" width="20px"
                              height="20px"/>
                     </a>
                 </li>
@@ -297,7 +297,19 @@ const lang = navigator.language;
 document.getElementsByTagName("html").lang = lang;
 //console.log(lang.slice(0, 2));
 var choosed_lang = lang;
-
+var it = {
+  menu_about: "Su di noi",
+  menu_contact: "Contatti",
+  menu_footer_about: "Su di noi",
+  menu_footer_contact: "Contatti",
+  find_services: "Trova i servizi",
+  offer_yours: "Offri i tuoi",
+  flowby_short_description: "Flowby è una community di persone che propone su scala locale una moltitudine di servizi.",
+  subscribe_newsletter: "Iscriviti alla newsletter",
+  contact_us: "Contattaci",
+  contact_questions: "Domande?",
+  contact_send_email: "Invia una e-mail a"
+}
 var menu_about = document.getElementById("menu_about");
 var menu_contact = document.getElementById("menu_contact");
 
@@ -318,8 +330,15 @@ var menu_footer_contact = document.getElementById("menu_footer_contact");
 if (lang.slice(0, 2) === 'de') {
   // console.log('de');
   // window.location.replace("https://www.flowby.ch/de/");
+
+  menu_about.innerHTML = "Über uns";
+  menu_contact.innerHTML = "Kontakt";
+  menu_footer_about.innerHTML = "Über uns";
+  menu_footer_contact.innerHTML = "Kontakt";
+
+  flowby_short_description.innerHTML = "Flowby ist eine Gemeinschaft von Leuten, die den Mitmenschen in ihrer Nähe ihre Dienste anbieten.";
 }
-else if (lang.slice(0, 2) === 'fr') {
+else if (lang.slice(0, 2) === 'fr')   {
   // console.log('fr');
   // window.location.replace("https://www.flowby.ch/fr/");
   menu_about.innerHTML = "À propos";
@@ -331,7 +350,7 @@ else if (lang.slice(0, 2) === 'fr') {
   offer_yours.innerHTML = "Offrez les vôtres.";
   flowby_short_description.innerHTML = "Flowby est une communauté de personnes qui proposent localement leurs services.";
 
-  subscribe_newsletter.innerHTML = "Inscrivez-vous à la newsletter";
+    subscribe_newsletter.innerHTML = "Inscrivez-vous à la newsletter";
   contact_us.innerHTML = "Contactez-nous";
   contact_questions.innerHTML = "Des questions?";
   contact_send_email.innerHTML = "Envoyez-nous un email à ";
