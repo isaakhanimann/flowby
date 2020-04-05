@@ -81,10 +81,13 @@ class _HomeTabState extends State<HomeTab> {
                     List<Announcement> announcements = List.from(
                         snapshot.data); // to convert it to editable list
                     isFetchingAnnouncements = false;
-                    return ListOfAnnouncements(
-                      announcements: announcements,
-                      isFetchingAnnouncements: isFetchingAnnouncements,
-                      fetchNewAnnouncements: _fetchAnnouncements,
+                    return Provider<GlobalHomeTabInfo>(
+                      create: (_) => GlobalHomeTabInfo(
+                          fetchNewAnnouncements: _fetchAnnouncements),
+                      child: ListOfAnnouncements(
+                        announcements: announcements,
+                        isFetchingAnnouncements: isFetchingAnnouncements,
+                      ),
                     );
                   }))
         ],
@@ -134,12 +137,9 @@ class _HomeTabState extends State<HomeTab> {
 class ListOfAnnouncements extends StatefulWidget {
   final List<Announcement> announcements;
   final bool isFetchingAnnouncements;
-  final Function fetchNewAnnouncements;
 
   ListOfAnnouncements(
-      {@required this.announcements,
-      @required this.isFetchingAnnouncements,
-      @required this.fetchNewAnnouncements});
+      {@required this.announcements, @required this.isFetchingAnnouncements});
 
   @override
   _ListOfAnnouncementsState createState() => _ListOfAnnouncementsState();
@@ -151,10 +151,11 @@ class _ListOfAnnouncementsState extends State<ListOfAnnouncements> {
   @override
   void initState() {
     super.initState();
+    final tabInfo = Provider.of<GlobalHomeTabInfo>(context, listen: false);
     scrollController.addListener(() {
       if (scrollController.position.pixels < -150 &&
           !widget.isFetchingAnnouncements) {
-        widget.fetchNewAnnouncements();
+        tabInfo.fetchNewAnnouncements();
       }
     });
   }
@@ -178,30 +179,8 @@ class _ListOfAnnouncementsState extends State<ListOfAnnouncements> {
             heroTag: announcement.user.uid +
                 announcement.timestamp.toString() +
                 'announcements',
-            onLongPress: _deleteAnnouncement,
           );
         });
-  }
-
-  _deleteAnnouncement({BuildContext context, Announcement announcement}) async {
-    final loggedInUser = Provider.of<User>(context, listen: false);
-    if (announcement.user.uid == loggedInUser.uid) {
-      HelperFunctions.showCustomDialog(
-        context: context,
-        dialog: DeleteAnnouncementDialog(
-          announcement: announcement,
-          reloadAnnouncements: widget.fetchNewAnnouncements,
-        ),
-      );
-    } else {
-      HelperFunctions.showCustomDialog(
-        context: context,
-        dialog: BasicDialog(
-          title: AppLocalizations.of(context).translate('cannot_delete'),
-          text: AppLocalizations.of(context).translate('can_only_delete_own'),
-        ),
-      );
-    }
   }
 }
 
@@ -328,71 +307,120 @@ class _AddAnnouncementDialogState extends State<AddAnnouncementDialog> {
 class AnnouncementItem extends StatelessWidget {
   final Announcement announcement;
   final String heroTag;
-  final Function onLongPress;
 
-  AnnouncementItem(
-      {@required this.announcement,
-      @required this.heroTag,
-      @required this.onLongPress});
+  AnnouncementItem({@required this.announcement, @required this.heroTag});
 
   @override
   Widget build(BuildContext context) {
     final User loggedInUser = Provider.of<User>(context);
-    return CustomCard(
-      onPress: () {
-        _onPressed(context: context);
-      },
-      onLongPress: () {
-        onLongPress(context: context, announcement: announcement);
-      },
-      paddingInsideVertical: 15,
-      leading: ProfilePicture(
-        imageUrl: announcement.user.imageUrl,
-        radius: 30,
-        heroTag: heroTag,
-      ),
-      middle: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                announcement.user.username,
+    return CupertinoContextMenu(
+      actions: <Widget>[
+        CupertinoContextMenuAction(
+          child: Text(
+            'Mark Inappropriate',
+            style: TextStyle(
+              fontSize: 18,
+              fontFamily: 'MuliBold',
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        CupertinoContextMenuAction(
+          trailingIcon: Feather.trash,
+          child: Text(
+            'Delete',
+            style: TextStyle(
+              fontSize: 18,
+              fontFamily: 'MuliBold',
+              color: Colors.red,
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+            _deleteAnnouncement(context: context, announcement: announcement);
+          },
+        ),
+      ],
+      child: CustomCard(
+        onPress: () {
+          _navigateToUser(context: context);
+        },
+        paddingInsideVertical: 15,
+        leading: ProfilePicture(
+          imageUrl: announcement.user.imageUrl,
+          radius: 30,
+          heroTag: heroTag,
+        ),
+        middle: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  announcement.user.username,
+                  overflow: TextOverflow.ellipsis,
+                  style: kUsernameTextStyle,
+                ),
+                DistanceText(
+                  latitude1: loggedInUser?.location?.latitude,
+                  longitude1: loggedInUser?.location?.longitude,
+                  latitude2: announcement.user?.location?.latitude,
+                  longitude2: announcement.user?.location?.longitude,
+                  fontSize: 10,
+                ),
+                Text(
+                  HelperFunctions.getTimestampAsString(
+                      context: context, timestamp: announcement.timestamp),
+                  overflow: TextOverflow.ellipsis,
+                  style: kChatTabTimestampTextStyle,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Flexible(
+              child: Text(
+                announcement.text,
+                textAlign: TextAlign.start,
+                maxLines: 5,
                 overflow: TextOverflow.ellipsis,
-                style: kUsernameTextStyle,
+                style: kChatLastMessageTextStyle,
               ),
-              DistanceText(
-                latitude1: loggedInUser?.location?.latitude,
-                longitude1: loggedInUser?.location?.longitude,
-                latitude2: announcement.user?.location?.latitude,
-                longitude2: announcement.user?.location?.longitude,
-                fontSize: 10,
-              ),
-              Text(
-                HelperFunctions.getTimestampAsString(
-                    context: context, timestamp: announcement.timestamp),
-                overflow: TextOverflow.ellipsis,
-                style: kChatTabTimestampTextStyle,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            announcement.text,
-            textAlign: TextAlign.start,
-            maxLines: 5,
-            overflow: TextOverflow.ellipsis,
-            style: kChatLastMessageTextStyle,
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  _onPressed({BuildContext context}) {
+  _deleteAnnouncement({BuildContext context, Announcement announcement}) async {
+    final loggedInUser = Provider.of<User>(context, listen: false);
+    final tabInfo = Provider.of<GlobalHomeTabInfo>(context, listen: false);
+    if (announcement.user.uid == loggedInUser.uid) {
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: DeleteAnnouncementDialog(
+          announcement: announcement,
+          reloadAnnouncements: tabInfo.fetchNewAnnouncements,
+        ),
+      );
+    } else {
+      HelperFunctions.showCustomDialog(
+        context: context,
+        dialog: BasicDialog(
+          title: AppLocalizations.of(context).translate('cannot_delete'),
+          text: AppLocalizations.of(context).translate('can_only_delete_own'),
+        ),
+      );
+    }
+  }
+
+  _navigateToUser({BuildContext context}) {
     final loggedInUser = Provider.of<User>(context, listen: false);
     User announcementUser = announcement.user;
     Navigator.of(context, rootNavigator: true).push(
@@ -406,4 +434,10 @@ class AnnouncementItem extends StatelessWidget {
       ),
     );
   }
+}
+
+class GlobalHomeTabInfo {
+  final Function fetchNewAnnouncements;
+
+  GlobalHomeTabInfo({@required this.fetchNewAnnouncements});
 }

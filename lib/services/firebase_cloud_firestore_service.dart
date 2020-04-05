@@ -332,4 +332,28 @@ class FirebaseCloudFirestoreService {
     user.totalNumberOfUnreadMessages = newTotal;
     await _fireStore.document(docPath).updateData(user.toMap());
   }
+
+  incrementUserFlagged(
+      {@required String chatId,
+      @required bool isUser1,
+      @required String uid}) async {
+    String docPath = "users/$uid";
+    var chatDoc = await _fireStore.document('chats/$chatId').get();
+    Chat chat = Chat.fromMap(map: chatDoc.data);
+    var userDoc = await _fireStore.document(docPath).get();
+    User user = User.fromMap(map: userDoc.data);
+
+    int readMessages = 0;
+    int total = user.totalNumberOfUnreadMessages;
+
+    if (isUser1) {
+      readMessages = chat.numberOfUnreadMessagesUser1;
+    } else {
+      readMessages = chat.numberOfUnreadMessagesUser2;
+    }
+
+    int newTotal = total - readMessages;
+    user.totalNumberOfUnreadMessages = newTotal;
+    await _fireStore.document(docPath).updateData(user.toMap());
+  }
 }
