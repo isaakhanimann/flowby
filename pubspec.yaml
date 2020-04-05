@@ -1,7 +1,7 @@
 name: Flowby
 description: Flowby is a close by community of people that share their skills in person.
 
-version: 1.0.4+11
+version: 1.0.5+12
 
 module:
   androidX: true
