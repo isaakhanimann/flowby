@@ -28,7 +28,6 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   Future<List<Announcement>> announcementsFuture;
-  bool isFetchingAnnouncements = true;
 
   @override
   void initState() {
@@ -81,13 +80,11 @@ class _HomeTabState extends State<HomeTab> {
                     }
                     List<Announcement> announcements = List.from(
                         snapshot.data); // to convert it to editable list
-                    isFetchingAnnouncements = false;
                     return Provider<GlobalHomeTabInfo>(
                       create: (_) => GlobalHomeTabInfo(
                           fetchNewAnnouncements: _fetchAnnouncements),
                       child: ListOfAnnouncements(
                         announcements: announcements,
-                        isFetchingAnnouncements: isFetchingAnnouncements,
                       ),
                     );
                   }))
@@ -96,8 +93,7 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 
-  _fetchAnnouncements() async {
-    isFetchingAnnouncements = true;
+  _fetchAnnouncements() {
     final cloudFirestoreService =
         Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
     setState(() {
@@ -105,7 +101,7 @@ class _HomeTabState extends State<HomeTab> {
     });
   }
 
-  _addAnnouncement() async {
+  _addAnnouncement() {
     final loggedInUser = Provider.of<User>(context, listen: false);
     bool areSkillsEmpty =
         loggedInUser.skills == null || loggedInUser.skills.isEmpty;
@@ -137,51 +133,50 @@ class _HomeTabState extends State<HomeTab> {
 
 class ListOfAnnouncements extends StatefulWidget {
   final List<Announcement> announcements;
-  final bool isFetchingAnnouncements;
 
-  ListOfAnnouncements(
-      {@required this.announcements, @required this.isFetchingAnnouncements});
+  ListOfAnnouncements({@required this.announcements});
 
   @override
   _ListOfAnnouncementsState createState() => _ListOfAnnouncementsState();
 }
 
 class _ListOfAnnouncementsState extends State<ListOfAnnouncements> {
-  final ScrollController scrollController = ScrollController();
+  List<Announcement> announcements;
 
   @override
   void initState() {
     super.initState();
-    final tabInfo = Provider.of<GlobalHomeTabInfo>(context, listen: false);
-    scrollController.addListener(() {
-      if (scrollController.position.pixels < -150 &&
-          !widget.isFetchingAnnouncements) {
-        tabInfo.fetchNewAnnouncements();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
+    this.announcements = widget.announcements;
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        controller: scrollController,
-        itemCount: widget.announcements.length,
-        itemBuilder: (context, index) {
-          Announcement announcement = widget.announcements[index];
+    return RefreshIndicator(
+      color: kDefaultProfilePicColor,
+      onRefresh: _refreshAnnouncements,
+      child: ListView.builder(
+          itemCount: announcements.length,
+          itemBuilder: (context, index) {
+            Announcement announcement = announcements[index];
 
-          return AnnouncementItem(
-            announcement: announcement,
-            heroTag: announcement.user.uid +
-                announcement.timestamp.toString() +
-                'announcements',
-          );
-        });
+            return AnnouncementItem(
+              announcement: announcement,
+              heroTag: announcement.user.uid +
+                  announcement.timestamp.toString() +
+                  'announcements',
+            );
+          }),
+    );
+  }
+
+  Future<void> _refreshAnnouncements() async {
+    final cloudFirestoreService =
+        Provider.of<FirebaseCloudFirestoreService>(context, listen: false);
+    List<Announcement> freshAnnouncements =
+        await cloudFirestoreService.getAnnouncements();
+    setState(() {
+      announcements = freshAnnouncements;
+    });
   }
 }
 
